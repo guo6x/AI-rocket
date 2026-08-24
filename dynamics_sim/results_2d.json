@@ -1,0 +1,64 @@
+{
+  "results": [
+    {
+      "name": "理想 TESTBENCH PID (15N, 5°)",
+      "profile": "TESTBENCH",
+      "stable": true,
+      "max_angle_deg": 5.03,
+      "rms_final_x": 0.03,
+      "rms_final_y": 0.05,
+      "duration_s": 10.0,
+      "verdict": "稳定收敛"
+    },
+    {
+      "name": "理想 FLIGHT PID (15N, 5°)",
+      "profile": "FLIGHT",
+      "stable": false,
+      "max_angle_deg": 55.87,
+      "rms_final_x": 999.0,
+      "rms_final_y": 999.0,
+      "duration_s": 1.73,
+      "verdict": "发散 @ t=1.73s (角度超 60°)"
+    },
+    {
+      "name": "TESTBENCH PID + 非理想 (15N, 5°)",
+      "profile": "TESTBENCH",
+      "stable": false,
+      "max_angle_deg": 56.27,
+      "rms_final_x": 999.0,
+      "rms_final_y": 999.0,
+      "duration_s": 3.39,
+      "verdict": "发散 @ t=3.39s (角度超 60°)"
+    },
+    {
+      "name": "FLIGHT PID + 非理想 (15N, 5°)",
+      "profile": "FLIGHT",
+      "stable": false,
+      "max_angle_deg": 56.66,
+      "rms_final_x": 999.0,
+      "rms_final_y": 999.0,
+      "duration_s": 1.42,
+      "verdict": "发散 @ t=1.42s (角度超 60°)"
+    },
+    {
+      "name": "TUNED + 非理想 (25N, 1°, 跟1D完全一致)",
+      "profile": "TUNED",
+      "stable": true,
+      "max_angle_deg": 1.02,
+      "rms_final_x": 0.12,
+      "rms_final_y": 0.11,
+      "duration_s": 10.0,
+      "verdict": "稳定收敛"
+    },
+    {
+      "name": "TUNED + 非理想 (15N, 1°)",
+      "profile": "TUNED",
+      "stable": true,
+      "max_angle_deg": 1.02,
+      "rms_final_x": 0.03,
+      "rms_final_y": 0.03,
+      "duration_s": 10.0,
+      "verdict": "稳定收敛"
+    }
+  ]
+}

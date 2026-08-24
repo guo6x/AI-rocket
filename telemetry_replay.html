@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ad Astra — 遥测回放 & 仿真对比</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #0a0e17;
+  --panel: #131826;
+  --panel2: #1a2030;
+  --accent: #00d4ff;
+  --accent2: #ff6b35;
+  --text: #e0e6ed;
+  --muted: #7a8ba3;
+  --good: #10b981;
+  --bad: #ef4444;
+  --warn: #f59e0b;
+  --border: rgba(0,212,255,0.15);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  padding: 12px;
+  line-height: 1.5;
+}
+header {
+  text-align: center;
+  padding: 12px 0 18px;
+}
+header h1 {
+  font-size: 1.5em;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+header p { color: var(--muted); font-size: 0.85em; margin-top: 4px; }
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  background: var(--panel);
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+.toolbar label { color: var(--muted); font-size: 0.85em; }
+.btn {
+  background: var(--panel2);
+  color: var(--accent);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 0.85em;
+  transition: all 0.2s;
+}
+.btn:hover { background: var(--accent); color: var(--bg); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.file-info { color: var(--muted); font-size: 0.8em; }
+.file-info span { color: var(--accent); }
+
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.kpi {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+}
+.kpi .label { color: var(--muted); font-size: 0.75em; text-transform: uppercase; }
+.kpi .value { font-size: 1.4em; font-weight: 700; margin-top: 4px; }
+.kpi .value.good { color: var(--good); }
+.kpi .value.bad { color: var(--bad); }
+.kpi .value.warn { color: var(--warn); }
+.kpi .unit { color: var(--muted); font-size: 0.65em; }
+
+.phase-bar {
+  display: flex;
+  height: 32px;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  border: 1px solid var(--border);
+}
+.phase-segment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75em;
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  transition: opacity 0.2s;
+  cursor: default;
+}
+.phase-segment:hover { opacity: 0.85; }
+.phase-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 0.75em;
+}
+.phase-legend item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--muted);
+}
+.phase-legend .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+@media (max-width: 768px) {
+  .chart-grid { grid-template-columns: 1fr; }
+}
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+}
+.card h3 {
+  font-size: 0.9em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.chart-wrap {
+  height: 220px;
+  position: relative;
+}
+.chart-wrap.tall { height: 280px; }
+
+.events {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+.events h3 { color: var(--accent); font-size: 0.9em; margin-bottom: 8px; }
+.event-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.event-item {
+  background: var(--panel2);
+  border-left: 3px solid var(--accent);
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 0.8em;
+}
+.event-item .t { color: var(--accent); font-weight: 600; }
+.event-item .desc { color: var(--text); margin-left: 6px; }
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+}
+.empty-state .icon { font-size: 3em; margin-bottom: 12px; }
+.empty-state p { margin-bottom: 16px; }
+
+.compare-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8em;
+  color: var(--muted);
+}
+.compare-toggle input { accent-color: var(--accent); }
+
+.hint {
+  background: rgba(0,212,255,0.05);
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 0.78em;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.hint b { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Ad Astra — 遥测回放 & 仿真对比</h1>
+  <p>加载真机 CSV 日志, 跟 6DOF 仿真基准弹道交叉验证</p>
+</header>
+
+<div class="toolbar">
+  <label>📂 遥测日志:</label>
+  <input type="file" id="fileInput" accept=".csv" class="btn">
+  <span class="file-info" id="fileInfo">未加载</span>
+  <label class="compare-toggle">
+    <input type="checkbox" id="compareSim" checked>
+    叠加仿真基准 (E12)
+  </label>
+  <button class="btn" id="clearBtn" disabled>🗑️ 清除</button>
+</div>
+
+<div class="hint">
+  <b>用法</b>: 点击「选择文件」加载 <code>ground_station/logs/*.csv</code> 遥测日志。
+  时间轴用 STM32 <code>time</code> 字段 (ms→s), 高度跟 <code>trajectory_baseline.json</code> 的 z 轴对比。
+  飞行阶段基于高度变化率自动推断 (旧日志无 fstate 字段)。
+</div>
+
+<div id="content">
+  <div class="empty-state">
+    <div class="icon">📊</div>
+    <p>请选择遥测 CSV 日志文件以开始回放</p>
+    <p style="font-size:0.8em">支持格式: <code>PC时间,[FLIGHT] {"time":...,"alt":...,"pitch_flt":...}</code></p>
+  </div>
+</div>
+
+<script>
+// ========== 飞行阶段颜色 (跟 dashboard.py 一致) ==========
+const PHASE_COLORS = {
+  IDLE:    '#9e9e9e',
+  ARMED:   '#ff9800',
+  POWERED: '#f44336',
+  COAST:   '#2196f3',
+  DESCENT: '#4caf50',
+  LANDED:  '#9c27b0'
+};
+
+let telemetryData = null;
+let simBaseline = null;
+let charts = {};
+
+// ========== 文件加载 ==========
+document.getElementById('fileInput').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  document.getElementById('fileInfo').innerHTML = `<span>加载中...</span> ${file.name}`;
+  try {
+    const text = await file.text();
+    telemetryData = parseTelemetryCSV(text);
+    document.getElementById('fileInfo').innerHTML = `<span>✓ ${file.name}</span> (${telemetryData.points.length} 点, ${(file.size/1024/1024).toFixed(1)} MB)`;
+    document.getElementById('clearBtn').disabled = false;
+    if (document.getElementById('compareSim').checked) {
+      await loadSimBaseline();
+    }
+    renderAll();
+  } catch (err) {
+    document.getElementById('fileInfo').innerHTML = `<span style="color:var(--bad)">✗ 解析失败</span> ${err.message}`;
+    console.error(err);
+  }
+});
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+  telemetryData = null;
+  document.getElementById('fileInput').value = '';
+  document.getElementById('fileInfo').textContent = '未加载';
+  document.getElementById('clearBtn').disabled = true;
+  Object.values(charts).forEach(c => c && c.destroy());
+  charts = {};
+  renderEmpty();
+});
+
+document.getElementById('compareSim').addEventListener('change', async (e) => {
+  if (e.target.checked && telemetryData) {
+    await loadSimBaseline();
+  } else {
+    simBaseline = null;
+  }
+  if (telemetryData) renderAll();
+});
+
+// ========== 解析遥测 CSV ==========
+function parseTelemetryCSV(text) {
+  const lines = text.split('\n');
+  const points = [];
+  let parseErrors = 0;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+
+    // 格式: PC时间,[FLIGHT] {json}
+    const flightIdx = line.indexOf('[FLIGHT]');
+    if (flightIdx === -1) continue;
+
+    const jsonStr = line.substring(flightIdx + 9).trim();
+    try {
+      const obj = JSON.parse(jsonStr);
+      if (obj.time !== undefined) {
+        points.push({
+          time_s: obj.time / 1000.0,  // ms → s
+          pitch_raw: obj.pitch_raw || 0,
+          pitch_flt: obj.pitch_flt || 0,
+          roll_raw: obj.roll_raw || 0,
+          roll_flt: obj.roll_flt || 0,
+          yaw: obj.yaw || 0,
+          alt: obj.alt || 0,
+          auto: obj.auto || 0,
+          fstate: obj.fstate || null,
+          batt: obj.batt || 0
+        });
+      }
+    } catch (e) {
+      parseErrors++;
+    }
+  }
+
+  if (points.length === 0) {
+    throw new Error(`未找到有效遥测数据 (解析错误 ${parseErrors} 次)`);
+  }
+
+  // 排序 + 对齐时间起点
+  points.sort((a, b) => a.time_s - b.time_s);
+  const t0 = points[0].time_s;
+  points.forEach(p => p.t = p.time_s - t0);
+
+  // 推断飞行阶段 (如果日志无 fstate)
+  if (!points[0].fstate) {
+    inferPhases(points);
+  }
+
+  // 统计
+  const altMax = Math.max(...points.map(p => p.alt));
+  const tMax = points[points.length - 1].t;
+  const altLiftoff = points.find(p => p.alt > 2)?.t || null;
+  const altApogee = points.find(p => p.alt === altMax)?.t || null;
+
+  return {
+    points,
+    stats: {
+      count: points.length,
+      duration_s: tMax,
+      alt_max_m: altMax,
+      liftoff_t: altLiftoff,
+      apogee_t: altApogee,
+      parse_errors: parseErrors
+    },
+    phases: extractPhases(points)
+  };
+}
+
+// ========== 推断飞行阶段 (基于高度变化率) ==========
+function inferPhases(points) {
+  const dt_window = 0.5;  // 0.5s 窗口
+  let lastPhase = 'IDLE';
+  points.forEach((p, i) => {
+    if (i < 5) { p.fstate = 'IDLE'; return; }
+    const prev = points[Math.max(0, i - 5)];
+    const dh = p.alt - prev.alt;
+    const dt = p.t - prev.t;
+    const climbRate = dt > 0 ? dh / dt : 0;
+
+    if (p.alt < 2 && climbRate < 0.5) {
+      p.fstate = lastPhase === 'LANDED' ? 'LANDED' : 'IDLE';
+    } else if (climbRate > 3 && p.alt < altMaxOf(points) * 0.95) {
+      p.fstate = 'POWERED';
+    } else if (climbRate > 0.5) {
+      p.fstate = 'COAST';
+    } else if (climbRate < -0.5) {
+      p.fstate = 'DESCENT';
+    } else {
+      p.fstate = lastPhase;
+    }
+    lastPhase = p.fstate;
+  });
+}
+
+function altMaxOf(points) {
+  return Math.max(...points.map(p => p.alt));
+}
+
+// ========== 提取阶段时间段 ==========
+function extractPhases(points) {
+  const phases = [];
+  let current = null;
+  points.forEach(p => {
+    if (!current || current.phase !== p.fstate) {
+      if (current) current.t_end = p.t;
+      current = { phase: p.fstate, t_start: p.t, t_end: p.t };
+      phases.push(current);
+    }
+    current.t_end = p.t;
+  });
+  return phases;
+}
+
+// ========== 加载仿真基准 ==========
+async function loadSimBaseline() {
+  if (simBaseline) return;
+  try {
+    const resp = await fetch('./aero_sim/results/trajectory_baseline.json');
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    simBaseline = {
+      trajectory: data.trajectory.map(p => ({
+        t: p.t,
+        alt: p.z,
+        speed: p.speed,
+        phase: p.phase
+      })),
+      events: data.events || [],
+      motor: data.motor,
+      max_altitude: data.max_altitude_m
+    };
+    console.log('仿真基准已加载:', simBaseline.motor, '顶点', simBaseline.max_altitude, 'm');
+  } catch (err) {
+    console.warn('无法加载仿真基准 (需通过本地服务器访问):', err.message);
+    simBaseline = null;
+  }
+}
+
+// ========== 渲染 ==========
+function renderEmpty() {
+  document.getElementById('content').innerHTML = `
+    <div class="empty-state">
+      <div class="icon">📊</div>
+      <p>请选择遥测 CSV 日志文件以开始回放</p>
+      <p style="font-size:0.8em">支持格式: <code>PC时间,[FLIGHT] {"time":...,"alt":...,"pitch_flt":...}</code></p>
+    </div>
+  `;
+}
+
+function renderAll() {
+  if (!telemetryData) { renderEmpty(); return; }
+  const d = telemetryData;
+  const s = d.stats;
+
+  // KPI 行
+  let kpiHtml = '<div class="kpi-row">';
+  kpiHtml += kpiCard('数据点', s.count, '');
+  kpiHtml += kpiCard('时长', s.duration_s.toFixed(1), 's');
+  kpiHtml += kpiCard('顶点高度', s.alt_max_m.toFixed(1), 'm', s.alt_max_m > 100 ? 'good' : 'warn');
+  if (s.liftoff_t !== null) kpiCard('离地时刻', s.liftoff_t.toFixed(1), 's');
+  if (s.apogee_t !== null) kpiCard('顶点时刻', s.apogee_t.toFixed(1), 's');
+  if (simBaseline) {
+    const diff = s.alt_max_m - simBaseline.max_altitude;
+    kpiHtml += kpiCard('仿真差', (diff >= 0 ? '+' : '') + diff.toFixed(1), 'm',
+                       Math.abs(diff) < 10 ? 'good' : 'warn');
+  }
+  kpiHtml += '</div>';
+
+  // 飞行阶段条
+  const phaseBar = renderPhaseBar(d.phases, s.duration_s);
+  const phaseLegend = renderPhaseLegend();
+
+  // 事件列表
+  const events = detectEvents(d);
+  let eventsHtml = '';
+  if (events.length > 0) {
+    eventsHtml = '<div class="events"><h3>🎯 关键事件</h3><div class="event-list">';
+    events.forEach(e => {
+      eventsHtml += `<div class="event-item"><span class="t">${e.t.toFixed(1)}s</span><span class="desc">${e.desc}</span></div>`;
+    });
+    eventsHtml += '</div></div>';
+  }
+
+  document.getElementById('content').innerHTML = `
+    ${kpiHtml}
+    ${phaseBar}
+    ${phaseLegend}
+    ${eventsHtml}
+    <div class="chart-grid">
+      <div class="card">
+        <h3>📈 高度 vs 仿真基准</h3>
+        <div class="chart-wrap tall"><canvas id="chartAlt"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>🎯 俯仰角 (原始 vs 滤波)</h3>
+        <div class="chart-wrap"><canvas id="chartPitch"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>🔄 横滚角 (原始 vs 滤波)</h3>
+        <div class="chart-wrap"><canvas id="chartRoll"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>🧭 偏航角 / 电池电压</h3>
+        <div class="chart-wrap"><canvas id="chartYawBatt"></canvas></div>
+      </div>
+    </div>
+  `;
+
+  renderCharts(d);
+}
+
+function kpiCard(label, value, unit, cls = '') {
+  return `<div class="kpi">
+    <div class="label">${label}</div>
+    <div class="value ${cls}">${value}<span class="unit"> ${unit}</span></div>
+  </div>`;
+}
+
+function renderPhaseBar(phases, totalDuration) {
+  if (!phases || phases.length === 0) return '';
+  let html = '<div class="phase-bar">';
+  phases.forEach(ph => {
+    const width = ((ph.t_end - ph.t_start) / totalDuration * 100).toFixed(1);
+    if (width < 0.5) return;
+    const color = PHASE_COLORS[ph.phase] || '#666';
+    html += `<div class="phase-segment" style="width:${width}%;background:${color}" title="${ph.phase}: ${ph.t_start.toFixed(1)}s - ${ph.t_end.toFixed(1)}s">${ph.phase}</div>`;
+  });
+  html += '</div>';
+  return html;
+}
+
+function renderPhaseLegend() {
+  let html = '<div class="phase-legend">';
+  for (const [phase, color] of Object.entries(PHASE_COLORS)) {
+    html += `<item><span class="dot" style="background:${color}"></span>${phase}</item>`;
+  }
+  html += '</div>';
+  return html;
+}
+
+function detectEvents(data) {
+  const events = [];
+  const points = data.points;
+  const s = data.stats;
+
+  if (s.liftoff_t !== null) {
+    events.push({ t: s.liftoff_t, desc: '🚀 离地 (alt>2m)' });
+  }
+  if (s.apogee_t !== null) {
+    events.push({ t: s.apogee_t, desc: '🎯 顶点 (' + s.alt_max_m.toFixed(0) + 'm)' });
+  }
+
+  // 检测开伞 (下降率突然降低)
+  for (let i = 20; i < points.length - 20; i++) {
+    const dh_before = points[i].alt - points[i-10].alt;
+    const dh_after = points[i+10].alt - points[i].alt;
+    if (dh_before < -5 && dh_after > -1 && points[i].alt < s.alt_max_m * 0.8 && points[i].alt > 5) {
+      events.push({ t: points[i].t, desc: '🪂 开伞检测 (下降率骤降)' });
+      break;
+    }
+  }
+
+  // 检测着陆
+  const last = points[points.length - 1];
+  if (last.alt < 2) {
+    events.push({ t: last.t, desc: '接地' });
+  }
+
+  // 仿真事件 (如果加载了)
+  if (simBaseline && simBaseline.events.length > 0) {
+    simBaseline.events.forEach(e => {
+      events.push({ t: e.t, desc: '📊 仿真:' + e.event });
+    });
+  }
+
+  return events.sort((a, b) => a.t - b.t);
+}
+
+// ========== 图表渲染 ==========
+function renderCharts(data) {
+  // 销毁旧图表
+  Object.values(charts).forEach(c => c && c.destroy());
+  charts = {};
+
+  const points = data.points;
+  const labels = points.map(p => p.t.toFixed(2));
+
+  const baseOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: false,
+    plugins: {
+      legend: { labels: { color: '#e0e6ed', font: { size: 10 } } },
+      tooltip: { mode: 'index', intersect: false }
+    },
+    scales: {
+      x: {
+        title: { display: true, text: '时间 (s)', color: '#7a8ba3' },
+        ticks: { color: '#7a8ba3', maxTicksLimit: 10, font: { size: 9 } },
+        grid: { color: 'rgba(255,255,255,0.05)' }
+      },
+      y: {
+        ticks: { color: '#7a8ba3', font: { size: 9 } },
+        grid: { color: 'rgba(255,255,255,0.05)' }
+      }
+    }
+  };
+
+  // 1. 高度对比
+  const altDatasets = [{
+    label: '真机遥测',
+    data: points.map(p => p.alt),
+    borderColor: '#00d4ff',
+    backgroundColor: 'rgba(0,212,255,0.1)',
+    borderWidth: 1.5,
+    pointRadius: 0,
+    tension: 0.3
+  }];
+  if (simBaseline) {
+    altDatasets.push({
+      label: `仿真基准 (${simBaseline.motor})`,
+      data: simBaseline.trajectory.map(p => ({ x: p.t.toFixed(2), y: p.alt })),
+      borderColor: '#ff6b35',
+      backgroundColor: 'rgba(255,107,53,0.05)',
+      borderWidth: 1.5,
+      borderDash: [5, 3],
+      pointRadius: 0,
+      tension: 0.3
+    });
+  }
+  charts.alt = new Chart(document.getElementById('chartAlt'), {
+    type: 'line',
+    data: { labels, datasets: altDatasets },
+    options: { ...baseOptions, scales: { ...baseOptions.scales, y: { ...baseOptions.scales.y, title: { display: true, text: '高度 (m)', color: '#7a8ba3' } } } }
+  });
+
+  // 2. 俯仰角
+  charts.pitch = new Chart(document.getElementById('chartPitch'), {
+    type: 'line',
+    data: { labels, datasets: [
+      { label: 'Pitch Raw', data: points.map(p => p.pitch_raw), borderColor: '#ff9800', borderWidth: 1, pointRadius: 0, tension: 0.3, borderDash: [3,2] },
+      { label: 'Pitch Flt', data: points.map(p => p.pitch_flt), borderColor: '#ff9800', backgroundColor: 'rgba(255,152,0,0.1)', borderWidth: 1.5, pointRadius: 0, tension: 0.3 }
+    ]},
+    options: { ...baseOptions, scales: { ...baseOptions.scales, y: { ...baseOptions.scales.y, title: { display: true, text: '俯仰 (°)', color: '#7a8ba3' } } } }
+  });
+
+  // 3. 横滚角
+  charts.roll = new Chart(document.getElementById('chartRoll'), {
+    type: 'line',
+    data: { labels, datasets: [
+      { label: 'Roll Raw', data: points.map(p => p.roll_raw), borderColor: '#00bcd4', borderWidth: 1, pointRadius: 0, tension: 0.3, borderDash: [3,2] },
+      { label: 'Roll Flt', data: points.map(p => p.roll_flt), borderColor: '#00bcd4', backgroundColor: 'rgba(0,188,212,0.1)', borderWidth: 1.5, pointRadius: 0, tension: 0.3 }
+    ]},
+    options: { ...baseOptions, scales: { ...baseOptions.scales, y: { ...baseOptions.scales.y, title: { display: true, text: '横滚 (°)', color: '#7a8ba3' } } } }
+  });
+
+  // 4. 偏航 + 电池
+  charts.yawbatt = new Chart(document.getElementById('chartYawBatt'), {
+    type: 'line',
+    data: { labels, datasets: [
+      { label: 'Yaw (°)', data: points.map(p => p.yaw), borderColor: '#10b981', borderWidth: 1.5, pointRadius: 0, tension: 0.3, yAxisID: 'y' },
+      { label: 'Batt (V)', data: points.map(p => p.batt), borderColor: '#f59e0b', borderWidth: 1.5, pointRadius: 0, tension: 0.3, yAxisID: 'y1' }
+    ]},
+    options: { ...baseOptions, scales: {
+      x: baseOptions.scales.x,
+      y: { position: 'left', title: { display: true, text: '偏航 (°)', color: '#7a8ba3' }, ticks: { color: '#7a8ba3', font: { size: 9 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
+      y1: { position: 'right', title: { display: true, text: '电池 (V)', color: '#7a8ba3' }, ticks: { color: '#7a8ba3', font: { size: 9 } }, grid: { drawOnChartArea: false } }
+    }}
+  });
+}
+</script>
+</body>
+</html>

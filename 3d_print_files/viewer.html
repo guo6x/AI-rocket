@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Ad Astra - 火箭 3D 零件预览 v11</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #0a0e17;
+            color: #e0e6ed;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            padding: 30px 0;
+            background: linear-gradient(135deg, rgba(0,212,255,0.1) 0%, rgba(255,107,53,0.1) 100%);
+            border-bottom: 1px solid rgba(0,212,255,0.2);
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 2.2rem;
+            background: linear-gradient(90deg, #00d4ff, #ff6b35);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            color: #7a8ba3;
+            font-size: 0.95rem;
+        }
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .model-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #e0e6ed;
+            padding: 12px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .model-btn .num {
+            background: rgba(0,212,255,0.2);
+            color: #00d4ff;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .model-btn:hover {
+            background: rgba(0,212,255,0.1);
+            border-color: rgba(0,212,255,0.4);
+            transform: translateY(-2px);
+        }
+        .model-btn.active {
+            background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(255,107,53,0.2));
+            border-color: #00d4ff;
+            box-shadow: 0 0 20px rgba(0,212,255,0.2);
+        }
+        .viewer-container {
+            position: relative;
+            background: linear-gradient(180deg, #0d1421 0%, #0a0e17 100%);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(0,212,255,0.2);
+            min-height: 500px;
+        }
+        #mainViewer {
+            width: 100%;
+            height: 500px;
+            display: block;
+        }
+        .controls-hint {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #7a8ba3;
+            backdrop-filter: blur(10px);
+        }
+        kbd {
+            background: rgba(255,255,255,0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin: 0 2px;
+        }
+        .viewer-info {
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .model-title {
+            font-size: 1.4rem;
+            color: #00d4ff;
+            margin-bottom: 12px;
+        }
+        .model-description {
+            color: #94a3b8;
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+        .stats-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            background: rgba(0,212,255,0.1);
+            padding: 12px 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .stat-item .label {
+            font-size: 0.8rem;
+            color: #7a8ba3;
+            margin-bottom: 4px;
+        }
+        .stat-item .value {
+            font-size: 1.1rem;
+            color: #00d4ff;
+            font-weight: 600;
+        }
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            color: #0a0e17;
+            padding: 14px 28px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,212,255,0.3);
+        }
+        .instructions {
+            background: rgba(255,107,53,0.08);
+            border: 1px solid rgba(255,107,53,0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .instructions h3 {
+            color: #ff6b35;
+            margin-bottom: 12px;
+        }
+        .instructions ul {
+            list-style: none;
+            padding: 0;
+        }
+        .instructions li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: #94a3b8;
+        }
+        .instructions li:last-child {
+            border-bottom: none;
+        }
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #4a5568;
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            margin-top: 40px;
+        }
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #7a8ba3;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(0,212,255,0.2);
+            border-top-color: #00d4ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Ad Astra 火箭项目 v11</h1>
+            <p class="subtitle">v11 同步版 · 严格对齐 rocket_config.py · 3 片尾翼 120° 分布 · Estes C6-5 发动机</p>
+            <div class="btn-group">
+                <button class="model-btn" data-file="00_full_rocket_assembly.stl" data-title="🚀 完整火箭 (v11)" data-desc="Ad Astra 探空火箭 v11 - 严格同步 aero_sim/rocket_config.py。所有几何参数源自项目唯一真相源。装配体: 整流罩(Von Karman 150mm) → 机身管(Ø75mm×600mm) → 航电舱 → 回收舱 → 尾翼×3(翼展80mm, 根弦100mm, 120°均布) → 发动机舱(C6-5) → 收敛-扩散喷管(出口Ø18mm)。总长770mm(不含喷管750+喷管20=770)，最大外径235mm，28,780面。" data-stats='{"总长":"770mm", "最大直径":"235mm", "面数":"28,780", "水密":"❌"}'><span class="num">🚀</span>🚀 完整火箭 (v11)</button>
+                <button class="model-btn" data-file="01_nose_cone.stl" data-title="🔴 整流罩 (Von Karman)" data-desc="Von Karman 曲线外形(最优跨声速阻力, σ=0.8)，底部外径 75mm(=机身外径)，长 150mm。底部内径 71mm(=机身内径)，壁厚 2mm。参数源自 rocket_config.py NOSE_LENGTH=150mm。" data-stats='{"类型":"Von Karman", "长度":"150mm", "底部外径":"75mm", "面数":"19,200", "水密":"✅"}'><span class="num">🔴</span>🔴 整流罩 (Von Karman)</button>
+                <button class="model-btn" data-file="02_body_tube.stl" data-title="🔵 机身管" data-desc="Ø75mm 外径空心管，壁厚 2mm，长 600mm。PLA 3D 打印。源自 rocket_config.py: BODY_OUTER_RADIUS=37.5mm, BODY_INNER_RADIUS=35.5mm, BODY_LENGTH=600mm。用于容纳航电舱(220-300mm)、回收舱(350-410mm)、发动机舱(650-750mm)。" data-stats='{"外径":"Ø75mm", "壁厚":"2mm", "长度":"600mm", "面数":"768", "水密":"✅"}'><span class="num">🔵</span>🔵 机身管</button>
+                <button class="model-btn" data-file="03_fins.stl" data-title="🟠 尾翼 ×3 (梯形)" data-desc="3 片梯形尾翼，120° 均布。根弦 100mm，梢弦 50mm，翼展 80mm(从管壁算起)，前缘后掠 30mm，翼厚 3mm。翼根前缘位于距头锥顶端 600mm 处(= 机身管末端)。源自 rocket_config.py FIN_COUNT=3, FIN_SPAN=80mm, FIN_ROOT_CHORD=100mm, FIN_TIP_CHORD=50mm, FIN_SWEEP_LENGTH=30mm。静稳定裕度 1.36 caliber。" data-stats='{"数量":"3片(120°)", "翼展":"80mm", "根弦":"100mm", "梢弦":"50mm", "前缘后掠":"30mm", "面数":"492"}'><span class="num">🟠</span>🟠 尾翼 ×3 (梯形)</button>
+                <button class="model-btn" data-file="04_avionics_bay.stl" data-title="🟢 航电舱" data-desc="Ø71mm 内径圆筒，长 80mm，位于机身管 220-300mm 处(距头锥 370-450mm)，用于安装 STM32+GY-91+ESP8266+电池。源自 rocket_config.py AVIONICS_CG_FROM_NOSE=400mm。" data-stats='{"直径":"Ø71mm", "长度":"80mm", "位置":"220-300mm", "面数":"768"}'><span class="num">🟢</span>🟢 航电舱</button>
+                <button class="model-btn" data-file="05_motor_nozzle.stl" data-title="🔥 发动机舱 + 喷管 (Estes C6-5)" data-desc="Estes C6-5 固体发动机舱(管尾 650-750mm，100mm 长，容纳 Ø18×70mm 发动机) + 收敛-扩散喷管(喉道 4mm, 出口 18mm, 长 20mm)。源自 rocket_config.py: MOTOR_TOTAL_IMPULSE=20.0N·s, MOTOR_AVG_THRUST=12.12N, MOTOR_BURN_TIME=1.65s。⚠️ 推重比警告: 当前总重 340g 需 F/G 级固体才能 15m/s 脱架(详见 aero-sim-report.md)。" data-stats='{"类型":"Estes C6-5", "总冲":"20.0N·s", "均推":"12.12N", "燃烧时间":"1.65s", "喉道":"Ø4mm", "出口":"Ø18mm", "面数":"5,376", "水密":"✅"}'>
+                    <span class="num">零件 05</span>🔥 发动机+喷管
+                </button>
+                <button class="model-btn" data-file="06_recovery_bay.stl" data-title="🪂 回收系统舱" data-desc="Ø71mm 内径圆筒，长 60mm，位于机身管 350-410mm 处(距头锥 500-560mm)。容纳主伞+弹射机构(质量 30g)。源自 rocket_config.py MASS_RECOVERY=0.030kg。" data-stats='{"直径":"Ø71mm", "长度":"60mm", "位置":"350-410mm", "面数":"768", "水密":"✅"}'>
+                    <span class="num">零件 06</span>🪂 回收舱
+                </button>
+                <button class="model-btn" data-file="07_bolts.stl" data-title="🔩 螺栓总成 (M3×16)" data-desc="M3×16 螺栓 16 颗(整流罩-机身连接 8 颗 + 机身-发动机舱连接 8 颗)。六角头，螺杆长 10mm。源自设计: WALL_T=4mm 法兰厚度 × 2 + 安全余量。" data-stats='{"规格":"M3×16", "数量":"16颗", "面数":"1,408"}'>
+                    <span class="num">零件 07</span>🔩 螺栓
+                </button>
+            </div>
+        </header>
+
+        <div class="viewer-container">
+            <canvas id="mainViewer"></canvas>
+            <div class="controls-hint">
+                🖱️ 鼠标操作：<kbd>左键拖拽</kbd> 旋转 · <kbd>滚轮</kbd> 缩放 · <kbd>右键拖拽</kbd> 平移
+            </div>
+        </div>
+
+        <div class="viewer-info">
+            <div class="model-title" id="modelTitle">🚀 完整火箭 (v10)</div>
+            <div class="model-description" id="modelDescription">
+                完整版火箭装配体 v10。所有零件水密，4 处螺栓法兰连接，无间隙。从右到左：Von Karman 整流罩(等径75mm) → 机身管(600mm) → 航电舱 → 尾翼×4 → TVC 锥形底座(75→90mm) → 万向节(90mm) → 收敛-扩散喷管。总长 1074mm，最大外径 126mm，78,964面。
+            </div>
+            <div class="stats-row" id="statsRow">
+                <div class="stat-item"><div class="label">总长</div><div class="value">770mm</div></div>
+                <div class="stat-item"><div class="label">最大直径</div><div class="value">235mm</div></div>
+                <div class="stat-item"><div class="label">面数</div><div class="value">28,780</div></div>
+                <div class="stat-item"><div class="label">水密</div><div class="value">❌</div></div>
+            </div>
+            <a href="00_full_rocket_assembly.stl" class="download-btn" id="downloadBtn" download>
+                📥 下载 STL 文件打印
+            </a>
+        </div>
+
+        <div class="instructions">
+            <h3>⚠️ 装配顺序说明</h3>
+            <ul>
+                <li><strong>步骤 1：</strong> 将航电舱嵌入机身管内部</li>
+                <li><strong>步骤 2：</strong> 将4片尾翼粘接到机身尾部外表面 (90° 均布)</li>
+                <li><strong>步骤 3：</strong> 将整流罩插入机身顶部，法兰对准后粘接固定</li>
+                <li><strong>步骤 4：</strong> 将TVC底座法兰对准机身尾端，用螺栓固定</li>
+                <li><strong>步骤 5：</strong> 将万向节枢轴插入TVC底座的轴承座</li>
+                <li><strong>步骤 6：</strong> 将TVC喷管入口对准万向节内环</li>
+                <li><strong>步骤 7：</strong> 安装SG92R舵机到TVC底座的舵机安装孔</li>
+                <li><strong>步骤 8：</strong> 舵机摇臂连接万向节驱动臂</li>
+                <li><strong>步骤 9：</strong> 连接舵机线缆到航电舱飞控</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        🚀 Ad Astra 火箭项目 · 3D 零件预览<br/>
+        <small>点击上方按钮切换不同零件 · 鼠标拖拽旋转查看</small>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
+
+    <script>
+        let scene, camera, renderer, controls, currentMesh, gridHelper;
+        let currentFile = '00_full_rocket_assembly.stl';
+        let currentTitle = '🚀 完整火箭 (v11)';
+        let isThreeLoaded = false;
+
+        function init() {
+            const container = document.getElementById('mainViewer');
+            const canvas = document.getElementById('mainViewer');
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0a0e17);
+
+            camera = new THREE.PerspectiveCamera(
+                45,
+                container.clientWidth / container.clientHeight,
+                0.1,
+                3000
+            );
+            camera.position.set(300, 200, 500);
+
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.9);
+            directionalLight.position.set(200, 300, 200);
+            scene.add(directionalLight);
+
+            const backLight = new THREE.DirectionalLight(0x00d4ff, 0.3);
+            backLight.position.set(-200, -100, -200);
+            scene.add(backLight);
+
+            gridHelper = new THREE.GridHelper(600, 30, 0x00d4ff, 0x1a2332);
+            scene.add(gridHelper);
+
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.minDistance = 50;
+            controls.maxDistance = 2000;
+
+            window.addEventListener('resize', onWindowResize);
+
+            loadModel(currentFile);
+            animate();
+
+            isThreeLoaded = true;
+        }
+
+        function loadModel(filename) {
+            if (currentMesh) {
+                scene.remove(currentMesh);
+                currentMesh = null;
+            }
+
+            // 隐藏旧的错误提示
+            const oldError = document.getElementById('loadError');
+            if (oldError) oldError.remove();
+
+            const loader = new THREE.STLLoader();
+            loader.load(
+                filename,
+                function (geometry) {
+                    const material = new THREE.MeshPhongMaterial({
+                        color: 0x00d4ff,
+                        specular: 0x111111,
+                        shininess: 100
+                    });
+
+                    currentMesh = new THREE.Mesh(geometry, material);
+
+                    geometry.computeBoundingBox();
+                    const box = geometry.boundingBox;
+                    const center = new THREE.Vector3();
+                    box.getCenter(center);
+                    currentMesh.position.sub(center);
+
+                    const size = new THREE.Vector3();
+                    box.getSize(size);
+                    const maxDim = Math.max(size.x, size.y, size.z);
+                    const scale = 400 / maxDim;
+                    currentMesh.scale.setScalar(scale);
+
+                    scene.add(currentMesh);
+
+                    camera.position.set(300, 200, 500);
+                    controls.target.set(0, 0, 0);
+                    controls.update();
+
+                    document.getElementById('modelTitle').textContent = currentTitle;
+                },
+                undefined,
+                function (error) {
+                    console.error('模型加载失败:', filename, error);
+                    showLoadError(filename, error);
+                }
+            );
+        }
+
+        function showLoadError(filename, error) {
+            // 在 3D 画布上方显示错误提示
+            const container = document.querySelector('.viewer-container');
+            const errDiv = document.createElement('div');
+            errDiv.id = 'loadError';
+            errDiv.style.cssText = `
+                position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+                background: rgba(255, 50, 50, 0.9); color: #fff; padding: 15px 25px;
+                border-radius: 8px; z-index: 100; max-width: 80%;
+                text-align: center; font-size: 14px;
+            `;
+            errDiv.innerHTML = `
+                <strong>❌ 模型加载失败</strong><br/>
+                文件: <code>${filename}</code><br/>
+                <small>请检查文件是否存在, 或运行 <code>py -3 generate_rocket_v10.py</code> 重新生成</small>
+            `;
+            container.appendChild(errDiv);
+
+            // 移除 active 状态，让用户看到加载失败
+            document.querySelectorAll('.model-btn').forEach(b => {
+                if (b.dataset.file === filename) b.classList.remove('active');
+            });
+        }
+
+        // 启动时检查所有按钮的文件是否存在 (用 image probe 而非 fetch，避免 CORS)
+        async function checkAllModels() {
+            const buttons = document.querySelectorAll('.model-btn');
+            for (const btn of buttons) {
+                const file = btn.dataset.file;
+                if (!file.endsWith('.stl')) continue;
+                // 用 fetch GET 而非 HEAD，避免某些服务器拒绝 HEAD
+                // STL 二进制可能被浏览器拒绝解析，但我们只关心网络是否成功
+                try {
+                    const resp = await fetch(file, { method: 'GET', cache: 'no-store' });
+                    if (resp.ok) {
+                        // 成功 - 什么都不做
+                    } else {
+                        btn.style.opacity = '0.5';
+                        btn.title = `❌ ${file} 返回 ${resp.status}`;
+                    }
+                } catch (e) {
+                    btn.style.opacity = '0.5';
+                    btn.title = `❌ ${file} 加载失败: ${e.message}`;
+                }
+            }
+        }
+
+        function onWindowResize() {
+            const container = document.getElementById('mainViewer');
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        document.querySelectorAll('.model-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                const file = this.dataset.file;
+                const title = this.dataset.title;
+                const desc = this.dataset.desc;
+                const stats = JSON.parse(this.dataset.stats || '{}');
+
+                currentFile = file;
+                currentTitle = title;
+
+                loadModel(file);
+
+                document.getElementById('modelTitle').textContent = title;
+                document.getElementById('modelDescription').textContent = desc;
+                document.getElementById('downloadBtn').href = file;
+
+                const statsRow = document.getElementById('statsRow');
+                statsRow.innerHTML = '';
+                for (const [label, value] of Object.entries(stats)) {
+                    statsRow.innerHTML += `
+                        <div class="stat-item">
+                            <div class="label">${label}</div>
+                            <div class="value">${value}</div>
+                        </div>
+                    `;
+                }
+            });
+        });
+
+        init();
+        checkAllModels();
+    </script>
+</body>
+</html>

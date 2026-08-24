@@ -1,0 +1,31 @@
+# Local Python environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# PlatformIO and editor-local state
+.pio/
+.vscode/
+.idea/
+.trae/
+.agent_internal/
+
+# Local credentials
+esp8266_firmware/src/wifi_config.h
+.env
+.env.*
+!.env.example
+
+# Runtime telemetry and logs
+ground_station/logs/
+*.log
+
+# OS-generated files
+Thumbs.db
+Desktop.ini
+.DS_Store
+

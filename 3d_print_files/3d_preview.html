@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Ad Astra - 3D 模型预览</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #0a0e17, #1a1a2e);
+            color: #fff;
+            min-height: 100vh;
+        }
+        header {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid rgba(0,212,255,0.2);
+        }
+        header h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+        header p { color: #888; }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .warning-box {
+            background: linear-gradient(135deg, rgba(255,107,53,0.15), rgba(168,85,247,0.15));
+            border: 2px solid #ff6b35;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { border-color: #ff6b35; }
+            50% { border-color: #00d4ff; }
+        }
+        .warning-box h3 {
+            color: #ff6b35;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+        .warning-box .code {
+            background: #0a0a15;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 0.5rem 0;
+            border-left: 3px solid #00d4ff;
+            display: inline-block;
+        }
+        .warning-box ol {
+            padding-left: 1.5rem;
+            line-height: 1.8;
+            color: #ccc;
+        }
+        .warning-box strong { color: #fff; }
+        .model-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .model-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .model-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0,212,255,0.2);
+        }
+        .model-card h3 {
+            padding: 1rem;
+            background: rgba(0,212,255,0.1);
+            font-size: 1rem;
+            color: #00d4ff;
+        }
+        .model-card .canvas-container {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            background: #0a0a15;
+        }
+        .model-card canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .model-card .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #00d4ff;
+            font-size: 0.9rem;
+        }
+        .model-card .loading-spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #00d4ff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .model-card .error {
+            color: #ff6b35;
+            font-size: 0.85rem;
+            padding: 1rem;
+            text-align: center;
+        }
+        .model-card .info {
+            padding: 1rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            line-height: 1.6;
+        }
+        .model-card .download {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #00d4ff, #a855f7);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-top: 0.5rem;
+            transition: transform 0.2s;
+        }
+        .model-card .download:hover {
+            transform: scale(1.05);
+        }
+        .instructions {
+            background: rgba(0,212,255,0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border: 1px solid rgba(0,212,255,0.2);
+        }
+        .instructions h3 { color: #00d4ff; margin-bottom: 1rem; }
+        .instructions ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        .instructions li {
+            padding: 0.75rem;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+        .instructions strong { color: #00d4ff; }
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .status-info {
+            background: rgba(0,255,136,0.1);
+            border: 1px solid rgba(0,255,136,0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #00ff88;
+        }
+    </style>
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>🚀 Ad Astra 3D 模型预览</h1>
+        <p>拖拽旋转 · 滚轮缩放 · 右键平移</p>
+    </header>
+
+    <div class="container">
+        <div class="warning-box" id="warningBox">
+            <h3>⚠️ 如果看不到模型，请按以下步骤操作</h3>
+            <ol>
+                <li><strong>方式一 (推荐)</strong>：双击运行 <span class="code">启动预览服务器.bat</span>，浏览器会自动打开</li>
+                <li><strong>方式二</strong>：双击运行 <span class="code">start_server.py</span></li>
+                <li><strong>方式三</strong>：在当前目录打开命令行，运行 <span class="code">python -m http.server 8000</span></li>
+            </ol>
+            <p style="margin-top: 1rem; color: #ccc; font-size: 0.9rem;">
+                💡 <strong>原因</strong>：浏览器安全限制，直接双击 HTML 文件无法加载本地 STL 文件，必须通过 HTTP 服务器访问。
+            </p>
+        </div>
+
+        <div class="status-info" id="statusInfo">
+            🔍 正在加载模型...
+        </div>
+
+        <div class="instructions">
+            <h3>💡 3D 打印指南</h3>
+            <ul>
+                <li>📐 <strong>切片软件:</strong> Cura / PrusaSlicer</li>
+                <li>📏 <strong>层高:</strong> 0.2mm (标准)</li>
+                <li>🧊 <strong>填充:</strong> 20%</li>
+                <li>🌡️ <strong>材料:</strong> PLA 或 PETG</li>
+                <li>🖨️ <strong>喷嘴:</strong> 0.4mm 标准</li>
+                <li>⚡ <strong>速度:</strong> 50mm/s</li>
+            </ul>
+        </div>
+
+        <div class="model-grid">
+            <div class="model-card">
+                <h3>🔴 整流罩</h3>
+                <div class="canvas-container">
+                    <div class="loading"><div class="loading-spinner"></div>加载中...</div>
+                    <canvas data-file="nose_cone.stl"></canvas>
+                </div>
+                <div class="info">
+                    冯·卡门曲线 | 150mm 长 | 75mm 直径<br>
+                    <a href="nose_cone.stl" class="download" download>📥 下载 STL</a>
+                </div>
+            </div>
+
+            <div class="model-card">
+                <h3>🔵 机身管</h3>
+                <div class="canvas-container">
+                    <div class="loading"><div class="loading-spinner"></div>加载中...</div>
+                    <canvas data-file="body_tube.stl"></canvas>
+                </div>
+                <div class="info">
+                    600mm 长 | 75mm 直径 | 壁厚 2mm<br>
+                    <a href="body_tube.stl" class="download" download>📥 下载 STL</a>
+                </div>
+            </div>
+
+            <div class="model-card">
+                <h3>🟠 尾翼 ×3</h3>
+                <div class="canvas-container">
+                    <div class="loading"><div class="loading-spinner"></div>加载中...</div>
+                    <canvas data-file="fins_x3.stl"></canvas>
+                </div>
+                <div class="info">
+                    梯形翼 | 80mm 翼展 | 120° 均布<br>
+                    <a href="fins_x3.stl" class="download" download>📥 下载 STL</a>
+                </div>
+            </div>
+
+            <div class="model-card">
+                <h3>🟢 航电舱</h3>
+                <div class="canvas-container">
+                    <div class="loading"><div class="loading-spinner"></div>加载中...</div>
+                    <canvas data-file="avionics_sleeve.stl"></canvas>
+                </div>
+                <div class="info">
+                    100mm 高 | 内径 52mm | STM32 兼容<br>
+                    <a href="avionics_sleeve.stl" class="download" download>📥 下载 STL</a>
+                </div>
+            </div>
+
+            <div class="model-card">
+                <h3>🟣 TVC 底座</h3>
+                <div class="canvas-container">
+                    <div class="loading"><div class="loading-spinner"></div>加载中...</div>
+                    <canvas data-file="tvc_base.stl"></canvas>
+                </div>
+                <div class="info">
+                    EDF 涵道安装 | 30mm 高 | 直径 84mm<br>
+                    <a href="tvc_base.stl" class="download" download>📥 下载 STL</a>
+                </div>
+            </div>
+
+            <div class="model-card">
+                <h3>🟡 TVC 万向环</h3>
+                <div class="canvas-container">
+                    <div class="loading"><div class="loading-spinner"></div>加载中...</div>
+                    <canvas data-file="tvc_gimbal_ring.stl"></canvas>
+                </div>
+                <div class="info">
+                    ±15° 活动范围 | 12mm 高度<br>
+                    <a href="tvc_gimbal_ring.stl" class="download" download>📥 下载 STL</a>
+                </div>
+            </div>
+
+            <div class="model-card">
+                <h3>🔵 TVC 喷管</h3>
+                <div class="canvas-container">
+                    <div class="loading"><div class="loading-spinner"></div>加载中...</div>
+                    <canvas data-file="tvc_nozzle.stl"></canvas>
+                </div>
+                <div class="info">
+                    锥形喷管 | 40mm 长 | SG92R 驱动<br>
+                    <a href="tvc_nozzle.stl" class="download" download>📥 下载 STL</a>
+                </div>
+            </div>
+
+            <div class="model-card">
+                <h3>🚀 完整装配体</h3>
+                <div class="canvas-container">
+                    <div class="loading"><div class="loading-spinner"></div>加载中...</div>
+                    <canvas data-file="full_rocket_assembly.stl"></canvas>
+                </div>
+                <div class="info">
+                    全部组件预览（参考用）<br>
+                    <a href="full_rocket_assembly.stl" class="download" download>📥 下载 STL</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>🚀 Ad Astra 火箭项目 | ✨ 点击模型可以拖拽旋转，滚轮缩放</p>
+    </footer>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { STLLoader } from 'three/addons/loaders/STLLoader.js';
+
+        // 检测是否通过 HTTP 访问
+        const protocol = window.location.protocol;
+        const isHttp = protocol === 'http:' || protocol === 'https:';
+
+        if (isHttp) {
+            document.getElementById('statusInfo').innerHTML = '✅ 通过 HTTP 服务器访问，模型加载正常！';
+            document.getElementById('warningBox').style.display = 'none';
+        } else {
+            document.getElementById('statusInfo').innerHTML = '⚠️ 警告：当前以 file:// 方式打开，无法加载本地 STL 文件';
+        }
+
+        const material = new THREE.MeshPhongMaterial({
+            color: 0x00d4ff,
+            specular: 0x111111,
+            shininess: 50,
+            side: THREE.DoubleSide
+        });
+
+        const loader = new STLLoader();
+        const canvases = document.querySelectorAll('canvas[data-file]');
+        let loadedCount = 0;
+        let totalCount = canvases.length;
+        let successCount = 0;
+        let errorCount = 0;
+
+        function updateStatus() {
+            const statusInfo = document.getElementById('statusInfo');
+            if (errorCount > 0) {
+                statusInfo.innerHTML = `❌ 加载失败: ${errorCount}/${totalCount} - 请启动 HTTP 服务器查看`;
+                statusInfo.style.color = '#ff6b35';
+                statusInfo.style.borderColor = '#ff6b35';
+                statusInfo.style.background = 'rgba(255,107,53,0.1)';
+            } else if (successCount === totalCount) {
+                statusInfo.innerHTML = `✅ 所有模型加载成功！(${successCount}/${totalCount})`;
+                statusInfo.style.color = '#00ff88';
+            } else {
+                statusInfo.innerHTML = `🔍 加载中... (${successCount}/${totalCount})`;
+            }
+        }
+
+        canvases.forEach((canvas) => {
+            const container = canvas.parentElement;
+            const file = canvas.dataset.file;
+
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0a0a15);
+
+            const camera = new THREE.PerspectiveCamera(
+                45,
+                container.clientWidth / container.clientHeight,
+                0.1,
+                1000
+            );
+            camera.position.set(2, 1.5, 2);
+
+            const renderer = new THREE.WebGLRenderer({
+                canvas: canvas,
+                antialias: true,
+                alpha: true
+            });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+
+            const controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+
+            scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            dirLight.position.set(5, 5, 5);
+            scene.add(dirLight);
+
+            const gridHelper = new THREE.GridHelper(5, 10, 0x222222, 0x111111);
+            scene.add(gridHelper);
+
+            // 隐藏加载动画，开始加载
+            loader.load(
+                file,
+                (geometry) => {
+                    geometry.computeVertexNormals();
+                    const mesh = new THREE.Mesh(geometry, material);
+
+                    // 自动缩放适应视角
+                    const box = new THREE.Box3().setFromObject(mesh);
+                    const size = box.getSize(new THREE.Vector3());
+                    const maxDim = Math.max(size.x, size.y, size.z);
+                    if (maxDim > 0) {
+                        mesh.scale.setScalar(1.5 / maxDim);
+                    }
+
+                    // 居中
+                    const center = box.getCenter(new THREE.Vector3());
+                    mesh.position.sub(center);
+
+                    // 移除 loading 并添加模型
+                    const loadingEl = container.querySelector('.loading');
+                    if (loadingEl) loadingEl.remove();
+                    scene.add(mesh);
+
+                    successCount++;
+                    updateStatus();
+                },
+                (xhr) => {
+                    // 进度回调
+                },
+                (error) => {
+                    console.error('加载失败:', file, error);
+                    const loadingEl = container.querySelector('.loading');
+                    if (loadingEl) {
+                        loadingEl.innerHTML = `<div class="error">❌ 无法加载 ${file}<br><small>请启动 HTTP 服务器</small></div>`;
+                    }
+                    errorCount++;
+                    updateStatus();
+                }
+            );
+
+            function animate() {
+                requestAnimationFrame(animate);
+                controls.update();
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            // 处理窗口大小变化
+            window.addEventListener('resize', () => {
+                const width = container.clientWidth;
+                const height = container.clientHeight;
+                camera.aspect = width / height;
+                camera.updateProjectionMatrix();
+                renderer.setSize(width, height);
+            });
+
+            // 阻止滚轮事件冒泡（避免页面滚动）
+            canvas.addEventListener('wheel', (e) => {
+                e.preventDefault();
+            }, { passive: false });
+        });
+
+        updateStatus();
+    </script>
+</body>
+</html>

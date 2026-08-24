@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Ad Astra - 火箭工程完整指南</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0e17;
+            --bg-card: #111827;
+            --bg-card-hover: #1f2937;
+            --accent-cyan: #00d4ff;
+            --accent-orange: #ff6b35;
+            --accent-green: #00ff88;
+            --accent-purple: #a855f7;
+            --accent-red: #ef4444;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-glow: rgba(0, 212, 255, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* 星空背景动画 */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* 导航栏 */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 14, 23, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-glow);
+            z-index: 1000;
+            padding: 1rem 2rem;
+        }
+
+        nav .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-cyan);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-cyan);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* 主容器 */
+        main {
+            position: relative;
+            z-index: 1;
+            padding-top: 80px;
+        }
+
+        /* 英雄区 */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            background: radial-gradient(ellipse at center, rgba(0, 212, 255, 0.1) 0%, transparent 70%);
+        }
+
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.5)); }
+            50% { filter: drop-shadow(0 0 40px rgba(0, 212, 255, 0.8)); }
+        }
+
+        .hero .subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .hero .tagline {
+            font-size: 1.2rem;
+            color: var(--accent-orange);
+            margin-bottom: 3rem;
+        }
+
+        /* 火箭动画 */
+        .rocket-container {
+            position: relative;
+            width: 200px;
+            height: 300px;
+            margin: 2rem 0;
+        }
+
+        .rocket {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-20px); }
+        }
+
+        .rocket svg {
+            width: 80px;
+            height: 160px;
+            filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.5));
+        }
+
+        .flame {
+            position: absolute;
+            bottom: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: flicker 0.1s infinite;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; transform: translateX(-50%) scaleY(1); }
+            50% { opacity: 0.8; transform: translateX(-50%) scaleY(0.9); }
+        }
+
+        /* 进度时间线 */
+        .timeline {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .timeline-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            padding: 1.5rem;
+            min-width: 150px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .timeline-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.2);
+        }
+
+        .timeline-item.active {
+            border-color: var(--accent-green);
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .timeline-item.completed {
+            border-color: var(--accent-cyan);
+        }
+
+        .timeline-item .phase {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            color: var(--accent-cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-item .name {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        .timeline-item .status {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .status.done {
+            background: var(--accent-green);
+            color: var(--bg-dark);
+        }
+
+        .status.active {
+            background: var(--accent-orange);
+            color: var(--bg-dark);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* 章节样式 */
+        section {
+            padding: 4rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        section h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: var(--accent-cyan);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        section h2 .icon {
+            font-size: 2rem;
+        }
+
+        /* 卡片网格 */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--border-glow);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .card .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* 硬件卡片特殊样式 */
+        .hardware-card {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+        }
+
+        .hardware-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            flex-shrink: 0;
+        }
+
+        .hardware-info h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent-cyan);
+        }
+
+        .hardware-info .specs {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .hardware-info .specs span {
+            display: block;
+            margin-top: 0.25rem;
+        }
+
+        .pin-badge {
+            display: inline-block;
+            background: var(--accent-orange);
+            color: var(--bg-dark);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-family: monospace;
+            margin-top: 0.5rem;
+        }
+
+        /* 架构图 SVG */
+        .architecture-diagram {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .architecture-diagram svg {
+            width: 100%;
+            max-width: 1200px;
+            height: auto;
+        }
+
+        /* 代码块样式 */
+        .code-block {
+            background: #0d1117;
+            border-radius: 12px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.8;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .code-block .keyword {
+            color: var(--accent-purple);
+        }
+
+        .code-block .function {
+            color: var(--accent-cyan);
+        }
+
+        .code-block .string {
+            color: var(--accent-green);
+        }
+
+        .code-block .comment {
+            color: #6b7280;
+        }
+
+        .code-block .number {
+            color: var(--accent-orange);
+        }
+
+        /* 协议表格 */
+        .protocol-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-card);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .protocol-table th,
+        .protocol-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .protocol-table th {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--accent-cyan);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .protocol-table tr:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .cmd-badge {
+            background: var(--accent-purple);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.85rem;
+        }
+
+        /* PID 可视化 */
+        .pid-visual {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: var(--bg-card);
+            border-radius: 16px;
+            margin: 2rem 0;
+        }
+
+        .pid-gain {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 12px;
+            min-width: 120px;
+        }
+
+        .pid-gain .symbol {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            color: var(--accent-cyan);
+        }
+
+        .pid-gain .value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-top: 0.5rem;
+        }
+
+        .pid-gain .label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .pid-formula {
+            background: #0d1117;
+            padding: 1.5rem;
+            border-radius: 12px;
+            font-family: monospace;
+            font-size: 1.1rem;
+            color: var(--accent-green);
+        }
+
+        /* 3D 火箭组件 */
+        .rocket-components {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .component-card {
+            background: linear-gradient(145deg, var(--bg-card), rgba(0, 212, 255, 0.05));
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .component-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+        }
+
+        .component-visual {
+            width: 120px;
+            height: 150px;
+            margin: 0 auto 1.5rem;
+            position: relative;
+        }
+
+        .component-card h4 {
+            font-size: 1.3rem;
+            color: var(--accent-cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        .component-card .spec {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .component-card .detail {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+
+        /* 状态机流程 */
+        .fsm-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            padding: 2rem;
+            background: var(--bg-card);
+            border-radius: 16px;
+            margin: 2rem 0;
+        }
+
+        .fsm-state {
+            padding: 1rem 1.5rem;
+            background: rgba(0, 212, 255, 0.1);
+            border: 2px solid var(--accent-cyan);
+            border-radius: 8px;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .fsm-state.active {
+            background: rgba(255, 107, 53, 0.2);
+            border-color: var(--accent-orange);
+        }
+
+        .fsm-state.deployed {
+            background: rgba(0, 255, 136, 0.2);
+            border-color: var(--accent-green);
+        }
+
+        .fsm-arrow {
+            font-size: 1.5rem;
+            color: var(--accent-cyan);
+        }
+
+        /* 警告框 */
+        .warning-box {
+            background: rgba(255, 107, 53, 0.1);
+            border: 1px solid var(--accent-orange);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .warning-box h4 {
+            color: var(--accent-orange);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* 成功框 */
+        .success-box {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--accent-green);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .success-box h4 {
+            color: var(--accent-green);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* 清单 */
+        .checklist {
+            list-style: none;
+        }
+
+        .checklist li {
+            padding: 0.75rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .checklist li:last-child {
+            border-bottom: none;
+        }
+
+        .checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--accent-cyan);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .checkbox:hover {
+            background: rgba(0, 212, 255, 0.2);
+        }
+
+        .checkbox.checked {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+        }
+
+        .checkbox.checked::after {
+            content: '✓';
+            color: var(--bg-dark);
+            font-weight: bold;
+        }
+
+        /* 页脚 */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-glow);
+            margin-top: 4rem;
+        }
+
+        footer p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        footer .heart {
+            color: var(--accent-red);
+            animation: heartbeat 1s infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .timeline {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pid-visual {
+                flex-direction: column;
+            }
+        }
+
+        /* 滚动动画 */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 标签 */
+        .tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin: 0.25rem;
+        }
+
+        .tag.cyan {
+            background: rgba(0, 212, 255, 0.2);
+            color: var(--accent-cyan);
+        }
+
+        .tag.orange {
+            background: rgba(255, 107, 53, 0.2);
+            color: var(--accent-orange);
+        }
+
+        .tag.green {
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--accent-green);
+        }
+
+        .tag.purple {
+            background: rgba(168, 85, 247, 0.2);
+            color: var(--accent-purple);
+        }
+
+        /* 步骤指引 */
+        .steps {
+            counter-reset: step;
+        }
+
+        .step {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-content h4 {
+            color: var(--accent-cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        .step-content p {
+            color: var(--text-secondary);
+        }
+
+        /* 统计数据 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-card .number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            color: var(--accent-cyan);
+        }
+
+        .stat-card .label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 星空背景 -->
+    <div class="stars" id="stars"></div>
+
+    <!-- 导航栏 -->
+    <nav>
+        <div class="nav-content">
+            <a href="#" class="logo">🚀 AD ASTRA</a>
+            <ul class="nav-links">
+                <li><a href="#overview">项目概览</a></li>
+                <li><a href="#architecture">系统架构</a></li>
+                <li><a href="#hardware">硬件平台</a></li>
+                <li><a href="#software">软件模块</a></li>
+                <li><a href="#protocol">通信协议</a></li>
+                <li><a href="#guide">开发指南</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <!-- 英雄区 -->
+        <section class="hero" id="overview">
+            <h1>🚀 AD ASTRA</h1>
+            <p class="subtitle">个人级微小型运载火箭原型研发</p>
+            <p class="tagline">"飞向群星，让每个人都能探索太空"</p>
+
+            <div class="rocket-container">
+                <div class="rocket">
+                    <svg viewBox="0 0 80 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- 火箭主体 -->
+                        <path d="M40 0 C55 30 55 60 55 100 L55 140 L25 140 L25 100 C25 60 25 30 40 0" fill="url(#rocketGrad)" stroke="#00d4ff" stroke-width="2"/>
+                        <!-- 窗户 -->
+                        <circle cx="40" cy="70" r="10" fill="#0a0e17" stroke="#00d4ff" stroke-width="2"/>
+                        <circle cx="40" cy="70" r="6" fill="#00d4ff" opacity="0.3"/>
+                        <!-- 尾翼 -->
+                        <path d="M25 120 L10 150 L25 140 Z" fill="#ff6b35" stroke="#ff6b35" stroke-width="1"/>
+                        <path d="M55 120 L70 150 L55 140 Z" fill="#ff6b35" stroke="#ff6b35" stroke-width="1"/>
+                        <!-- 喷管 -->
+                        <path d="M30 140 L25 155 L55 155 L50 140" fill="#333" stroke="#666" stroke-width="1"/>
+                        <!-- 火焰 -->
+                        <path d="M30 155 Q40 180 50 155" fill="url(#flameGrad)" class="flame-path"/>
+                        <defs>
+                            <linearGradient id="rocketGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#1a1a2e"/>
+                                <stop offset="100%" style="stop-color:#0a0e17"/>
+                            </linearGradient>
+                            <linearGradient id="flameGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#ff6b35"/>
+                                <stop offset="50%" style="stop-color:#ffcc00"/>
+                                <stop offset="100%" style="stop-color:#ff0000;stop-opacity:0"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <div class="flame">
+                    <svg width="60" height="80" viewBox="0 0 60 80">
+                        <ellipse cx="30" cy="20" rx="15" ry="20" fill="url(#flameGrad2)"/>
+                        <ellipse cx="30" cy="40" rx="10" ry="25" fill="url(#flameGrad3)"/>
+                        <defs>
+                            <linearGradient id="flameGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#ffcc00"/>
+                                <stop offset="100%" style="stop-color:#ff6b35"/>
+                            </linearGradient>
+                            <linearGradient id="flameGrad3" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#ff6b35"/>
+                                <stop offset="100%" style="stop-color:#ff0000;stop-opacity:0"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="number">7</div>
+                    <div class="label">开发阶段</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">20</div>
+                    <div class="label">Hz 控制频率</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">1.36</div>
+                    <div class="label">稳定裕度</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">50</div>
+                    <div class="label">ms 控制延迟</div>
+                </div>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item completed">
+                    <div class="phase">01</div>
+                    <div class="name">残酷评估</div>
+                    <span class="status done">已完成</span>
+                </div>
+                <div class="timeline-item completed">
+                    <div class="phase">02</div>
+                    <div class="name">软硬件选型</div>
+                    <span class="status done">已完成</span>
+                </div>
+                <div class="timeline-item completed">
+                    <div class="phase">03</div>
+                    <div class="name">基础仿真</div>
+                    <span class="status done">已完成</span>
+                </div>
+                <div class="timeline-item completed">
+                    <div class="phase">04</div>
+                    <div class="name">飞控固件</div>
+                    <span class="status done">已完成</span>
+                </div>
+                <div class="timeline-item completed">
+                    <div class="phase">05</div>
+                    <div class="name">地面站</div>
+                    <span class="status done">已完成</span>
+                </div>
+                <div class="timeline-item completed">
+                    <div class="phase">06</div>
+                    <div class="name">PID优化</div>
+                    <span class="status done">已完成</span>
+                </div>
+                <div class="timeline-item active">
+                    <div class="phase">07</div>
+                    <div class="name">物理验证</div>
+                    <span class="status active">进行中</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 系统架构 -->
+        <section id="architecture">
+            <h2><span class="icon">🏗️</span> 系统架构</h2>
+
+            <div class="architecture-diagram">
+                <svg viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 地面站 -->
+                    <rect x="50" y="200" width="250" height="200" rx="10" fill="#1a1a2e" stroke="#00d4ff" stroke-width="2"/>
+                    <text x="175" y="230" text-anchor="middle" fill="#00d4ff" font-family="Orbitron" font-size="16">地面站 (PC)</text>
+                    
+                    <!-- 地面站组件 -->
+                    <rect x="70" y="250" width="60" height="40" rx="5" fill="#111827" stroke="#00d4ff" stroke-width="1"/>
+                    <text x="100" y="275" text-anchor="middle" fill="#fff" font-size="10">UI面板</text>
+                    
+                    <rect x="140" y="250" width="60" height="40" rx="5" fill="#111827" stroke="#00d4ff" stroke-width="1"/>
+                    <text x="170" y="275" text-anchor="middle" fill="#fff" font-size="10">数据记录</text>
+                    
+                    <rect x="210" y="250" width="70" height="40" rx="5" fill="#111827" stroke="#00d4ff" stroke-width="1"/>
+                    <text x="245" y="275" text-anchor="middle" fill="#fff" font-size="10">3D可视化</text>
+                    
+                    <rect x="70" y="310" width="210" height="70" rx="5" fill="#111827" stroke="#ff6b35" stroke-width="1"/>
+                    <text x="175" y="335" text-anchor="middle" fill="#ff6b35" font-size="12">通信层 (串口/UDP)</text>
+                    <text x="175" y="360" text-anchor="middle" fill="#94a3b8" font-size="10">115200 baud</text>
+
+                    <!-- 连接线 -->
+                    <line x1="300" y1="345" x2="380" y2="345" stroke="#00d4ff" stroke-width="2" stroke-dasharray="5,5">
+                        <animate attributeName="stroke-dashoffset" from="0" to="10" dur="1s" repeatCount="indefinite"/>
+                    </line>
+                    <polygon points="375,340 385,345 375,350" fill="#00d4ff"/>
+
+                    <!-- 飞控 -->
+                    <rect x="400" y="150" width="400" height="300" rx="10" fill="#1a1a2e" stroke="#00d4ff" stroke-width="2"/>
+                    <text x="600" y="180" text-anchor="middle" fill="#00d4ff" font-family="Orbitron" font-size="18">STM32F103C8T6 飞行计算机</text>
+
+                    <!-- 传感器 -->
+                    <rect x="420" y="200" width="160" height="60" rx="5" fill="#111827" stroke="#a855f7" stroke-width="1"/>
+                    <text x="500" y="220" text-anchor="middle" fill="#a855f7" font-size="11">GY-91</text>
+                    <text x="500" y="240" text-anchor="middle" fill="#94a3b8" font-size="9">MPU6500 + BMP280</text>
+                    <text x="500" y="252" text-anchor="middle" fill="#ff6b35" font-size="9">I2C PB6/PB7</text>
+
+                    <!-- 控制算法 -->
+                    <rect x="420" y="280" width="160" height="80" rx="5" fill="#111827" stroke="#00ff88" stroke-width="1"/>
+                    <text x="500" y="305" text-anchor="middle" fill="#00ff88" font-size="11">控制算法</text>
+                    <text x="500" y="325" text-anchor="middle" fill="#94a3b8" font-size="9">卡尔曼滤波</text>
+                    <text x="500" y="340" text-anchor="middle" fill="#94a3b8" font-size="9">PID控制器</text>
+                    <text x="500" y="355" text-anchor="middle" fill="#94a3b8" font-size="9">20Hz更新率</text>
+
+                    <!-- 飞行状态机 -->
+                    <rect x="420" y="380" width="160" height="50" rx="5" fill="#111827" stroke="#ff6b35" stroke-width="1"/>
+                    <text x="500" y="405" text-anchor="middle" fill="#ff6b35" font-size="11">飞行状态机 FSM</text>
+                    <text x="500" y="420" text-anchor="middle" fill="#94a3b8" font-size="9">6个状态</text>
+
+                    <!-- 舵机 -->
+                    <rect x="620" y="200" width="160" height="60" rx="5" fill="#111827" stroke="#ef4444" stroke-width="1"/>
+                    <text x="700" y="220" text-anchor="middle" fill="#ef4444" font-size="11">TVC 舵机</text>
+                    <text x="700" y="240" text-anchor="middle" fill="#94a3b8" font-size="9">Pitch: PA6 | Roll: PA7</text>
+
+                    <rect x="620" y="280" width="160" height="50" rx="5" fill="#111827" stroke="#ef4444" stroke-width="1"/>
+                    <text x="700" y="305" text-anchor="middle" fill="#ef4444" font-size="11">回收舵机</text>
+                    <text x="700" y="320" text-anchor="middle" fill="#94a3b8" font-size="9">PB0</text>
+
+                    <!-- ESP8266 -->
+                    <rect x="620" y="350" width="160" height="50" rx="5" fill="#111827" stroke="#00d4ff" stroke-width="1"/>
+                    <text x="700" y="375" text-anchor="middle" fill="#00d4ff" font-size="11">ESP8266-01S</text>
+                    <text x="700" y="390" text-anchor="middle" fill="#94a3b8" font-size="9">WiFi UDP透传</text>
+
+                    <!-- 内部连接 -->
+                    <line x1="580" y1="230" x2="620" y2="230" stroke="#a855f7" stroke-width="1" stroke-dasharray="3,3"/>
+                    <line x1="580" y1="320" x2="620" y2="305" stroke="#00ff88" stroke-width="1" stroke-dasharray="3,3"/>
+                    <line x1="500" y1="360" x2="500" y2="380" stroke="#ff6b35" stroke-width="1" stroke-dasharray="3,3"/>
+
+                    <!-- 动力系统 -->
+                    <rect x="850" y="220" width="250" height="160" rx="10" fill="#1a1a2e" stroke="#ff6b35" stroke-width="2"/>
+                    <text x="975" y="250" text-anchor="middle" fill="#ff6b35" font-family="Orbitron" font-size="14">动力系统 (待采购)</text>
+                    
+                    <rect x="870" y="270" width="100" height="50" rx="5" fill="#111827" stroke="#ff6b35" stroke-width="1"/>
+                    <text x="920" y="295" text-anchor="middle" fill="#ff6b35" font-size="11">EDF涵道风机</text>
+                    <text x="920" y="310" text-anchor="middle" fill="#94a3b8" font-size="9">70mm/90mm</text>
+
+                    <rect x="980" y="270" width="100" height="50" rx="5" fill="#111827" stroke="#ff6b35" stroke-width="1"/>
+                    <text x="1030" y="295" text-anchor="middle" fill="#ff6b35" font-size="11">6S LiPo电池</text>
+                    <text x="1030" y="310" text-anchor="middle" fill="#94a3b8" font-size="9">待采购</text>
+
+                    <text x="975" y="370" text-anchor="middle" fill="#94a3b8" font-size="10">TVC矢量喷管</text>
+                    <text x="975" y="385" text-anchor="middle" fill="#94a3b8" font-size="10">SG92R × 2 驱动</text>
+
+                    <!-- 外部连接 -->
+                    <line x1="800" y1="300" x2="850" y2="280" stroke="#ef4444" stroke-width="2"/>
+                    <line x1="800" y1="305" x2="850" y2="320" stroke="#ef4444" stroke-width="2"/>
+
+                    <!-- 图例 -->
+                    <rect x="50" y="500" width="1100" height="80" rx="10" fill="#111827" stroke="#333" stroke-width="1"/>
+                    <text x="70" y="525" fill="#00d4ff" font-size="12">图例:</text>
+                    
+                    <rect x="70" y="535" width="30" height="20" fill="#1a1a2e" stroke="#00d4ff" stroke-width="1"/>
+                    <text x="110" y="550" fill="#94a3b8" font-size="10">模块</text>
+                    
+                    <rect x="170" y="540" width="20" height="10" fill="#a855f7"/>
+                    <text x="200" y="550" fill="#94a3b8" font-size="10">传感器</text>
+                    
+                    <rect x="270" y="540" width="20" height="10" fill="#00ff88"/>
+                    <text x="300" y="550" fill="#94a3b8" font-size="10">控制算法</text>
+                    
+                    <rect x="370" y="540" width="20" height="10" fill="#ff6b35"/>
+                    <text x="400" y="550" fill="#94a3b8" font-size="10">状态/通信</text>
+                    
+                    <rect x="470" y="540" width="20" height="10" fill="#ef4444"/>
+                    <text x="500" y="550" fill="#94a3b8" font-size="10">执行器</text>
+
+                    <line x1="570" y1="545" x2="610" y2="545" stroke="#00d4ff" stroke-width="2" stroke-dasharray="5,5"/>
+                    <text x="620" y="550" fill="#94a3b8" font-size="10">数据流</text>
+                </svg>
+            </div>
+
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-icon">📡</div>
+                    <h3>通信架构</h3>
+                    <p>地面站通过 USB 串口或 WiFi UDP 双重通道与飞控通信，支持实时指令下发和遥测数据回传。</p>
+                    <div style="margin-top: 1rem;">
+                        <span class="tag cyan">USB 串口</span>
+                        <span class="tag orange">WiFi UDP</span>
+                        <span class="tag green">20Hz</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🧠</div>
+                    <h3>控制架构</h3>
+                    <p>卡尔曼滤波融合 IMU 数据，PID 控制器实时计算舵机输出，实现姿态稳定控制。</p>
+                    <div style="margin-top: 1rem;">
+                        <span class="tag purple">卡尔曼</span>
+                        <span class="tag cyan">PID</span>
+                        <span class="tag orange">20Hz</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🔄</div>
+                    <h3>状态机架构</h3>
+                    <p>6 状态飞行状态机管理整个飞行过程，包含三重开伞冗余保护机制。</p>
+                    <div style="margin-top: 1rem;">
+                        <span class="tag green">6状态</span>
+                        <span class="tag purple">3重冗余</span>
+                        <span class="tag orange">自动</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 硬件平台 -->
+        <section id="hardware">
+            <h2><span class="icon">🔧</span> 硬件平台</h2>
+
+            <div class="card-grid">
+                <div class="card">
+                    <div class="hardware-card">
+                        <div class="hardware-icon">🖥️</div>
+                        <div class="hardware-info">
+                            <h4>STM32F103C8T6</h4>
+                            <div class="specs">
+                                <span>Blue Pill 开发板</span>
+                                <span>72MHz ARM Cortex-M3</span>
+                                <span>64KB Flash / 20KB RAM</span>
+                                <div class="pin-badge">核心控制单元</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="hardware-card">
+                        <div class="hardware-icon">📊</div>
+                        <div class="hardware-info">
+                            <h4>GY-91 (MPU6500 + BMP280)</h4>
+                            <div class="specs">
+                                <span>9轴 IMU + 气压计</span>
+                                <span>I2C 通信</span>
+                                <div class="pin-badge">PB6 (SCL) / PB7 (SDA)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="hardware-card">
+                        <div class="hardware-icon">📶</div>
+                        <div class="hardware-info">
+                            <h4>ESP8266-01S</h4>
+                            <div class="specs">
+                                <span>WiFi 透传模块</span>
+                                <span>UDP 协议</span>
+                                <div class="pin-badge">PA2 (TX) / PA3 (RX)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="hardware-card">
+                        <div class="hardware-icon">🎮</div>
+                        <div class="hardware-info">
+                            <h4>SG92R 舵机 × 3</h4>
+                            <div class="specs">
+                                <span>TVC Pitch: PA6 (TIM3_CH1)</span>
+                                <span>TVC Roll: PA7 (TIM3_CH2)</span>
+                                <span>回收系统: PB0 (TIM3_CH3)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="hardware-card">
+                        <div class="hardware-icon">🔋</div>
+                        <div class="hardware-info">
+                            <h4>6S LiPo 电池</h4>
+                            <div class="specs">
+                                <span>飞行电池 (待采购)</span>
+                                <span>给 EDF 涵道供电</span>
+                                <div class="pin-badge">动力系统</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="hardware-card">
+                        <div class="hardware-icon">💨</div>
+                        <div class="hardware-info">
+                            <h4>EDF 涵道风机</h4>
+                            <div class="specs">
+                                <span>70mm/90mm (待采购)</span>
+                                <span>矢量喷管 TVC</span>
+                                <div class="pin-badge">动力核心</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ 重要提示</h4>
+                <p>EDF 涵道风机和 6S LiPo 电池是下一步物理验证的关键硬件，需要先采购才能进行实际测试。</p>
+            </div>
+        </section>
+
+        <!-- 软件模块 -->
+        <section id="software">
+            <h2><span class="icon">💻</span> 软件模块</h2>
+
+            <!-- 主循环流程 -->
+            <h3 style="color: var(--accent-cyan); margin: 2rem 0 1rem;">主循环结构 (20Hz / 50ms每帧)</h3>
+            <div class="code-block">
+<span class="comment">// 主循环 - 飞行计算机核心</span>
+<span class="keyword">void</span> <span class="function">loop</span>() {
+    <span class="comment">// 1. 读取串口指令 (ESP8266 + USB)</span>
+    readSerialCommands();
+    
+    <span class="comment">// 2. ESTOP 安全检查</span>
+    <span class="keyword">if</span> (estop_active) <span class="keyword">return</span>;
+    
+    <span class="comment">// 3. 读取传感器</span>
+    readMPU6500();   <span class="comment">// 陀螺仪 + 加速度计</span>
+    readBMP280();    <span class="comment">// 气压 → 高度</span>
+    
+    <span class="comment">// 4. 姿态解算 (atan2)</span>
+    pitch_raw = atan2(-ax, sqrt(ay² + az²)) × 180/π;
+    roll_raw  = atan2(ay, az) × 180/π;
+    
+    <span class="comment">// 5. 卡尔曼滤波</span>
+    pitch_flt = kalmanFilter.update(pitch_raw, gyro_y);
+    roll_flt  = kalmanFilter.update(roll_raw, gyro_x);
+    
+    <span class="comment">// 6. 飞行状态机更新</span>
+    fsm.update(az, altitude, millis());
+    
+    <span class="comment">// 7. PID 控制 (自动模式)</span>
+    <span class="keyword">if</span> (auto_mode && !chute_deployed) {
+        servo_pitch = pidPitch.compute(pitch_flt);
+        servo_roll  = pidRoll.compute(roll_flt);
+    }
+    
+    <span class="comment">// 8. JSON 遥测输出</span>
+    sendTelemetry();
+    
+    delay(<span class="number">50</span>);  <span class="comment">// 20Hz</span>
+}
+            </div>
+
+            <!-- 飞行状态机 -->
+            <h3 style="color: var(--accent-cyan); margin: 2rem 0 1rem;">飞行状态机 (FSM)</h3>
+            <div class="fsm-flow">
+                <div class="fsm-state">🔌 IDLE<br><small>待机</small></div>
+                <div class="fsm-arrow">→</div>
+                <div class="fsm-state active">⚡ ARMED<br><small>待发射</small></div>
+                <div class="fsm-arrow">→</div>
+                <div class="fsm-state">🚀 POWERED<br><small>动力段</small></div>
+                <div class="fsm-arrow">→</div>
+                <div class="fsm-state">🛫 COAST<br><small>滑行</small></div>
+                <div class="fsm-arrow">→</div>
+                <div class="fsm-state">🪂 DESCENT<br><small>下降</small></div>
+                <div class="fsm-arrow">→</div>
+                <div class="fsm-state deployed">✅ LANDED<br><small>着陆</small></div>
+            </div>
+
+            <!-- PID 可视化 -->
+            <h3 style="color: var(--accent-cyan); margin: 2rem 0 1rem;">PID 控制参数</h3>
+            <div class="pid-visual">
+                <div class="pid-gain">
+                    <div class="symbol">Kp</div>
+                    <div class="value">1.2</div>
+                    <div class="label">比例增益</div>
+                </div>
+                <div class="pid-gain">
+                    <div class="symbol">Ki</div>
+                    <div class="value">0.2</div>
+                    <div class="label">积分增益</div>
+                </div>
+                <div class="pid-gain">
+                    <div class="symbol">Kd</div>
+                    <div class="value">0.4</div>
+                    <div class="label">微分增益</div>
+                </div>
+                <div class="pid-formula">
+                    <div>u(t) = Kp·e(t) + Ki·∫e(t)dt + Kd·de(t)/dt</div>
+                    <div style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-secondary);">
+                        积分限幅: ±30° | 微分滤波: 50ms 延迟补偿
+                    </div>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ PID 调参警告</h4>
+                <p>由于 50ms 卡尔曼延迟和 SG92R 死区，高重心 (0.5m) 下无法稳定。必须将重心压低至 ≤ 0.2m，并建议从纯 PD 控制开始 (Ki=0)。</p>
+            </div>
+
+            <!-- 箭体参数 -->
+            <h3 style="color: var(--accent-cyan); margin: 2rem 0 1rem;">箭体几何参数</h3>
+            <div class="rocket-components">
+                <div class="component-card">
+                    <div class="component-visual">
+                        <svg viewBox="0 0 100 150" width="100" height="150">
+                            <path d="M50 0 Q70 50 50 60 L50 150 L50 60 Q30 50 50 0" fill="#1a1a2e" stroke="#00d4ff" stroke-width="2"/>
+                            <text x="75" y="30" fill="#00d4ff" font-size="10">L=150mm</text>
+                        </svg>
+                    </div>
+                    <h4>整流罩</h4>
+                    <p class="spec">Von Karman 曲线</p>
+                    <div class="detail">最优跨声速阻力外形<br>长度: 150mm | 底部半径: 37.5mm</div>
+                </div>
+
+                <div class="component-card">
+                    <div class="component-visual">
+                        <svg viewBox="0 0 100 150" width="100" height="150">
+                            <rect x="35" y="0" width="30" height="120" fill="#1a1a2e" stroke="#00d4ff" stroke-width="2"/>
+                            <text x="75" y="60" fill="#00d4ff" font-size="10">Ø75mm</text>
+                            <text x="75" y="75" fill="#00d4ff" font-size="10">L=600mm</text>
+                        </svg>
+                    </div>
+                    <h4>机身管</h4>
+                    <p class="spec">PLA 3D 打印</p>
+                    <div class="detail">外径: 75mm | 壁厚: 2mm<br>长度: 600mm | 干重: 120g</div>
+                </div>
+
+                <div class="component-card">
+                    <div class="component-visual">
+                        <svg viewBox="0 0 100 150" width="100" height="150">
+                            <polygon points="35,120 20,140 35,130" fill="#ff6b35" stroke="#ff6b35"/>
+                            <polygon points="65,120 80,140 65,130" fill="#ff6b35" stroke="#ff6b35"/>
+                            <polygon points="35,120 50,130 65,120 50,110" fill="#1a1a2e" stroke="#ff6b35" stroke-width="2"/>
+                            <text x="80" y="145" fill="#ff6b35" font-size="8">3 fins</text>
+                        </svg>
+                    </div>
+                    <h4>尾翼</h4>
+                    <p class="spec">3片梯形翼 120°均布</p>
+                    <div class="detail">翼展: 80mm | 根弦: 100mm<br>梢弦: 50mm | 位置: 管底</div>
+                </div>
+            </div>
+
+            <div class="success-box">
+                <h4>✅ 稳定性验证</h4>
+                <p>CG = 407.5mm | CP = 509.9mm | <strong>稳定裕度 = 1.36 caliber</strong> (满足 ≥1.0 要求)</p>
+            </div>
+        </section>
+
+        <!-- 通信协议 -->
+        <section id="protocol">
+            <h2><span class="icon">📨</span> 通信协议</h2>
+
+            <h3 style="color: var(--accent-cyan); margin: 2rem 0 1rem;">上行指令 (地面站 → 飞控)</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">纯文本格式，换行符结尾，波特率 115200</p>
+
+            <table class="protocol-table">
+                <thead>
+                    <tr>
+                        <th>指令</th>
+                        <th>格式</th>
+                        <th>说明</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="cmd-badge">set_servo</span></td>
+                        <td><code>set_servo:pitch,roll</code></td>
+                        <td>手动设置 TVC 舵机角度 (0-180)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="cmd-badge">set_pid</span></td>
+                        <td><code>set_pid:kp,ki,kd</code></td>
+                        <td>动态调整 PID 参数</td>
+                    </tr>
+                    <tr>
+                        <td><span class="cmd-badge">estop</span></td>
+                        <td><code>estop</code></td>
+                        <td>紧急停机，舵机归中</td>
+                    </tr>
+                    <tr>
+                        <td><span class="cmd-badge">reset</span></td>
+                        <td><code>reset</code></td>
+                        <td>解除停机，恢复输出</td>
+                    </tr>
+                    <tr>
+                        <td><span class="cmd-badge">auto_on</span></td>
+                        <td><code>auto_on</code></td>
+                        <td>开启 PID 自动姿态稳定</td>
+                    </tr>
+                    <tr>
+                        <td><span class="cmd-badge">auto_off</span></td>
+                        <td><code>auto_off</code></td>
+                        <td>关闭 PID，舵机归中</td>
+                    </tr>
+                    <tr>
+                        <td><span class="cmd-badge">arm</span></td>
+                        <td><code>arm</code></td>
+                        <td>进入待发射，校准地面高度</td>
+                    </tr>
+                    <tr>
+                        <td><span class="cmd-badge">deploy_chute</span></td>
+                        <td><code>deploy_chute</code></td>
+                        <td>手动触发开伞</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 style="color: var(--accent-cyan); margin: 3rem 0 1rem;">下行遥测 (飞控 → 地面站)</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">JSON 格式，20Hz 发送</p>
+
+            <div class="code-block">
+{
+  <span class="string">"time"</span>: <span class="number">123456</span>,        <span class="comment">// 毫秒时间戳</span>
+  <span class="string">"pitch_raw"</span>: <span class="number">-6.39</span>,     <span class="comment">// 原始俯仰角 (°)</span>
+  <span class="string">"pitch_flt"</span>: <span class="number">-6.21</span>,     <span class="comment">// 滤波后俯仰角 (°)</span>
+  <span class="string">"roll_raw"</span>: <span class="number">-130.04</span>,    <span class="comment">// 原始滚转角 (°)</span>
+  <span class="string">"roll_flt"</span>: <span class="number">-129.87</span>,    <span class="comment">// 滤波后滚转角 (°)</span>
+  <span class="string">"yaw"</span>: <span class="number">-1.05</span>,         <span class="comment">// 偏航角 (°)</span>
+  <span class="string">"alt"</span>: <span class="number">142.73</span>,         <span class="comment">// 高度 (m)</span>
+  <span class="string">"auto"</span>: <span class="number">1</span>,             <span class="comment">// 自动模式 (0/1)</span>
+  <span class="string">"chute"</span>: <span class="number">0</span>,            <span class="comment">// 开伞状态 (0/1)</span>
+  <span class="string">"fstate"</span>: <span class="string">"COAST"</span>,      <span class="comment">// 飞行状态</span>
+  <span class="string">"batt"</span>: <span class="number">7.4</span>            <span class="comment">// 电池电压 (V)</span>
+}
+            </div>
+        </section>
+
+        <!-- 开发指南 -->
+        <section id="guide">
+            <h2><span class="icon">🚀</span> 开发指南</h2>
+
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-icon">🔧</div>
+                    <h3>飞控固件烧录</h3>
+                    <p>使用 PlatformIO 烧录 STM32 固件</p>
+                    <div class="code-block" style="margin-top: 1rem; padding: 1rem;">
+<span class="comment"># 进入飞行计算机目录</span>
+cd flight_computer
+
+<span class="comment"># 烧录固件</span>
+pio run --target upload
+
+<span class="comment"># 串口监视</span>
+pio device monitor
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🖥️</div>
+                    <h3>地面站启动</h3>
+                    <p>运行 PySide6 地面站应用</p>
+                    <div class="code-block" style="margin-top: 1rem; padding: 1rem;">
+<span class="comment"># 进入地面站目录</span>
+cd ground_station
+
+<span class="comment"># 安装依赖</span>
+pip install -r requirements.txt
+
+<span class="comment"># 启动地面站</span>
+python main.py
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">📈</div>
+                    <h3>气动仿真</h3>
+                    <p>运行弹道和稳定性仿真</p>
+                    <div class="code-block" style="margin-top: 1rem; padding: 1rem;">
+<span class="comment"># 进入仿真目录</span>
+cd aero_sim
+
+<span class="comment"># 安装依赖</span>
+pip install -r requirements.txt
+
+<span class="comment"># 运行仿真</span>
+python run_simulation.py
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="color: var(--accent-cyan); margin: 3rem 0 1rem;">下一步计划</h3>
+            <ul class="checklist">
+                <li>
+                    <div class="checkbox" onclick="this.classList.toggle('checked')"></div>
+                    <span>采购 70mm/90mm EDF 涵道风机 + ESC 电子调速器</span>
+                </li>
+                <li>
+                    <div class="checkbox" onclick="this.classList.toggle('checked')"></div>
+                    <span>采购 6S LiPo 飞行电池</span>
+                </li>
+                <li>
+                    <div class="checkbox" onclick="this.classList.toggle('checked')"></div>
+                    <span>设计/3D 打印矢量喷管机架</span>
+                </li>
+                <li>
+                    <div class="checkbox" onclick="this.classList.toggle('checked')"></div>
+                    <span>组装测试台 (底部涵道 + 中间管 + 顶部飞控)</span>
+                </li>
+                <li>
+                    <div class="checkbox" onclick="this.classList.toggle('checked')"></div>
+                    <span>开启 auto_on，实物 PID 调参 <strong style="color: var(--accent-orange);">（注意先加牵引绳！）</strong></span>
+                </li>
+                <li>
+                    <div class="checkbox" onclick="this.classList.toggle('checked')"></div>
+                    <span>受限悬停测试</span>
+                </li>
+            </ul>
+
+            <h3 style="color: var(--accent-cyan); margin: 3rem 0 1rem;">关键技术要点</h3>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>重心控制</h4>
+                        <p>高重心 (0.5m) 无法稳定，必须将重心压低至 ≤ 0.2m 才能让 PID 收敛</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>延迟补偿</h4>
+                        <p>50ms 卡尔曼延迟是控制系统的致命瓶颈，强 P 会引起正反馈爆炸</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>舵机选型</h4>
+                        <p>SG92R 死区 ±0.5°，50Hz 刷新率，限制控制带宽</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h4>安全第一</h4>
+                        <p>所有物理测试必须加牵引绳，从保守 PID 参数开始</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 页脚 -->
+        <footer>
+            <p>🚀 Ad Astra - 让每个人都能探索太空</p>
+            <p style="margin-top: 0.5rem;">Made with <span class="heart">❤️</span> by AI Partner</p>
+            <p style="margin-top: 0.5rem; font-size: 0.8rem; color: #666;">最后更新: 2026-06-01</p>
+        </footer>
+    </main>
+
+    <script>
+        // 生成星空背景
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+        createStars();
+
+        // 滚动动画
+        function handleScroll() {
+            const elements = document.querySelectorAll('.card, .code-block, .pid-visual, .fsm-flow');
+            elements.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 100) {
+                    el.classList.add('visible');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', handleScroll);
+        handleScroll();
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // 复选框交互
+        document.querySelectorAll('.checkbox').forEach(checkbox => {
+            checkbox.addEventListener('click', function() {
+                this.classList.toggle('checked');
+            });
+        });
+    </script>
+</body>
+</html>

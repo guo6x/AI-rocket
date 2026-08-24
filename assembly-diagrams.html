@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>Ad Astra 组装图示</title>
+<style>
+body{background:#0a0a14;color:#fff;font-family:Inter,sans-serif;margin:0;padding:20px}
+h1{text-align:center;background:linear-gradient(90deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:2em}
+.section{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:24px;margin:20px 0}
+h2{color:#a78bfa;margin-top:0;font-size:1.2em}
+svg text{font-family:Inter,sans-serif}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:700px){.grid{grid-template-columns:1fr}}
+.label{color:#94a3b8;font-size:.85em;text-align:center;margin-top:8px}
+.warn{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:12px;color:#fca5a5;margin-top:12px;font-size:.9em}
+.tip{background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.3);border-radius:8px;padding:12px;color:#a5b4fc;margin-top:12px;font-size:.9em}
+</style>
+</head>
+<body>
+<h1>🚀 EDF TVC 测试台 — 组装图示</h1>
+
+<div class="section">
+<h2>图1：整体测试台结构（侧视图）</h2>
+<svg viewBox="0 0 500 420" style="width:100%;max-width:500px;display:block;margin:auto">
+  <!-- 顶部：飞控+电池 -->
+  <rect x="150" y="10" width="200" height="60" rx="8" fill="#1e1b4b" stroke="#818cf8" stroke-width="2"/>
+  <text x="250" y="35" text-anchor="middle" fill="#a5b4fc" font-size="13" font-weight="bold">6S LiPo 电池</text>
+  <text x="250" y="55" text-anchor="middle" fill="#818cf8" font-size="11">重量最重 → 置顶</text>
+
+  <rect x="165" y="80" width="170" height="50" rx="8" fill="#172554" stroke="#60a5fa" stroke-width="2"/>
+  <text x="250" y="102" text-anchor="middle" fill="#93c5fd" font-size="12" font-weight="bold">STM32 飞控 + ESP8266</text>
+  <text x="250" y="120" text-anchor="middle" fill="#60a5fa" font-size="10">GY-91 IMU 也在这里</text>
+
+  <!-- 中间管 -->
+  <rect x="230" y="135" width="40" height="120" rx="4" fill="#0f172a" stroke="#475569" stroke-width="2"/>
+  <text x="250" y="200" text-anchor="middle" fill="#64748b" font-size="11">中心管</text>
+  <text x="250" y="216" text-anchor="middle" fill="#64748b" font-size="10">PVC/碳管</text>
+  <line x1="210" y1="180" x2="165" y2="180" stroke="#94a3b8" stroke-dasharray="4"/>
+  <text x="160" y="184" text-anchor="end" fill="#94a3b8" font-size="10">重心 ≤20cm</text>
+  <text x="160" y="196" text-anchor="end" fill="#94a3b8" font-size="10">（从喷口量起）</text>
+
+  <!-- 万向节 -->
+  <ellipse cx="250" cy="290" rx="70" ry="20" fill="none" stroke="#f59e0b" stroke-width="2.5"/>
+  <text x="250" y="295" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="bold">外环</text>
+  <ellipse cx="250" cy="295" rx="45" ry="14" fill="none" stroke="#10b981" stroke-width="2"/>
+  <text x="250" y="299" text-anchor="middle" fill="#34d399" font-size="10">内环</text>
+  <!-- 伺服 -->
+  <rect x="320" y="278" width="40" height="24" rx="4" fill="#7c3aed" stroke="#a78bfa"/>
+  <text x="340" y="294" text-anchor="middle" fill="#ddd6fe" font-size="10">Pitch舵机</text>
+  <rect x="140" y="278" width="40" height="24" rx="4" fill="#0e7490" stroke="#22d3ee"/>
+  <text x="160" y="294" text-anchor="middle" fill="#cffafe" font-size="10">Roll舵机</text>
+  <!-- 推拉杆 -->
+  <line x1="310" y1="290" x2="295" y2="290" stroke="#f59e0b" stroke-width="2"/>
+  <line x1="180" y1="290" x2="205" y2="290" stroke="#f59e0b" stroke-width="2"/>
+
+  <!-- EDF -->
+  <ellipse cx="250" cy="350" rx="55" ry="18" fill="#1e3a5f" stroke="#3b82f6" stroke-width="2.5"/>
+  <ellipse cx="250" cy="350" rx="30" ry="10" fill="#172554" stroke="#60a5fa"/>
+  <text x="250" y="354" text-anchor="middle" fill="#93c5fd" font-size="12" font-weight="bold">EDF 70mm</text>
+  <!-- 推力箭头 -->
+  <line x1="250" y1="370" x2="250" y2="415" stroke="#ef4444" stroke-width="3"/>
+  <polygon points="250,415 243,400 257,400" fill="#ef4444"/>
+  <text x="275" y="400" fill="#fca5a5" font-size="11">推力↓</text>
+</svg>
+<p class="label">高重心原则：重的东西（电池）在顶部，EDF在底部。倒立摆越慢越好控制。</p>
+</div>
+
+<div class="grid">
+<div class="section">
+<h2>图2：万向节俯视图</h2>
+<svg viewBox="0 0 300 300" style="width:100%;max-width:300px;display:block;margin:auto">
+  <!-- 外环 -->
+  <circle cx="150" cy="150" r="120" fill="none" stroke="#f59e0b" stroke-width="12"/>
+  <text x="150" y="38" text-anchor="middle" fill="#fbbf24" font-size="12">外环 (116mm OD)</text>
+  <!-- 外环M3安装孔 -->
+  <circle cx="150" cy="32" r="5" fill="#fbbf24"/>
+  <circle cx="150" cy="268" r="5" fill="#fbbf24"/>
+  <circle cx="32" cy="150" r="5" fill="#fbbf24"/>
+  <circle cx="268" cy="150" r="5" fill="#fbbf24"/>
+  <text x="150" y="282" text-anchor="middle" fill="#78716c" font-size="10">M3安装孔 ×4</text>
+
+  <!-- X轴销轴（控制Pitch，绕X轴转） -->
+  <circle cx="150" cy="55" r="7" fill="#7c3aed" stroke="#a78bfa" stroke-width="2"/>
+  <circle cx="150" cy="245" r="7" fill="#7c3aed" stroke="#a78bfa" stroke-width="2"/>
+  <line x1="150" y1="55" x2="150" y2="245" stroke="#7c3aed" stroke-width="1" stroke-dasharray="6"/>
+  <text x="270" y="52" fill="#a78bfa" font-size="10">Pitch</text>
+  <text x="270" y="64" fill="#a78bfa" font-size="10">销轴</text>
+
+  <!-- 内环 -->
+  <circle cx="150" cy="150" r="78" fill="none" stroke="#10b981" stroke-width="10"/>
+  <text x="150" y="100" text-anchor="middle" fill="#34d399" font-size="11">内环 (92mm OD)</text>
+
+  <!-- Y轴销轴（控制Roll，绕Y轴转） -->
+  <circle cx="72" cy="150" r="7" fill="#0891b2" stroke="#22d3ee" stroke-width="2"/>
+  <circle cx="228" cy="150" r="7" fill="#0891b2" stroke="#22d3ee" stroke-width="2"/>
+  <line x1="72" y1="150" x2="228" y2="150" stroke="#0891b2" stroke-width="1" stroke-dasharray="6"/>
+  <text x="28" y="130" fill="#22d3ee" font-size="10">Roll</text>
+  <text x="28" y="142" fill="#22d3ee" font-size="10">销轴</text>
+
+  <!-- EDF -->
+  <circle cx="150" cy="150" r="42" fill="#172554" stroke="#3b82f6" stroke-width="6"/>
+  <text x="150" y="154" text-anchor="middle" fill="#93c5fd" font-size="13" font-weight="bold">EDF</text>
+  <text x="150" y="168" text-anchor="middle" fill="#60a5fa" font-size="10">76mm</text>
+
+  <!-- Pitch伺服（外环后方） -->
+  <rect x="107" y="258" width="86" height="30" rx="5" fill="#581c87" stroke="#a78bfa" stroke-width="1.5"/>
+  <text x="150" y="278" text-anchor="middle" fill="#e9d5ff" font-size="11">Pitch伺服 → PA6</text>
+
+  <!-- Roll伺服（外环右侧） -->
+  <rect x="255" y="110" width="30" height="80" rx="5" fill="#164e63" stroke="#22d3ee" stroke-width="1.5"/>
+  <text x="270" y="148" text-anchor="middle" fill="#cffafe" font-size="10" transform="rotate(90,270,148)">Roll → PA7</text>
+</svg>
+<p class="label">两个伺服都固定在外环上（不随内环运动）</p>
+</div>
+
+<div class="section">
+<h2>图3：电气接线图</h2>
+<svg viewBox="0 0 280 380" style="width:100%;max-width:280px;display:block;margin:auto">
+  <!-- 6S Battery -->
+  <rect x="80" y="10" width="120" height="40" rx="6" fill="#7f1d1d" stroke="#ef4444" stroke-width="2"/>
+  <text x="140" y="35" text-anchor="middle" fill="#fecaca" font-size="13" font-weight="bold">6S LiPo</text>
+  <!-- ESC -->
+  <rect x="60" y="80" width="80" height="35" rx="6" fill="#1c1917" stroke="#f97316" stroke-width="2"/>
+  <text x="100" y="102" text-anchor="middle" fill="#fdba74" font-size="12" font-weight="bold">ESC</text>
+  <!-- BEC -->
+  <rect x="160" y="80" width="60" height="35" rx="6" fill="#1c1917" stroke="#84cc16" stroke-width="2"/>
+  <text x="190" y="102" text-anchor="middle" fill="#bef264" font-size="11" font-weight="bold">BEC</text>
+  <text x="190" y="113" text-anchor="middle" fill="#84cc16" font-size="9">5V out</text>
+  <!-- lines from battery -->
+  <line x1="120" y1="50" x2="100" y2="80" stroke="#ef4444" stroke-width="2.5"/>
+  <line x1="160" y1="50" x2="190" y2="80" stroke="#ef4444" stroke-width="2.5"/>
+
+  <!-- EDF -->
+  <rect x="30" y="145" width="100" height="35" rx="6" fill="#172554" stroke="#3b82f6" stroke-width="2"/>
+  <text x="80" y="167" text-anchor="middle" fill="#93c5fd" font-size="12" font-weight="bold">EDF 涵道</text>
+  <line x1="80" y1="115" x2="80" y2="145" stroke="#f97316" stroke-width="2.5"/>
+
+  <!-- STM32 -->
+  <rect x="90" y="145" width="140" height="55" rx="6" fill="#0f172a" stroke="#818cf8" stroke-width="2"/>
+  <text x="160" y="168" text-anchor="middle" fill="#c7d2fe" font-size="13" font-weight="bold">STM32</text>
+  <text x="160" y="184" text-anchor="middle" fill="#818cf8" font-size="10">+ GY-91 + ESP8266</text>
+  <text x="160" y="196" text-anchor="middle" fill="#6366f1" font-size="9">5V from BEC</text>
+  <line x1="190" y1="115" x2="160" y2="145" stroke="#84cc16" stroke-width="2"/>
+
+  <!-- Servo Pitch -->
+  <rect x="55" y="230" width="95" height="30" rx="5" fill="#3b0764" stroke="#a78bfa" stroke-width="1.5"/>
+  <text x="102" y="250" text-anchor="middle" fill="#e9d5ff" font-size="11">Pitch 伺服 PA6</text>
+  <line x1="102" y1="200" x2="102" y2="230" stroke="#a78bfa" stroke-width="2"/>
+
+  <!-- Servo Roll -->
+  <rect x="155" y="230" width="90" height="30" rx="5" fill="#164e63" stroke="#22d3ee" stroke-width="1.5"/>
+  <text x="200" y="250" text-anchor="middle" fill="#cffafe" font-size="11">Roll 伺服 PA7</text>
+  <line x1="200" y1="200" x2="200" y2="230" stroke="#22d3ee" stroke-width="2"/>
+
+  <!-- Recovery Servo -->
+  <rect x="95" y="285" width="110" height="30" rx="5" fill="#1a2e05" stroke="#84cc16" stroke-width="1.5"/>
+  <text x="150" y="305" text-anchor="middle" fill="#d9f99d" font-size="11">回收伺服 PB0</text>
+  <line x1="150" y1="200" x2="150" y2="285" stroke="#84cc16" stroke-width="1.5" stroke-dasharray="5"/>
+
+  <!-- Ground -->
+  <text x="140" y="345" text-anchor="middle" fill="#475569" font-size="10">所有 GND 共地 ⚡</text>
+  <text x="140" y="360" text-anchor="middle" fill="#ef4444" font-size="10">ESP8266 必须独立 3.3V 供电！</text>
+</svg>
+<p class="label">BEC 是关键：从 ESC/电池取电转 5V 给 STM32 和伺服</p>
+</div>
+</div>
+
+<div class="section">
+<h2>图4：推拉杆连接方式（侧视图局部）</h2>
+<svg viewBox="0 0 500 200" style="width:100%;max-width:500px;display:block;margin:auto">
+  <!-- 伺服电机体 -->
+  <rect x="20" y="70" width="80" height="60" rx="6" fill="#1e1b4b" stroke="#818cf8" stroke-width="2"/>
+  <text x="60" y="102" text-anchor="middle" fill="#a5b4fc" font-size="12" font-weight="bold">SG92R</text>
+  <!-- 输出轴 -->
+  <circle cx="100" cy="100" r="8" fill="#6366f1" stroke="#818cf8" stroke-width="2"/>
+  <!-- 力臂（servo horn） -->
+  <line x1="100" y1="100" x2="130" y2="80" stroke="#a78bfa" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="130" cy="80" r="5" fill="#f59e0b"/>
+  <text x="135" y="70" fill="#fbbf24" font-size="10">力臂孔</text>
+
+  <!-- 推拉杆 -->
+  <line x1="130" y1="80" x2="340" y2="80" stroke="#94a3b8" stroke-width="3"/>
+  <text x="235" y="70" text-anchor="middle" fill="#94a3b8" font-size="11">1.5mm 钢丝推拉杆</text>
+
+  <!-- 销轴中心 -->
+  <circle cx="340" cy="100" r="12" fill="none" stroke="#f59e0b" stroke-width="3"/>
+  <circle cx="340" cy="100" r="4" fill="#f59e0b"/>
+  <line x1="340" y1="70" x2="340" y2="130" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4"/>
+  <text x="340" y="155" text-anchor="middle" fill="#fbbf24" font-size="11">内/外环销轴</text>
+
+  <!-- 球头连接 -->
+  <circle cx="340" cy="80" r="6" fill="#10b981" stroke="#34d399" stroke-width="2"/>
+  <text x="360" y="78" fill="#34d399" font-size="10">球头销</text>
+
+  <!-- 90度归中标注 -->
+  <text x="60" y="155" text-anchor="middle" fill="#64748b" font-size="10">舵机90°时万向节归零</text>
+  <text x="60" y="170" text-anchor="middle" fill="#64748b" font-size="10">→ 先机械调平，再软件</text>
+
+  <!-- 偏转示意 -->
+  <line x1="340" y1="80" x2="440" y2="60" stroke="#ef4444" stroke-width="2" stroke-dasharray="5"/>
+  <text x="440" y="55" fill="#fca5a5" font-size="10">偏转±15°</text>
+  <path d="M 355 80 A 20 20 0 0 1 356 61" fill="none" stroke="#ef4444" stroke-width="1.5"/>
+</svg>
+<p class="label">关键：推拉杆长度要可调（用锁紧螺母），确保舵机90°时喷口完全垂直</p>
+</div>
+
+<div class="warn">
+🔴 关于 text-to-cad 生成质量差的问题：build123d 对复杂机构（万向节）生成效果确实很差。建议换路线：直接去 <strong>Printables.com 或 Thingiverse</strong> 搜 <strong>"EDF TVC gimbal 70mm"</strong>，下载现成的开源模型直接改，比让 AI 从零生成靠谱得多。
+</div>
+<div class="tip">
+💡 最快路线：搜 Thingiverse "servo gimbal 70mm EDF" → 下载 STL → 导入切片软件 → 只改涵道内径和伺服安装孔位置
+</div>
+
+<p style="text-align:center;color:#475569;margin-top:30px;font-size:.9em">Ad Astra · 物理组装图示 · 2026</p>
+</body>
+</html>

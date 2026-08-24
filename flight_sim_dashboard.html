@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>🚀 Ad Astra 虚拟飞行仿真看板</title>
+<style>
+:root {
+  --bg: #0a0e17; --panel: #131826; --accent: #00d4ff; --accent2: #ff6b35;
+  --text: #e0e6ed; --muted: #7a8ba3; --good: #10b981; --bad: #ef4444;
+  --border: rgba(0,212,255,0.15);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: 'Segoe UI', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: var(--bg); color: var(--text); line-height: 1.6;
+  font-size: 14px; overflow-x: hidden;
+}
+header {
+  background: linear-gradient(135deg, rgba(0,212,255,0.08), rgba(255,107,53,0.08));
+  border-bottom: 1px solid var(--border); padding: 16px 12px; text-align: center;
+}
+h1 {
+  font-size: 1.4rem; font-weight: 700;
+  background: linear-gradient(90deg, #00d4ff, #ff6b35);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 4px;
+}
+.subtitle { color: var(--muted); font-size: 0.78rem; }
+.tabs {
+  display: flex; overflow-x: auto; -webkit-overflow-scrolling: touch;
+  background: var(--panel); border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 100;
+}
+.tab {
+  flex: 1 0 auto; padding: 14px 8px; text-align: center; cursor: pointer;
+  color: var(--muted); font-size: 0.82rem; font-weight: 500;
+  border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap;
+}
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab:hover { color: var(--text); }
+.panel { display: none; padding: 12px; animation: fadeIn 0.3s; }
+.panel.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.card {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px; margin-bottom: 12px;
+}
+.card h2 {
+  font-size: 1rem; color: var(--accent); margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.card h3 { font-size: 0.9rem; color: var(--accent); margin: 8px 0 6px; }
+.card p { color: var(--muted); font-size: 0.82rem; margin-bottom: 6px; }
+.kpi-row {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 8px; margin: 10px 0;
+}
+.kpi {
+  background: rgba(0,212,255,0.06); border-radius: 8px; padding: 10px;
+  text-align: center; border: 1px solid rgba(0,212,255,0.1);
+}
+.kpi .label { font-size: 0.72rem; color: var(--muted); margin-bottom: 4px; }
+.kpi .value { font-size: 1.1rem; color: var(--accent); font-weight: 700; }
+.kpi .value.good { color: var(--good); }
+.kpi .value.bad { color: var(--bad); }
+.kpi .unit { font-size: 0.7rem; color: var(--muted); }
+table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin: 8px 0; }
+th, td { padding: 6px 4px; text-align: center; border-bottom: 1px solid var(--border); }
+th { color: var(--accent); font-weight: 600; }
+td.bad { color: var(--bad); } td.good { color: var(--good); }
+.chart-wrap { position: relative; width: 100%; height: 240px; margin: 8px 0; }
+.chart-wrap.tall { height: 320px; }
+#threeCanvas { width: 100%; height: 360px; display: block; background: #0d1421; border-radius: 8px; }
+.pill {
+  display: inline-block; padding: 2px 8px; border-radius: 10px;
+  font-size: 0.72rem; font-weight: 600; margin: 2px;
+}
+.pill.good { background: rgba(16,185,129,0.15); color: var(--good); }
+.pill.bad { background: rgba(239,68,68,0.15); color: var(--bad); }
+.pill.warn { background: rgba(255,107,53,0.15); color: var(--accent2); }
+.verdict {
+  padding: 10px; border-radius: 8px; margin: 8px 0; font-size: 0.85rem;
+  border-left: 3px solid var(--accent);
+}
+.verdict.warn { background: rgba(255,107,53,0.08); border-color: var(--accent2); }
+.verdict.good { background: rgba(16,185,129,0.08); border-color: var(--good); }
+.verdict.bad { background: rgba(239,68,68,0.08); border-color: var(--bad); }
+.loading { text-align: center; padding: 30px; color: var(--muted); font-size: 0.9rem; }
+.spinner {
+  width: 30px; height: 30px; border: 3px solid rgba(0,212,255,0.2);
+  border-top-color: var(--accent); border-radius: 50%;
+  animation: spin 1s linear infinite; margin: 0 auto 10px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.controls-hint {
+  font-size: 0.72rem; color: var(--muted); text-align: center;
+  margin-top: 6px;
+}
+footer { text-align: center; padding: 16px; color: var(--muted); font-size: 0.72rem; border-top: 1px solid var(--border); }
+.btn {
+  background: var(--accent); color: var(--bg); border: none; padding: 8px 16px;
+  border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem;
+}
+.btn:hover { opacity: 0.9; }
+.event-list { font-size: 0.78rem; }
+.event-list li { padding: 4px 0; border-bottom: 1px dashed var(--border); list-style: none; }
+.event-time { color: var(--accent); font-weight: 600; margin-right: 8px; }
+@media (max-width: 600px) {
+  h1 { font-size: 1.2rem; }
+  .subtitle { font-size: 0.7rem; }
+  .tab { font-size: 0.72rem; padding: 12px 4px; }
+  .kpi .value { font-size: 1rem; }
+  .chart-wrap { height: 200px; }
+  .chart-wrap.tall { height: 260px; }
+  #threeCanvas { height: 280px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>🚀 Ad Astra 虚拟飞行仿真看板</h1>
+  <p class="subtitle">6DOF 自研仿真 · 4 阶段流水线 · 严格对齐 rocket_config.py · E12 基准方案</p>
+</header>
+
+<div class="tabs">
+  <div class="tab active" data-panel="p1">① 推重比攻关</div>
+  <div class="tab" data-panel="p2">② 6DOF 弹道</div>
+  <div class="tab" data-panel="p3">③ 飞控算法</div>
+  <div class="tab" data-panel="p4">④ 蒙特卡洛</div>
+</div>
+
+<!-- 阶段1: 推重比攻关 -->
+<div id="p1" class="panel active">
+  <div class="card">
+    <h2>📊 四方案对比</h2>
+    <p>基线干重 340g · 导轨 1.0m · 安全脱架速度 ≥ 15 m/s</p>
+    <div class="chart-wrap tall"><canvas id="chart1a"></canvas></div>
+  </div>
+  <div class="card">
+    <h3>详细数据</h3>
+    <div id="tw-table"></div>
+  </div>
+  <div class="card">
+    <h3>结论</h3>
+    <div id="tw-verdict"></div>
+  </div>
+</div>
+
+<!-- 阶段2: 6DOF 弹道 -->
+<div id="p2" class="panel">
+  <div class="card">
+    <h2>🛰️ 3D 轨迹 (E12 基准)</h2>
+    <canvas id="threeCanvas"></canvas>
+    <p class="controls-hint">🖱️ 拖拽旋转 · 滚轮缩放 · 双指捏合 (移动端)</p>
+    <div class="kpi-row" id="traj-kpi"></div>
+  </div>
+  <div class="card">
+    <h3>高度 / 速度 vs 时间</h3>
+    <div class="chart-wrap tall"><canvas id="chart2a"></canvas></div>
+  </div>
+  <div class="card">
+    <h3>飞行事件</h3>
+    <ul class="event-list" id="event-list"></ul>
+  </div>
+</div>
+
+<!-- 阶段3: 飞控算法 -->
+<div id="p3" class="panel">
+  <div class="card">
+    <h2>🎮 PID 控制律对比</h2>
+    <p>测试扰动: 5m/s 东风 + 0.5° 推力偏斜 + 5mm CG 偏心</p>
+    <div class="chart-wrap tall"><canvas id="chart3a"></canvas></div>
+  </div>
+  <div class="card">
+    <h3>改善效果</h3>
+    <div id="ctrl-verdict"></div>
+  </div>
+</div>
+
+<!-- 阶段4: 蒙特卡洛 -->
+<div id="p4" class="panel">
+  <div class="card">
+    <h2>🎯 落点散布椭圆 (N=30)</h2>
+    <p>随机扰动: 风速 0-5m/s · 推力偏斜 0-0.5° · CG偏心 ±5mm</p>
+    <div class="chart-wrap tall"><canvas id="chart4a"></canvas></div>
+  </div>
+  <div class="card">
+    <h3>统计对比</h3>
+    <div id="mc-stats"></div>
+  </div>
+  <div class="card">
+    <h3>结论</h3>
+    <div id="mc-verdict"></div>
+  </div>
+</div>
+
+<footer>
+  Ad Astra 虚拟飞行仿真 · Phase 1-4 · 数据源: aero_sim/results/*.json<br/>
+  所有参数严格对齐 <code>aero_sim/rocket_config.py</code>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+<script>
+const RESULTS_DIR = './aero_sim/results';
+let dataCache = {};
+
+async function loadJSON(name) {
+  if (dataCache[name]) return dataCache[name];
+  try {
+    const r = await fetch(`${RESULTS_DIR}/${name}`);
+    if (!r.ok) throw new Error(r.status);
+    dataCache[name] = await r.json();
+    return dataCache[name];
+  } catch (e) {
+    console.error('Load failed:', name, e);
+    return null;
+  }
+}
+
+// 标签页切换
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.panel).classList.add('active');
+    // 触发对应面板的渲染
+    if (tab.dataset.panel === 'p2' && !window._trajRendered) renderTrajectory();
+    if (tab.dataset.panel === 'p3' && !window._ctrlRendered) renderControl();
+    if (tab.dataset.panel === 'p4' && !window._mcRendered) renderMonteCarlo();
+  });
+});
+
+// ============ 阶段1: 推重比攻关 ============
+async function renderThrustWeight() {
+  const data = await loadJSON('thrust_weight_study.json');
+  if (!data) return;
+
+  const labels = data.cases.map(c => c.name);
+  const vRails = data.cases.map(c => c.v_rail_mps);
+  const hApogees = data.cases.map(c => c.h_apogee_m);
+  const twrs = data.cases.map(c => c.TWR);
+
+  // 双轴柱状图
+  new Chart(document.getElementById('chart1a'), {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        { label: '脱架速度 (m/s)', data: vRails, backgroundColor: 'rgba(0,212,255,0.7)', yAxisID: 'y1' },
+        { label: '顶点高度 (m)', data: hApogees, backgroundColor: 'rgba(255,107,53,0.7)', yAxisID: 'y2' },
+        { label: '安全线 15 m/s', type: 'line', data: labels.map(()=>15), borderColor: '#ef4444', borderDash: [5,5], pointRadius: 0, yAxisID: 'y1' }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#e0e6ed', font: { size: 11 } } } },
+      scales: {
+        x: { ticks: { color: '#7a8ba3', font: { size: 9 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
+        y1: { type: 'linear', position: 'left', ticks: { color: '#00d4ff' }, title: { display: true, text: 'm/s', color: '#00d4ff' } },
+        y2: { type: 'linear', position: 'right', ticks: { color: '#ff6b35' }, title: { display: true, text: 'm', color: '#ff6b35' }, grid: { drawOnChartArea: false } }
+      }
+    }
+  });
+
+  // 详细表
+  const t = data.cases.map(c => `
+    <tr>
+      <td>${c.name}</td>
+      <td>${c.motor}</td>
+      <td>${c.mass_takeoff_g}</td>
+      <td>${c.TWR}</td>
+      <td class="${c.safe?'good':'bad'}">${c.v_rail_mps}</td>
+      <td>${c.v_burnout_mps}</td>
+      <td>${c.h_apogee_m}</td>
+      <td class="${c.safe?'good':'bad'}">${c.safe?'✅':'❌'}</td>
+    </tr>
+  `).join('');
+  document.getElementById('tw-table').innerHTML = `
+    <table>
+      <thead><tr>
+        <th>方案</th><th>发动机</th><th>起飞g</th><th>TWR</th>
+        <th>v脱架</th><th>v燃尽</th><th>顶点m</th><th>判定</th>
+      </tr></thead>
+      <tbody>${t}</tbody>
+    </table>`;
+
+  // 结论
+  const safe = data.cases.filter(c => c.safe);
+  let html = '';
+  if (safe.length === 0) {
+    const best = data.cases.reduce((a,b) => a.v_rail_mps > b.v_rail_mps ? a : b);
+    html = `<div class="verdict bad">
+      <strong>❌ 无方案达到 15 m/s 安全脱架速度</strong><br/>
+      最接近: <strong>${best.name}</strong> (v脱架 ${best.v_rail_mps} m/s, 顶点 ${best.h_apogee_m} m)<br/>
+      建议: ① 采购 F/G 级大发动机 (≥40N 均推); ② 砍重至 150g 以下; ③ 延长导轨至 2m
+    </div>`;
+  }
+  document.getElementById('tw-verdict').innerHTML = html;
+}
+
+// ============ 阶段2: 6DOF 弹道 ============
+let threeScene, threeCamera, threeRenderer, threeControls;
+async function renderTrajectory() {
+  window._trajRendered = true;
+  const data = await loadJSON('trajectory_baseline.json');
+  if (!data) return;
+
+  // KPI
+  const landX = data.events.find(e => e.event === 'LANDING')?.x || 0;
+  const landY = data.events.find(e => e.event === 'LANDING')?.y || 0;
+  const drift = Math.hypot(landX, landY);
+  document.getElementById('traj-kpi').innerHTML = `
+    <div class="kpi"><div class="label">顶点高度</div><div class="value">${data.max_altitude_m.toFixed(0)}<span class="unit">m</span></div></div>
+    <div class="kpi"><div class="label">飞行时间</div><div class="value">${data.flight_time_s.toFixed(1)}<span class="unit">s</span></div></div>
+    <div class="kpi"><div class="label">落点漂移</div><div class="value">${drift.toFixed(1)}<span class="unit">m</span></div></div>
+    <div class="kpi"><div class="label">采样点</div><div class="value">${data.trajectory.length}</div></div>
+  `;
+
+  // Three.js 3D 轨迹
+  initThree(data.trajectory);
+
+  // 高度/速度图
+  const ts = data.trajectory.map(p => p.t);
+  const hs = data.trajectory.map(p => p.z);
+  const vs = data.trajectory.map(p => p.speed);
+  new Chart(document.getElementById('chart2a'), {
+    type: 'line',
+    data: {
+      labels: ts,
+      datasets: [
+        { label: '高度 (m)', data: hs, borderColor: '#00d4ff', backgroundColor: 'rgba(0,212,255,0.1)', yAxisID: 'y1', pointRadius: 0, borderWidth: 2 },
+        { label: '速度 (m/s)', data: vs, borderColor: '#ff6b35', backgroundColor: 'rgba(255,107,53,0.1)', yAxisID: 'y2', pointRadius: 0, borderWidth: 2 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#e0e6ed', font: { size: 11 } } } },
+      scales: {
+        x: { ticks: { color: '#7a8ba3', maxTicksLimit: 10 }, grid: { color: 'rgba(255,255,255,0.05)' } },
+        y1: { type: 'linear', position: 'left', ticks: { color: '#00d4ff' }, title: { display: true, text: '高度 m', color: '#00d4ff' } },
+        y2: { type: 'linear', position: 'right', ticks: { color: '#ff6b35' }, title: { display: true, text: '速度 m/s', color: '#ff6b35' }, grid: { drawOnChartArea: false } }
+      }
+    }
+  });
+
+  // 事件列表
+  const evts = data.events.map(e => `<li><span class="event-time">t=${e.t.toFixed(2)}s</span> <strong>${translateEvent(e.event)}</strong> ${eventDetail(e)}</li>`).join('');
+  document.getElementById('event-list').innerHTML = evts;
+}
+
+function translateEvent(e) {
+  const m = { RAIL_EXIT:'脱离导轨', BURNOUT:'燃尽', APOGEE:'到达顶点', MAIN_DEPLOY:'主伞展开', LANDING:'着陆' };
+  return m[e] || e;
+}
+function eventDetail(e) {
+  if (e.event === 'RAIL_EXIT') return `v=${e.v.toFixed(1)} m/s`;
+  if (e.event === 'BURNOUT') return `v=${e.v.toFixed(1)} m/s`;
+  if (e.event === 'APOGEE') return `h=${e.h.toFixed(1)} m`;
+  if (e.event === 'MAIN_DEPLOY') return `h=${e.h.toFixed(1)} m`;
+  if (e.event === 'LANDING') return `x=${e.x?.toFixed(1)||0}m, y=${e.y?.toFixed(1)||0}m`;
+  return '';
+}
+
+function initThree(traj) {
+  const canvas = document.getElementById('threeCanvas');
+  if (threeRenderer) threeRenderer.dispose();
+  threeScene = new THREE.Scene();
+  threeScene.background = new THREE.Color(0x0d1421);
+  threeScene.fog = new THREE.Fog(0x0d1421, 100, 600);
+
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  threeCamera = new THREE.PerspectiveCamera(50, w/h, 0.1, 2000);
+  threeCamera.position.set(80, -100, 60);
+
+  threeRenderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  threeRenderer.setSize(w, h);
+  threeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  threeControls = new THREE.OrbitControls(threeCamera, canvas);
+  threeControls.enableDamping = true;
+  threeControls.target.set(0, 0, 60);
+
+  // 光照
+  threeScene.add(new THREE.AmbientLight(0xffffff, 0.6));
+  const dirL = new THREE.DirectionalLight(0xffffff, 0.8);
+  dirL.position.set(50, -50, 100);
+  threeScene.add(dirL);
+
+  // 地面
+  const ground = new THREE.Mesh(
+    new THREE.CircleGeometry(200, 32),
+    new THREE.MeshBasicMaterial({ color: 0x1a2233, side: THREE.DoubleSide })
+  );
+  ground.rotation.x = -Math.PI / 2;
+  threeScene.add(ground);
+
+  // 网格
+  const grid = new THREE.GridHelper(300, 30, 0x00d4ff, 0x1a2233);
+  grid.position.y = 0.01;
+  threeScene.add(grid);
+
+  // 发射点
+  const launch = new THREE.Mesh(
+    new THREE.SphereGeometry(2),
+    new THREE.MeshBasicMaterial({ color: 0xff6b35 })
+  );
+  threeScene.add(launch);
+
+  // 轨迹线 (按高度渐变色)
+  const points = traj.map(p => new THREE.Vector3(p.x, p.y, p.z));
+  if (points.length > 1) {
+    const geom = new THREE.BufferGeometry().setFromPoints(points);
+    const colors = new Float32Array(points.length * 3);
+    points.forEach((p, i) => {
+      const t = i / (points.length - 1);
+      // 颜色: 蓝(低)→青(中)→橙(高)→红(下降)
+      const h = p.z / 150;
+      colors[i*3] = Math.min(1, h * 1.5);
+      colors[i*3+1] = 0.5 + 0.5 * Math.sin(t * Math.PI);
+      colors[i*3+2] = 1 - h * 0.7;
+    });
+    geom.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    const line = new THREE.Line(geom, new THREE.LineBasicMaterial({ vertexColors: true, linewidth: 2 }));
+    threeScene.add(line);
+
+    // 当前位置标记
+    const marker = new THREE.Mesh(
+      new THREE.SphereGeometry(1.5),
+      new THREE.MeshBasicMaterial({ color: 0xffffff })
+    );
+    marker.position.copy(points[0]);
+    threeScene.add(marker);
+
+    // 动画
+    let idx = 0;
+    function animate() {
+      requestAnimationFrame(animate);
+      if (idx < points.length) {
+        marker.position.copy(points[idx]);
+        idx = (idx + 1) % points.length;
+      }
+      threeControls.update();
+      threeRenderer.render(threeScene, threeCamera);
+    }
+    animate();
+  }
+
+  // 响应窗口
+  window.addEventListener('resize', () => {
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    threeCamera.aspect = w/h;
+    threeCamera.updateProjectionMatrix();
+    threeRenderer.setSize(w, h);
+  });
+}
+
+// ============ 阶段3: 飞控算法 ============
+async function renderControl() {
+  window._ctrlRendered = true;
+  const data = await loadJSON('control_comparison.json');
+  if (!data) return;
+
+  // 找重扰动场景
+  const heavy = data.scenarios.filter(s => s.scenario && s.scenario.includes('重扰动'));
+  const scenarios = heavy.length > 0 ? heavy : data.scenarios.slice(-3);
+
+  // 攻角时间曲线
+  const colors = ['#7a8ba3', '#00d4ff', '#ff6b35'];
+  const datasets = scenarios.map((s, i) => ({
+    label: s.label,
+    data: s.trajectory.map(p => ({ x: p.t, y: p.alpha_max })),
+    borderColor: colors[i % colors.length],
+    backgroundColor: colors[i % colors.length] + '20',
+    pointRadius: 0, borderWidth: 2, tension: 0.3
+  }));
+
+  new Chart(document.getElementById('chart3a'), {
+    type: 'line',
+    data: { datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      parsing: { xAxisKey: 'x', yAxisKey: 'y' },
+      plugins: { legend: { labels: { color: '#e0e6ed', font: { size: 11 } } },
+        title: { display: true, text: '最大攻角 vs 时间 (°)', color: '#00d4ff' } },
+      scales: {
+        x: { type: 'linear', title: { display: true, text: '时间 (s)', color: '#7a8ba3' }, ticks: { color: '#7a8ba3' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+        y: { title: { display: true, text: '攻角 (°)', color: '#7a8ba3' }, ticks: { color: '#7a8ba3' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+      }
+    }
+  });
+
+  // 改善度
+  const open = scenarios.find(s => s.label.includes('开环'));
+  const pid = scenarios.find(s => s.label.includes('PID'));
+  let html = '';
+  if (open && pid) {
+    const driftOpen = Math.hypot(open.landing_x, open.landing_y);
+    const driftPid = Math.hypot(pid.landing_x, pid.landing_y);
+    html = `
+      <div class="kpi-row">
+        <div class="kpi"><div class="label">开环落点漂移</div><div class="value bad">${driftOpen.toFixed(1)}<span class="unit">m</span></div></div>
+        <div class="kpi"><div class="label">PID落点漂移</div><div class="value good">${driftPid.toFixed(1)}<span class="unit">m</span></div></div>
+        <div class="kpi"><div class="label">改善度</div><div class="value good">${((1-driftPid/driftOpen)*100).toFixed(0)}<span class="unit">%</span></div></div>
+      </div>
+      <div class="kpi-row">
+        <div class="kpi"><div class="label">开环顶点</div><div class="value">${open.max_altitude_m.toFixed(0)}<span class="unit">m</span></div></div>
+        <div class="kpi"><div class="label">PID顶点</div><div class="value">${pid.max_altitude_m.toFixed(0)}<span class="unit">m</span></div></div>
+        <div class="kpi"><div class="label">顶点代价</div><div class="value bad">-${(open.max_altitude_m-pid.max_altitude_m).toFixed(0)}<span class="unit">m</span></div></div>
+      </div>
+      <div class="verdict warn">
+        <strong>⚠️ TVC 控制的双刃剑</strong><br/>
+        ✓ <strong>落点散布降低 ${(driftOpen-driftPid).toFixed(1)} m</strong> (从 ${driftOpen.toFixed(1)}m 集中到 ${driftPid.toFixed(1)}m)<br/>
+        ✗ <strong>顶点下降 ${(open.max_altitude_m-pid.max_altitude_m).toFixed(0)} m</strong> (推力被用于姿态控制而非上升)<br/>
+        <em>根因: 脱架速度 11 m/s 不足, 气动稳定裕度不够, PID 必须用大推力偏转补偿, 牺牲上升效率</em>
+      </div>`;
+  }
+  document.getElementById('ctrl-verdict').innerHTML = html;
+}
+
+// ============ 阶段4: 蒙特卡洛 ============
+async function renderMonteCarlo() {
+  window._mcRendered = true;
+  const data = await loadJSON('monte_carlo_results.json');
+  if (!data) return;
+
+  const openCtrl = data.controllers[0];
+  const pidCtrl = data.controllers[1];
+
+  // 散布图 (Canvas 2D)
+  const canvas = document.getElementById('chart4a');
+  const ctx = canvas.getContext('2d');
+
+  // 自定义插件绘制散点
+  const scatterPlugin = {
+    id: 'scatter',
+    afterDraw(chart) {
+      const { ctx, chartArea, scales } = chart;
+      ctx.save();
+      // 绘制每个椭圆
+      [openCtrl, pidCtrl].forEach((ctrl, i) => {
+        const s = ctrl.statistics;
+        const cx = scales.x.getPixelForValue(s.center_x);
+        const cy = scales.y.getPixelForValue(s.center_y);
+        const a = scales.x.getPixelForValue(s.center_x + s.ellipse_a_m/2) - cx;
+        const b = scales.y.getPixelForValue(s.center_y + s.ellipse_b_m/2) - cy;
+        ctx.strokeStyle = i === 0 ? 'rgba(239,68,68,0.7)' : 'rgba(16,185,129,0.7)';
+        ctx.fillStyle = i === 0 ? 'rgba(239,68,68,0.05)' : 'rgba(16,185,129,0.05)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.ellipse(cx, cy, Math.abs(a), Math.abs(b), s.ellipse_angle_deg * Math.PI/180, 0, 2*Math.PI);
+        ctx.fill(); ctx.stroke();
+      });
+      ctx.restore();
+    }
+  };
+
+  // 落点散点数据
+  const openPts = openCtrl.landings.map(p => ({ x: p.x, y: p.y }));
+  const pidPts = pidCtrl.landings.map(p => ({ x: p.x, y: p.y }));
+
+  new Chart(canvas, {
+    type: 'scatter',
+    data: {
+      datasets: [
+        { label: `开环 (CEP=${openCtrl.statistics.cep_m}m)`, data: openPts, backgroundColor: 'rgba(239,68,68,0.6)', pointRadius: 4 },
+        { label: `PID (CEP=${pidCtrl.statistics.cep_m}m)`, data: pidPts, backgroundColor: 'rgba(16,185,129,0.6)', pointRadius: 4 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#e0e6ed', font: { size: 11 } } },
+        tooltip: { callbacks: { label: (c) => `(${c.parsed.x.toFixed(1)}, ${c.parsed.y.toFixed(1)})m` } } },
+      scales: {
+        x: { title: { display: true, text: 'x (东) m', color: '#7a8ba3' }, ticks: { color: '#7a8ba3' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+        y: { title: { display: true, text: 'y (北) m', color: '#7a8ba3' }, ticks: { color: '#7a8ba3' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+      }
+    },
+    plugins: [scatterPlugin]
+  });
+
+  // 统计对比
+  const os = openCtrl.statistics, ps = pidCtrl.statistics;
+  document.getElementById('mc-stats').innerHTML = `
+    <table>
+      <thead><tr><th>指标</th><th>开环</th><th>PID</th><th>改善</th></tr></thead>
+      <tbody>
+        <tr><td>CEP (50%圆)</td><td>${os.cep_m} m</td><td>${ps.cep_m} m</td><td class="good">↓ ${((1-ps.cep_m/os.cep_m)*100).toFixed(0)}%</td></tr>
+        <tr><td>2σ椭圆 半长轴</td><td>${os.ellipse_a_m} m</td><td>${ps.ellipse_a_m} m</td><td class="good">↓ ${(os.ellipse_a_m-ps.ellipse_a_m).toFixed(0)} m</td></tr>
+        <tr><td>2σ椭圆 半短轴</td><td>${os.ellipse_b_m} m</td><td>${ps.ellipse_b_m} m</td><td class="good">↓ ${(os.ellipse_b_m-ps.ellipse_b_m).toFixed(0)} m</td></tr>
+        <tr><td>2σ椭圆 面积</td><td>${(Math.PI*os.ellipse_a_m*os.ellipse_b_m).toFixed(0)} m²</td><td>${(Math.PI*ps.ellipse_a_m*ps.ellipse_b_m).toFixed(0)} m²</td><td class="good">↓ ${((1-(ps.ellipse_a_m*ps.ellipse_b_m)/(os.ellipse_a_m*os.ellipse_b_m))*100).toFixed(0)}%</td></tr>
+        <tr><td>最大漂移</td><td>${os.max_drift_m} m</td><td>${ps.max_drift_m} m</td><td class="good">↓ ${(os.max_drift_m-ps.max_drift_m).toFixed(0)} m</td></tr>
+        <tr><td>平均顶点</td><td>${os.mean_altitude_m} m</td><td>${ps.mean_altitude_m} m</td><td class="bad">↓ ${(os.mean_altitude_m-ps.mean_altitude_m).toFixed(0)} m</td></tr>
+      </tbody>
+    </table>`;
+
+  document.getElementById('mc-verdict').innerHTML = `
+    <div class="verdict good">
+      <strong>✅ TVC 显著降低落点散布</strong><br/>
+      CEP 从 ${os.cep_m}m → ${ps.cep_m}m (降低 ${((1-ps.cep_m/os.cep_m)*100).toFixed(0)}%)<br/>
+      2σ椭圆面积缩小 ${((1-(ps.ellipse_a_m*ps.ellipse_b_m)/(os.ellipse_a_m*os.ellipse_b_m))*100).toFixed(0)}% (从 ${(Math.PI*os.ellipse_a_m*os.ellipse_b_m).toFixed(0)}m² 到 ${(Math.PI*ps.ellipse_a_m*ps.ellipse_b_m).toFixed(0)}m²)<br/>
+      最大漂移从 ${os.max_drift_m}m 降到 ${ps.max_drift_m}m
+    </div>
+    <div class="verdict warn">
+      <strong>⚠️ 但顶点高度大幅下降</strong><br/>
+      平均顶点从 ${os.mean_altitude_m}m → ${ps.mean_altitude_m}m<br/>
+      <em>结论: 当前脱架速度不足的瓶颈下, TVC 能换来精度但牺牲高度. 要同时获得"高顶点+低散布", 必须先解决脱架速度问题</em>
+    </div>`;
+}
+
+// 启动
+renderThrustWeight();
+</script>
+</body>
+</html>

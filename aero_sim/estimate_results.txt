@@ -1,0 +1,46 @@
+
+========================================
+  Estimating Performance: Estes C6-5
+========================================
+Average Thrust:      4.63 N
+Weight (Avg):        3.38 N
+Thrust/Weight Ratio: 1.37
+Rail Velocity (1m):  2.69 m/s (Target >= 15 m/s)
+Burnout Velocity:    6.87 m/s
+Burnout Altitude:    6.52 m
+Coast Altitude:      2.38 m
+Total Apogee:        8.91 m
+Verdict: ❌ FAIL (Apogee < 100m)
+
+========================================
+  Estimating Performance: Estes D12-5
+========================================
+Average Thrust:      12.12 N
+Weight (Avg):        3.45 N
+Thrust/Weight Ratio: 3.51
+Rail Velocity (1m):  7.02 m/s (Target >= 15 m/s)
+Burnout Velocity:    40.62 m/s
+Burnout Altitude:    33.51 m
+Coast Altitude:      64.37 m
+Total Apogee:        97.88 m
+Verdict: ❌ FAIL (Apogee < 100m)
+
+========================================
+  Estimating Performance: Estes E12-6
+========================================
+Average Thrust:      11.80 N
+Weight (Avg):        3.52 N
+Thrust/Weight Ratio: 3.36
+Rail Velocity (1m):  6.80 m/s (Target >= 15 m/s)
+Burnout Velocity:    56.41 m/s
+Burnout Altitude:    68.82 m
+Coast Altitude:      104.15 m
+Total Apogee:        172.97 m
+Verdict: ⚠️ MARGINAL (Apogee OK, V_rail SLOW -> Risk of weathercocking)
+
+========================================
+  Reverse Calculating Minimum Specs
+========================================
+Minimum Average Thrust for safe rail departure (>15m/s): 41.59 N
+With Thrust=41.6N and burn time=1.5s (Impulse=62.4Ns):
+ -> Apogee would be around 444.4 m

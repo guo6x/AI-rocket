@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ad Astra — 物理验证路线图</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap');
+  body { font-family: 'Inter', sans-serif; background: #060610; }
+  .glass { background: rgba(255,255,255,0.04); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); }
+  .glow-blue { box-shadow: 0 0 30px rgba(59,130,246,0.15); }
+  .glow-purple { box-shadow: 0 0 30px rgba(139,92,246,0.15); }
+  .step-line::before { content:''; position:absolute; left:27px; top:60px; bottom:-20px; width:2px; background:linear-gradient(to bottom,rgba(139,92,246,0.4),transparent); }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.3)} }
+  .live-dot { animation: pulse-dot 2s ease-in-out infinite; }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+  .float { animation: float 4s ease-in-out infinite; }
+  .star { position:absolute; border-radius:50%; background:white; opacity:0.6; animation: twinkle 3s ease-in-out infinite; }
+  @keyframes twinkle { 0%,100%{opacity:0.2} 50%{opacity:0.8} }
+  .tag { display:inline-flex; align-items:center; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:600; letter-spacing:.03em; }
+  .progress-bar { height:4px; border-radius:2px; background:rgba(255,255,255,0.08); overflow:hidden; }
+  .progress-fill { height:100%; border-radius:2px; transition:width 1s ease; }
+</style>
+</head>
+<body class="min-h-screen text-white overflow-x-hidden">
+
+<!-- Stars -->
+<div id="stars" class="fixed inset-0 pointer-events-none z-0"></div>
+
+<!-- BG gradient -->
+<div class="fixed inset-0 z-0 pointer-events-none">
+  <div style="position:absolute;top:-20%;left:-10%;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(99,57,241,0.12) 0%,transparent 70%);"></div>
+  <div style="position:absolute;bottom:-10%;right:-5%;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,0.08) 0%,transparent 70%);"></div>
+</div>
+
+<div class="relative z-10 max-w-4xl mx-auto px-6 py-12">
+
+  <!-- Header -->
+  <div class="text-center mb-16">
+    <div class="float inline-block text-6xl mb-4">🚀</div>
+    <h1 class="text-5xl font-black mb-3" style="background:linear-gradient(135deg,#a78bfa,#60a5fa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Ad Astra</h1>
+    <p class="text-gray-400 text-lg">物理验证期 · 任务路线图</p>
+    <div class="mt-4 glass inline-flex items-center gap-2 px-4 py-2 rounded-full">
+      <span class="live-dot w-2 h-2 rounded-full bg-green-400 block"></span>
+      <span class="text-sm text-green-300 font-medium">3D建模完成 — 进入物理组装阶段</span>
+    </div>
+  </div>
+
+  <!-- Progress Overview -->
+  <div class="glass rounded-2xl p-6 mb-8 glow-purple">
+    <div class="flex justify-between items-center mb-4">
+      <span class="text-sm text-gray-400 font-medium">总体进度</span>
+      <span class="mono text-purple-400 font-bold">Phase 6 / 8</span>
+    </div>
+    <div class="progress-bar mb-2">
+      <div class="progress-fill" style="width:62%;background:linear-gradient(90deg,#7c3aed,#3b82f6);"></div>
+    </div>
+    <div class="flex justify-between text-xs text-gray-500 mt-3">
+      <span>✅ 软件&仿真</span><span>⬅ 你在这里</span><span>🎯 受限飞行</span>
+    </div>
+  </div>
+
+  <!-- Steps -->
+  <div class="space-y-6">
+
+    <!-- STEP 1 -->
+    <div class="relative step-line">
+      <div class="glass rounded-2xl p-6 glow-blue ml-14">
+        <div class="absolute left-0 w-14 h-14 rounded-2xl flex items-center justify-center text-2xl" style="background:linear-gradient(135deg,#1d4ed8,#7c3aed);">🖨️</div>
+        <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
+          <div>
+            <h2 class="text-xl font-bold text-white">Step 1 · 3D打印零件</h2>
+            <p class="text-gray-400 text-sm mt-1">将 build123d 生成的 STEP 文件切片并打印</p>
+          </div>
+          <span class="tag bg-yellow-500/20 text-yellow-300 border border-yellow-500/30">⏳ 待完成</span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="bg-white/5 rounded-xl p-4">
+            <p class="text-sm font-semibold text-blue-300 mb-2">打印清单</p>
+            <ul class="text-sm text-gray-300 space-y-1">
+              <li>• 内环（inner ring）× 1</li>
+              <li>• 外环（outer ring）× 1</li>
+              <li>• 伺服安装座（servo bracket）× 2</li>
+              <li>• C型卡箍（EDF clamp）× 2</li>
+            </ul>
+          </div>
+          <div class="bg-white/5 rounded-xl p-4">
+            <p class="text-sm font-semibold text-purple-300 mb-2">打印参数</p>
+            <ul class="text-sm text-gray-300 space-y-1">
+              <li>• 材料：<span class="mono text-green-400">PLA+ 或 PETG</span></li>
+              <li>• 层高：0.2mm</li>
+              <li>• 填充率：40%（环形件）</li>
+              <li>• 销轴孔预留：+0.2mm（后铰孔）</li>
+            </ul>
+          </div>
+        </div>
+        <div class="mt-3 bg-orange-900/30 border border-orange-500/30 rounded-xl p-3">
+          <p class="text-orange-300 text-sm">⚠️ 销轴孔（Φ4mm）打印后用4mm铰刀手工修整，保证转动顺滑无卡顿</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="relative step-line">
+      <div class="glass rounded-2xl p-6 ml-14">
+        <div class="absolute left-0 w-14 h-14 rounded-2xl flex items-center justify-center text-2xl" style="background:linear-gradient(135deg,#065f46,#0891b2);">🔧</div>
+        <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
+          <div>
+            <h2 class="text-xl font-bold text-white">Step 2 · 机械组装</h2>
+            <p class="text-gray-400 text-sm mt-1">组装万向节，安装 SG92R 和 EDF 涵道</p>
+          </div>
+          <span class="tag bg-gray-500/20 text-gray-400 border border-gray-500/30">🔒 等待打印</span>
+        </div>
+        <div class="space-y-2 text-sm text-gray-300">
+          <div class="flex items-center gap-3 bg-white/5 rounded-lg px-4 py-3">
+            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-blue-600">1</span>
+            <span>内外环通过 Φ4mm 销轴连接，销轴两端用开口销或热熔固定</span>
+          </div>
+          <div class="flex items-center gap-3 bg-white/5 rounded-lg px-4 py-3">
+            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-blue-600">2</span>
+            <span>Roll 伺服安装到外环右侧安装座，Pitch 伺服安装到外环后侧</span>
+          </div>
+          <div class="flex items-center gap-3 bg-white/5 rounded-lg px-4 py-3">
+            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-blue-600">3</span>
+            <span>1.5mm 钢丝推拉杆连接伺服力臂和内/外环球头销孔，调节至舵机90°时万向节归零</span>
+          </div>
+          <div class="flex items-center gap-3 bg-white/5 rounded-lg px-4 py-3">
+            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-blue-600">4</span>
+            <span>EDF 涵道插入内环，C型卡箍对夹，M3 螺栓锁紧</span>
+          </div>
+          <div class="flex items-center gap-3 bg-white/5 rounded-lg px-4 py-3">
+            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-blue-600">5</span>
+            <span>关节处涂少量<strong class="text-yellow-300">硅脂</strong>（增加阻尼，改善 PID 收敛！）</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="relative step-line">
+      <div class="glass rounded-2xl p-6 ml-14">
+        <div class="absolute left-0 w-14 h-14 rounded-2xl flex items-center justify-center text-2xl" style="background:linear-gradient(135deg,#7c2d12,#dc2626);">⚡</div>
+        <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
+          <div>
+            <h2 class="text-xl font-bold text-white">Step 3 · 电气集成</h2>
+            <p class="text-gray-400 text-sm mt-1">连接 STM32 飞控、ESC 电调和电源系统</p>
+          </div>
+          <span class="tag bg-gray-500/20 text-gray-400 border border-gray-500/30">🔒 等待组装</span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+          <div class="bg-white/5 rounded-xl p-4 text-center">
+            <p class="text-3xl mb-1">🔋</p>
+            <p class="text-sm font-semibold text-red-300">6S LiPo</p>
+            <p class="text-xs text-gray-400 mt-1">→ ESC → EDF<br/>→ BEC 5V → STM32+伺服</p>
+          </div>
+          <div class="bg-white/5 rounded-xl p-4 text-center">
+            <p class="text-3xl mb-1">🎛️</p>
+            <p class="text-sm font-semibold text-blue-300">STM32 引脚</p>
+            <p class="text-xs text-gray-400 mt-1">PA6 → Pitch 伺服<br/>PA7 → Roll 伺服</p>
+          </div>
+          <div class="bg-white/5 rounded-xl p-4 text-center">
+            <p class="text-3xl mb-1">📡</p>
+            <p class="text-sm font-semibold text-purple-300">ESP8266</p>
+            <p class="text-xs text-gray-400 mt-1">WiFi UDP → 地面站<br/>实时遥测监控</p>
+          </div>
+        </div>
+        <div class="bg-red-900/30 border border-red-500/30 rounded-xl p-3">
+          <p class="text-red-300 text-sm">🔴 <strong>高压警告</strong>：6S LiPo 满电 25.2V，操作前确保 EDF 桨叶无人靠近，先不装桨做空载测试</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="relative step-line">
+      <div class="glass rounded-2xl p-6 ml-14">
+        <div class="absolute left-0 w-14 h-14 rounded-2xl flex items-center justify-center text-2xl" style="background:linear-gradient(135deg,#1e3a8a,#4f46e5);">🧪</div>
+        <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
+          <div>
+            <h2 class="text-xl font-bold text-white">Step 4 · 地面静态测试</h2>
+            <p class="text-gray-400 text-sm mt-1">固定台架，不上电 EDF，先验证指令链路</p>
+          </div>
+          <span class="tag bg-gray-500/20 text-gray-400 border border-gray-500/30">🔒 等待电气</span>
+        </div>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between bg-white/5 rounded-lg px-4 py-3">
+            <span class="text-gray-300">串口发 <span class="mono text-green-400">set_servo:45,135</span></span>
+            <span class="text-green-300">→ 两轴舵机偏转验证</span>
+          </div>
+          <div class="flex justify-between bg-white/5 rounded-lg px-4 py-3">
+            <span class="text-gray-300">串口发 <span class="mono text-red-400">estop</span></span>
+            <span class="text-green-300">→ 舵机归中，遥测停止</span>
+          </div>
+          <div class="flex justify-between bg-white/5 rounded-lg px-4 py-3">
+            <span class="text-gray-300">手动倾斜台架 + <span class="mono text-purple-400">auto_on</span></span>
+            <span class="text-green-300">→ 舵机应反向响应</span>
+          </div>
+          <div class="flex justify-between bg-white/5 rounded-lg px-4 py-3">
+            <span class="text-gray-300">串口发 <span class="mono text-yellow-400">deploy_chute</span></span>
+            <span class="text-green-300">→ PB0 舵机拔销动作</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="relative step-line">
+      <div class="glass rounded-2xl p-6 ml-14">
+        <div class="absolute left-0 w-14 h-14 rounded-2xl flex items-center justify-center text-2xl" style="background:linear-gradient(135deg,#064e3b,#059669);">🎯</div>
+        <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
+          <div>
+            <h2 class="text-xl font-bold text-white">Step 5 · PID 实物调参</h2>
+            <p class="text-gray-400 text-sm mt-1">EDF 不起飞，手扶状态调出基础稳定性</p>
+          </div>
+          <span class="tag bg-gray-500/20 text-gray-400 border border-gray-500/30">🔒 等待静态测试</span>
+        </div>
+        <div class="bg-white/5 rounded-xl p-4 mb-3">
+          <p class="text-sm font-semibold text-emerald-300 mb-3">仿真推荐起始参数</p>
+          <div class="grid grid-cols-3 gap-3 text-center">
+            <div class="bg-black/30 rounded-lg p-3">
+              <p class="mono text-2xl font-bold text-blue-400">1.2</p>
+              <p class="text-xs text-gray-400 mt-1">Kp（当前）</p>
+            </div>
+            <div class="bg-black/30 rounded-lg p-3">
+              <p class="mono text-2xl font-bold text-gray-500">0.0</p>
+              <p class="text-xs text-gray-400 mt-1">Ki（先禁用）</p>
+            </div>
+            <div class="bg-black/30 rounded-lg p-3">
+              <p class="mono text-2xl font-bold text-purple-400">0.4</p>
+              <p class="text-xs text-gray-400 mt-1">Kd（当前）</p>
+            </div>
+          </div>
+          <p class="text-xs text-yellow-300 mt-3">⚠️ 仿真极限：Kp &gt; 2.0 在 50ms 延迟下必震荡。如果出现高频抖动先降 Kp，再加 Kd</p>
+        </div>
+        <p class="text-sm text-gray-400">调参口诀：<span class="text-white">Kp 决定反应速度，Kd 抑制震荡，Ki 等稳定后再微调</span></p>
+      </div>
+    </div>
+
+    <!-- STEP 6 -->
+    <div class="relative">
+      <div class="glass rounded-2xl p-6 ml-14" style="border-color:rgba(251,191,36,0.3);box-shadow:0 0 40px rgba(251,191,36,0.1);">
+        <div class="absolute left-0 w-14 h-14 rounded-2xl flex items-center justify-center text-2xl" style="background:linear-gradient(135deg,#78350f,#f59e0b);">🚁</div>
+        <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
+          <div>
+            <h2 class="text-xl font-bold text-white">Step 6 · 牵引绳悬停测试</h2>
+            <p class="text-gray-400 text-sm mt-1">⭐ 里程碑：第一次真实飞行</p>
+          </div>
+          <span class="tag bg-yellow-500/20 text-yellow-300 border border-yellow-500/30">🎯 终极目标</span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <p class="text-sm font-semibold text-yellow-300 mb-2">安全配置</p>
+            <ul class="text-sm text-gray-300 space-y-2">
+              <li class="flex gap-2"><span class="text-yellow-400">▶</span>4根牵引绳限制高度 ≤ 50cm</li>
+              <li class="flex gap-2"><span class="text-yellow-400">▶</span>地面站监控 pitch/roll ≤ ±5°</li>
+              <li class="flex gap-2"><span class="text-yellow-400">▶</span>保持手持 estop 随时准备</li>
+              <li class="flex gap-2"><span class="text-yellow-400">▶</span>空旷场地，无关人员清场</li>
+            </ul>
+          </div>
+          <div>
+            <p class="text-sm font-semibold text-green-300 mb-2">通过标准</p>
+            <ul class="text-sm text-gray-300 space-y-2">
+              <li class="flex gap-2"><span class="text-green-400">✓</span>pitch/roll 在 ±5° 内稳定 10s</li>
+              <li class="flex gap-2"><span class="text-green-400">✓</span>地面站曲线无异常震荡</li>
+              <li class="flex gap-2"><span class="text-green-400">✓</span>estop 响应 &lt; 0.5s</li>
+            </ul>
+          </div>
+        </div>
+        <div class="bg-yellow-900/30 border border-yellow-500/40 rounded-xl p-4 text-center">
+          <p class="text-yellow-200 font-semibold">🎊 这一步成功 = TVC 飞控算法在真实物理世界验证完毕</p>
+          <p class="text-yellow-400 text-sm mt-1">Ad Astra 项目进入下一个纪元</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Hardware Shopping List -->
+  <div class="glass rounded-2xl p-6 mt-10">
+    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">🛒 <span>采购清单（还没买的）</span></h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div class="flex items-center justify-between bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
+        <div>
+          <p class="font-medium text-sm">70/90mm EDF 涵道风机 + ESC</p>
+          <p class="text-xs text-gray-400 mt-0.5">推荐：Freewing 70mm / 迅雷 70mm</p>
+        </div>
+        <span class="tag bg-red-500/20 text-red-300 border border-red-500/30">🔴 最优先</span>
+      </div>
+      <div class="flex items-center justify-between bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
+        <div>
+          <p class="font-medium text-sm">6S LiPo 飞行电池</p>
+          <p class="text-xs text-gray-400 mt-0.5">建议：2200mAh 6S 50C，带 XT60 接头</p>
+        </div>
+        <span class="tag bg-red-500/20 text-red-300 border border-red-500/30">🔴 最优先</span>
+      </div>
+      <div class="flex items-center justify-between bg-yellow-500/10 border border-yellow-500/20 rounded-xl px-4 py-3">
+        <div>
+          <p class="font-medium text-sm">Φ4mm 不锈钢销轴 + 开口销</p>
+          <p class="text-xs text-gray-400 mt-0.5">各 × 4，用于万向节枢轴</p>
+        </div>
+        <span class="tag bg-yellow-500/20 text-yellow-300 border border-yellow-500/30">🟡 配件</span>
+      </div>
+      <div class="flex items-center justify-between bg-yellow-500/10 border border-yellow-500/20 rounded-xl px-4 py-3">
+        <div>
+          <p class="font-medium text-sm">1.5mm 不锈钢钢丝 + 球头连杆</p>
+          <p class="text-xs text-gray-400 mt-0.5">推拉杆用，长约15cm × 2</p>
+        </div>
+        <span class="tag bg-yellow-500/20 text-yellow-300 border border-yellow-500/30">🟡 配件</span>
+      </div>
+      <div class="flex items-center justify-between bg-blue-500/10 border border-blue-500/20 rounded-xl px-4 py-3">
+        <div>
+          <p class="font-medium text-sm">Φ4mm 手动铰刀</p>
+          <p class="text-xs text-gray-400 mt-0.5">修整销轴孔，保证顺滑转动</p>
+        </div>
+        <span class="tag bg-blue-500/20 text-blue-300 border border-blue-500/30">🔵 工具</span>
+      </div>
+      <div class="flex items-center justify-between bg-blue-500/10 border border-blue-500/20 rounded-xl px-4 py-3">
+        <div>
+          <p class="font-medium text-sm">硅脂润滑脂</p>
+          <p class="text-xs text-gray-400 mt-0.5">万向节关节阻尼 —— 改善 PID 稳定性</p>
+        </div>
+        <span class="tag bg-blue-500/20 text-blue-300 border border-blue-500/30">🔵 工具</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="text-center mt-12 text-gray-600 text-sm">
+    <p>Ad Astra · 让所有人都有能力探索太空 🌌</p>
+    <p class="mt-1 mono text-xs">firmware v6 · TVC + Recovery · PID Kp=1.2 Kd=0.4</p>
+  </div>
+
+</div>
+
+<script>
+// Generate stars
+const container = document.getElementById('stars');
+for(let i=0;i<80;i++){
+  const s = document.createElement('div');
+  s.className = 'star';
+  const size = Math.random()*2+1;
+  s.style.cssText = `width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-delay:${Math.random()*3}s;animation-duration:${2+Math.random()*3}s;`;
+  container.appendChild(s);
+}
+</script>
+</body>
+</html>
