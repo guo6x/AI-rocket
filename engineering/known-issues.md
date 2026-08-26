@@ -7,7 +7,7 @@ The list is evidence-based as of audited input commit `b6006c9`. Priorities refl
 ### R0-001 — WiFi command downlink is incomplete
 
 - Status: `BLOCKED`
-- Evidence: `esp8266_firmware/src/main.cpp` only reads `Serial` and broadcasts UDP. `ground_station/ui/main_window.py` calls `UdpReader.send(cmd_json)` without `target_addr`.
+- Evidence: `esp8266_firmware/src/main.cpp` only reads `Serial` and broadcasts UDP. `ground_station/ui/main_window.py` calls `UdpReader.send(...)` without `target_addr`.
 - Impact: WiFi arm, E-stop, PID, servo, or recovery commands are not delivered end to end, despite historical claims.
 - Required closure: define a command transport and acknowledgement/safety contract, implement both routing segments, then perform software and restrained hardware tests. No architecture rewrite was attempted in R0.
 

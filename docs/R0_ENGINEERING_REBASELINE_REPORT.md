@@ -59,9 +59,10 @@ R0 makes `engineering/current-baseline.yaml` the status router, production sourc
 
 ### Ground station and ESP8266
 
-- The ESP8266 only reads serial telemetry and broadcasts UDP. It never receives UDP commands or forwards them to serial.
-- `UdpReader.send()` requires a target address, while `MainWindow.on_send_command()` passes none. Therefore the historical bidirectional WiFi claim is false.
-- Ground-station commands are encoded as JSON while production firmware expects plaintext commands, another unresolved protocol mismatch.
+- The serial-mode plaintext command path exists: `CommandPanel` emits commands such as `arm`, `auto_on`, `set_servo:...`, and `set_pid:...`; `SerialReader.send()` appends only a newline before transmission.
+- WiFi-mode command downlink is incomplete because `UdpReader.send()` requires a target address while `MainWindow.on_send_command()` provides none.
+- The ESP8266 firmware does not receive UDP command packets or forward them to STM32 serial; it only reads serial telemetry and broadcasts UDP.
+- No end-to-end WiFi command acknowledgement or safety contract exists.
 - The duplicate quick recovery-deploy action bypassed the dedicated confirmation path and was removed. The dedicated confirmed control remains.
 - A queued Qt signal test previously asserted without pumping the event loop. The test now waits through `QCoreApplication.processEvents()`.
 
