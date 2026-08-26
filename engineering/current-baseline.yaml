@@ -1,14 +1,15 @@
 schema_version: 1
 project: "Project Ad Astra / AI-rocket"
-baseline_name: "R0 Engineering Re-baseline"
+baseline_name: "R1 Governed Command & Safety Link Closure"
 audit_date: "2026-08-26"
-last_audited_commit: "b6006c9429ae1a2950917a61b4d2e1cf511ab5ed"
+baseline_commit: "d40585f77e1b73d270dd9972823a5939cbfcd81a"
+prior_r0_head: "22edc4f31f932ebc1323698f502e6eb1b95981bc"
 
-current_phase: "R0 re-baseline and safe EDF TVC bench preparation"
+current_phase: "R1 governed plaintext command and safety link"
 current_objective: >-
-  Establish a trustworthy engineering baseline for the safe EDF TVC experiment,
-  avionics, control software, and repeatable verification without redesigning the
-  vehicle or treating historical solid-motor work as current.
+  Establish deterministic command parsing, fail-safe E-STOP/reset semantics,
+  isolated transport boundaries, software-tested USB/WiFi command routing, and
+  visible ACK/NACK/timeout status without claiming hardware verification.
 
 current_physical_platform:
   intended_platform: "restrained EDF TVC bench / experimental avionics platform"
@@ -25,10 +26,10 @@ current_physical_platform:
     - "physical recovery assembly"
 
 current_blockers:
-  - id: "R0-001"
-    summary: "WiFi command downlink is not implemented end to end."
-  - id: "R0-003"
-    summary: "Emergency-stop release semantics are not hardware-tested and can retain control state."
+  - id: "R1-001"
+    summary: "The plaintext UDP command link has no authentication, integrity protection, or request ID."
+  - id: "R1-002"
+    summary: "No repeatable physical USB/UART/WiFi/servo command-link evidence exists."
   - id: "R0-006"
     summary: "No PID profile is hardware-qualified; source values conflict."
   - id: "R0-007"
@@ -45,6 +46,7 @@ authoritative_sources:
     - "engineering/parameter-registry.yaml"
     - "engineering/verification-status.yaml"
     - "engineering/known-issues.md"
+    - "engineering/command-safety-contract.yaml"
   implementation:
     - "flight_computer/src/**"
     - "esp8266_firmware/src/**"
@@ -54,6 +56,7 @@ authoritative_sources:
     - "scripts/check.py"
     - "flight_computer/test/test_kalman.cpp"
     - "ground_station/tests/**"
+    - "esp8266_firmware/test/**"
     - "scripts/simulation_smoke.py"
 
 deprecated_sources:
@@ -69,9 +72,11 @@ deprecated_sources:
     - "generate_rocket*.py and generated CAD as current vehicle authority"
 
 safety_scope:
-  current_focus: "low-energy software, avionics, simulation, and restrained EDF bench validation"
-  excluded_from_r0:
+  current_focus: "software and simulated command-link verification; restrained hardware preparation only"
+  excluded_from_r1:
     - "high-energy propulsion changes"
     - "free-flight readiness claims"
     - "new CAD architecture"
     - "hardware procurement decisions"
+    - "physical PID tuning"
+    - "physical recovery triggering"

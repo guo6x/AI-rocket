@@ -22,10 +22,18 @@ void FlightStateMachine::reset() {
 }
 
 void FlightStateMachine::arm(float ground_alt, unsigned long now) {
-    if (!chute_deployed) {
+    if (!chute_deployed && state == FS_IDLE) {
         state = FS_ARMED;
         launch_alt = ground_alt;
         arm_start_time = now;
+        alt_idx = 0;
+        launch_counter = 0;
+    }
+}
+
+void FlightStateMachine::disarm() {
+    if (state == FS_ARMED) {
+        state = FS_IDLE;
         alt_idx = 0;
         launch_counter = 0;
     }

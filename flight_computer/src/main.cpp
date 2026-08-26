@@ -11,6 +11,8 @@
 // 包含新模块
 #include "algorithms/kalman.h"
 #include "algorithms/pid.h"
+#include "command_line_buffer.h"
+#include "command_processor.h"
 #include "flight_fsm.h"
 
 // ========== 硬件串口显式注册 ==========
@@ -40,88 +42,112 @@ KalmanFilter kfPitch, kfRoll;
 // 同步自 aero_sim/control_simulation.py (重扰动下落点漂移 105m→22m)
 PIDController pidPitch(PIDController::FLIGHT), pidRoll(PIDController::FLIGHT);
 FlightStateMachine fsm;
+CommandProcessor commandProcessor;
 
 bool auto_mode = false;
-bool estop_active = false;
 
 // ========== 时间追踪 ==========
 unsigned long lastTime = 0;
 
-// ========== 上行指令缓冲 ==========
-String cmdBuffer = "";
+// ========== 每个传输接口拥有独立的命令边界 ==========
+CommandLineBuffer serialCommandBuffer;
+CommandLineBuffer serial2CommandBuffer;
 
-// ========== 指令处理函数 ==========
-void processCommand(String cmd) {
-  cmd.trim();
+void neutralizeTvc() {
+  servoPitch.write(90);
+  servoRoll.write(90);
+}
 
-  if (cmd == "estop") {
-    estop_active = true;
-    servoPitch.write(90);
-    servoRoll.write(90);
-    Serial.println("[ESTOP] !!! EMERGENCY STOP ACTIVATED !!! Servos centered.");
-  } else if (cmd.startsWith("set_servo:")) {
-    if (estop_active) {
-      Serial.println("[CMD] Rejected: ESTOP is active. Send 'reset' to unlock.");
-      return;
+void applyCommandDecision(const CommandDecision& decision) {
+  if (!decision.accepted()) return;
+
+  switch (decision.action) {
+    case ACTION_ARM:
+      fsm.arm(bmp.readAltitude(1013.25), millis());
+      break;
+    case ACTION_AUTO_ON:
+      auto_mode = true;
+      pidPitch.reset();
+      pidRoll.reset();
+      break;
+    case ACTION_AUTO_OFF:
+      auto_mode = false;
+      pidPitch.reset();
+      pidRoll.reset();
+      neutralizeTvc();
+      break;
+    case ACTION_SET_SERVO:
+      servoPitch.write(decision.servo_pitch);
+      servoRoll.write(decision.servo_roll);
+      break;
+    case ACTION_SET_PID:
+      pidPitch.setGains(decision.kp, decision.ki, decision.kd);
+      pidRoll.setGains(decision.kp, decision.ki, decision.kd);
+      break;
+    case ACTION_ESTOP:
+      auto_mode = false;
+      pidPitch.reset();
+      pidRoll.reset();
+      neutralizeTvc();
+      break;
+    case ACTION_RESET:
+      auto_mode = false;
+      pidPitch.reset();
+      pidRoll.reset();
+      neutralizeTvc();
+      fsm.disarm();
+      break;
+    case ACTION_DEPLOY_CHUTE: {
+      const bool was_deployed = fsm.isChuteDeployed();
+      fsm.deployChute("GROUND_CMD");
+      if (!was_deployed && fsm.isChuteDeployed()) {
+        servoRecovery.write(0);
+        auto_mode = false;
+        commandProcessor.disableAutoForSafety();
+        neutralizeTvc();
+      }
+      break;
     }
-    String params = cmd.substring(10);
-    int commaIdx = params.indexOf(',');
-    if (commaIdx > 0) {
-      int pitchAngle = constrain(params.substring(0, commaIdx).toInt(), 0, 180);
-      int rollAngle = constrain(params.substring(commaIdx + 1).toInt(), 0, 180);
-      servoPitch.write(pitchAngle);
-      servoRoll.write(rollAngle);
-      Serial.print("[CMD] Servo set: pitch=");
-      Serial.print(pitchAngle);
-      Serial.print(" roll=");
-      Serial.println(rollAngle);
+    case ACTION_PROFILE_FLIGHT:
+      pidPitch.setProfile(PIDController::FLIGHT);
+      pidRoll.setProfile(PIDController::FLIGHT);
+      break;
+    case ACTION_PROFILE_TESTBENCH:
+      pidPitch.setProfile(PIDController::TESTBENCH);
+      pidRoll.setProfile(PIDController::TESTBENCH);
+      break;
+    case ACTION_NONE:
+      break;
+  }
+}
+
+void sendCommandResponse(Print& output, const CommandDecision& decision) {
+  if (decision.accepted()) {
+    output.print("ACK ");
+    output.println(decision.command_name);
+  } else {
+    output.print("NACK ");
+    output.print(CommandProcessor::resultText(decision.result));
+    output.print(" ");
+    output.println(decision.command_name);
+  }
+}
+
+void handleCommandInput(Stream& input, Print& response,
+                        CommandLineBuffer& buffer) {
+  while (input.available()) {
+    const CommandLineEvent event = buffer.push(static_cast<char>(input.read()));
+    if (event == COMMAND_LINE_OVERLONG) {
+      response.println("NACK overlong unknown");
+    } else if (event == COMMAND_LINE_MALFORMED) {
+      response.println("NACK malformed unknown");
+    } else if (event == COMMAND_LINE_READY) {
+      const CommandDecision decision =
+          commandProcessor.process(buffer.line(), fsm.isChuteDeployed(),
+                                   fsm.getState() == FS_IDLE);
+      applyCommandDecision(decision);
+      sendCommandResponse(response, decision);
     }
-  } else if (cmd.startsWith("set_pid:")) {
-    String params = cmd.substring(8);
-    int c1 = params.indexOf(',');
-    int c2 = params.indexOf(',', c1 + 1);
-    if (c1 > 0 && c2 > c1) {
-      float kp = params.substring(0, c1).toFloat();
-      float ki = params.substring(c1 + 1, c2).toFloat();
-      float kd = params.substring(c2 + 1).toFloat();
-      pidPitch.setGains(kp, ki, kd);
-      pidRoll.setGains(kp, ki, kd);
-      Serial.print("[CMD] PID set: Kp=");
-      Serial.print(kp, 4);
-      Serial.print(" Ki=");
-      Serial.print(ki, 4);
-      Serial.print(" Kd=");
-      Serial.println(kd, 4);
-    }
-  } else if (cmd == "reset") {
-    estop_active = false;
-    Serial.println("[CMD] ESTOP released. System unlocked.");
-  } else if (cmd == "auto_on") {
-    auto_mode = true;
-    pidPitch.reset();
-    pidRoll.reset();
-    Serial.println("[CMD] AUTO MODE ON. PID stabilization active.");
-  } else if (cmd == "auto_off") {
-    auto_mode = false;
-    servoPitch.write(90);
-    servoRoll.write(90);
-    Serial.println("[CMD] AUTO MODE OFF. Manual control.");
-  } else if (cmd == "set_profile_flight") {
-    // 切换到飞行用 PID 参数 (Kp=1.0/Ki=0.1/Kd=0.3 + 增益调度)
-    pidPitch.setProfile(PIDController::FLIGHT);
-    pidRoll.setProfile(PIDController::FLIGHT);
-    Serial.println("[CMD] PID profile → FLIGHT (Kp=1.0/Ki=0.1/Kd=0.3)");
-  } else if (cmd == "set_profile_testbench") {
-    // 切换到倒立摆测试台 PID 参数 (Kp=1.65/Ki=0.0/Kd=0.45)
-    pidPitch.setProfile(PIDController::TESTBENCH);
-    pidRoll.setProfile(PIDController::TESTBENCH);
-    Serial.println("[CMD] PID profile → TESTBENCH (Kp=1.65/Ki=0.0/Kd=0.45)");
-  } else if (cmd == "deploy_chute") {
-    fsm.deployChute("GROUND_CMD");
-  } else if (cmd == "arm") {
-    fsm.arm(bmp.readAltitude(1013.25), millis());
-    Serial.print("[RECOV] ARMED. Ground alt: ");
-    Serial.println(bmp.readAltitude(1013.25));
   }
 }
 
@@ -168,29 +194,10 @@ void setup() {
 }
 
 void loop() {
-  while (Serial2.available()) {
-    char c = Serial2.read();
-    if (c == '\n') {
-      processCommand(cmdBuffer);
-      cmdBuffer = "";
-    } else if (c != '\r') {
-      cmdBuffer += c;
-      if (cmdBuffer.length() > 128) cmdBuffer = "";
-    }
-  }
+  handleCommandInput(Serial2, Serial2, serial2CommandBuffer);
+  handleCommandInput(Serial, Serial, serialCommandBuffer);
 
-  while (Serial.available()) {
-    char c = Serial.read();
-    if (c == '\n') {
-      processCommand(cmdBuffer);
-      cmdBuffer = "";
-    } else if (c != '\r') {
-      cmdBuffer += c;
-      if (cmdBuffer.length() > 128) cmdBuffer = "";
-    }
-  }
-
-  if (estop_active) {
+  if (commandProcessor.estopLatched()) {
     delay(50);
     return;
   }
@@ -235,8 +242,8 @@ void loop() {
   if (!was_chute_deployed && fsm.isChuteDeployed()) {
     servoRecovery.write(0);
     auto_mode = false;
-    servoPitch.write(90);
-    servoRoll.write(90);
+    commandProcessor.disableAutoForSafety();
+    neutralizeTvc();
     Serial.println("[RECOV] !!! CHUTE DEPLOYED !!!");
   }
 
@@ -256,6 +263,7 @@ void loop() {
       ", \"roll_flt\":" + String(roll_flt, 2) + ", \"yaw\":" + String(yaw, 2) +
       ", \"alt\":" + String(altitude, 2) +
       ", \"auto\":" + String(auto_mode ? 1 : 0) +
+      ", \"control_state\":\"" + String(CommandProcessor::stateText(commandProcessor.state())) + "\"" +
       ", \"chute\":" + String(fsm.isChuteDeployed() ? 1 : 0) + ", \"fstate\":\"" +
       String(fsm.getStateStr()) + "\", \"batt\":7.4}";
 

@@ -85,7 +85,7 @@ class CommandPanel(QWidget):
 
         # ===== 安全锁 + 紧急按钮行 =====
         arm_layout = QHBoxLayout()
-        self.arm_checkbox = QCheckBox("🔒 Disarmed")
+        self.arm_checkbox = QCheckBox("🔒 Controls Locked")
         self.arm_checkbox.setFont(QFont("Consolas", 9, QFont.Bold))
         self.arm_checkbox.setStyleSheet("color: #4caf50;")
         self.arm_checkbox.toggled.connect(self.on_arm_toggled)
@@ -131,6 +131,15 @@ class CommandPanel(QWidget):
         arm_layout.addWidget(self.reset_btn)
         arm_layout.addWidget(self.estop_btn)
         main_layout.addLayout(arm_layout)
+
+        status_layout = QHBoxLayout()
+        self.link_status_label = QLabel("LINK: DISCONNECTED")
+        self.command_status_label = QLabel("COMMAND: IDLE")
+        self.link_status_label.setFont(QFont("Consolas", 8, QFont.Bold))
+        self.command_status_label.setFont(QFont("Consolas", 8, QFont.Bold))
+        status_layout.addWidget(self.link_status_label)
+        status_layout.addWidget(self.command_status_label)
+        main_layout.addLayout(status_layout)
 
         # ===== 双轴舵机 =====
         servo_group = QGroupBox("舵机 (Pitch / Roll)")
@@ -224,10 +233,10 @@ class CommandPanel(QWidget):
                   self.kp_spin, self.ki_spin, self.kd_spin, self.pid_send_btn]:
             w.setEnabled(checked)
         if checked:
-            self.arm_checkbox.setText("🔓 Armed")
+            self.arm_checkbox.setText("🔓 Controls Unlocked")
             self.arm_checkbox.setStyleSheet("color: #f44336; font-weight: bold;")
         else:
-            self.arm_checkbox.setText("🔒 Disarmed")
+            self.arm_checkbox.setText("🔒 Controls Locked")
             self.arm_checkbox.setStyleSheet("color: #4caf50;")
 
     def on_send_servo(self):
@@ -269,3 +278,14 @@ class CommandPanel(QWidget):
         if text:
             self.send_command.emit(text)
             self.cmd_input.clear()
+
+    def set_link_state(self, state):
+        self.link_status_label.setText(f"LINK: {state}")
+
+    def set_command_status(self, status, command="", detail=""):
+        text = f"COMMAND: {status}"
+        if command:
+            text += f" {command}"
+        if detail:
+            text += f" ({detail})"
+        self.command_status_label.setText(text)
