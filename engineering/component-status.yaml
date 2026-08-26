@@ -1,0 +1,207 @@
+schema_version: 1
+audit_date: "2026-08-26"
+components:
+  flight_computer:
+    status: "TESTED_SOFTWARE"
+    implementation_source:
+      - "flight_computer/src/main.cpp"
+      - "flight_computer/src/flight_fsm.cpp"
+      - "flight_computer/src/algorithms/**"
+    test_source:
+      - "flight_computer/test/test_kalman.cpp"
+      - "PlatformIO bluepill_f103c8 source build"
+    hardware_evidence: "UNKNOWN; historical documents claim operation but no repeatable evidence bundle is tracked."
+    known_gaps:
+      - "No hardware-in-loop test."
+      - "Sensor initialization reports MPU6500 OK without checking the transaction result."
+      - "Command parsing and E-stop semantics lack unit tests."
+    notes: "Production code exists and builds; this is not a flight-readiness claim."
+
+  imu:
+    status: "IMPLEMENTED"
+    implementation_source:
+      - "flight_computer/src/main.cpp"
+      - "flight_computer/src/algorithms/kalman.cpp"
+    test_source:
+      - "flight_computer/test/test_kalman.cpp"
+    hardware_evidence: "UNKNOWN"
+    known_gaps:
+      - "No checked I2C identity/read-length handling in production."
+      - "No calibration record or sensor noise characterization."
+    notes: "Kalman math is native-tested; physical sensor behavior is not repository-verified."
+
+  barometer:
+    status: "IMPLEMENTED"
+    implementation_source:
+      - "flight_computer/src/main.cpp"
+    test_source:
+      - "STM32 source build only"
+    hardware_evidence: "UNKNOWN"
+    known_gaps:
+      - "Fixed 1013.25 hPa sea-level pressure."
+      - "No failure behavior after bmp.begin() failure."
+      - "No repeatable altitude-noise or calibration evidence."
+    notes: "Used by arming and FSM altitude history."
+
+  tvc_servo_control:
+    status: "IMPLEMENTED"
+    implementation_source:
+      - "flight_computer/src/main.cpp"
+      - "flight_computer/src/algorithms/pid.cpp"
+    test_source:
+      - "STM32 source build"
+      - "exploratory dynamics simulations"
+    hardware_evidence: "UNKNOWN"
+    known_gaps:
+      - "No verified sign, neutral, travel, load, or rate calibration."
+      - "No PID profile is hardware-qualified."
+    notes: "Simulation models do not establish physical stability."
+
+  recovery_servo:
+    status: "IMPLEMENTED"
+    implementation_source:
+      - "flight_computer/src/main.cpp"
+      - "flight_computer/src/flight_fsm.cpp"
+    test_source:
+      - "native FSM tests"
+      - "STM32 source build"
+    hardware_evidence: "UNKNOWN"
+    known_gaps:
+      - "No physical mechanism test record."
+      - "No load, jam, repeated-cycle, or deployment timing evidence."
+    notes: "Software command and state transition exist; hardware deployment is unverified."
+
+  esp8266:
+    status: "TESTED_SOFTWARE"
+    implementation_source:
+      - "esp8266_firmware/src/main.cpp"
+    test_source:
+      - "PlatformIO nodemcuv2 source build"
+    hardware_evidence: "UNKNOWN"
+    known_gaps:
+      - "No inbound UDP command handling."
+      - "No packet-loss, reconnect, or throughput test record."
+    notes: "Firmware implements serial-to-UDP broadcast only."
+
+  telemetry_uplink:
+    status: "IMPLEMENTED"
+    implementation_source:
+      - "flight_computer/src/main.cpp"
+      - "esp8266_firmware/src/main.cpp"
+      - "ground_station/core/udp_reader.py"
+    test_source:
+      - "ground_station/tests/test_phase5_7.py"
+      - "ground_station/tests/test_telemetry_parser.py"
+    hardware_evidence: "UNKNOWN"
+    known_gaps:
+      - "No end-to-end hardware packet-loss or range evidence."
+    notes: "Each software segment exists; integrated physical proof is absent."
+
+  wifi_command_downlink:
+    status: "BLOCKED"
+    implementation_source:
+      - "ground_station/core/udp_reader.py has an optional send primitive"
+    test_source:
+      - "ground_station/tests/test_wifi_link_contract.py"
+    hardware_evidence: "NONE"
+    known_gaps:
+      - "MainWindow does not provide target_addr to UdpReader.send()."
+      - "ESP8266 firmware has no UDP receive-to-serial path."
+      - "No command acknowledgement or safety protocol."
+    notes: "Do not describe WiFi control, remote arm, or remote deployment as operational."
+
+  ground_station:
+    status: "TESTED_SOFTWARE"
+    implementation_source:
+      - "ground_station/core/**"
+      - "ground_station/ui/**"
+    test_source:
+      - "ground_station/tests/**"
+    hardware_evidence: "UNKNOWN"
+    known_gaps:
+      - "No end-to-end UDP command path."
+      - "No UI integration test for E-stop and reconnect behavior."
+    notes: "Serial transmit and telemetry receive code paths exist."
+
+  aero_sim:
+    status: "HISTORICAL"
+    implementation_source:
+      - "aero_sim/**"
+    test_source:
+      - "scripts/simulation_smoke.py"
+    hardware_evidence: "NOT_APPLICABLE"
+    known_gaps:
+      - "Models the legacy 75 mm solid-motor flight baseline."
+      - "Result artifacts do not embed source commit and full input provenance."
+      - "Motor labels and constants conflict inside the legacy configuration."
+    notes: "Useful for historical comparison; not the source of truth for the EDF bench."
+
+  tvc_dynamics_sim:
+    status: "PROTOTYPE"
+    implementation_source:
+      - "dynamics_sim/**"
+    test_source:
+      - "scripts/simulation_smoke.py"
+    hardware_evidence: "NOT_APPLICABLE"
+    known_gaps:
+      - "Control polarity differs between scripts."
+      - "Assumed mass, CG, thrust, damping, sensor delay, and rates are unverified."
+      - "Firmware TESTBENCH profile diverges in the tracked non-ideal 5-degree case."
+    notes: "A deterministic model baseline exists; it is not a validated plant model."
+
+  recovery_system:
+    status: "PROTOTYPE"
+    implementation_source:
+      - "flight_computer/src/flight_fsm.cpp"
+      - "reports/recovery-module-report.md"
+    test_source:
+      - "native FSM tests for software transitions only"
+    hardware_evidence: "UNKNOWN"
+    known_gaps:
+      - "No physical deployment assembly or repeated-cycle evidence."
+      - "No packed-volume, extraction-force, retention, or descent test evidence."
+    notes: "The report is a design proposal, not validation evidence."
+
+  cad:
+    status: "HISTORICAL"
+    implementation_source:
+      - "cad_automation/**"
+      - "generate_rocket*.py"
+      - "tvc_design/**"
+    test_source:
+      - "verify_rocket.py"
+      - "verify_v10.py"
+      - "verify_viewer.py"
+    hardware_evidence: "UNKNOWN"
+    known_gaps:
+      - "Mixed coordinate systems and generations."
+      - "No configuration manifest links outputs to generators and inputs."
+      - "Mesh checks do not prove manufacturability."
+    notes: "All existing CAD and mesh assets default to HISTORICAL or PROTOTYPE."
+
+  tvc_mechanical_assembly:
+    status: "PROTOTYPE"
+    implementation_source:
+      - "tvc_design/**"
+      - "outputs/**"
+      - "pro_outputs/**"
+      - "pro_outputs_v3/**"
+    test_source: []
+    hardware_evidence: "UNKNOWN"
+    known_gaps:
+      - "No assembly constraints or motion-envelope verification."
+      - "No interference, tolerance, load, wiring, access, or maintenance analysis."
+    notes: "No current manufacturing release exists."
+
+  full_vehicle_structure:
+    status: "HISTORICAL"
+    implementation_source:
+      - "3d_print_files/**"
+      - "generate_rocket*.py"
+    test_source:
+      - "viewer consistency and mesh-property scripts only"
+    hardware_evidence: "UNKNOWN"
+    known_gaps:
+      - "Legacy solid-flight geometry is mixed with EDF/TVC experiments."
+      - "No structural load cases, mass linkage, or assembly sequence."
+    notes: "Not accepted for manufacture or free flight."

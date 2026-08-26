@@ -119,7 +119,7 @@ void processCommand(String cmd) {
   } else if (cmd == "deploy_chute") {
     fsm.deployChute("GROUND_CMD");
   } else if (cmd == "arm") {
-    fsm.arm(bmp.readAltitude(1013.25));
+    fsm.arm(bmp.readAltitude(1013.25), millis());
     Serial.print("[RECOV] ARMED. Ground alt: ");
     Serial.println(bmp.readAltitude(1013.25));
   }

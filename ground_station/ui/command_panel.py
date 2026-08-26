@@ -71,7 +71,6 @@ class CommandPanel(QWidget):
         ("🔴 AUTO OFF", "auto_off"),
         ("🔄 Reset", "reset"),
         ("📐 归中", "set_servo:90,90"),
-        ("🪂 开伞", "deploy_chute"),
     ]
 
     def __init__(self, parent=None):

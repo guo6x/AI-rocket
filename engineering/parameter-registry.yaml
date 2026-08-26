@@ -1,0 +1,242 @@
+schema_version: 1
+audit_date: "2026-08-26"
+parameters:
+  - id: "legacy_body_outer_diameter"
+    value: 75
+    unit: "mm"
+    status: "HISTORICAL"
+    source: "aero_sim/rocket_config.py"
+    context: "Legacy 75 mm solid-motor flight baseline"
+    confidence: "high for source value; none for current EDF hardware"
+    supersedes: null
+    conflicts_with:
+      - "No current full-vehicle body diameter is established."
+
+  - id: "legacy_flight_mass_total"
+    value: 0.3856
+    unit: "kg"
+    status: "HISTORICAL"
+    source: "aero_sim/rocket_config.py"
+    context: "Computed legacy dry mass plus configured motor mass"
+    confidence: "medium for model arithmetic; no measured mass evidence"
+    supersedes: null
+    conflicts_with:
+      - "dynamics_default_mass"
+      - "dynamics_study_mass"
+
+  - id: "dynamics_default_mass"
+    value: 1.0
+    unit: "kg"
+    status: "PROTOTYPE"
+    source: "dynamics_sim/physics_engine.py"
+    context: "Default 1D EDF inverted-pendulum model"
+    confidence: "high for model input; none for physical hardware"
+    supersedes: null
+    conflicts_with:
+      - "legacy_flight_mass_total"
+      - "dynamics_study_mass"
+
+  - id: "dynamics_study_mass"
+    value: 1.15
+    unit: "kg"
+    status: "PROTOTYPE"
+    source: "dynamics_sim/cg_impact_study.py and dynamics_sim/test_polarity.py"
+    context: "Selected 1D CG and polarity studies"
+    confidence: "high for model input; none for physical hardware"
+    supersedes: null
+    conflicts_with:
+      - "legacy_flight_mass_total"
+      - "dynamics_default_mass"
+
+  - id: "actual_platform_mass"
+    value: null
+    unit: "kg"
+    status: "UNKNOWN"
+    source: "No measurement record in repository"
+    context: "Current EDF TVC bench"
+    confidence: "none"
+    supersedes: null
+    conflicts_with: []
+  - id: "legacy_avionics_cg_from_nose"
+    value: 0.4
+    unit: "m"
+    status: "HISTORICAL"
+    source: "aero_sim/rocket_config.py"
+    context: "Legacy solid-flight geometry"
+    confidence: "low; described as approximate"
+    supersedes: null
+    conflicts_with:
+      - "dynamics_default_cg_height"
+      - "dynamics_testbench_cg_height"
+
+  - id: "dynamics_default_cg_height"
+    value: 0.2
+    unit: "m above pivot"
+    status: "PROTOTYPE"
+    source: "dynamics_sim/physics_engine.py"
+    context: "Default 1D inverted-pendulum model"
+    confidence: "high for model input; none for hardware"
+    supersedes: null
+    conflicts_with:
+      - "dynamics_testbench_cg_height"
+      - "reports/dynamics-module-report.md high-CG recommendation"
+
+  - id: "dynamics_testbench_cg_height"
+    value: 0.5
+    unit: "m above pivot"
+    status: "PROTOTYPE"
+    source: "dynamics_sim/test_polarity.py and dynamics_sim/physics_engine_2d.py"
+    context: "Selected TVC testbench simulations"
+    confidence: "high for model input; none for hardware"
+    supersedes: null
+    conflicts_with:
+      - "dynamics_default_cg_height"
+      - "project-overview.md <=0.2 m statement"
+
+  - id: "actual_platform_cg"
+    value: null
+    unit: "m relative to defined datum"
+    status: "UNKNOWN"
+    source: "No measured mass-properties record in repository"
+    context: "Current EDF TVC bench"
+    confidence: "none"
+    supersedes: null
+    conflicts_with: []
+
+  - id: "prototype_edf_outer_diameter"
+    value: 74
+    unit: "mm"
+    status: "PROTOTYPE"
+    source: "tvc_design/generate_pro_tvc.py and tvc_design/generate_pro_tvc_v3.py"
+    context: "Generated TVC geometry"
+    confidence: "high for generator constant; none for installed hardware"
+    supersedes: null
+    conflicts_with:
+      - "project-overview.md lists 70/90 mm undecided"
+
+  - id: "actual_edf_diameter"
+    value: null
+    unit: "mm"
+    status: "UNKNOWN"
+    source: "No installed-component record in repository"
+    context: "Current EDF TVC bench"
+    confidence: "none"
+    supersedes: null
+    conflicts_with: []
+
+  - id: "servo_model"
+    value: "SG92R"
+    unit: null
+    status: "PROTOTYPE"
+    source: "flight_computer/src/main.cpp; dynamics_sim/components.py; project documents"
+    context: "TVC and recovery actuator assumption"
+    confidence: "high for intended model; physical installation UNKNOWN"
+    supersedes: null
+    conflicts_with: []
+
+  - id: "firmware_nominal_loop_rate"
+    value: 20
+    unit: "Hz nominal"
+    status: "IMPLEMENTED"
+    source: "flight_computer/src/main.cpp delay(50)"
+    context: "Production main loop; actual period also includes work time"
+    confidence: "high for nominal code behavior; runtime timing unmeasured"
+    supersedes: null
+    conflicts_with:
+      - "aero_sim/tvc_pid_optimizer.py assumes 100 Hz"
+      - "dynamics_sim control loops often assume 100 Hz"
+
+  - id: "dynamics_sensor_rate"
+    value: 20
+    unit: "Hz"
+    status: "PROTOTYPE"
+    source: "dynamics_sim/components.py call sites"
+    context: "Simulation assumption with 50 ms delay"
+    confidence: "high for model input; unverified for hardware"
+    supersedes: null
+    conflicts_with: []
+
+  - id: "firmware_flight_pid"
+    value:
+      kp: 1.0
+      ki: 0.1
+      kd: 0.3
+    unit: "implementation-specific"
+    status: "IMPLEMENTED"
+    source: "flight_computer/src/algorithms/pid.cpp"
+    context: "Default production firmware FLIGHT profile"
+    confidence: "high for code value; no hardware qualification"
+    supersedes: null
+    conflicts_with:
+      - "historical_optimizer_pid"
+      - "firmware_testbench_pid"
+      - "dynamics_tuned_pid"
+
+  - id: "firmware_testbench_pid"
+    value:
+      kp: 1.65
+      ki: 0.0
+      kd: 0.45
+    unit: "implementation-specific"
+    status: "IMPLEMENTED"
+    source: "flight_computer/src/algorithms/pid.cpp"
+    context: "Selectable production TESTBENCH profile"
+    confidence: "high for code value; tracked non-ideal 5-degree simulation diverges"
+    supersedes: null
+    conflicts_with:
+      - "firmware_flight_pid"
+      - "historical_optimizer_pid"
+      - "dynamics_tuned_pid"
+
+  - id: "historical_optimizer_pid"
+    value:
+      kp: 1.2
+      ki: 0.2
+      kd: 0.4
+    unit: "implementation-specific"
+    status: "HISTORICAL"
+    source: "aero_sim/tvc_pid_optimizer.py"
+    context: "Legacy simplified solid-flight attitude model"
+    confidence: "high for script value; not applicable as final hardware tuning"
+    supersedes: null
+    conflicts_with:
+      - "firmware_flight_pid"
+      - "firmware_testbench_pid"
+      - "software-architecture.md"
+
+  - id: "dynamics_tuned_pid"
+    value:
+      kp: 2.0
+      ki: 0.0
+      kd: 0.5
+    unit: "implementation-specific"
+    status: "PROTOTYPE"
+    source: "dynamics_sim/test_polarity.py and dynamics_sim/physics_engine_2d.py"
+    context: "Small-angle TUNED simulation profile"
+    confidence: "high for model input; no hardware qualification"
+    supersedes: null
+    conflicts_with:
+      - "firmware_flight_pid"
+      - "firmware_testbench_pid"
+
+  - id: "firmware_flight_tvc_output_limit"
+    value: 4
+    unit: "deg controller output"
+    status: "IMPLEMENTED"
+    source: "flight_computer/src/algorithms/pid.cpp"
+    context: "FLIGHT profile output around 90-degree servo neutral"
+    confidence: "high for code value; physical nozzle angle mapping unknown"
+    supersedes: null
+    conflicts_with:
+      - "firmware TESTBENCH limit 15 deg"
+      - "aero_sim/tvc_pid_optimizer.py limit 10 deg"
+
+  - id: "actual_tvc_max_angle"
+    value: null
+    unit: "deg nozzle deflection"
+    status: "UNKNOWN"
+    source: "No measured mechanism envelope in repository"
+    context: "Current EDF TVC bench"
+    confidence: "none"
+    supersedes: null
+    conflicts_with: []

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 📊 自动从 STL 读取真实数据并同步到 viewer.html (v11)
-所有参数严格对齐 aero_sim/rocket_config.py
+所有参数严格对齐历史 aero_sim/rocket_config.py；该配置不是当前制造真相源。
 """
 import os
 import re
@@ -17,7 +17,7 @@ PARTS = [
     {
         "file": "00_full_rocket_assembly.stl",
         "title": "🚀 完整火箭 (v11)",
-        "desc_template": "Ad Astra 探空火箭 v11 - 严格同步 aero_sim/rocket_config.py。所有几何参数源自项目唯一真相源。装配体: 整流罩(Von Karman 150mm) → 机身管(Ø75mm×600mm) → 航电舱 → 回收舱 → 尾翼×3(翼展80mm, 根弦100mm, 120°均布) → 发动机舱(C6-5) → 收敛-扩散喷管(出口Ø18mm)。总长{length:.0f}mm(不含喷管750+喷管20=770)，最大外径{max_dia:.0f}mm，{n_faces:,}面。",
+        "desc_template": "Ad Astra 探空火箭历史 v11 固体飞行构型（非当前制造真相源）。装配体: 整流罩(Von Karman 150mm) → 机身管(Ø75mm×600mm) → 航电舱 → 回收舱 → 尾翼×3(翼展80mm, 根弦100mm, 120°均布) → 发动机舱(C6-5) → 收敛-扩散喷管(出口Ø18mm)。总长{length:.0f}mm(不含喷管750+喷管20=770)，最大外径{max_dia:.0f}mm，{n_faces:,}面。",
         "stats_keys": ["总长", "最大直径", "面数"],
         "is_assembly": True,
     },
