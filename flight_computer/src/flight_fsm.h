@@ -19,6 +19,7 @@ public:
     
     // 指令接口
     void arm(float ground_alt, unsigned long now);
+    void disarm();
     void deployChute(const char* source);
     void reset();
 

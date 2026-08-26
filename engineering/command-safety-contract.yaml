@@ -1,0 +1,198 @@
+schema_version: 1
+contract: "Ad Astra R1 governed plaintext command link"
+baseline_commit: "d40585f77e1b73d270dd9972823a5939cbfcd81a"
+evidence_classification: "TESTED_SOFTWARE when all R1 gates pass; never VERIFIED_HARDWARE"
+
+protocol:
+  vocabulary: "newline-delimited UTF-8/ASCII plaintext"
+  maximum_command_bytes: 128
+  transports:
+    usb_serial: "Ground Station to STM32 Serial"
+    wifi_udp: "Ground Station unicast UDP to ESP8266, then UART to STM32 Serial2"
+  canonical_processor: "Both transports terminate at the same STM32 command processor."
+  response_format:
+    accepted: "ACK <command_name>"
+    rejected: "NACK <reason> <command_name_or_unknown>"
+    nack_reasons:
+      - malformed
+      - invalid_state
+      - out_of_range
+      - estop_latched
+      - unknown_command
+      - overlong
+  acknowledgement_limit: >-
+    ACK means only that the STM32 command processor accepted the command. It does
+    not prove actuator motion, recovery deployment, hardware operation, or safety.
+
+state_model:
+  control_states:
+    boot: "Initialization in progress; commands are not accepted."
+    idle: "TVC is neutral and automatic control is disabled."
+    armed: "An explicit arm was accepted; automatic control remains disabled."
+    auto_control_enabled: "Armed and automatic control enabled."
+    estop_latched: "Fail-safe latch; automatic control disabled and TVC neutral."
+  link_states:
+    link_unavailable: "No usable transport or target; sending must report FAILED."
+    sent: "Local transport accepted bytes; STM32 acceptance is not established."
+    acknowledged: "A matching STM32 ACK was received."
+    timeout: "No matching ACK/NACK arrived before the software timeout."
+  degraded_states:
+    degraded_sensor: >-
+      Reserved for explicit sensor-health gating. R1 records the need but does not
+      invent sensor validity that production firmware does not yet provide.
+    degraded_command: >-
+      An overlong, malformed, or truncated line is discarded and produces no
+      actuator action; a valid subsequent line starts from a clean boundary.
+
+safety_invariants:
+  - "ESTOP is accepted from every post-boot control state and is idempotent."
+  - "ESTOP disables automatic control and commands neutral TVC outputs."
+  - "No command except repeated estop and deploy_chute is accepted while ESTOP is latched."
+  - "RESET from ESTOP enters idle with automatic control disabled and TVC neutral."
+  - "RESET never restores a retained automatic or manual actuator command."
+  - "ARM and AUTO_ON after RESET require new explicit commands."
+  - "RESET does not claim that a physical recovery mechanism was reloaded."
+  - "Malformed, duplicate, truncated, or overlong input cannot partially mutate actuator state."
+  - "UDP send success is SENT, not ACKNOWLEDGED."
+
+commands:
+  arm:
+    syntax: "arm"
+    allowed_from: [idle]
+    rejected_from: [boot, armed, auto_control_enabled, estop_latched]
+    state_effect: "idle -> armed"
+    actuator_effect: "TVC remains neutral; recovery software FSM receives arm request only if not already deployed."
+    acknowledgement: "ACK arm after acceptance; otherwise NACK invalid_state or estop_latched."
+    idempotency: "A duplicate after the first accepted arm is rejected as invalid_state."
+    safety_relevance: "high"
+    confirmation: "No UI confirmation; firmware state enforcement is authoritative."
+    malformed: "NACK malformed; no state or actuator effect."
+    duplicated: "NACK invalid_state; no additional effect."
+
+  auto_on:
+    syntax: "auto_on"
+    allowed_from: [armed]
+    rejected_from: [boot, idle, auto_control_enabled, estop_latched]
+    state_effect: "armed -> auto_control_enabled"
+    actuator_effect: "Reset PID history, then permit automatic TVC output on subsequent control cycles."
+    acknowledgement: "ACK auto_on only after the state transition is accepted."
+    idempotency: "Duplicate in auto_control_enabled is NACK invalid_state."
+    safety_relevance: "high"
+    confirmation: "UI arming control assists the operator; firmware state enforcement is authoritative."
+    malformed: "NACK malformed; no effect."
+    duplicated: "NACK invalid_state; automatic state remains unchanged."
+
+  auto_off:
+    syntax: "auto_off"
+    allowed_from: [armed, auto_control_enabled]
+    rejected_from: [boot, idle, estop_latched]
+    state_effect: "auto_control_enabled -> armed; armed remains armed"
+    actuator_effect: "Disable automatic output, reset PID history, and neutralize TVC."
+    acknowledgement: "ACK auto_off after neutral safe state is selected."
+    idempotency: "Repeated in armed is accepted and remains safely neutral."
+    safety_relevance: "high"
+    confirmation: "No confirmation required; firmware enforces the safe action."
+    malformed: "NACK malformed; no effect."
+    duplicated: "ACK auto_off; remains armed and neutral."
+
+  set_servo:
+    syntax: "set_servo:<pitch_deg>,<roll_deg>"
+    ranges: {pitch_deg: [0, 180], roll_deg: [0, 180]}
+    allowed_from: [armed]
+    rejected_from: [boot, idle, auto_control_enabled, estop_latched]
+    state_effect: "none"
+    actuator_effect: "Set both manual TVC servo targets atomically."
+    acknowledgement: "ACK set_servo after both values parse and pass range checks."
+    idempotency: "Duplicate values are accepted and have the same target."
+    safety_relevance: "high"
+    confirmation: "UI lock is advisory; firmware armed-state enforcement is authoritative."
+    malformed: "NACK malformed; neither servo target changes."
+    duplicated: "ACK set_servo; same atomic targets."
+
+  set_pid:
+    syntax: "set_pid:<kp>,<ki>,<kd>"
+    ranges: {kp: [0.0, 10.0], ki: [0.0, 5.0], kd: [0.0, 10.0]}
+    allowed_from: [idle, armed]
+    rejected_from: [boot, auto_control_enabled, estop_latched]
+    state_effect: "none"
+    actuator_effect: "Atomically update both controller gain sets; no immediate actuator command."
+    acknowledgement: "ACK set_pid after all finite values pass range checks."
+    idempotency: "Duplicate values are accepted and preserve the same gains."
+    safety_relevance: "high"
+    confirmation: "UI lock is advisory; firmware state/range enforcement is authoritative."
+    malformed: "NACK malformed; no gain is partially changed."
+    duplicated: "ACK set_pid; same atomic gain set."
+
+  estop:
+    syntax: "estop"
+    allowed_from: [idle, armed, auto_control_enabled, estop_latched]
+    rejected_from: [boot]
+    state_effect: "any post-boot state -> estop_latched"
+    actuator_effect: "Disable automatic control, reset PID history, neutralize both TVC outputs."
+    acknowledgement: "ACK estop after the safe software actions are selected."
+    idempotency: "Repeated ESTOP is accepted and repeats the safe actions."
+    safety_relevance: "critical"
+    confirmation: "Never delayed by UI confirmation; firmware latch is authoritative."
+    malformed: "NACK malformed; exact estop remains available as the next independent line."
+    duplicated: "ACK estop; latch and neutral outputs remain enforced."
+
+  reset:
+    syntax: "reset"
+    allowed_from: [estop_latched]
+    rejected_from: [boot, idle, armed, auto_control_enabled]
+    state_effect: "estop_latched -> idle"
+    actuator_effect: "Keep automatic control disabled, reset PID history, and keep TVC neutral."
+    acknowledgement: "ACK reset after safe idle state is selected."
+    idempotency: "A duplicate after the first reset is NACK invalid_state."
+    safety_relevance: "critical"
+    confirmation: "UI action is explicit; firmware never restores pre-ESTOP state."
+    malformed: "NACK malformed; ESTOP remains latched."
+    duplicated: "NACK invalid_state; system remains idle and neutral."
+
+  deploy_chute:
+    syntax: "deploy_chute"
+    allowed_from: [armed, auto_control_enabled, estop_latched]
+    rejected_from: [boot, idle]
+    state_effect: "control state unchanged; recovery FSM handles its own one-way software state"
+    actuator_effect: "Request recovery deployment; ACK does not prove physical movement."
+    acknowledgement: "ACK deploy_chute when the request is accepted by software."
+    idempotency: "Repeated requests are safe in software; the recovery FSM does not redeploy."
+    safety_relevance: "critical"
+    confirmation: "Ground Station requires UI confirmation; firmware additionally enforces allowed control states."
+    malformed: "NACK malformed; no request."
+    duplicated: "ACK deploy_chute while allowed; no claim of physical reload or completion."
+
+  set_profile_flight:
+    syntax: "set_profile_flight"
+    allowed_from: [idle, armed]
+    rejected_from: [boot, auto_control_enabled, estop_latched]
+    state_effect: "none"
+    actuator_effect: "Select existing FLIGHT profile and reset PID history."
+    acknowledgement: "ACK set_profile_flight after acceptance."
+    idempotency: "Duplicate selection is accepted."
+    safety_relevance: "high"
+    confirmation: "Firmware state enforcement."
+    malformed: "NACK malformed; no effect."
+    duplicated: "ACK; same profile."
+
+  set_profile_testbench:
+    syntax: "set_profile_testbench"
+    allowed_from: [idle, armed]
+    rejected_from: [boot, auto_control_enabled, estop_latched]
+    state_effect: "none"
+    actuator_effect: "Select existing TESTBENCH profile and reset PID history."
+    acknowledgement: "ACK set_profile_testbench after acceptance."
+    idempotency: "Duplicate selection is accepted."
+    safety_relevance: "high"
+    confirmation: "Firmware state enforcement."
+    malformed: "NACK malformed; no effect."
+    duplicated: "ACK; same profile."
+
+link_loss:
+  telemetry_lost: "Display telemetry lost; do not infer command failure or actuator state."
+  command_link_unavailable: "Reject local send and display FAILED."
+  ack_timeout: "Display TIMEOUT; do not display accepted or executed."
+  reconnect: "Clear stale pending command state; require new explicit commands."
+  no_autonomous_action: >-
+    R1 does not add an automatic actuator action solely because UDP telemetry or
+    command acknowledgements are lost.

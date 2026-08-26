@@ -11,6 +11,9 @@ This directory is the current engineering-status entry point for Project Ad Astr
 5. `known-issues.md` — open engineering and safety-relevant gaps.
 6. `legacy-assets.md` — historical sources and generated assets that remain preserved but are not authoritative.
 7. `../docs/R0_ENGINEERING_REBASELINE_REPORT.md` — audit narrative and evidence.
+8. `command-safety-contract.yaml` — R1 canonical command states, actions, ACK/NACK, and link-loss rules.
+9. `../docs/R1_COMMAND_SAFETY_LINK.md` — R1 command-link design and operator meaning.
+10. `../docs/R1_GOVERNED_COMMAND_SAFETY_LINK_REPORT.md` — R1 implementation and exact-head evidence.
 
 ## Status vocabulary
 
@@ -33,7 +36,7 @@ The audited input commit is `b6006c9429ae1a2950917a61b4d2e1cf511ab5ed`. Future b
 
 ## Current answer in one paragraph
 
-The repository contains an implemented STM32 flight-control code path, an implemented ESP8266 telemetry uplink, a working Python ground-station codebase, exploratory flight and EDF-TVC simulations, and many preserved CAD/model generations. The current safe development objective is an EDF TVC bench platform, but the actual assembled physical configuration and its dimensions, mass, CG, actuator envelopes, and integrated behavior are not proven by repository evidence. WiFi command downlink is incomplete, controller parameters are not hardware-qualified, recovery hardware is not verified, and existing CAD is historical/prototype rather than manufacturing-ready.
+The repository contains an implemented STM32 flight-control code path, a software-tested canonical plaintext command processor, isolated USB/UART input buffers, an ESP8266 unicast command relay, visible Ground Station ACK/NACK/timeout state, exploratory simulations, and preserved CAD generations. The WiFi command path is `TESTED_SOFTWARE` through native component tests, simulated sockets, and target builds only. Actual hardware configuration, UART/WiFi operation, actuator behavior, controller qualification, recovery hardware, and CAD manufacturability remain `UNKNOWN`, `BLOCKED`, `PROTOTYPE`, or `HISTORICAL` as recorded in the status files.
 
 ## Software check
 
@@ -57,4 +60,4 @@ Run the unified, hardware-independent check:
 python scripts\check.py
 ```
 
-The terminal line `R0 SOFTWARE CHECK: PASS` covers syntax, YAML parsing, ground-station tests, read-only simulation smoke checks, native flight-core tests, and STM32/ESP8266 source builds. Hardware procedures remain `MANUAL / HARDWARE-GATED` and are not converted into software failures.
+The terminal lines `R0 SOFTWARE CHECK: PASS` and `R1 COMMAND SAFETY CHECK: PASS` cover syntax, YAML parsing, ground-station and simulated-link tests, read-only simulation smoke checks, native flight/command/relay tests, and STM32/ESP8266 source builds. Hardware procedures remain `MANUAL / HARDWARE-GATED` and are not converted into software failures.

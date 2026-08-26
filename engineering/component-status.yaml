@@ -6,6 +6,8 @@ components:
     implementation_source:
       - "flight_computer/src/main.cpp"
       - "flight_computer/src/flight_fsm.cpp"
+      - "flight_computer/src/command_processor.cpp"
+      - "flight_computer/src/command_line_buffer.h"
       - "flight_computer/src/algorithms/**"
     test_source:
       - "flight_computer/test/test_kalman.cpp"
@@ -14,7 +16,7 @@ components:
     known_gaps:
       - "No hardware-in-loop test."
       - "Sensor initialization reports MPU6500 OK without checking the transaction result."
-      - "Command parsing and E-stop semantics lack unit tests."
+      - "No physical command-path, E-STOP, or actuator-neutral verification."
     notes: "Production code exists and builds; this is not a flight-readiness claim."
 
   imu:
@@ -75,13 +77,15 @@ components:
     status: "TESTED_SOFTWARE"
     implementation_source:
       - "esp8266_firmware/src/main.cpp"
+      - "esp8266_firmware/src/relay_router.cpp"
     test_source:
       - "PlatformIO nodemcuv2 source build"
+      - "PlatformIO native relay-router tests"
     hardware_evidence: "UNKNOWN"
     known_gaps:
-      - "No inbound UDP command handling."
-      - "No packet-loss, reconnect, or throughput test record."
-    notes: "Firmware implements serial-to-UDP broadcast only."
+      - "No physical packet-loss, reconnect, range, or throughput test record."
+      - "No authentication, integrity protection, request IDs, or multi-client arbitration."
+    notes: "Unicast UDP-to-UART commands and UART ACK/NACK return are TESTED_SOFTWARE only."
 
   telemetry_uplink:
     status: "IMPLEMENTED"
@@ -92,23 +96,30 @@ components:
     test_source:
       - "ground_station/tests/test_phase5_7.py"
       - "ground_station/tests/test_telemetry_parser.py"
+      - "ground_station/tests/test_wifi_link_contract.py simulated UDP return path"
     hardware_evidence: "UNKNOWN"
     known_gaps:
       - "No end-to-end hardware packet-loss or range evidence."
     notes: "Each software segment exists; integrated physical proof is absent."
 
   wifi_command_downlink:
-    status: "BLOCKED"
+    status: "TESTED_SOFTWARE"
     implementation_source:
-      - "ground_station/core/udp_reader.py has an optional send primitive"
+      - "ground_station/core/udp_reader.py"
+      - "ground_station/core/command_link.py"
+      - "esp8266_firmware/src/main.cpp"
+      - "esp8266_firmware/src/relay_router.cpp"
+      - "flight_computer/src/command_processor.cpp"
     test_source:
       - "ground_station/tests/test_wifi_link_contract.py"
-    hardware_evidence: "NONE"
+      - "esp8266_firmware/test/test_relay_router.cpp"
+      - "flight_computer/test/test_kalman.cpp"
+    hardware_evidence: "UNKNOWN"
     known_gaps:
-      - "MainWindow does not provide target_addr to UdpReader.send()."
-      - "ESP8266 firmware has no UDP receive-to-serial path."
-      - "No command acknowledgement or safety protocol."
-    notes: "Do not describe WiFi control, remote arm, or remote deployment as operational."
+      - "No integrated physical ESP8266/STM32/Ground Station test record."
+      - "Plaintext UDP is unauthenticated and has no request IDs."
+      - "Relay routes responses to the most recent command client only."
+    notes: "Behavioral simulation and target builds pass; do not describe the link as hardware operational."
 
   ground_station:
     status: "TESTED_SOFTWARE"
@@ -119,9 +130,9 @@ components:
       - "ground_station/tests/**"
     hardware_evidence: "UNKNOWN"
     known_gaps:
-      - "No end-to-end UDP command path."
-      - "No UI integration test for E-stop and reconnect behavior."
-    notes: "Serial transmit and telemetry receive code paths exist."
+      - "No physical reconnect or operator workflow test."
+      - "No authenticated operator/session model."
+    notes: "Serial and WiFi show SENT, ACKNOWLEDGED, NACK, TIMEOUT, or FAILED in software tests."
 
   aero_sim:
     status: "HISTORICAL"

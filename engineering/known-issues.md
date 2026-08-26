@@ -1,4 +1,4 @@
-# R0 known issues
+# R0/R1 known issues
 
 The list is evidence-based as of audited input commit `b6006c9`. Priorities reflect safety impact, dependency order, and the risk of misleading future work. An open item does not authorize a design change; it identifies work that needs a scoped decision and proof.
 
@@ -6,31 +6,31 @@ The list is evidence-based as of audited input commit `b6006c9`. Priorities refl
 
 ### R0-001 — WiFi command downlink is incomplete
 
-- Status: `BLOCKED`
-- Evidence: `esp8266_firmware/src/main.cpp` only reads `Serial` and broadcasts UDP. `ground_station/ui/main_window.py` calls `UdpReader.send(...)` without `target_addr`.
-- Impact: WiFi arm, E-stop, PID, servo, or recovery commands are not delivered end to end, despite historical claims.
-- Required closure: define a command transport and acknowledgement/safety contract, implement both routing segments, then perform software and restrained hardware tests. No architecture rewrite was attempted in R0.
+- State: closed in R1 at `TESTED_SOFTWARE`; hardware remains `UNKNOWN`.
+- Evidence: `engineering/command-safety-contract.yaml`; native command/relay tests; 24 ground-station tests including simulated UDP ACK and telemetry return; STM32/ESP8266 target builds.
+- R1 action: explicit unicast target, UDP-to-UART relay, canonical STM32 processor, ACK/NACK return, timeout/failed UI states.
+- Remaining hardware gate: integrated physical ESP8266/STM32/UART/WiFi testing. The link is not `VERIFIED_HARDWARE` and is not approved for operational hardware use.
 
 ### R0-002 — Recovery FSM evidence was previously based on a different model
 
 - State: open; classification: `TESTED_SOFTWARE`, not hardware verified.
 - Evidence: `flight_computer/test_sil.py` defines STARTUP/APOGEE/MAIN_DEPLOY states absent from production `FlightStateMachine`.
 - R0 action: production `flight_fsm.cpp` now has native tests. The historical Python script remains preserved and is explicitly classified as historical.
-- Remaining gap: no sensor-in-loop, command-parser, servo, or physical recovery test.
+- Remaining gap: no sensor-in-loop, servo, or physical recovery test.
 
 ### R0-003 — E-stop release can retain prior automatic-control state
 
-- State: open; classification: `UNKNOWN`
-- Evidence: `processCommand("estop")` centers servos but does not clear `auto_mode`; `reset` only clears `estop_active`.
-- Impact: a reset can resume automatic outputs using retained mode/controller state.
-- Required closure: specify the intended fail-safe state, extract command handling for tests, then change behavior with a regression test and restrained bench verification.
+- State: closed in R1 at `TESTED_SOFTWARE`; physical neutralization remains `UNKNOWN`.
+- Evidence: canonical processor native regression proves AUTO ON → ESTOP → RESET returns idle and cannot resume AUTO without new ARM/AUTO commands.
+- R1 action: ESTOP latches, disables AUTO, resets PID history, and selects neutral TVC outputs; reset preserves disabled AUTO and neutral outputs.
+- Remaining hardware gate: measure actual actuator neutral, timing, and repeated E-STOP/reset behavior on a restrained, unpowered control bench.
 
 ### R0-004 — Serial and Serial2 share one command buffer
 
-- State: open; classification: `UNKNOWN`
-- Evidence: both input loops in `flight_computer/src/main.cpp` append to global `cmdBuffer`.
-- Impact: simultaneous partial commands can interleave or corrupt each other.
-- Required closure: use per-interface buffers and test interleaved input without changing the external protocol.
+- State: closed in R1 at `TESTED_SOFTWARE`.
+- Evidence: `CommandLineBuffer` instances are separate for Serial and Serial2; native interleaving and overlong-discard regression tests pass.
+- R1 action: each transport has a fixed 128-byte boundary and independently discards an overlong line until newline without executing a prefix.
+- Remaining hardware gate: simultaneous physical USB/UART traffic has not been measured.
 
 ### R0-005 — Sensor presence and read validity are not enforced
 
@@ -122,6 +122,29 @@ The list is evidence-based as of audited input commit `b6006c9`. Priorities refl
 ### R0-017 — STM32 flash headroom is limited
 
 - State: open; classification: `TESTED_SOFTWARE`
-- Evidence: R0 source build uses approximately 58,724 of 65,536 bytes (89.6%).
+- Evidence: R0 exact-main and R1 both use 58,724/65,536 flash bytes (0-byte delta). RAM increases from 2,904 to 3,172 bytes (+268) for isolated fixed buffers.
 - Impact: future diagnostics or safety checks may exceed the selected board flash budget.
 - Required closure: track size in CI/check output and avoid unbounded feature additions before hardware target confirmation.
+
+## R1 remaining command-link limitations
+
+### R1-001 — UDP commands are unauthenticated and lack integrity/replay identity
+
+- Status: `BLOCKED` for operational hardware use.
+- Evidence: R1 intentionally retains a minimal plaintext UDP protocol with no authentication, integrity tag, sequence/request ID, or replay protection.
+- Impact: another host on the same reachable network could inject commands; responses cannot be cryptographically attributed or uniquely correlated across clients.
+- Required closure: select a scoped threat model and authenticated/request-identified protocol before treating WiFi control as operational hardware authority.
+
+### R1-002 — Command-link closure has no physical integration evidence
+
+- Status: `BLOCKED`; classification remains `UNKNOWN` for hardware.
+- Evidence: R1 uses native logic tests, simulated sockets, and source builds only.
+- Impact: UART wiring, voltage levels, baud integrity, ESP association, packet loss, RF range, real actuator neutralization, and operator timing remain unverified.
+- Required closure: execute a versioned, restrained, low-energy hardware procedure with EDF and recovery actuation disabled.
+
+### R1-003 — Relay response routing supports one most-recent command client
+
+- State: open; classification: `PROTOTYPE`.
+- Evidence: ESP8266 stores one last command source IP/port, and Ground Station permits only one outstanding command.
+- Impact: concurrent clients can supersede response routing; R1 does not provide multi-client arbitration.
+- Required closure: keep a single authorized operator/client during any future bench validation or add request/client identity in a separately scoped protocol hardening task.

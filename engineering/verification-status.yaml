@@ -8,7 +8,7 @@ verification_items:
     classification: "TESTED_SOFTWARE"
     result: "PASS"
     command: "python -m compileall -q aero_sim dynamics_sim ground_station flight_computer scripts"
-    evidence: "Executed during R0 re-baseline"
+    evidence: "Executed by the unified R1 gate with all R0 paths retained."
     limitations: "Syntax/import compilation is not behavioral validation."
 
   - id: "ground_station_tests"
@@ -16,7 +16,7 @@ verification_items:
     classification: "TESTED_SOFTWARE"
     result: "PASS"
     command: "python -m pytest ground_station/tests -q"
-    evidence: "16 passed after event-loop-safe UDP test and contract markers"
+    evidence: "24 passed, including command tracking, target validation, MainWindow/UI status, simulated UDP ACK, and telemetry return."
     limitations: "No physical serial or ESP8266 hardware is involved."
 
   - id: "flight_core_native_tests"
@@ -24,15 +24,23 @@ verification_items:
     classification: "TESTED_SOFTWARE"
     result: "PASS"
     command: "platformio test -d flight_computer -e native"
-    evidence: "8 tests passed for Kalman and production FlightStateMachine code"
-    limitations: "No Arduino peripherals, sensors, servos, or command parser are exercised."
+    evidence: "19 tests passed for Kalman, production FSM, canonical command processor, E-STOP/reset, malformed/range/NUL handling, and isolated buffers."
+    limitations: "No Arduino peripherals, sensors, or physical servos are exercised."
+
+  - id: "esp_relay_native_tests"
+    verification_type: "software_test"
+    classification: "TESTED_SOFTWARE"
+    result: "PASS"
+    command: "platformio test -d esp8266_firmware -e native"
+    evidence: "3 tests passed for UDP command validation and UART ACK/NACK versus telemetry routing."
+    limitations: "No ESP8266 radio, UART hardware, or packet-loss behavior is exercised."
 
   - id: "stm32_source_build"
     verification_type: "software_test"
     classification: "TESTED_SOFTWARE"
     result: "PASS"
     command: "platformio run -d flight_computer -e bluepill_f103c8"
-    evidence: "Build succeeds after declaring the BMP280 dependency in the production environment."
+    evidence: "R1 build passes: flash 58,724/65,536 bytes; RAM 3,172/20,480 bytes."
     limitations: "Build success does not prove flashing, boot, timing, wiring, or sensor operation."
 
   - id: "esp8266_source_build"
@@ -40,7 +48,7 @@ verification_items:
     classification: "TESTED_SOFTWARE"
     result: "PASS"
     command: "platformio run -d esp8266_firmware -e nodemcuv2"
-    evidence: "Source build succeeds."
+    evidence: "R1 build passes: flash 273,147/1,044,464 bytes; RAM 28,296/81,920 bytes."
     limitations: "No WiFi association, packet delivery, range, or reconnect behavior is verified."
 
   - id: "simulation_smoke"
@@ -52,12 +60,12 @@ verification_items:
     limitations: "The plant assumptions are prototypes and are not correlated to measured hardware."
 
   - id: "wifi_command_downlink"
-    verification_type: "integrated_bench_test"
-    classification: "BLOCKED"
-    result: "NOT_IMPLEMENTED"
-    command: null
-    evidence: "Source audit and ground_station/tests/test_wifi_link_contract.py"
-    limitations: "Ground station target routing and ESP8266 UDP receive-to-serial path are absent."
+    verification_type: "simulated_integration_test"
+    classification: "TESTED_SOFTWARE"
+    result: "PASS"
+    command: "python -m pytest ground_station/tests/test_wifi_link_contract.py -q"
+    evidence: "Behavioral socket test covers Ground Station unicast send, simulated ESP/STM ACK, and telemetry return; native component tests and both target builds also pass."
+    limitations: "No physical ESP8266/STM32/UART/WiFi integration; UDP remains unauthenticated and lacks request IDs."
 
   - id: "imu_barometer_bench"
     verification_type: "bench_hardware_test"
@@ -89,4 +97,4 @@ verification_items:
     result: "OUT_OF_SCOPE"
     command: null
     evidence: "None"
-    limitations: "R0 makes no free-flight readiness claim."
+    limitations: "R1 makes no free-flight readiness claim."

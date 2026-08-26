@@ -3,6 +3,9 @@
 #include "../src/algorithms/kalman.cpp" // 直接包含以方便 native 编译，或者在 platformio.ini 中配置
 #include "../src/flight_fsm.h"
 #include "../src/flight_fsm.cpp"
+#include "../src/command_line_buffer.h"
+#include "../src/command_processor.h"
+#include "../src/command_processor.cpp"
 
 void setUp() {}
 void tearDown() {}
@@ -104,6 +107,183 @@ void test_fsm_manual_deploy_and_reset() {
     TEST_ASSERT_EQUAL(FS_IDLE, fsm.getState());
 }
 
+void test_fsm_disarm_does_not_reload_recovery() {
+    FlightStateMachine fsm;
+    fsm.arm(12.0f, 500);
+    fsm.disarm();
+    TEST_ASSERT_EQUAL(FS_IDLE, fsm.getState());
+    TEST_ASSERT_FALSE(fsm.isChuteDeployed());
+
+    fsm.deployChute("TEST");
+    fsm.disarm();
+    TEST_ASSERT_TRUE(fsm.isChuteDeployed());
+    TEST_ASSERT_EQUAL(FS_DESCENT, fsm.getState());
+}
+
+void test_command_valid_state_sequence_and_actions() {
+    CommandProcessor processor;
+
+    CommandDecision pid = processor.process("set_pid:1.0,0.1,0.3");
+    TEST_ASSERT_TRUE(pid.accepted());
+    TEST_ASSERT_EQUAL(ACTION_SET_PID, pid.action);
+    TEST_ASSERT_FLOAT_WITHIN(0.0001f, 1.0f, pid.kp);
+
+    CommandDecision arm = processor.process("arm");
+    TEST_ASSERT_TRUE(arm.accepted());
+    TEST_ASSERT_EQUAL(COMMAND_ARMED, processor.state());
+
+    CommandDecision servo = processor.process("set_servo:90,91");
+    TEST_ASSERT_TRUE(servo.accepted());
+    TEST_ASSERT_EQUAL(90, servo.servo_pitch);
+    TEST_ASSERT_EQUAL(91, servo.servo_roll);
+
+    TEST_ASSERT_TRUE(processor.process("auto_on").accepted());
+    TEST_ASSERT_TRUE(processor.autoEnabled());
+    TEST_ASSERT_TRUE(processor.process("auto_off").accepted());
+    TEST_ASSERT_EQUAL(COMMAND_ARMED, processor.state());
+    TEST_ASSERT_TRUE(processor.process("auto_off").accepted());
+    TEST_ASSERT_TRUE(processor.process("deploy_chute").accepted());
+}
+
+void test_estop_reset_never_restores_auto() {
+    CommandProcessor processor;
+    TEST_ASSERT_TRUE(processor.process("arm").accepted());
+    TEST_ASSERT_TRUE(processor.process("auto_on").accepted());
+    TEST_ASSERT_TRUE(processor.autoEnabled());
+
+    CommandDecision estop = processor.process("estop");
+    TEST_ASSERT_TRUE(estop.accepted());
+    TEST_ASSERT_EQUAL(ACTION_ESTOP, estop.action);
+    TEST_ASSERT_TRUE(processor.estopLatched());
+    TEST_ASSERT_FALSE(processor.autoEnabled());
+
+    CommandDecision reset = processor.process("reset");
+    TEST_ASSERT_TRUE(reset.accepted());
+    TEST_ASSERT_EQUAL(ACTION_RESET, reset.action);
+    TEST_ASSERT_EQUAL(COMMAND_IDLE, processor.state());
+    TEST_ASSERT_FALSE(processor.autoEnabled());
+    TEST_ASSERT_EQUAL(COMMAND_NACK_INVALID_STATE,
+                      processor.process("auto_on").result);
+}
+
+void test_estop_is_idempotent_and_gates_unsafe_commands() {
+    CommandProcessor processor;
+    TEST_ASSERT_TRUE(processor.process("estop").accepted());
+    TEST_ASSERT_TRUE(processor.process("estop").accepted());
+    TEST_ASSERT_EQUAL(COMMAND_NACK_ESTOP_LATCHED,
+                      processor.process("set_servo:90,90").result);
+    TEST_ASSERT_EQUAL(COMMAND_NACK_ESTOP_LATCHED,
+                      processor.process("set_pid:1,0,0.1").result);
+    TEST_ASSERT_EQUAL(COMMAND_NACK_ESTOP_LATCHED,
+                      processor.process("arm").result);
+    TEST_ASSERT_EQUAL(COMMAND_NACK_MALFORMED,
+                      processor.process("set_servo:bad").result);
+    TEST_ASSERT_TRUE(processor.process("deploy_chute").accepted());
+}
+
+void test_malformed_unknown_and_extra_arguments_are_atomic() {
+    CommandProcessor processor;
+    TEST_ASSERT_EQUAL(COMMAND_NACK_MALFORMED, processor.process("").result);
+    TEST_ASSERT_EQUAL(COMMAND_NACK_UNKNOWN, processor.process("launch").result);
+    TEST_ASSERT_EQUAL(COMMAND_NACK_UNKNOWN, processor.process("set_ser").result);
+    TEST_ASSERT_EQUAL(COMMAND_NACK_MALFORMED,
+                      processor.process("set_servo:90").result);
+    TEST_ASSERT_EQUAL(COMMAND_NACK_MALFORMED,
+                      processor.process("set_servo:ninety,90").result);
+    TEST_ASSERT_EQUAL(COMMAND_NACK_MALFORMED,
+                      processor.process("set_servo:90,90,90").result);
+    TEST_ASSERT_EQUAL(COMMAND_NACK_MALFORMED,
+                      processor.process("set_pid:1.0,0.1").result);
+    TEST_ASSERT_EQUAL(COMMAND_NACK_MALFORMED,
+                      processor.process("set_pid:1.0,0.1,nan").result);
+    TEST_ASSERT_EQUAL(COMMAND_NACK_MALFORMED,
+                      processor.process("set_pid:1.0,0.1,0.3,extra").result);
+    TEST_ASSERT_EQUAL(COMMAND_IDLE, processor.state());
+}
+
+void test_command_ranges_and_state_gates() {
+    CommandProcessor processor;
+    TEST_ASSERT_EQUAL(COMMAND_NACK_OUT_OF_RANGE,
+                      processor.process("set_servo:-1,90").result);
+    TEST_ASSERT_EQUAL(COMMAND_NACK_OUT_OF_RANGE,
+                      processor.process("set_servo:90,181").result);
+    TEST_ASSERT_EQUAL(COMMAND_NACK_OUT_OF_RANGE,
+                      processor.process("set_pid:10.1,0,0").result);
+    TEST_ASSERT_EQUAL(COMMAND_NACK_INVALID_STATE,
+                      processor.process("set_servo:90,90").result);
+    TEST_ASSERT_EQUAL(COMMAND_NACK_INVALID_STATE,
+                      processor.process("arm", true).result);
+    TEST_ASSERT_EQUAL(COMMAND_NACK_INVALID_STATE,
+                      processor.process("arm", false, false).result);
+    TEST_ASSERT_EQUAL(COMMAND_NACK_INVALID_STATE,
+                      processor.process("reset").result);
+}
+
+static CommandLineEvent feed(CommandLineBuffer& buffer, const char* text) {
+    CommandLineEvent event = COMMAND_LINE_NONE;
+    while (*text) event = buffer.push(*text++);
+    return event;
+}
+
+void test_serial_and_serial2_buffers_are_isolated() {
+    CommandLineBuffer serial;
+    CommandLineBuffer serial2;
+
+    TEST_ASSERT_EQUAL(COMMAND_LINE_NONE, feed(serial, "set_ser"));
+    TEST_ASSERT_EQUAL(COMMAND_LINE_READY, feed(serial2, "estop\n"));
+    TEST_ASSERT_EQUAL_STRING("estop", serial2.line());
+    TEST_ASSERT_EQUAL(COMMAND_LINE_READY, feed(serial, "vo:90,90\n"));
+    TEST_ASSERT_EQUAL_STRING("set_servo:90,90", serial.line());
+}
+
+void test_overlong_line_is_discarded_until_clean_boundary() {
+    CommandLineBuffer buffer;
+    for (size_t i = 0; i < CommandLineBuffer::MAX_BYTES + 1; ++i) {
+        TEST_ASSERT_EQUAL(COMMAND_LINE_NONE, buffer.push('x'));
+    }
+    TEST_ASSERT_TRUE(buffer.discarding());
+    TEST_ASSERT_EQUAL(COMMAND_LINE_OVERLONG, buffer.push('\n'));
+    TEST_ASSERT_FALSE(buffer.discarding());
+    TEST_ASSERT_EQUAL(COMMAND_LINE_READY, feed(buffer, "arm\n"));
+    TEST_ASSERT_EQUAL_STRING("arm", buffer.line());
+}
+
+void test_embedded_nul_discards_entire_line() {
+    CommandLineBuffer buffer;
+    TEST_ASSERT_EQUAL(COMMAND_LINE_NONE, feed(buffer, "estop"));
+    TEST_ASSERT_EQUAL(COMMAND_LINE_NONE, buffer.push('\0'));
+    TEST_ASSERT_EQUAL(COMMAND_LINE_NONE, feed(buffer, "junk"));
+    TEST_ASSERT_EQUAL(COMMAND_LINE_MALFORMED, buffer.push('\n'));
+    TEST_ASSERT_EQUAL(COMMAND_LINE_READY, feed(buffer, "arm\n"));
+    TEST_ASSERT_EQUAL_STRING("arm", buffer.line());
+}
+
+void test_ack_nack_reason_vocabulary() {
+    TEST_ASSERT_EQUAL_STRING("accepted", CommandProcessor::resultText(COMMAND_ACK));
+    TEST_ASSERT_EQUAL_STRING("malformed",
+                             CommandProcessor::resultText(COMMAND_NACK_MALFORMED));
+    TEST_ASSERT_EQUAL_STRING("invalid_state",
+                             CommandProcessor::resultText(COMMAND_NACK_INVALID_STATE));
+    TEST_ASSERT_EQUAL_STRING("out_of_range",
+                             CommandProcessor::resultText(COMMAND_NACK_OUT_OF_RANGE));
+    TEST_ASSERT_EQUAL_STRING("estop_latched",
+                             CommandProcessor::resultText(COMMAND_NACK_ESTOP_LATCHED));
+    TEST_ASSERT_EQUAL_STRING("unknown_command",
+                             CommandProcessor::resultText(COMMAND_NACK_UNKNOWN));
+}
+
+void test_line_buffer_to_canonical_processor_end_to_end() {
+    CommandLineBuffer wifi_uart;
+    CommandProcessor processor;
+    TEST_ASSERT_EQUAL(COMMAND_LINE_READY, feed(wifi_uart, "arm\n"));
+    CommandDecision decision = processor.process(wifi_uart.line());
+    TEST_ASSERT_TRUE(decision.accepted());
+    TEST_ASSERT_EQUAL_STRING("arm", decision.command_name);
+    TEST_ASSERT_EQUAL_STRING("accepted",
+                             CommandProcessor::resultText(decision.result));
+    TEST_ASSERT_EQUAL(COMMAND_ARMED, processor.state());
+}
+
 int main(int argc, char **argv) {
     UNITY_BEGIN();
     RUN_TEST(test_kalman_initial_state);
@@ -114,5 +294,16 @@ int main(int argc, char **argv) {
     RUN_TEST(test_fsm_burnout_and_rolling_apogee_window);
     RUN_TEST(test_fsm_timer_is_measured_from_detected_launch);
     RUN_TEST(test_fsm_manual_deploy_and_reset);
+    RUN_TEST(test_fsm_disarm_does_not_reload_recovery);
+    RUN_TEST(test_command_valid_state_sequence_and_actions);
+    RUN_TEST(test_estop_reset_never_restores_auto);
+    RUN_TEST(test_estop_is_idempotent_and_gates_unsafe_commands);
+    RUN_TEST(test_malformed_unknown_and_extra_arguments_are_atomic);
+    RUN_TEST(test_command_ranges_and_state_gates);
+    RUN_TEST(test_serial_and_serial2_buffers_are_isolated);
+    RUN_TEST(test_overlong_line_is_discarded_until_clean_boundary);
+    RUN_TEST(test_embedded_nul_discards_entire_line);
+    RUN_TEST(test_ack_nack_reason_vocabulary);
+    RUN_TEST(test_line_buffer_to_canonical_processor_end_to_end);
     return UNITY_END();
 }

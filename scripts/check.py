@@ -1,4 +1,4 @@
-"""Unified, hardware-independent R0 software check."""
+"""Unified, hardware-independent R0 regression and R1 command-safety check."""
 
 from __future__ import annotations
 
@@ -58,8 +58,9 @@ def main() -> int:
 
     platformio = find_platformio()
     if not platformio:
-        print("PlatformIO is missing. Install requirements-dev.txt before running R0 checks.")
+        print("PlatformIO is missing. Install requirements-dev.txt before running checks.")
         print("R0 SOFTWARE CHECK: FAIL")
+        print("R1 COMMAND SAFETY CHECK: FAIL")
         return 1
     add_platformio_mingw_to_path(env, platformio)
 
@@ -86,6 +87,7 @@ def main() -> int:
         ("Ground station tests", [sys.executable, "-m", "pytest", "ground_station/tests", "-q"]),
         ("Simulation smoke", [sys.executable, "scripts/simulation_smoke.py"]),
         ("Flight core native tests", [platformio, "test", "-d", "flight_computer", "-e", "native"]),
+        ("ESP relay native tests", [platformio, "test", "-d", "esp8266_firmware", "-e", "native"]),
         ("STM32 source build", [platformio, "run", "-d", "flight_computer", "-e", "bluepill_f103c8"]),
         ("ESP8266 source build", [platformio, "run", "-d", "esp8266_firmware", "-e", "nodemcuv2"]),
     ]
@@ -94,6 +96,7 @@ def main() -> int:
     passed = all(results)
     print("\nHardware checks: MANUAL / HARDWARE-GATED (not part of this exit code)")
     print(f"R0 SOFTWARE CHECK: {'PASS' if passed else 'FAIL'}")
+    print(f"R1 COMMAND SAFETY CHECK: {'PASS' if passed else 'FAIL'}")
     return 0 if passed else 1
 
 

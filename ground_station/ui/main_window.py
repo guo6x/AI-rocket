@@ -3,7 +3,8 @@ from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
                                QComboBox, QPushButton, QTextEdit, QLabel,
                                QLineEdit, QTabWidget, QStackedWidget)
 from PySide6.QtGui import QFont, QColor, QTextCharFormat, QTextCursor
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
+from core.command_link import CommandTracker, parse_command_response
 from core.serial_reader import SerialReader, get_available_ports
 from core.udp_reader import UdpReader
 from core.data_logger import DataLogger
@@ -28,6 +29,9 @@ class MainWindow(QMainWindow):
         self.resize(1100, 800)
         
         self.data_thread = None  # 统一名称：可以是 SerialReader 或 UdpReader
+        self.connection_mode = None
+        self.last_rx_monotonic = None
+        self.command_tracker = CommandTracker(timeout_seconds=1.5)
         self.parser = TelemetryParser()
 
         import os
@@ -84,11 +88,17 @@ class MainWindow(QMainWindow):
         self.udp_port_input.setFont(font)
         udp_layout.addWidget(QLabel("监听端口:"))
         udp_layout.addWidget(self.udp_port_input)
-        self.udp_ip_input = QLineEdit("192.168.1.1")
+        self.udp_ip_input = QLineEdit()
+        self.udp_ip_input.setPlaceholderText("ESP unicast IPv4")
         self.udp_ip_input.setMaximumWidth(120)
         self.udp_ip_input.setFont(font)
         udp_layout.addWidget(QLabel("ESP IP:"))
         udp_layout.addWidget(self.udp_ip_input)
+        self.udp_command_port_input = QLineEdit("9876")
+        self.udp_command_port_input.setMaximumWidth(80)
+        self.udp_command_port_input.setFont(font)
+        udp_layout.addWidget(QLabel("命令端口:"))
+        udp_layout.addWidget(self.udp_command_port_input)
         self.udp_stack.setVisible(False)
 
         # 连接按钮
@@ -137,6 +147,11 @@ class MainWindow(QMainWindow):
 
         bottom_layout.addWidget(self.log_display, stretch=2)
         bottom_layout.addWidget(self.command_panel, stretch=1)
+
+        self.command_timer = QTimer(self)
+        self.command_timer.setInterval(100)
+        self.command_timer.timeout.connect(self.poll_link_and_command_state)
+        self.command_timer.start()
 
         # ========== 组装主布局 ==========
         main_layout.addLayout(control_layout)
@@ -188,16 +203,33 @@ class MainWindow(QMainWindow):
             baudrate = int(self.baudrate_combo.currentText())
             self.data_thread = SerialReader(port, baudrate)
             conn_info = f"{port} @ {baudrate} baud (Serial)"
+            self.connection_mode = "serial"
         else:
-            udp_port = int(self.udp_port_input.text())
-            self.data_thread = UdpReader(port=udp_port)
-            conn_info = f"0.0.0.0:{udp_port} (UDP)"
+            try:
+                udp_port = int(self.udp_port_input.text())
+                command_port = int(self.udp_command_port_input.text())
+            except ValueError:
+                self.log_message("[系统] UDP 端口必须是整数")
+                self.command_panel.set_command_status("FAILED", detail="invalid port")
+                return
+            target_ip = self.udp_ip_input.text().strip()
+            target = (target_ip, command_port)
+            if not UdpReader.validate_target(target):
+                self.log_message("[系统] 请输入明确的单播 ESP IPv4 地址和有效命令端口")
+                self.command_panel.set_command_status("FAILED", detail="invalid WiFi target")
+                return
+            self.data_thread = UdpReader(port=udp_port, target_addr=target)
+            conn_info = f"0.0.0.0:{udp_port} ← UDP; command → {target_ip}:{command_port}"
+            self.connection_mode = "udp"
 
         self.data_thread.data_received.connect(self.on_data_received)
         self.data_thread.error_occurred.connect(self.on_error)
+        self.data_thread.link_state_changed.connect(self.on_link_state_changed)
 
         self.data_logger.start_logging()
         self.data_thread.start()
+        self.command_tracker.clear()
+        self.last_rx_monotonic = None
 
         self.connect_btn.setText("⛔ 断开")
         self.connect_btn.setStyleSheet("background-color: #f44336; color: white;")
@@ -206,6 +238,8 @@ class MainWindow(QMainWindow):
         self.udp_stack.setEnabled(False)
 
         self.log_message(f"[系统] 已连接 {conn_info}. 正在接收数据...")
+        self.command_panel.set_link_state("CONNECTING")
+        self.command_panel.set_command_status("IDLE")
 
     def disconnect_data(self):
         if self.data_thread:
@@ -213,6 +247,9 @@ class MainWindow(QMainWindow):
             self.data_thread = None
 
         self.data_logger.stop_logging()
+        self.command_tracker.clear()
+        self.connection_mode = None
+        self.last_rx_monotonic = None
         self.start_time = None
         self.last_fstate = None
         self.plot_panel.clear()
@@ -225,6 +262,8 @@ class MainWindow(QMainWindow):
         self.udp_stack.setEnabled(True)
 
         self.log_message("[系统] 已断开连接")
+        self.command_panel.set_link_state("DISCONNECTED")
+        self.command_panel.set_command_status("IDLE")
 
     # ---- 数据接收回调 ----
     def on_data_received(self, data):
@@ -232,6 +271,19 @@ class MainWindow(QMainWindow):
         timestamp = datetime.now().strftime("[%H:%M:%S.%f]")[:-4] + "]"
         self.log_display.append(f"{timestamp} {data}")
         self.log_display.ensureCursorVisible()
+
+        command_response = parse_command_response(data)
+        if command_response is not None:
+            resolved = self.command_tracker.resolve(data)
+            if resolved is not None:
+                self.show_command_update(resolved)
+            else:
+                self.log_message(f"[CMD] Unmatched response: {data}")
+            return
+
+        self.last_rx_monotonic = time.monotonic()
+        if self.connection_mode == "udp":
+            self.command_panel.set_link_state("UDP ACTIVE")
 
         # TelemetryParser now returns a list of dictionaries
         parsed_list = self.parser.parse(data)
@@ -295,12 +347,59 @@ class MainWindow(QMainWindow):
         self.log_display.ensureCursorVisible()
 
     # ---- 指令下发回调 ----
-    def on_send_command(self, cmd_json):
+    def on_send_command(self, command_text):
         if self.data_thread and self.data_thread.is_running:
-            self.data_thread.send(cmd_json)
-            self.log_message(f"[CMD >>] {cmd_json}")
+            if self.command_tracker.pending:
+                if command_text != "estop":
+                    update = self.command_tracker.reject_local(
+                        command_text, "previous command awaiting ACK"
+                    )
+                    self.show_command_update(update)
+                    return
+                superseded = self.command_tracker.cancel_pending(
+                    "superseded by ESTOP"
+                )
+                if superseded is not None:
+                    self.show_command_update(superseded)
+
+            if self.data_thread.send(command_text):
+                update = self.command_tracker.mark_sent(command_text)
+                self.show_command_update(update)
+                self.log_message(f"[CMD >>] {command_text}")
+            else:
+                self.show_command_update(
+                    self.command_tracker.fail(command_text, "transport unavailable")
+                )
         else:
             self.log_message("[系统] 未连接，无法发送指令")
+            self.show_command_update(
+                self.command_tracker.fail(command_text, "link unavailable")
+            )
+
+    def show_command_update(self, update):
+        self.command_panel.set_command_status(
+            update.status, update.command, update.detail
+        )
+        self.log_message(
+            f"[CMD {update.status}] {update.command}"
+            + (f" — {update.detail}" if update.detail else "")
+        )
+
+    def on_link_state_changed(self, state):
+        self.command_panel.set_link_state(state)
+
+    def poll_link_and_command_state(self):
+        expired = self.command_tracker.expire()
+        if expired is not None:
+            self.show_command_update(expired)
+        if (
+            self.connection_mode == "udp"
+            and self.data_thread
+            and self.data_thread.is_running
+            and self.last_rx_monotonic is not None
+            and time.monotonic() - self.last_rx_monotonic > 2.5
+        ):
+            self.command_panel.set_link_state("TELEMETRY LOST")
 
     # ---- 错误处理 ----
     def on_error(self, error_msg):
