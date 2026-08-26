@@ -1,0 +1,77 @@
+schema_version: 1
+project: "Project Ad Astra / AI-rocket"
+baseline_name: "R0 Engineering Re-baseline"
+audit_date: "2026-08-26"
+last_audited_commit: "b6006c9429ae1a2950917a61b4d2e1cf511ab5ed"
+
+current_phase: "R0 re-baseline and safe EDF TVC bench preparation"
+current_objective: >-
+  Establish a trustworthy engineering baseline for the safe EDF TVC experiment,
+  avionics, control software, and repeatable verification without redesigning the
+  vehicle or treating historical solid-motor work as current.
+
+current_physical_platform:
+  intended_platform: "restrained EDF TVC bench / experimental avionics platform"
+  assembled_state: "UNKNOWN"
+  confirmed_in_repository:
+    - "STM32F103C8T6 firmware target is configured in PlatformIO."
+    - "ESP8266 firmware target is configured in PlatformIO."
+    - "SG92R is the actuator model referenced by code, simulations, and documents."
+  not_confirmed_in_repository:
+    - "actual installed EDF diameter and thrust"
+    - "actual vehicle or bench mass and CG"
+    - "current wiring configuration"
+    - "integrated actuator direction and range"
+    - "physical recovery assembly"
+
+current_blockers:
+  - id: "R0-001"
+    summary: "WiFi command downlink is not implemented end to end."
+  - id: "R0-003"
+    summary: "Emergency-stop release semantics are not hardware-tested and can retain control state."
+  - id: "R0-006"
+    summary: "No PID profile is hardware-qualified; source values conflict."
+  - id: "R0-007"
+    summary: "Actual EDF bench geometry, mass, CG, thrust, and component envelopes are unknown."
+  - id: "R0-011"
+    summary: "CAD assets are mixed historical prototypes without configuration provenance or assembly validation."
+  - id: "R0-014"
+    summary: "Hardware claims lack repeatable repository evidence."
+
+authoritative_sources:
+  current_status:
+    - "engineering/current-baseline.yaml"
+    - "engineering/component-status.yaml"
+    - "engineering/parameter-registry.yaml"
+    - "engineering/verification-status.yaml"
+    - "engineering/known-issues.md"
+  implementation:
+    - "flight_computer/src/**"
+    - "esp8266_firmware/src/**"
+    - "ground_station/core/**"
+    - "ground_station/ui/**"
+  repeatable_software_verification:
+    - "scripts/check.py"
+    - "flight_computer/test/test_kalman.cpp"
+    - "ground_station/tests/**"
+    - "scripts/simulation_smoke.py"
+
+deprecated_sources:
+  status: "HISTORICAL_OR_STALE"
+  sources:
+    - "project-memory.md"
+    - "project-overview.md"
+    - "software-architecture.md"
+    - "hardware-wiring-STM32.md"
+    - "verification-protocol.md"
+    - "reports/**"
+    - "aero_sim/rocket_config.py as a project-wide source of truth"
+    - "generate_rocket*.py and generated CAD as current vehicle authority"
+
+safety_scope:
+  current_focus: "low-energy software, avionics, simulation, and restrained EDF bench validation"
+  excluded_from_r0:
+    - "high-energy propulsion changes"
+    - "free-flight readiness claims"
+    - "new CAD architecture"
+    - "hardware procurement decisions"

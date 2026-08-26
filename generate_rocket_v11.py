@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-🚀 Ad Astra 探空火箭 v11 - 同步 rocket_config.py 权威参数
+🚀 Ad Astra 探空火箭 v11 - 同步历史 rocket_config.py 参数
 ================================================================
-所有几何参数严格对齐 aero_sim/rocket_config.py (项目唯一真相源)
+所有几何参数严格对齐 aero_sim/rocket_config.py（历史固体飞行基线，非当前制造真相源）
 - 75mm 外径, 600mm 长机身管
 - 150mm Von Karman 整流罩
 - 3 片梯形尾翼 (120° 均布), 翼展 80mm, 根弦 100mm, 梢弦 50mm
@@ -16,7 +16,7 @@ import numpy as np
 import trimesh
 
 # =================================================================
-# 权威参数: 直接引用 aero_sim/rocket_config.py (单位 mm)
+# 历史参数: 直接引用 aero_sim/rocket_config.py (单位 mm)
 # =================================================================
 NOSE_TYPE = "Von Karman"
 NOSE_LENGTH = 150.0          # 整流罩长度 mm

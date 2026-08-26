@@ -1,3 +1,5 @@
+"""Historical SIL sketch; this state model does not match production flight_fsm.cpp."""
+
 import time
 
 class FlightState:

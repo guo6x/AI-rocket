@@ -1,5 +1,7 @@
 # 地面枢纽组 (Ground Station) - V0.3 模块报告
 
+> **历史模块报告 / STALE：** R0 确认 UDP 遥测接收代码存在，但 WiFi 指令下行尚未端到端实现；下述“所有指令”描述不可作为当前能力证明。
+
 ## 完成事项
 - **Phase 1-3**: PySide6 MVC 框架 + 串口后台接收 + JSON 解析 + 仪表盘 + PyQtGraph 实时波形图 + CSV 数据落盘。
 - **Phase 5: WiFi/UDP 无线透传**: 新增 `core/udp_reader.py`，UI 支持"串口 Serial / WiFi UDP"双模式切换。选择 UDP 模式后只需填入监听端口号（默认 8888），即可接收 ESP8266 透传的无线数据。

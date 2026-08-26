@@ -3,6 +3,7 @@ import os
 import socket
 import threading
 import time
+from PySide6.QtCore import QCoreApplication
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -24,7 +25,11 @@ def test_udp_reader():
     test_data = '{"time":5000,"pitch":12.5,"roll":-3.2,"yaw":45.0,"alt":200.0,"batt":7.2}'
     sock.sendto(test_data.encode('utf-8'), ("127.0.0.1", 19999))
     
-    time.sleep(1.5)  # 等待接收
+    app = QCoreApplication.instance() or QCoreApplication([])
+    deadline = time.monotonic() + 2.0
+    while not received and time.monotonic() < deadline:
+        app.processEvents()
+        time.sleep(0.01)
     
     reader.stop()
     sock.close()
@@ -53,9 +58,7 @@ def test_telemetry_parser_filtered():
     print("Filtered telemetry parser test passed!")
 
 if __name__ == "__main__":
-    # 需要 QApplication 来支持 QThread
-    from PySide6.QtWidgets import QApplication
-    app = QApplication(sys.argv)
+    app = QCoreApplication.instance() or QCoreApplication(sys.argv)
     
     test_telemetry_parser_filtered()
     test_udp_reader()

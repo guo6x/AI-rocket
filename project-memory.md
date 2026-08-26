@@ -1,5 +1,7 @@
 # 项目记忆文档：AI_rocket
 
+> **历史记录 / STALE：** 本文保留阶段叙事，不是当前工程状态或实物验证证明。请以 `engineering/` 和 `docs/R0_ENGINEERING_REBASELINE_REPORT.md` 为当前入口。
+
 ## 当前状态
 
 - 项目阶段：**阶段六竣工：飞控时序闭环与 PID 仿真优化 (FSM + PID Tuning)**

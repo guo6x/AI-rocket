@@ -1,4 +1,5 @@
 #include "flight_fsm.h"
+#include <cmath>
 
 const char* FlightStateMachine::state_strings[] = {"IDLE", "ARMED", "POWERED", "COAST", "DESCENT", "LANDED"};
 const float FlightStateMachine::LAUNCH_ACCEL_THRESHOLD = 2.5f;
@@ -20,17 +21,18 @@ void FlightStateMachine::reset() {
     for (int i = 0; i < 5; i++) alt_history[i] = 0;
 }
 
-void FlightStateMachine::arm(float ground_alt) {
+void FlightStateMachine::arm(float ground_alt, unsigned long now) {
     if (!chute_deployed) {
         state = FS_ARMED;
         launch_alt = ground_alt;
-        arm_start_time = millis();
+        arm_start_time = now;
         alt_idx = 0;
         launch_counter = 0;
     }
 }
 
 void FlightStateMachine::deployChute(const char* source) {
+    (void)source;
     if (chute_deployed) return;
     chute_deployed = true;
     state = FS_DESCENT;
@@ -38,20 +40,20 @@ void FlightStateMachine::deployChute(const char* source) {
 }
 
 void FlightStateMachine::update(float az, float current_alt, unsigned long now) {
-    checkLaunchDetection(az);
+    checkLaunchDetection(az, now);
     checkBurnoutDetection(az);
     checkApogeeDetection(current_alt);
     checkTimerDeploy(now);
 }
 
-void FlightStateMachine::checkLaunchDetection(float az) {
+void FlightStateMachine::checkLaunchDetection(float az, unsigned long now) {
     if (state != FS_ARMED) return;
-    
-    if (abs(az) > LAUNCH_ACCEL_THRESHOLD) {
+
+    if (std::fabs(az) > LAUNCH_ACCEL_THRESHOLD) {
         launch_counter++;
         if (launch_counter >= LAUNCH_SAMPLES_REQ) {
             state = FS_POWERED;
-            launch_time = millis();
+            launch_time = now;
         }
     } else {
         launch_counter = 0;
@@ -60,7 +62,7 @@ void FlightStateMachine::checkLaunchDetection(float az) {
 
 void FlightStateMachine::checkBurnoutDetection(float az) {
     if (state != FS_POWERED) return;
-    if (abs(az) < 1.2f) {
+    if (std::fabs(az) < 1.2f) {
         state = FS_COAST;
     }
 }
@@ -72,8 +74,11 @@ void FlightStateMachine::checkApogeeDetection(float current_alt) {
     alt_idx++;
     if (alt_idx >= 5) {
         bool all_desc = true;
-        for (int i = 1; i < 5; i++) {
-            if (alt_history[i % 5] >= alt_history[(i - 1) % 5]) {
+        const int oldest = alt_idx % 5;
+        for (int offset = 1; offset < 5; offset++) {
+            const int previous = (oldest + offset - 1) % 5;
+            const int current = (oldest + offset) % 5;
+            if (alt_history[current] >= alt_history[previous]) {
                 all_desc = false;
                 break;
             }

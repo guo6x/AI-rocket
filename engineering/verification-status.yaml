@@ -1,0 +1,92 @@
+schema_version: 1
+audit_date: "2026-08-26"
+software_baseline_command: "python scripts/check.py"
+hardware_policy: "Hardware-gated checks are reported separately and do not fail the software-only check."
+verification_items:
+  - id: "python_syntax"
+    verification_type: "software_test"
+    classification: "TESTED_SOFTWARE"
+    result: "PASS"
+    command: "python -m compileall -q aero_sim dynamics_sim ground_station flight_computer scripts"
+    evidence: "Executed during R0 re-baseline"
+    limitations: "Syntax/import compilation is not behavioral validation."
+
+  - id: "ground_station_tests"
+    verification_type: "software_test"
+    classification: "TESTED_SOFTWARE"
+    result: "PASS"
+    command: "python -m pytest ground_station/tests -q"
+    evidence: "16 passed after event-loop-safe UDP test and contract markers"
+    limitations: "No physical serial or ESP8266 hardware is involved."
+
+  - id: "flight_core_native_tests"
+    verification_type: "software_test"
+    classification: "TESTED_SOFTWARE"
+    result: "PASS"
+    command: "platformio test -d flight_computer -e native"
+    evidence: "8 tests passed for Kalman and production FlightStateMachine code"
+    limitations: "No Arduino peripherals, sensors, servos, or command parser are exercised."
+
+  - id: "stm32_source_build"
+    verification_type: "software_test"
+    classification: "TESTED_SOFTWARE"
+    result: "PASS"
+    command: "platformio run -d flight_computer -e bluepill_f103c8"
+    evidence: "Build succeeds after declaring the BMP280 dependency in the production environment."
+    limitations: "Build success does not prove flashing, boot, timing, wiring, or sensor operation."
+
+  - id: "esp8266_source_build"
+    verification_type: "software_test"
+    classification: "TESTED_SOFTWARE"
+    result: "PASS"
+    command: "platformio run -d esp8266_firmware -e nodemcuv2"
+    evidence: "Source build succeeds."
+    limitations: "No WiFi association, packet delivery, range, or reconnect behavior is verified."
+
+  - id: "simulation_smoke"
+    verification_type: "simulation"
+    classification: "TESTED_SOFTWARE"
+    result: "PASS"
+    command: "python scripts/simulation_smoke.py"
+    evidence: "Read-only deterministic kernel checks; tracked TUNED small-angle case converges and TESTBENCH non-ideal case diverges."
+    limitations: "The plant assumptions are prototypes and are not correlated to measured hardware."
+
+  - id: "wifi_command_downlink"
+    verification_type: "integrated_bench_test"
+    classification: "BLOCKED"
+    result: "NOT_IMPLEMENTED"
+    command: null
+    evidence: "Source audit and ground_station/tests/test_wifi_link_contract.py"
+    limitations: "Ground station target routing and ESP8266 UDP receive-to-serial path are absent."
+
+  - id: "imu_barometer_bench"
+    verification_type: "bench_hardware_test"
+    classification: "UNKNOWN"
+    result: "MANUAL_HARDWARE_GATED"
+    command: null
+    evidence: "No repeatable tracked result."
+    limitations: "Historical prose claims are not accepted as current evidence."
+
+  - id: "servo_direction_range_load"
+    verification_type: "bench_hardware_test"
+    classification: "UNKNOWN"
+    result: "MANUAL_HARDWARE_GATED"
+    command: null
+    evidence: "No repeatable tracked result."
+    limitations: "Neutral, sign, travel, rate, current, and loaded behavior remain unknown."
+
+  - id: "integrated_edf_tvc_bench"
+    verification_type: "integrated_bench_test"
+    classification: "BLOCKED"
+    result: "MANUAL_HARDWARE_GATED"
+    command: null
+    evidence: "No configuration manifest or test record."
+    limitations: "Mass, CG, thrust, restraints, safety interlocks, and measured response are unknown."
+
+  - id: "physical_flight_validation"
+    verification_type: "physical_validation"
+    classification: "BLOCKED"
+    result: "OUT_OF_SCOPE"
+    command: null
+    evidence: "None"
+    limitations: "R0 makes no free-flight readiness claim."

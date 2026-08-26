@@ -1,5 +1,7 @@
 # 飞控软件架构 (main.cpp v6 实际实现)
 
+> **历史说明 / STALE：** “烧录运行”等陈述没有随仓库保存的可重复硬件记录。R0 仅确认源码构建与自动化软件测试，当前证据等级见 `engineering/verification-status.yaml`。
+
 > 状态：**已实现并烧录运行** | 文件：`d:\AI_rocket\flight_computer\src\main.cpp`
 
 ---

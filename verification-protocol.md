@@ -1,5 +1,7 @@
 # 验证测试计划 (EDF TVC 测试台阶段)
 
+> **历史测试计划 / NOT EXECUTED IN R0：** 本文是计划和旧记录，不构成当前通过证据。R0 的实际自动化结果见 `engineering/verification-status.yaml`。
+
 > 当前阶段：**阶段六 — 物理验证期**  
 > 载具：EDF 涵道风机 TVC 倒立摆测试台（非固体火箭）
 

@@ -1,8 +1,6 @@
 #ifndef FLIGHT_FSM_H
 #define FLIGHT_FSM_H
 
-#include <Arduino.h>
-
 /**
  * @enum FlightState
  * @brief 飞行阶段枚举
@@ -20,7 +18,7 @@ public:
     void update(float az, float current_alt, unsigned long now);
     
     // 指令接口
-    void arm(float ground_alt);
+    void arm(float ground_alt, unsigned long now);
     void deployChute(const char* source);
     void reset();
 
@@ -49,7 +47,7 @@ private:
     static const int LAUNCH_SAMPLES_REQ;
     static const unsigned long TIMER_DEPLOY_MS;
 
-    void checkLaunchDetection(float az);
+    void checkLaunchDetection(float az, unsigned long now);
     void checkBurnoutDetection(float az);
     void checkApogeeDetection(float current_alt);
     void checkTimerDeploy(unsigned long now);
