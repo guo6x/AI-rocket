@@ -16,7 +16,7 @@ verification_items:
     classification: "TESTED_SOFTWARE"
     result: "PASS"
     command: "python -m pytest ground_station/tests -q"
-    evidence: "24 passed, including command tracking, target validation, MainWindow/UI status, simulated UDP ACK, and telemetry return."
+    evidence: "27 passed, including command tracking, target/source validation, wrong-source ACK/NACK rejection, MainWindow/UI status, simulated UDP ACK, and telemetry return."
     limitations: "No physical serial or ESP8266 hardware is involved."
 
   - id: "flight_core_native_tests"
@@ -24,7 +24,7 @@ verification_items:
     classification: "TESTED_SOFTWARE"
     result: "PASS"
     command: "platformio test -d flight_computer -e native"
-    evidence: "19 tests passed for Kalman, production FSM, canonical command processor, E-STOP/reset, malformed/range/NUL handling, and isolated buffers."
+    evidence: "21 tests passed for Kalman, production FSM, canonical command processor, recovery-deployed AUTO inhibition, E-STOP/reset, malformed/range/NUL handling, and isolated buffers."
     limitations: "No Arduino peripherals, sensors, or physical servos are exercised."
 
   - id: "esp_relay_native_tests"
@@ -40,7 +40,7 @@ verification_items:
     classification: "TESTED_SOFTWARE"
     result: "PASS"
     command: "platformio run -d flight_computer -e bluepill_f103c8"
-    evidence: "R1 build passes: flash 58,724/65,536 bytes; RAM 3,172/20,480 bytes."
+    evidence: "R1 review-corrected build passes: flash 58,764/65,536 bytes; RAM 3,172/20,480 bytes."
     limitations: "Build success does not prove flashing, boot, timing, wiring, or sensor operation."
 
   - id: "esp8266_source_build"
@@ -64,8 +64,8 @@ verification_items:
     classification: "TESTED_SOFTWARE"
     result: "PASS"
     command: "python -m pytest ground_station/tests/test_wifi_link_contract.py -q"
-    evidence: "Behavioral socket test covers Ground Station unicast send, simulated ESP/STM ACK, and telemetry return; native component tests and both target builds also pass."
-    limitations: "No physical ESP8266/STM32/UART/WiFi integration; UDP remains unauthenticated and lacks request IDs."
+    evidence: "Behavioral socket tests cover Ground Station unicast send, simulated ESP/STM ACK and telemetry return, and wrong-source ACK/NACK rejection before configured-source resolution; native component tests and both target builds also pass."
+    limitations: "No physical ESP8266/STM32/UART/WiFi integration; source correlation is not authentication, and UDP remains unauthenticated without request IDs or replay protection."
 
   - id: "imu_barometer_bench"
     verification_type: "bench_hardware_test"

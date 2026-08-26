@@ -45,7 +45,7 @@ USB and WiFi do not define separate command languages. Both terminate at one pro
 
 The exclusive control states are `boot`, `idle`, `armed`, `auto_control_enabled`, and `estop_latched`. Link availability and degraded-input status are separate observations; they do not silently change actuator state.
 
-After initialization, the control state is idle: automatic output is disabled and TVC is neutral. `arm` is a new explicit transition to armed. `auto_on` is accepted only from armed. E-STOP is a fail-safe latch from any post-boot state. Reset is accepted only from E-STOP and returns to idle—not to the state that existed before E-STOP.
+After initialization, the control state is idle: automatic output is disabled and TVC is neutral. `arm` is a new explicit transition to armed. `auto_on` is accepted only from armed and only while recovery is not deployed. If recovery is deployed, `auto_on` returns `NACK invalid_state`, leaves command state armed, and leaves automatic output disabled. E-STOP is a fail-safe latch from any post-boot state. Reset is accepted only from E-STOP and returns to idle—not to the state that existed before E-STOP.
 
 Recovery software state is separate. Resetting the command safety latch does not claim that a physical recovery mechanism was reloaded, repacked, or ready.
 
@@ -85,11 +85,11 @@ The ESP relay may issue a NACK for an empty, overlong, or multiline UDP datagram
 
 ## WiFi target and link loss
 
-The operator must enter an explicit unicast ESP8266 address and command port. The software does not hard-code, broadcast, or guess a command destination. A local UDP `sendto()` success becomes `SENT`; it never becomes `ACKNOWLEDGED` without a matching response returned from STM32 through ESP8266.
+The operator must enter an explicit unicast ESP8266 address and command port. Target validation rejects unspecified IPv4, multicast, and the limited-broadcast address `255.255.255.255`; without subnet-prefix or netmask context, it does not independently prove that every subnet-directed broadcast address has been classified. The software does not hard-code, broadcast to, or guess a command destination. A local UDP `sendto()` success becomes `SENT`; it never becomes `ACKNOWLEDGED` without a matching response returned from STM32 through ESP8266.
 
-No usable socket or target is `FAILED`. A sent command with no response becomes `TIMEOUT`. A received NACK remains a rejection with its reason. Reconnect clears stale pending status and requires new commands. Loss of telemetry or UDP packets does not itself create a new actuator action in R1.
+No usable socket or target is `FAILED`. A sent command with no response becomes `TIMEOUT`. In UDP mode, only an ACK/NACK whose source IP and port match the currently configured ESP command target can resolve the pending command; other response lines are logged as spurious and ignored. A received NACK from that configured source remains a rejection with its reason. Serial response handling is unchanged. Reconnect clears stale pending status and requires new commands. Loss of telemetry or UDP packets does not itself create a new actuator action in R1.
 
-R1 does not authenticate or integrity-protect UDP commands and has no request IDs. The ESP routes a response to the most recent command client, while one Ground Station permits only one outstanding command. These limitations block any operational-hardware claim and require a single controlled client during future restrained validation.
+Source IP/port correlation is a transport check, not authentication. R1 does not authenticate or integrity-protect UDP commands and has no request IDs or replay protection. The ESP routes a response to the most recent command client, while one Ground Station permits only one outstanding command. These limitations keep R1-001 blocked, block any operational-hardware claim, and require a single controlled client during future restrained validation.
 
 ## Verification strategy
 

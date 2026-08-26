@@ -47,13 +47,14 @@ state_model:
 safety_invariants:
   - "ESTOP is accepted from every post-boot control state and is idempotent."
   - "ESTOP disables automatic control and commands neutral TVC outputs."
-  - "No command except repeated estop and deploy_chute is accepted while ESTOP is latched."
+  - "No command except estop, reset, and deploy_chute is accepted while ESTOP is latched."
   - "RESET from ESTOP enters idle with automatic control disabled and TVC neutral."
   - "RESET never restores a retained automatic or manual actuator command."
   - "ARM and AUTO_ON after RESET require new explicit commands."
   - "RESET does not claim that a physical recovery mechanism was reloaded."
   - "Malformed, duplicate, truncated, or overlong input cannot partially mutate actuator state."
   - "UDP send success is SENT, not ACKNOWLEDGED."
+  - "A UDP ACK/NACK resolves a pending command only when its source IP and port match the explicitly configured ESP command target."
 
 commands:
   arm:
@@ -73,9 +74,10 @@ commands:
     syntax: "auto_on"
     allowed_from: [armed]
     rejected_from: [boot, idle, auto_control_enabled, estop_latched]
+    additional_precondition: "Recovery must not be deployed."
     state_effect: "armed -> auto_control_enabled"
     actuator_effect: "Reset PID history, then permit automatic TVC output on subsequent control cycles."
-    acknowledgement: "ACK auto_on only after the state transition is accepted."
+    acknowledgement: "ACK auto_on only after the state transition is accepted; NACK invalid_state if recovery is deployed."
     idempotency: "Duplicate in auto_control_enabled is NACK invalid_state."
     safety_relevance: "high"
     confirmation: "UI arming control assists the operator; firmware state enforcement is authoritative."

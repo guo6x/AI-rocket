@@ -223,6 +223,10 @@ class MainWindow(QMainWindow):
             self.connection_mode = "udp"
 
         self.data_thread.data_received.connect(self.on_data_received)
+        if isinstance(self.data_thread, UdpReader):
+            self.data_thread.command_response_received.connect(
+                self.on_udp_command_response
+            )
         self.data_thread.error_occurred.connect(self.on_error)
         self.data_thread.link_state_changed.connect(self.on_link_state_changed)
 
@@ -331,6 +335,17 @@ class MainWindow(QMainWindow):
 
         # Always log raw data
         self.data_logger.log(data)
+
+    def on_udp_command_response(self, data, source_addr):
+        if (
+            not isinstance(self.data_thread, UdpReader)
+            or not self.data_thread.is_expected_response_source(source_addr)
+        ):
+            self.log_message(
+                f"[CMD] Spurious UDP response from {source_addr}: {data}"
+            )
+            return
+        self.on_data_received(data)
 
     def log_fstate_change(self, fstate, mission_time_ms):
         """飞行阶段变化彩色回显"""

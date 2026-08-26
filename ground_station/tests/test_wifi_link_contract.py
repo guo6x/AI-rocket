@@ -2,6 +2,7 @@ import socket
 import threading
 import time
 
+import pytest
 from PySide6.QtCore import QCoreApplication
 
 from core.command_link import CommandTracker, parse_command_response
@@ -88,22 +89,27 @@ def test_simulated_ground_to_esp_to_stm_ack_and_telemetry_return():
     bridge.start()
 
     received = []
+    responses = []
     reader = UdpReader(
         host="127.0.0.1",
         port=listen_port,
         target_addr=("127.0.0.1", command_port),
     )
     reader.data_received.connect(received.append)
+    reader.command_response_received.connect(
+        lambda data, source: responses.append((data, source))
+    )
     reader.start()
     assert wait_for(lambda: reader.sock is not None)
 
     tracker = CommandTracker(timeout_seconds=1.0)
     assert reader.send("arm") is True
     tracker.mark_sent("arm")
-    assert wait_for(lambda: len(received) == 2)
+    assert wait_for(lambda: len(received) == 1 and len(responses) == 1)
 
-    ack = next(line for line in received if line.startswith("ACK "))
-    telemetry = next(line for line in received if line.startswith("{"))
+    ack, source = responses[0]
+    assert reader.is_expected_response_source(source)
+    telemetry = received[0]
     update = tracker.resolve(ack)
     assert update is not None
     assert update.status == "ACKNOWLEDGED"
@@ -113,6 +119,53 @@ def test_simulated_ground_to_esp_to_stm_ack_and_telemetry_return():
 
     reader.stop()
     bridge.close()
+
+
+@pytest.mark.parametrize(
+    ("response", "expected_status"),
+    [("ACK arm", "ACKNOWLEDGED"), ("NACK invalid_state arm", "NACK")],
+)
+def test_udp_response_only_resolves_from_configured_esp_source(
+    response, expected_status
+):
+    listen_port = free_udp_port()
+    command_port = free_udp_port()
+    reader = UdpReader(
+        host="127.0.0.1",
+        port=listen_port,
+        target_addr=("127.0.0.1", command_port),
+    )
+    tracker = CommandTracker(timeout_seconds=1.0)
+    seen_sources = []
+    updates = []
+
+    def resolve_if_expected(data, source):
+        seen_sources.append(source)
+        if reader.is_expected_response_source(source):
+            updates.append(tracker.resolve(data))
+
+    reader.command_response_received.connect(resolve_if_expected)
+    reader.start()
+    assert wait_for(lambda: reader.sock is not None)
+    tracker.mark_sent("arm")
+
+    wrong_source = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    expected_source = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    expected_source.bind(("127.0.0.1", command_port))
+    wrong_source.sendto(response.encode("utf-8"), ("127.0.0.1", listen_port))
+    assert wait_for(lambda: len(seen_sources) == 1)
+    assert not reader.is_expected_response_source(seen_sources[0])
+    assert tracker.pending
+
+    expected_source.sendto(response.encode("utf-8"), ("127.0.0.1", listen_port))
+    assert wait_for(lambda: len(seen_sources) == 2)
+    assert reader.is_expected_response_source(seen_sources[1])
+    assert not tracker.pending
+    assert updates[0].status == expected_status
+
+    reader.stop()
+    wrong_source.close()
+    expected_source.close()
 
 
 def test_chute_command_is_not_a_confirmation_bypassing_quick_action():

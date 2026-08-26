@@ -219,6 +219,38 @@ void test_command_ranges_and_state_gates() {
                       processor.process("reset").result);
 }
 
+void test_auto_on_rejects_deployed_recovery_context() {
+    CommandProcessor processor;
+    TEST_ASSERT_TRUE(processor.process("arm").accepted());
+
+    CommandDecision auto_on = processor.process("auto_on", true);
+    TEST_ASSERT_EQUAL(COMMAND_NACK_INVALID_STATE, auto_on.result);
+    TEST_ASSERT_EQUAL(ACTION_NONE, auto_on.action);
+    TEST_ASSERT_EQUAL(COMMAND_ARMED, processor.state());
+    TEST_ASSERT_FALSE(processor.autoEnabled());
+}
+
+void test_automatic_recovery_transition_prevents_auto_reenable() {
+    FlightStateMachine fsm;
+    CommandProcessor processor;
+    TEST_ASSERT_TRUE(processor.process(
+        "arm", fsm.isChuteDeployed(), fsm.getState() == FS_IDLE).accepted());
+    fsm.arm(0.0f, 1000);
+    TEST_ASSERT_TRUE(processor.process("auto_on").accepted());
+
+    drive_to_powered(fsm, 1010);
+    fsm.update(1.0f, 0.0f, 1040 + 15001);
+    TEST_ASSERT_TRUE(fsm.isChuteDeployed());
+    processor.disableAutoForSafety();
+
+    CommandDecision auto_on = processor.process(
+        "auto_on", fsm.isChuteDeployed(), fsm.getState() == FS_IDLE);
+    TEST_ASSERT_EQUAL(COMMAND_NACK_INVALID_STATE, auto_on.result);
+    TEST_ASSERT_EQUAL(COMMAND_ARMED, processor.state());
+    TEST_ASSERT_FALSE(processor.autoEnabled());
+    TEST_ASSERT_TRUE(fsm.isChuteDeployed());
+}
+
 static CommandLineEvent feed(CommandLineBuffer& buffer, const char* text) {
     CommandLineEvent event = COMMAND_LINE_NONE;
     while (*text) event = buffer.push(*text++);
@@ -300,6 +332,8 @@ int main(int argc, char **argv) {
     RUN_TEST(test_estop_is_idempotent_and_gates_unsafe_commands);
     RUN_TEST(test_malformed_unknown_and_extra_arguments_are_atomic);
     RUN_TEST(test_command_ranges_and_state_gates);
+    RUN_TEST(test_auto_on_rejects_deployed_recovery_context);
+    RUN_TEST(test_automatic_recovery_transition_prevents_auto_reenable);
     RUN_TEST(test_serial_and_serial2_buffers_are_isolated);
     RUN_TEST(test_overlong_line_is_discarded_until_clean_boundary);
     RUN_TEST(test_embedded_nul_discards_entire_line);

@@ -7,7 +7,7 @@ The list is evidence-based as of audited input commit `b6006c9`. Priorities refl
 ### R0-001 — WiFi command downlink is incomplete
 
 - State: closed in R1 at `TESTED_SOFTWARE`; hardware remains `UNKNOWN`.
-- Evidence: `engineering/command-safety-contract.yaml`; native command/relay tests; 24 ground-station tests including simulated UDP ACK and telemetry return; STM32/ESP8266 target builds.
+- Evidence: `engineering/command-safety-contract.yaml`; native command/relay tests; 27 ground-station tests including source-correlated simulated UDP ACK/NACK and telemetry return; STM32/ESP8266 target builds.
 - R1 action: explicit unicast target, UDP-to-UART relay, canonical STM32 processor, ACK/NACK return, timeout/failed UI states.
 - Remaining hardware gate: integrated physical ESP8266/STM32/UART/WiFi testing. The link is not `VERIFIED_HARDWARE` and is not approved for operational hardware use.
 
@@ -122,7 +122,7 @@ The list is evidence-based as of audited input commit `b6006c9`. Priorities refl
 ### R0-017 — STM32 flash headroom is limited
 
 - State: open; classification: `TESTED_SOFTWARE`
-- Evidence: R0 exact-main and R1 both use 58,724/65,536 flash bytes (0-byte delta). RAM increases from 2,904 to 3,172 bytes (+268) for isolated fixed buffers.
+- Evidence: R0 exact-main uses 58,724/65,536 flash bytes; review-corrected R1 uses 58,764 bytes (+40). RAM increases from 2,904 to 3,172 bytes (+268) for isolated fixed buffers.
 - Impact: future diagnostics or safety checks may exceed the selected board flash budget.
 - Required closure: track size in CI/check output and avoid unbounded feature additions before hardware target confirmation.
 
@@ -131,7 +131,7 @@ The list is evidence-based as of audited input commit `b6006c9`. Priorities refl
 ### R1-001 — UDP commands are unauthenticated and lack integrity/replay identity
 
 - Status: `BLOCKED` for operational hardware use.
-- Evidence: R1 intentionally retains a minimal plaintext UDP protocol with no authentication, integrity tag, sequence/request ID, or replay protection.
+- Evidence: R1 intentionally retains a minimal plaintext UDP protocol with no authentication, integrity tag, sequence/request ID, or replay protection. Ground Station source IP/port correlation is only a transport check and does not close this issue.
 - Impact: another host on the same reachable network could inject commands; responses cannot be cryptographically attributed or uniquely correlated across clients.
 - Required closure: select a scoped threat model and authenticated/request-identified protocol before treating WiFi control as operational hardware authority.
 
@@ -148,3 +148,10 @@ The list is evidence-based as of audited input commit `b6006c9`. Priorities refl
 - Evidence: ESP8266 stores one last command source IP/port, and Ground Station permits only one outstanding command.
 - Impact: concurrent clients can supersede response routing; R1 does not provide multi-client arbitration.
 - Required closure: keep a single authorized operator/client during any future bench validation or add request/client identity in a separately scoped protocol hardening task.
+
+### R1-004 — Directed-broadcast classification requires network context
+
+- State: open; classification: `PROTOTYPE`.
+- Evidence: Ground Station target validation rejects unspecified IPv4, multicast, and limited broadcast `255.255.255.255`, but has no subnet prefix or netmask input.
+- Impact: software alone does not independently prove that every subnet-directed broadcast address is classified and rejected.
+- Required closure: provide explicit network context in a separately scoped link-hardening task if directed-broadcast classification must become a software proof. This is not an authentication control.

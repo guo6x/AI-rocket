@@ -119,7 +119,7 @@ CommandDecision CommandProcessor::process(const char* line, bool recovery_deploy
         if (state_ == COMMAND_ESTOP_LATCHED) {
             return decision(COMMAND_NACK_ESTOP_LATCHED, ACTION_NONE, "auto_on", state_);
         }
-        if (state_ != COMMAND_ARMED) {
+        if (state_ != COMMAND_ARMED || recovery_deployed) {
             return decision(COMMAND_NACK_INVALID_STATE, ACTION_NONE, "auto_on", state_);
         }
         output = decision(COMMAND_ACK, ACTION_AUTO_ON, "auto_on", COMMAND_AUTO_ENABLED);

@@ -1,6 +1,7 @@
 import socket
 import ipaddress
 from PySide6.QtCore import QThread, Signal
+from core.command_link import parse_command_response
 
 class UdpReader(QThread):
     """
@@ -8,6 +9,7 @@ class UdpReader(QThread):
     与 SerialReader 接口一致（都发射 data_received / error_occurred 信号）。
     """
     data_received = Signal(str)
+    command_response_received = Signal(str, object)
     error_occurred = Signal(str)
     link_state_changed = Signal(str)
 
@@ -33,7 +35,9 @@ class UdpReader(QThread):
                     data, addr = self.sock.recvfrom(4096)
                     if data:
                         decoded = data.decode('utf-8', errors='replace').strip()
-                        if decoded:
+                        if parse_command_response(decoded) is not None:
+                            self.command_response_received.emit(decoded, addr)
+                        elif decoded:
                             self.data_received.emit(decoded)
                 except socket.timeout:
                     continue  # 超时后重新检查 is_running
@@ -66,6 +70,20 @@ class UdpReader(QThread):
             and str(address) != "255.255.255.255"
             and 1 <= port <= 65535
         )
+
+    def is_expected_response_source(self, source_addr):
+        if not self.validate_target(self.target_addr):
+            return False
+        if not isinstance(source_addr, tuple) or len(source_addr) < 2:
+            return False
+        try:
+            source_ip = ipaddress.ip_address(source_addr[0])
+            target_ip = ipaddress.ip_address(self.target_addr[0])
+            source_port = int(source_addr[1])
+            target_port = int(self.target_addr[1])
+        except (ValueError, TypeError):
+            return False
+        return source_ip == target_ip and source_port == target_port
 
     def send(self, data):
         """
