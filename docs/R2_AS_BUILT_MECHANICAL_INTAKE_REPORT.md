@@ -1,7 +1,9 @@
 # R2 As-Built Physical Baseline & Mechanical Design Intake Report
 
-Date: 2026-08-27  
-R2 base: `38c662d42db68823da8946c4d7f16e247cc79691`  
+Date: 2026-08-27
+
+R2 base: `38c662d42db68823da8946c4d7f16e247cc79691`
+
 Article: `AA-TVC-BENCH-001`
 
 ## 1. R1 to R2 transition

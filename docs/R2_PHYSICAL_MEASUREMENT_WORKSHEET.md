@@ -1,11 +1,17 @@
 # R2 physical measurement worksheet
 
-Article ID: `AA-TVC-BENCH-001`  
-Configuration revision: __________  
-Measurement date: __________  
-Operator: __________  
-Caliper/ruler identifier and resolution: __________  
-Scale identifier and resolution: __________  
+Article ID: `AA-TVC-BENCH-001`
+
+Configuration revision: __________
+
+Measurement date: __________
+
+Operator: __________
+
+Caliper/ruler identifier and resolution: __________
+
+Scale identifier and resolution: __________
+
 Photo folder/reference: __________
 
 Record raw readings before averages. Use millimetres and grams unless a row states otherwise. If an item is absent, write `NOT PRESENT`; if uncertain, write `UNKNOWN`.
@@ -83,10 +89,14 @@ Create one row per physical unit where needed.
 
 ## Datum, mass, and CG
 
-Chosen EDF reference plane: __________  
-Origin description: __________  
-+Z description and photo: __________  
-+X description and photo: __________  
+Chosen EDF reference plane: __________
+
+Origin description: __________
+
++Z description and photo: __________
+
++X description and photo: __________
+
 +Y derivation/check: __________
 
 Exact components included in mass/CG configuration: __________
@@ -97,5 +107,6 @@ Exact components included in mass/CG configuration: __________
 | `M-P0-MASS-02` longitudinal CG |  |  |  |  |
 | `M-P0-DATUM-01` datum confirmation |  |  |  |  |
 
-Reviewer/date: __________  
+Reviewer/date: __________
+
 Open discrepancies: __________
