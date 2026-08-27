@@ -1,0 +1,16 @@
+schema_version: 1
+record_id: "MEAS-YYYYMMDD-001"
+record_type: "measurement"
+article_id: "AA-TVC-BENCH-001"
+component_id: "CMP-REPLACE-ME"
+measurement_id: "M-REPLACE-ME"
+date: "YYYY-MM-DD"
+operator: "REPLACE_ME"
+method: "REPLACE_ME"
+tool: "REPLACE_ME"
+raw_measurement: null
+unit: "REPLACE_ME"
+uncertainty: null
+photo_refs: []
+source_commit: "REPLACE_WITH_CAPTURE_COMMIT"
+notes: "Record repeated readings or calculation inputs without deleting raw values."

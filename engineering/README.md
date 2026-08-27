@@ -11,6 +11,9 @@ This directory is the current engineering-status entry point for Project Ad Astr
 5. `known-issues.md` — open engineering and safety-relevant gaps.
 6. `legacy-assets.md` — historical sources and generated assets that remain preserved but are not authoritative.
 7. `../docs/R0_ENGINEERING_REBASELINE_REPORT.md` — audit narrative and evidence.
+8. `as-built/` — R2 article, inventory, datum, measurement, interface, mass, and evidence authority.
+9. `tvc-mechanical-requirements.yaml` — requirement baseline for a future measured TVC assembly; not CAD.
+10. `aeroforge-intake/` — blocked-by-measurement design-agent handoff.
 8. `command-safety-contract.yaml` — R1 canonical command states, actions, ACK/NACK, and link-loss rules.
 9. `../docs/R1_COMMAND_SAFETY_LINK.md` — R1 command-link design and operator meaning.
 10. `../docs/R1_GOVERNED_COMMAND_SAFETY_LINK_REPORT.md` — R1 implementation and exact-head evidence.
@@ -60,4 +63,4 @@ Run the unified, hardware-independent check:
 python scripts\check.py
 ```
 
-The terminal lines `R0 SOFTWARE CHECK: PASS` and `R1 COMMAND SAFETY CHECK: PASS` cover syntax, YAML parsing, ground-station and simulated-link tests, read-only simulation smoke checks, native flight/command/relay tests, and STM32/ESP8266 source builds. Hardware procedures remain `MANUAL / HARDWARE-GATED` and are not converted into software failures.
+The terminal lines `R0 SOFTWARE CHECK: PASS` and `R1 COMMAND SAFETY CHECK: PASS` cover syntax, YAML parsing, ground-station and simulated-link tests, read-only simulation smoke checks, native flight/command/relay tests, and STM32/ESP8266 source builds. `R2 PHYSICAL BASELINE STRUCTURE CHECK: PASS` validates intake structure and traceability. R2 separately reports inventory, CAD-start, motion-verification, and article-integration gates plus AeroForge concept/design-review intake. A blocked evidence gate does not fail the software/structure gate.

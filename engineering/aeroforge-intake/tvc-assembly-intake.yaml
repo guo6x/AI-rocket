@@ -1,0 +1,80 @@
+schema_version: 2
+project_id: "AD-ASTRA-R2"
+article_id: "AA-TVC-BENCH-001"
+design_item: "TVC_ASSEMBLY_V1"
+design_goal: >-
+  Create a serviceable two-axis TVC assembly for the measured, restrained EDF
+  bench article using approved as-built envelopes and interfaces. Concept intake
+  permits parametric design exploration only; it does not accept the design,
+  authorize manufacture, energize hardware, or support flight claims.
+
+concept_intake:
+  status: "BLOCKED"
+  required_gates: [INVENTORY_BASELINE, CAD_START]
+  meaning_when_ready: "Parametric TVC CAD/design exploration may begin."
+  blockers: ["M-P0-EDF-01", "M-P0-EDF-02", "M-P0-EDF-03", "M-P0-EDF-04", "M-P0-EDF-06", "M-P0-EDF-07", "M-P0-EDF-08", "M-P0-EDF-09", "M-P0-EDF-10", "M-P0-EDF-11", "M-P0-SERVO-01", "M-P0-SERVO-02", "M-P0-SERVO-03", "M-P0-SERVO-04", "M-P0-SERVO-05", "M-P0-SERVO-06", "M-P0-SERVO-08", "M-P0-STRUCT-01", "M-P0-DATUM-01"]
+  prohibited_interpretations: ["design accepted", "manufacture ready", "structurally verified", "hardware verified"]
+
+design_review_intake:
+  status: "BLOCKED"
+  required_gates: [INVENTORY_BASELINE, CAD_START, MOTION_VERIFICATION, DETAIL_DESIGN, ARTICLE_INTEGRATION]
+  meaning_when_ready: "A measured design package may enter formal interface, motion, mass, service, and manufacturing review."
+  blockers_source: "Deterministic union of active blockers in all required gates"
+
+input_groups:
+  inventory_inputs: ["M-P0-STRUCT-01"]
+  cad_start_inputs: ["M-P0-EDF-01", "M-P0-EDF-02", "M-P0-EDF-03", "M-P0-EDF-04", "M-P0-EDF-06", "M-P0-EDF-07", "M-P0-EDF-08", "M-P0-EDF-09", "M-P0-EDF-10", "M-P0-EDF-11", "M-P0-SERVO-01", "M-P0-SERVO-02", "M-P0-SERVO-03", "M-P0-SERVO-04", "M-P0-SERVO-05", "M-P0-SERVO-06", "M-P0-SERVO-08", "M-P0-STRUCT-01", "M-P0-STRUCT-02", "M-P0-DATUM-01"]
+  motion_verification_inputs: ["M-P0-EDF-11", "M-P0-SERVO-07", "M-P0-SERVO-08", "M-P1-WIRE-01"]
+  detail_design_inputs: ["M-P0-EDF-05", "M-P0-EDF-12", "M-P0-SERVO-09", "M-P0-STRUCT-03", "M-P1-WIRE-01", "M-P1-FASTENER-01"]
+  article_integration_inputs: ["M-P0-EDF-12", "M-P0-SERVO-09", "M-P0-ELEC-01", "M-P0-ELEC-02", "M-P0-ELEC-03", "M-P0-ELEC-04", "M-P0-POWER-01", "M-P0-POWER-02", "M-P0-POWER-03", "M-P0-POWER-04", "M-P0-MASS-01", "M-P0-MASS-02", "M-P1-SERVICE-01", "M-P1-CG-01", "M-P2-MASS-01"]
+
+requirements: {source: "engineering/tvc-mechanical-requirements.yaml", status: "PARTIAL_NON_NUMERIC_BASELINE"}
+component_envelopes:
+  EDF: {component_id: "CMP-EDF-001", status: "BLOCKED_BY_MEASUREMENT"}
+  pitch_servo: {component_id: "CMP-TVC-SERVO-PITCH-001", status: "BLOCKED_BY_MEASUREMENT"}
+  roll_servo: {component_id: "CMP-TVC-SERVO-ROLL-001", status: "BLOCKED_BY_MEASUREMENT"}
+  frame: {component_id: "CMP-FRAME-TUBE-001", status: "CONDITIONAL_ON_OBSERVED_REUSE"}
+  wiring: {component_id: "CMP-WIRING-001", status: "CONDITIONAL_ON_ARTICLE_INCLUSION"}
+interfaces:
+  source: "engineering/as-built/interface-register.yaml"
+  required_ids: ["IF-EDF-GIMBAL-001", "IF-GIMBAL-FRAME-001", "IF-SERVO-FRAME-001", "IF-SERVO-LINKAGE-001", "IF-GIMBAL-PIVOT-001", "IF-WIRING-MOTION-001"]
+  status: "BLOCKED_BY_MEASUREMENT"
+datum: {source: "engineering/as-built/datum-definition.yaml", datum_id: "DTM-AA-001", status: "BLOCKED_BY_MEASUREMENT"}
+motion_constraints:
+  required_tvc_pitch_range: {value: null, unit: "deg", status: "TBD_SYSTEM_REQUIREMENT"}
+  required_tvc_roll_range: {value: null, unit: "deg", status: "TBD_SYSTEM_REQUIREMENT"}
+  available_servo_range: {value: null, unit: "deg", status: "TBD_MEASURED_OR_DATASHEET"}
+  available_mechanical_tvc_range: {value: null, unit: "deg", status: "TBD_DESIGN_VERIFICATION"}
+  acceptance_relation: "available mechanical motion >= required TVC motion envelope"
+  mechanical_hard_stop: {value: null, status: "TBD_SYSTEM_REQUIREMENT"}
+  linkage_clearance: {value: null, unit: "mm", status: "BLOCKED_BY_MEASUREMENT"}
+manufacturing_constraints:
+  prototype_process: {value: "3D printing may be considered", status: "CANDIDATE_NOT_SELECTED"}
+  material: {value: null, status: "TBD_LOAD_AND_PROCESS_BASIS"}
+  wall_thickness: {value: null, status: "TBD_LOAD_AND_PROCESS_BASIS"}
+  infill: {value: null, status: "TBD_PROCESS_BASIS"}
+  fasteners: {value: null, status: "TBD_INTERFACE_AND_LOAD_BASIS"}
+verification_requirements:
+  - "No static interference"
+  - "No interference across the required two-axis motion envelope"
+  - "Available mechanical motion is at least the approved required TVC motion envelope"
+  - "Measured component envelopes and interfaces fit"
+  - "Fasteners and required tools are accessible"
+  - "Wires have protected routing with no pinch or snag region"
+  - "Assembly and service sequence is feasible"
+  - "Mass properties export identifies its material and component-mass basis"
+known_unknowns:
+  - {unknown_id: "KU-INVENTORY", description: "Physical presence, identity, article inclusion, and reuse intent", blocking_gates: [INVENTORY_BASELINE, CAD_START]}
+  - {unknown_id: "KU-EDF", description: "Actual EDF identity, retention envelope, mounting features, outlet, and cable exit", blocking_gates: [CAD_START]}
+  - {unknown_id: "KU-SERVOS", description: "Actual TVC servo identities, bodies, mounts, shaft/horn geometry, and cable exits", blocking_gates: [CAD_START]}
+  - {unknown_id: "KU-MOTION-REQUIREMENT", description: "Governed system-required TVC pitch and roll ranges", blocking_gates: [MOTION_VERIFICATION]}
+  - {unknown_id: "KU-MOTION-AVAILABLE", description: "Available servo and mechanism motion plus wire/linkage clearance", blocking_gates: [MOTION_VERIFICATION]}
+  - {unknown_id: "KU-ELECTRONICS", description: "Board form factors, mounting features, connector and service keepouts", blocking_gates: [ARTICLE_INTEGRATION]}
+  - {unknown_id: "KU-POWER", description: "Included power items, envelopes, masses, connectors, and wire exits", blocking_gates: [ARTICLE_INTEGRATION]}
+  - {unknown_id: "KU-STRUCTURE", description: "Reusable existing structure geometry, materials, and hardware", blocking_gates: [CAD_START, DETAIL_DESIGN], conditional: true}
+  - {unknown_id: "KU-MASS-CG", description: "Component/assembled masses and article CG", blocking_gates: [DETAIL_DESIGN, ARTICLE_INTEGRATION]}
+  - {unknown_id: "KU-LOADS", description: "Structural load basis, materials, process, and joint requirements", blocking_gates: [DETAIL_DESIGN]}
+source_evidence:
+  current_authority: ["engineering/as-built/article.yaml", "engineering/as-built/component-inventory.yaml", "engineering/as-built/measurement-plan.yaml", "engineering/as-built/interface-register.yaml", "engineering/as-built/datum-definition.yaml", "engineering/as-built/mass-properties.yaml", "engineering/tvc-mechanical-requirements.yaml"]
+  historical_reference_only: ["engineering/as-built/historical-cad-crosswalk.md", "tvc_design/**", "outputs/**", "pro_outputs/**", "pro_outputs_v3/**", "cad_automation/**"]
+manufacture_authorized: false

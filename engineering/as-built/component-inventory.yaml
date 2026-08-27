@@ -1,0 +1,297 @@
+schema_version: 1
+article_id: "AA-TVC-BENCH-001"
+allowed_evidence_classes: [OBSERVED, MEASURED, DATASHEET, INFERRED, HISTORICAL, UNKNOWN]
+ownership_status_vocabulary: [CONFIRMED_PRESENT, REPORTED_PRESENT, NOT_PRESENT, UNKNOWN, HISTORICAL_REFERENCE, NOT_PART_OF_CURRENT_ARTICLE]
+reuse_intent_vocabulary: [REUSE, NOT_REUSE, UNKNOWN]
+component_state_defaults:
+  article_inclusion: "UNKNOWN"
+  reuse_intent: "UNKNOWN"
+state_evidence_policy: >-
+  CONFIRMED_PRESENT, NOT_PRESENT, INCLUDED, REUSE, and NOT_REUSE decisions
+  require an OBSERVED or MEASURED evidence record. Missing per-component fields
+  use the UNKNOWN defaults above.
+components:
+  - component_id: "CMP-EDF-001"
+    category: "propulsion_mechanical_envelope"
+    claimed_model: "70/90 mm EDF undecided; historical CAD assumes 74 mm shroud"
+    actual_model: "UNKNOWN"
+    quantity: 1
+    ownership_status: "HISTORICAL_REFERENCE"
+    installed_status: "UNKNOWN"
+    evidence_class: "HISTORICAL"
+    evidence_source: ["project-overview.md", "tvc_design/**", "cad_automation/generate_tvc_nx.py"]
+    dimensions: {status: "UNKNOWN", values: {}}
+    mass: {status: "UNKNOWN", value: null, unit: "g"}
+    interface: ["IF-EDF-GIMBAL-001"]
+    notes: "Historical 70, 74, and 90 mm references conflict and are not actual dimensions."
+    confidence: "none for current physical item"
+
+  - component_id: "CMP-FC-001"
+    category: "flight_controller_board"
+    claimed_model: "STM32F103C8T6 Blue Pill"
+    actual_model: "UNKNOWN"
+    quantity: 1
+    ownership_status: "REPORTED_PRESENT"
+    installed_status: "UNKNOWN"
+    evidence_class: "HISTORICAL"
+    evidence_source: ["project-overview.md", "flight_computer/platformio.ini"]
+    dimensions: {status: "UNKNOWN", values: {}}
+    mass: {status: "UNKNOWN", value: null, unit: "g"}
+    interface: ["IF-ELECTRONICS-FRAME-001"]
+    notes: "Source builds establish a target, not the identity of a physical board."
+    confidence: "low"
+
+  - component_id: "CMP-WIFI-001"
+    category: "wifi_board"
+    claimed_model: "ESP8266-01S; firmware target is NodeMCU v2"
+    actual_model: "UNKNOWN"
+    quantity: 1
+    ownership_status: "REPORTED_PRESENT"
+    installed_status: "UNKNOWN"
+    evidence_class: "HISTORICAL"
+    evidence_source: ["project-overview.md", "hardware-wiring-STM32.md", "esp8266_firmware/platformio.ini"]
+    dimensions: {status: "UNKNOWN", values: {}}
+    mass: {status: "UNKNOWN", value: null, unit: "g"}
+    interface: ["IF-ELECTRONICS-FRAME-001", "IF-WIRING-MOTION-001"]
+    notes: "The module/board-form-factor conflict must be resolved by a label photo."
+    confidence: "low"
+
+  - component_id: "CMP-SENSOR-MODULE-001"
+    category: "sensor_board"
+    claimed_model: "GY-91"
+    actual_model: "UNKNOWN"
+    quantity: 1
+    ownership_status: "REPORTED_PRESENT"
+    installed_status: "UNKNOWN"
+    evidence_class: "HISTORICAL"
+    evidence_source: ["project-overview.md", "hardware-wiring-STM32.md"]
+    dimensions: {status: "UNKNOWN", values: {}}
+    mass: {status: "UNKNOWN", value: null, unit: "g"}
+    interface: ["IF-ELECTRONICS-FRAME-001"]
+    notes: "Board identity, orientation, mounting holes, and populated devices are unconfirmed."
+    confidence: "low"
+
+  - component_id: "CMP-IMU-001"
+    category: "imu_device_on_sensor_board"
+    claimed_model: "MPU6500 variant"
+    actual_model: "UNKNOWN"
+    quantity: 1
+    ownership_status: "REPORTED_PRESENT"
+    installed_status: "UNKNOWN"
+    evidence_class: "INFERRED"
+    evidence_source: ["flight_computer/src/main.cpp", "project-overview.md"]
+    dimensions: {status: "NOT_INDEPENDENT_ENVELOPE", values: {}}
+    mass: {status: "NOT_INDEPENDENT_MASS", value: null, unit: "g"}
+    interface: ["IF-ELECTRONICS-FRAME-001"]
+    notes: "Logical device expected on CMP-SENSOR-MODULE-001; do not double-count mass."
+    confidence: "low"
+
+  - component_id: "CMP-BARO-001"
+    category: "barometer_device_on_sensor_board"
+    claimed_model: "BMP280"
+    actual_model: "UNKNOWN"
+    quantity: 1
+    ownership_status: "REPORTED_PRESENT"
+    installed_status: "UNKNOWN"
+    evidence_class: "INFERRED"
+    evidence_source: ["flight_computer/src/main.cpp", "project-overview.md"]
+    dimensions: {status: "NOT_INDEPENDENT_ENVELOPE", values: {}}
+    mass: {status: "NOT_INDEPENDENT_MASS", value: null, unit: "g"}
+    interface: ["IF-ELECTRONICS-FRAME-001"]
+    notes: "Logical device expected on CMP-SENSOR-MODULE-001; do not double-count mass."
+    confidence: "low"
+
+  - component_id: "CMP-TVC-SERVO-PITCH-001"
+    category: "tvc_servo"
+    claimed_model: "SG92R"
+    actual_model: "UNKNOWN"
+    quantity: 1
+    ownership_status: "REPORTED_PRESENT"
+    installed_status: "UNKNOWN"
+    evidence_class: "HISTORICAL"
+    evidence_source: ["project-overview.md", "flight_computer/src/main.cpp"]
+    dimensions: {status: "UNKNOWN", values: {}}
+    mass: {status: "UNKNOWN", value: null, unit: "g"}
+    interface: ["IF-SERVO-FRAME-001", "IF-SERVO-LINKAGE-001"]
+    notes: "Historical CAD SG92R envelope is not accepted as an actual envelope."
+    confidence: "low"
+
+  - component_id: "CMP-TVC-SERVO-ROLL-001"
+    category: "tvc_servo"
+    claimed_model: "SG92R"
+    actual_model: "UNKNOWN"
+    quantity: 1
+    ownership_status: "REPORTED_PRESENT"
+    installed_status: "UNKNOWN"
+    evidence_class: "HISTORICAL"
+    evidence_source: ["project-overview.md", "flight_computer/src/main.cpp"]
+    dimensions: {status: "UNKNOWN", values: {}}
+    mass: {status: "UNKNOWN", value: null, unit: "g"}
+    interface: ["IF-SERVO-FRAME-001", "IF-SERVO-LINKAGE-001"]
+    notes: "Measure separately; do not assume two labeled units are geometrically identical."
+    confidence: "low"
+
+  - component_id: "CMP-RECOVERY-SERVO-001"
+    category: "recovery_servo"
+    claimed_model: "SG92R"
+    actual_model: "UNKNOWN"
+    quantity: 1
+    ownership_status: "REPORTED_PRESENT"
+    installed_status: "UNKNOWN"
+    evidence_class: "HISTORICAL"
+    evidence_source: ["project-overview.md", "flight_computer/src/main.cpp"]
+    dimensions: {status: "UNKNOWN", values: {}}
+    mass: {status: "UNKNOWN", value: null, unit: "g"}
+    interface: []
+    notes: "Not part of TVC Assembly V1 unless later configuration evidence says otherwise."
+    confidence: "low"
+
+  - component_id: "CMP-POWER-SOURCE-001"
+    category: "power_source"
+    claimed_model: "6S LiPo was a historical purchase plan"
+    actual_model: "UNKNOWN"
+    quantity: 1
+    ownership_status: "HISTORICAL_REFERENCE"
+    installed_status: "UNKNOWN"
+    evidence_class: "HISTORICAL"
+    evidence_source: ["project-overview.md"]
+    dimensions: {status: "UNKNOWN", values: {}}
+    mass: {status: "UNKNOWN", value: null, unit: "g"}
+    interface: ["IF-POWER-FRAME-001", "IF-WIRING-MOTION-001"]
+    notes: "R2 records mechanical envelope and connector only; it defines no energized procedure."
+    confidence: "none"
+
+  - component_id: "CMP-REGULATOR-BEC-001"
+    category: "power_regulator_or_bec"
+    claimed_model: "Breadboard supply module / regulator / BEC unspecified"
+    actual_model: "UNKNOWN"
+    quantity: 1
+    ownership_status: "UNKNOWN"
+    installed_status: "UNKNOWN"
+    evidence_class: "UNKNOWN"
+    evidence_source: ["hardware-wiring-STM32.md"]
+    dimensions: {status: "UNKNOWN", values: {}}
+    mass: {status: "UNKNOWN", value: null, unit: "g"}
+    interface: ["IF-POWER-FRAME-001", "IF-WIRING-MOTION-001"]
+    notes: "Historical wiring prose does not identify a current part."
+    confidence: "none"
+
+  - component_id: "CMP-CH340-001"
+    category: "usb_uart_adapter"
+    claimed_model: "CH340 USB-UART adapter"
+    actual_model: "UNKNOWN"
+    quantity: 1
+    ownership_status: "REPORTED_PRESENT"
+    installed_status: "NOT_PART_OF_CURRENT_ARTICLE"
+    evidence_class: "HISTORICAL"
+    evidence_source: ["project-overview.md", "hardware-wiring-STM32.md"]
+    dimensions: {status: "UNKNOWN", values: {}}
+    mass: {status: "UNKNOWN", value: null, unit: "g"}
+    interface: []
+    notes: "Bench tool unless later evidence defines it as installed hardware."
+    confidence: "low"
+
+  - component_id: "CMP-STLINK-001"
+    category: "programmer_debugger"
+    claimed_model: "ST-Link V2"
+    actual_model: "UNKNOWN"
+    quantity: 1
+    ownership_status: "REPORTED_PRESENT"
+    installed_status: "NOT_PART_OF_CURRENT_ARTICLE"
+    evidence_class: "HISTORICAL"
+    evidence_source: ["project-overview.md", "project-memory.md", "flight_computer/platformio.ini"]
+    dimensions: {status: "UNKNOWN", values: {}}
+    mass: {status: "UNKNOWN", value: null, unit: "g"}
+    interface: []
+    notes: "Programming tool, not article mass unless physically installed during a recorded configuration."
+    confidence: "low"
+
+  - component_id: "CMP-FASTENERS-001"
+    category: "fasteners"
+    claimed_model: "Historical CAD includes unspecified and M3-like fasteners"
+    actual_model: "UNKNOWN"
+    quantity: null
+    ownership_status: "UNKNOWN"
+    installed_status: "UNKNOWN"
+    evidence_class: "HISTORICAL"
+    evidence_source: ["tvc_design/**", "3d_print_files/**"]
+    dimensions: {status: "UNKNOWN", values: {}}
+    mass: {status: "UNKNOWN", value: null, unit: "g"}
+    interface: ["IF-EDF-GIMBAL-001", "IF-GIMBAL-FRAME-001", "IF-GIMBAL-PIVOT-001"]
+    notes: "No size, material, quantity, retention method, or ownership is established."
+    confidence: "none"
+
+  - component_id: "CMP-PIVOT-HARDWARE-001"
+    category: "bearings_and_pivots"
+    claimed_model: "Historical CAD contains pins/holes; bearing selection absent"
+    actual_model: "UNKNOWN"
+    quantity: null
+    ownership_status: "UNKNOWN"
+    installed_status: "UNKNOWN"
+    evidence_class: "HISTORICAL"
+    evidence_source: ["tvc_design/**", "cad_automation/generate_tvc_nx.py"]
+    dimensions: {status: "UNKNOWN", values: {}}
+    mass: {status: "UNKNOWN", value: null, unit: "g"}
+    interface: ["IF-GIMBAL-PIVOT-001"]
+    notes: "Do not adopt historical 3.0/3.2 mm pivot geometry without requirements and measurements."
+    confidence: "none"
+
+  - component_id: "CMP-FRAME-TUBE-001"
+    category: "frame_tube_or_plate"
+    claimed_model: "Historical tube/frame concepts vary by generation"
+    actual_model: "UNKNOWN"
+    quantity: null
+    ownership_status: "UNKNOWN"
+    installed_status: "UNKNOWN"
+    evidence_class: "HISTORICAL"
+    evidence_source: ["project-overview.md", "generate_rocket*.py", "3d_print_files/**"]
+    dimensions: {status: "UNKNOWN", values: {}}
+    mass: {status: "UNKNOWN", value: null, unit: "g"}
+    interface: ["IF-GIMBAL-FRAME-001", "IF-ELECTRONICS-FRAME-001", "IF-POWER-FRAME-001"]
+    notes: "Legacy 75 mm tube geometry is not current article authority."
+    confidence: "none"
+
+  - component_id: "CMP-PRINTED-PARTS-001"
+    category: "printed_parts"
+    claimed_model: "Multiple historical STL/STEP/PRT generations"
+    actual_model: "UNKNOWN"
+    quantity: null
+    ownership_status: "UNKNOWN"
+    installed_status: "UNKNOWN"
+    evidence_class: "HISTORICAL"
+    evidence_source: ["3d_print_files/**", "outputs/**", "pro_outputs/**", "pro_outputs_v3/**"]
+    dimensions: {status: "UNKNOWN", values: {}}
+    mass: {status: "UNKNOWN", value: null, unit: "g"}
+    interface: ["IF-EDF-GIMBAL-001", "IF-GIMBAL-FRAME-001"]
+    notes: "File presence does not prove printing, ownership, fit, or material."
+    confidence: "none"
+
+  - component_id: "CMP-WIRING-001"
+    category: "wires_and_connectors"
+    claimed_model: "Historical breadboard/jumper wiring"
+    actual_model: "UNKNOWN"
+    quantity: null
+    ownership_status: "UNKNOWN"
+    installed_status: "UNKNOWN"
+    evidence_class: "HISTORICAL"
+    evidence_source: ["hardware-wiring-STM32.md"]
+    dimensions: {status: "UNKNOWN", values: {}}
+    mass: {status: "UNKNOWN", value: null, unit: "g"}
+    interface: ["IF-WIRING-MOTION-001"]
+    notes: "Connector types, lengths, bend radius, strain relief, and routing are unknown."
+    confidence: "none"
+
+  - component_id: "CMP-TVC-MECHANISM-001"
+    category: "existing_tvc_mechanical_hardware"
+    claimed_model: "Prototype CAD generations only"
+    actual_model: "UNKNOWN"
+    quantity: 1
+    ownership_status: "UNKNOWN"
+    installed_status: "UNKNOWN"
+    evidence_class: "HISTORICAL"
+    evidence_source: ["tvc_design/**", "outputs/**", "pro_outputs/**", "pro_outputs_v3/**", "cad_automation/**"]
+    dimensions: {status: "UNKNOWN", values: {}}
+    mass: {status: "UNKNOWN", value: null, unit: "g"}
+    interface: ["IF-EDF-GIMBAL-001", "IF-GIMBAL-FRAME-001", "IF-SERVO-LINKAGE-001", "IF-GIMBAL-PIVOT-001"]
+    notes: "No existing physical TVC mechanism is established."
+    confidence: "none"

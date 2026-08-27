@@ -1,0 +1,51 @@
+schema_version: 1
+requirement_baseline: "AA-TVC-R2-MECH-REQ-001"
+article_id: "AA-TVC-BENCH-001"
+design_item: "TVC_ASSEMBLY_V1"
+status: "BLOCKED_BY_MEASUREMENT"
+evidence_ceiling: "REQUIREMENT_BASELINE_ONLY"
+requirements:
+  functional:
+    - {requirement_id: "TVC-F-001", statement: "Retain the actual EDF mechanically in the restrained bench article.", status: "ACTIVE", source: "R2 scope", verification: "CAD interface review and later restrained physical inspection"}
+    - {requirement_id: "TVC-F-002", statement: "Permit commanded two-axis angular motion about the defined transverse axes.", status: "ACTIVE_NUMERIC_RANGE_TBD", source: "R2 scope and current two-axis software architecture", verification: "CAD motion study after the governed system TVC range requirement is defined"}
+    - {requirement_id: "TVC-F-003", statement: "Provide a defined neutral geometry compatible with controlled software neutral/hold behavior.", status: "ACTIVE_MAPPING_TBD", source: "R2 scope and current command safety contract", verification: "Datum and linkage mapping review; no physical claim in R2"}
+    - {requirement_id: "TVC-F-004", statement: "Prevent wiring and connectors from entering moving, abrasion, or pinch regions across the required motion envelope.", status: "ACTIVE_ENVELOPE_TBD", source: "R2 scope", verification: "CAD routed-harness clearance study"}
+  interface:
+    - {requirement_id: "TVC-I-001", parameter: "actual_edf_envelope", value: null, unit: "mm", status: "BLOCKED_BY_MEASUREMENT", measurement_ids: ["M-P0-EDF-01", "M-P0-EDF-02", "M-P0-EDF-03", "M-P0-EDF-04", "M-P0-EDF-05", "M-P0-EDF-06", "M-P0-EDF-07", "M-P0-EDF-08", "M-P0-EDF-09", "M-P0-EDF-10", "M-P0-EDF-11"]}
+    - {requirement_id: "TVC-I-002", parameter: "actual_servo_envelopes_and_mounts", value: null, unit: "mm", status: "BLOCKED_BY_MEASUREMENT", measurement_ids: ["M-P0-SERVO-01", "M-P0-SERVO-02", "M-P0-SERVO-03", "M-P0-SERVO-04", "M-P0-SERVO-05", "M-P0-SERVO-06", "M-P0-SERVO-08"]}
+    - {requirement_id: "TVC-I-003", parameter: "actual_frame_interface", value: null, unit: "mm", status: "BLOCKED_BY_MEASUREMENT", measurement_ids: ["M-P0-STRUCT-01", "M-P0-STRUCT-02", "M-P0-STRUCT-03"]}
+    - {requirement_id: "TVC-I-004", parameter: "cable_exit_and_connector_keepouts", value: null, unit: "mm", status: "BLOCKED_BY_MEASUREMENT", measurement_ids: ["M-P0-EDF-11", "M-P0-SERVO-08", "M-P0-ELEC-04", "M-P0-POWER-04"]}
+  motion:
+    - {requirement_id: "TVC-M-001", parameter: "pitch_required_range", value: null, unit: "deg", status: "TBD_SYSTEM_REQUIREMENT", source: "Governed system/control requirement; historical +/-15 deg is not authority"}
+    - {requirement_id: "TVC-M-002", parameter: "roll_required_range", value: null, unit: "deg", status: "TBD_SYSTEM_REQUIREMENT", source: "Governed system/control requirement; historical +/-15 deg is not authority"}
+    - {requirement_id: "TVC-M-003", parameter: "available_servo_range", value: null, unit: "deg", status: "TBD_MEASURED_OR_DATASHEET", source: "M-P0-SERVO-07 and model-specific evidence"}
+    - {requirement_id: "TVC-M-004", parameter: "available_mechanical_tvc_range", value: null, unit: "deg", status: "TBD_DESIGN_VERIFICATION", source: "Future CAD motion study using measured envelopes"}
+    - {requirement_id: "TVC-M-005", parameter: "mechanical_hard_stop", value: null, unit: "deg and geometry", status: "TBD_SYSTEM_REQUIREMENT", source: "No safe motion/load basis exists"}
+    - {requirement_id: "TVC-M-006", parameter: "linkage_clearance", value: null, unit: "mm", status: "BLOCKED_BY_MEASUREMENT", source: "Actual horn, linkage, servo, wire, and frame geometry required"}
+  assembly:
+    - {requirement_id: "TVC-A-001", statement: "The EDF retention and all safety-relevant joints shall be inspectable.", status: "ACTIVE"}
+    - {requirement_id: "TVC-A-002", statement: "The EDF shall be removable without destroying the primary frame or gimbal.", status: "ACTIVE"}
+    - {requirement_id: "TVC-A-003", statement: "Each TVC servo shall be replaceable with accessible retention hardware.", status: "ACTIVE"}
+    - {requirement_id: "TVC-A-004", statement: "The design shall define a feasible assembly and disassembly sequence with tool access.", status: "ACTIVE"}
+  manufacturability:
+    - {requirement_id: "TVC-P-001", parameter: "prototype_process", value: "3D-printable prototype may be considered", status: "CANDIDATE_NOT_SELECTED"}
+    - {requirement_id: "TVC-P-002", parameter: "material", value: null, status: "TBD_LOAD_AND_PROCESS_BASIS"}
+    - {requirement_id: "TVC-P-003", parameter: "wall_thickness", value: null, unit: "mm", status: "TBD_LOAD_AND_PROCESS_BASIS"}
+    - {requirement_id: "TVC-P-004", parameter: "infill", value: null, unit: "%", status: "TBD_PROCESS_BASIS"}
+    - {requirement_id: "TVC-P-005", parameter: "fastener_size", value: null, status: "TBD_INTERFACE_AND_LOAD_BASIS"}
+  verification:
+    - {requirement_id: "TVC-V-001", statement: "Prove no static interference in neutral configuration.", method: "CAD interference check"}
+    - {requirement_id: "TVC-V-002", statement: "Prove no interference across the complete required two-axis motion envelope.", method: "Parametric CAD motion sweep"}
+    - {requirement_id: "TVC-V-002A", statement: "Prove available mechanical pitch and roll motion are each greater than or equal to the governed required TVC motion envelope.", method: "Compare measured/datasheet servo availability and CAD mechanism motion against approved system requirements"}
+    - {requirement_id: "TVC-V-003", statement: "Prove all measured component envelopes and interface features fit.", method: "Envelope/interface traceability review"}
+    - {requirement_id: "TVC-V-004", statement: "Prove fasteners and required tools have access.", method: "CAD service-envelope review"}
+    - {requirement_id: "TVC-V-005", statement: "Prove wires have a protected route across motion.", method: "Routed-harness clearance review"}
+    - {requirement_id: "TVC-V-006", statement: "Prove the assembly sequence is possible and reversible for service items.", method: "Exploded sequence and dependency review"}
+    - {requirement_id: "TVC-V-007", statement: "Export assembly mass properties with the source component masses identified.", method: "CAD mass-property report after material/mass basis exists"}
+structural_strength:
+  status: "TBD"
+  reason: "No measured configuration, load basis, material, process, or joint definition exists."
+historical_cad_policy:
+  may_inform_questions: true
+  may_supply_current_fit_dimensions: false
+  may_be_manufactured_from_this_baseline: false

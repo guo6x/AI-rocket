@@ -1,0 +1,25 @@
+schema_version: 1
+article_id: "AA-TVC-BENCH-001"
+datum_id: "DTM-AA-001"
+status: "BLOCKED_BY_MEASUREMENT"
+coordinate_system:
+  handedness: "right_handed"
+  origin:
+    definition: "Center of the measured EDF reference plane selected during intake"
+    status: "TBD_MEASURED"
+  positive_z:
+    definition: "Nominal EDF/body axis, positive in the intended thrust-vector direction"
+    status: "TBD_CONFIRMED_ON_ARTICLE"
+  positive_x:
+    definition: "First TVC transverse axis, assigned after article orientation is photographed"
+    status: "TBD_CONFIRMED_ON_ARTICLE"
+  positive_y:
+    definition: "Completes the right-handed frame and is the second TVC transverse axis"
+    status: "TBD_DERIVED_AFTER_X_Z"
+reference_features:
+  edf_reference_plane: {status: "TBD_MEASURED", definition: "Physical EDF plane used for axial dimensions"}
+  pitch_servo_shaft_center: {status: "TBD_MEASURED", definition: "Measured shaft-axis centerline in DTM-AA-001"}
+  roll_servo_shaft_center: {status: "TBD_MEASURED", definition: "Measured shaft-axis centerline in DTM-AA-001"}
+  cg_longitudinal_datum: {status: "TBD_MEASURED", definition: "Z=0 plane of DTM-AA-001"}
+required_evidence: ["M-P0-DATUM-01"]
+warning: "Do not assume that this frame matches any historical CAD coordinate system."
