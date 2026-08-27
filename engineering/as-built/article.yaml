@@ -1,0 +1,25 @@
+schema_version: 1
+article_id: "AA-TVC-BENCH-001"
+purpose: "Restrained, low-energy EDF TVC bench mechanical-integration article"
+status: "BLOCKED_BY_MEASUREMENT"
+configuration_revision: "R2-INTAKE-INITIAL"
+physical_state: "UNKNOWN"
+current_owner_evidence: []
+assembly_status: "UNKNOWN"
+allowed_test_scope:
+  - "Static observation and photography"
+  - "Unpowered dimensional measurement"
+  - "Unpowered mass and static balance measurement"
+  - "Software-only requirement and CAD intake preparation"
+prohibited_claims:
+  - "VERIFIED_HARDWARE"
+  - "RELEASED_FOR_MANUFACTURE"
+  - "STRUCTURALLY_QUALIFIED"
+  - "FLIGHT_READY"
+  - "FREE_FLIGHT_READY"
+  - "PHYSICAL_TVC_DESIGN_COMPLETE"
+baseline_commit: "38c662d42db68823da8946c4d7f16e247cc79691"
+notes: >-
+  The article is a configuration placeholder until the user supplies observation
+  and measurement evidence. No repository claim proves which parts are currently
+  owned, installed, or assembled.

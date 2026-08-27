@@ -1,0 +1,31 @@
+schema_version: 1
+article_id: "AA-TVC-BENCH-001"
+configuration_revision: "R2-INTAKE-INITIAL"
+status: "BLOCKED_BY_MEASUREMENT"
+component_masses:
+  CMP-EDF-001: {value: null, unit: "g", status: "UNKNOWN", evidence: []}
+  CMP-FC-001: {value: null, unit: "g", status: "UNKNOWN", evidence: []}
+  CMP-WIFI-001: {value: null, unit: "g", status: "UNKNOWN", evidence: []}
+  CMP-SENSOR-MODULE-001: {value: null, unit: "g", status: "UNKNOWN", evidence: []}
+  CMP-TVC-SERVO-PITCH-001: {value: null, unit: "g", status: "UNKNOWN", evidence: []}
+  CMP-TVC-SERVO-ROLL-001: {value: null, unit: "g", status: "UNKNOWN", evidence: []}
+  CMP-RECOVERY-SERVO-001: {value: null, unit: "g", status: "UNKNOWN", evidence: []}
+  CMP-POWER-SOURCE-001: {value: null, unit: "g", status: "UNKNOWN", evidence: []}
+  CMP-REGULATOR-BEC-001: {value: null, unit: "g", status: "UNKNOWN", evidence: []}
+  CMP-FASTENERS-001: {value: null, unit: "g", status: "UNKNOWN", evidence: []}
+  CMP-PIVOT-HARDWARE-001: {value: null, unit: "g", status: "UNKNOWN", evidence: []}
+  CMP-FRAME-TUBE-001: {value: null, unit: "g", status: "UNKNOWN", evidence: []}
+  CMP-PRINTED-PARTS-001: {value: null, unit: "g", status: "UNKNOWN", evidence: []}
+  CMP-WIRING-001: {value: null, unit: "g", status: "UNKNOWN", evidence: []}
+  CMP-TVC-MECHANISM-001: {value: null, unit: "g", status: "UNKNOWN", evidence: []}
+assembled_mass: {value: null, unit: "g", status: "UNKNOWN", evidence: [], measurement_id: "M-P0-MASS-01"}
+longitudinal_cg: {value: null, unit: "mm from DTM-AA-001 Z=0", status: "UNKNOWN", evidence: [], measurement_id: "M-P0-MASS-02"}
+transverse_cg_status: "UNKNOWN"
+measurement_method: "UNSELECTED; see docs/R2_MASS_CG_MEASUREMENT_GUIDE.md"
+measurement_date: null
+evidence: []
+uncertainty: {value: null, unit: "mm", status: "UNKNOWN"}
+rules:
+  logical_sensor_devices_are_not_double_counted: ["CMP-IMU-001", "CMP-BARO-001"]
+  bench_tools_excluded_unless_installed: ["CMP-CH340-001", "CMP-STLINK-001"]
+  edf_must_remain_unpowered: true

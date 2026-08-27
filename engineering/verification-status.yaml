@@ -98,3 +98,19 @@ verification_items:
     command: null
     evidence: "None"
     limitations: "R1 makes no free-flight readiness claim."
+
+  - id: "r2_physical_baseline_structure"
+    verification_type: "engineering_structure_check"
+    classification: "TESTED_SOFTWARE"
+    result: "PASS"
+    command: "python scripts/r2_physical_baseline_check.py"
+    evidence: "Recursive YAML parse and reference/evidence/release/AeroForge/checklist policy validation."
+    limitations: "A passing structure gate proves no physical dimensions, ownership, assembly, fit, strength, or manufacturability."
+
+  - id: "r2_physical_measurement_gate"
+    verification_type: "physical_evidence_gate"
+    classification: "BLOCKED"
+    result: "BLOCKED"
+    command: "Complete the P0 records in engineering/as-built/measurement-plan.yaml"
+    evidence: "No observation/measurement records exist; all 35 P0 required-for-CAD measurements are missing."
+    limitations: "BLOCKED is the correct initial R2 state and does not fail the structure/software gate."

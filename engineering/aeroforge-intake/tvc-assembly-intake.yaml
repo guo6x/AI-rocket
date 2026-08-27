@@ -1,0 +1,110 @@
+schema_version: 1
+project_id: "AD-ASTRA-R2"
+article_id: "AA-TVC-BENCH-001"
+design_item: "TVC_ASSEMBLY_V1"
+status: "BLOCKED_BY_MEASUREMENT"
+design_goal: >-
+  Create a serviceable two-axis TVC assembly for the measured, restrained EDF
+  bench article using approved as-built envelopes and interfaces. This intake
+  does not authorize manufacture, energized test, or flight.
+requirements:
+  source: "engineering/tvc-mechanical-requirements.yaml"
+  status: "PARTIAL_NON_NUMERIC_BASELINE"
+component_envelopes:
+  EDF: {component_id: "CMP-EDF-001", status: "BLOCKED_BY_MEASUREMENT"}
+  pitch_servo: {component_id: "CMP-TVC-SERVO-PITCH-001", status: "BLOCKED_BY_MEASUREMENT"}
+  roll_servo: {component_id: "CMP-TVC-SERVO-ROLL-001", status: "BLOCKED_BY_MEASUREMENT"}
+  frame: {component_id: "CMP-FRAME-TUBE-001", status: "BLOCKED_BY_MEASUREMENT"}
+  wiring: {component_id: "CMP-WIRING-001", status: "BLOCKED_BY_MEASUREMENT"}
+interfaces:
+  source: "engineering/as-built/interface-register.yaml"
+  required_ids: ["IF-EDF-GIMBAL-001", "IF-GIMBAL-FRAME-001", "IF-SERVO-FRAME-001", "IF-SERVO-LINKAGE-001", "IF-GIMBAL-PIVOT-001", "IF-WIRING-MOTION-001"]
+  status: "BLOCKED_BY_MEASUREMENT"
+datum:
+  source: "engineering/as-built/datum-definition.yaml"
+  datum_id: "DTM-AA-001"
+  status: "BLOCKED_BY_MEASUREMENT"
+motion_constraints:
+  pitch_required_range: {value: null, unit: "deg", status: "TBD_MEASURED"}
+  roll_required_range: {value: null, unit: "deg", status: "TBD_MEASURED"}
+  mechanical_hard_stop: {value: null, status: "TBD_REQUIREMENT"}
+  linkage_clearance: {value: null, unit: "mm", status: "BLOCKED_BY_MEASUREMENT"}
+manufacturing_constraints:
+  prototype_process: {value: "3D printing may be considered", status: "CANDIDATE_NOT_SELECTED"}
+  material: {value: null, status: "TBD_LOAD_AND_PROCESS_BASIS"}
+  wall_thickness: {value: null, status: "TBD_LOAD_AND_PROCESS_BASIS"}
+  infill: {value: null, status: "TBD_PROCESS_BASIS"}
+  fasteners: {value: null, status: "TBD_INTERFACE_AND_LOAD_BASIS"}
+verification_requirements:
+  - "No static interference"
+  - "No interference across the required two-axis motion envelope"
+  - "Measured component envelopes and interfaces fit"
+  - "Fasteners and required tools are accessible"
+  - "Wires have protected routing with no pinch or snag region"
+  - "Assembly and service sequence is feasible"
+  - "Mass properties export identifies its material and component-mass basis"
+known_unknowns:
+  - {unknown_id: "KU-EDF", description: "Actual EDF identity, envelope, mounting features, cable exit, and mass", blocking: true}
+  - {unknown_id: "KU-SERVOS", description: "Actual TVC servo identities, envelopes, mounts, shaft/horn geometry, range evidence, cables, and masses", blocking: true}
+  - {unknown_id: "KU-ELECTRONICS", description: "Actual board form factors, mounting features, connector and service keepouts", blocking: true}
+  - {unknown_id: "KU-POWER", description: "Actual power items, envelopes, masses, connectors, and wire exits", blocking: true}
+  - {unknown_id: "KU-STRUCTURE", description: "Existing frame/tube/plate/printed/TVC hardware, dimensions, materials, and hole patterns", blocking: true}
+  - {unknown_id: "KU-DATUM", description: "Physical article orientation and EDF reference plane", blocking: true}
+  - {unknown_id: "KU-MASS-CG", description: "Assembled configuration mass and longitudinal CG", blocking: true}
+  - {unknown_id: "KU-MOTION", description: "Required pitch/roll ranges, linkage mapping, and hard-stop basis", blocking: true}
+  - {unknown_id: "KU-LOADS", description: "Structural load basis, materials, process, and joint requirements", blocking: true}
+required_human_inputs:
+  - "M-P0-EDF-01"
+  - "M-P0-EDF-02"
+  - "M-P0-EDF-03"
+  - "M-P0-EDF-04"
+  - "M-P0-EDF-05"
+  - "M-P0-EDF-06"
+  - "M-P0-EDF-07"
+  - "M-P0-EDF-08"
+  - "M-P0-EDF-09"
+  - "M-P0-EDF-10"
+  - "M-P0-EDF-11"
+  - "M-P0-EDF-12"
+  - "M-P0-SERVO-01"
+  - "M-P0-SERVO-02"
+  - "M-P0-SERVO-03"
+  - "M-P0-SERVO-04"
+  - "M-P0-SERVO-05"
+  - "M-P0-SERVO-06"
+  - "M-P0-SERVO-07"
+  - "M-P0-SERVO-08"
+  - "M-P0-SERVO-09"
+  - "M-P0-ELEC-01"
+  - "M-P0-ELEC-02"
+  - "M-P0-ELEC-03"
+  - "M-P0-ELEC-04"
+  - "M-P0-POWER-01"
+  - "M-P0-POWER-02"
+  - "M-P0-POWER-03"
+  - "M-P0-POWER-04"
+  - "M-P0-STRUCT-01"
+  - "M-P0-STRUCT-02"
+  - "M-P0-STRUCT-03"
+  - "M-P0-MASS-01"
+  - "M-P0-MASS-02"
+  - "M-P0-DATUM-01"
+source_evidence:
+  current_authority:
+    - "engineering/as-built/article.yaml"
+    - "engineering/as-built/component-inventory.yaml"
+    - "engineering/as-built/measurement-plan.yaml"
+    - "engineering/as-built/interface-register.yaml"
+    - "engineering/as-built/datum-definition.yaml"
+    - "engineering/as-built/mass-properties.yaml"
+    - "engineering/tvc-mechanical-requirements.yaml"
+  historical_reference_only:
+    - "engineering/as-built/historical-cad-crosswalk.md"
+    - "tvc_design/**"
+    - "outputs/**"
+    - "pro_outputs/**"
+    - "pro_outputs_v3/**"
+    - "cad_automation/**"
+release_policy:
+  design_may_start_when: "R2 PHYSICAL MEASUREMENT GATE is READY and requirements are reviewed"
+  manufacture_authorized: false

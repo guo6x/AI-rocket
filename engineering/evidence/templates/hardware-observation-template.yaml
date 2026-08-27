@@ -1,0 +1,16 @@
+schema_version: 1
+record_id: "OBS-YYYYMMDD-001"
+record_type: "hardware_observation"
+article_id: "AA-TVC-BENCH-001"
+component_id: "CMP-REPLACE-ME"
+date: "YYYY-MM-DD"
+operator: "REPLACE_ME"
+method: "Visual inspection and label photography"
+tool: "Phone camera and reference ruler"
+observations: []
+raw_measurement: null
+unit: null
+uncertainty: null
+photo_refs: []
+source_commit: "REPLACE_WITH_CAPTURE_COMMIT"
+notes: "Do not change evidence_class to MEASURED unless a measurement record is also completed."

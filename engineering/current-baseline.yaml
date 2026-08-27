@@ -1,15 +1,15 @@
 schema_version: 1
 project: "Project Ad Astra / AI-rocket"
-baseline_name: "R1 Governed Command & Safety Link Closure"
-audit_date: "2026-08-26"
-baseline_commit: "d40585f77e1b73d270dd9972823a5939cbfcd81a"
-prior_r0_head: "22edc4f31f932ebc1323698f502e6eb1b95981bc"
+baseline_name: "R2 As-Built Physical Baseline & Mechanical Design Intake"
+audit_date: "2026-08-27"
+baseline_commit: "38c662d42db68823da8946c4d7f16e247cc79691"
+prior_r1_head: "4d4bf7f1349fdaf78f2b5ac71cf73bb868c255df"
 
-current_phase: "R1 governed plaintext command and safety link"
+current_phase: "R2 as-built physical baseline and mechanical design intake"
 current_objective: >-
-  Establish deterministic command parsing, fail-safe E-STOP/reset semantics,
-  isolated transport boundaries, software-tested USB/WiFi command routing, and
-  visible ACK/NACK/timeout status without claiming hardware verification.
+  Convert claimed physical components into a traceable article, measurement,
+  datum, interface, mass-property, requirement, and AeroForge intake structure
+  without inventing measurements or starting TVC CAD.
 
 current_physical_platform:
   intended_platform: "restrained EDF TVC bench / experimental avionics platform"
@@ -17,13 +17,15 @@ current_physical_platform:
   confirmed_in_repository:
     - "STM32F103C8T6 firmware target is configured in PlatformIO."
     - "ESP8266 firmware target is configured in PlatformIO."
-    - "SG92R is the actuator model referenced by code, simulations, and documents."
+    - "Firmware assigns three servo channels; physical servo identities are not confirmed."
   not_confirmed_in_repository:
     - "actual installed EDF diameter and thrust"
     - "actual vehicle or bench mass and CG"
     - "current wiring configuration"
     - "integrated actuator direction and range"
     - "physical recovery assembly"
+    - "ownership and installation state of every claimed physical component"
+    - "actual component envelopes, mounting features, connectors, and masses"
 
 current_blockers:
   - id: "R1-001"
@@ -47,6 +49,9 @@ authoritative_sources:
     - "engineering/verification-status.yaml"
     - "engineering/known-issues.md"
     - "engineering/command-safety-contract.yaml"
+    - "engineering/as-built/**"
+    - "engineering/tvc-mechanical-requirements.yaml"
+    - "engineering/aeroforge-intake/**"
   implementation:
     - "flight_computer/src/**"
     - "esp8266_firmware/src/**"
@@ -72,11 +77,13 @@ deprecated_sources:
     - "generate_rocket*.py and generated CAD as current vehicle authority"
 
 safety_scope:
-  current_focus: "software and simulated command-link verification; restrained hardware preparation only"
-  excluded_from_r1:
+  current_focus: "unpowered observation/measurement planning and mechanical-input traceability for a restrained EDF bench"
+  excluded_from_r2:
     - "high-energy propulsion changes"
     - "free-flight readiness claims"
-    - "new CAD architecture"
+    - "new or modified TVC CAD"
     - "hardware procurement decisions"
     - "physical PID tuning"
     - "physical recovery triggering"
+    - "EDF energized or thrust testing"
+    - "structural strength conclusions"

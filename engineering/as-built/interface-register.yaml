@@ -1,0 +1,108 @@
+schema_version: 1
+article_id: "AA-TVC-BENCH-001"
+datum_id: "DTM-AA-001"
+interfaces:
+  - interface_id: "IF-EDF-GIMBAL-001"
+    side_a: "CMP-EDF-001"
+    side_b: "CMP-TVC-MECHANISM-001"
+    datum: "DTM-AA-001 EDF reference plane"
+    attachment_type: "UNKNOWN"
+    known_dimensions: []
+    required_clearance: "TBD from M-P0-EDF-02 through M-P0-EDF-11"
+    motion_requirement: "Retain EDF while permitting the governed two-axis mechanism motion; numeric envelope TBD"
+    service_access: "EDF must remain removable; access envelope TBD"
+    wire_clearance: "Protect M-P0-EDF-11 cable exit through full motion"
+    status: "BLOCKED_BY_MEASUREMENT"
+    evidence: []
+    open_questions: ["Actual retention surface?", "Mounting holes or clamp?", "Allowable contact zones?"]
+  - interface_id: "IF-GIMBAL-FRAME-001"
+    side_a: "CMP-TVC-MECHANISM-001"
+    side_b: "CMP-FRAME-TUBE-001"
+    datum: "DTM-AA-001"
+    attachment_type: "UNKNOWN"
+    known_dimensions: []
+    required_clearance: "TBD from structure measurements"
+    motion_requirement: "Fixed frame side; moving-envelope clearance TBD"
+    service_access: "Fasteners inspectable and accessible"
+    wire_clearance: "No frame edge may pinch moving wires"
+    status: "BLOCKED_BY_MEASUREMENT"
+    evidence: []
+    open_questions: ["What frame exists?", "What interface plane and hole pattern are available?"]
+  - interface_id: "IF-SERVO-FRAME-001"
+    side_a: "CMP-TVC-SERVO-PITCH-001; CMP-TVC-SERVO-ROLL-001"
+    side_b: "CMP-FRAME-TUBE-001 or CMP-TVC-MECHANISM-001"
+    datum: "Servo shaft centers in DTM-AA-001"
+    attachment_type: "UNKNOWN"
+    known_dimensions: []
+    required_clearance: "TBD from M-P0-SERVO-02 through M-P0-SERVO-08"
+    motion_requirement: "Servo case fixed; horn/linkage moving envelope clear"
+    service_access: "Each servo replaceable without destructive disassembly"
+    wire_clearance: "Cable exit and bend zone protected"
+    status: "BLOCKED_BY_MEASUREMENT"
+    evidence: []
+    open_questions: ["Actual servo model?", "Tab and hole geometry?", "Replacement direction?"]
+  - interface_id: "IF-SERVO-LINKAGE-001"
+    side_a: "CMP-TVC-SERVO-PITCH-001; CMP-TVC-SERVO-ROLL-001"
+    side_b: "CMP-TVC-MECHANISM-001"
+    datum: "Measured servo shaft and gimbal actuation points"
+    attachment_type: "UNKNOWN"
+    known_dimensions: []
+    required_clearance: "TBD across full required motion"
+    motion_requirement: "Two independent commanded axes; range and linkage geometry TBD"
+    service_access: "Horn and linkage retainers inspectable"
+    wire_clearance: "Linkage must not sweep through wire routing"
+    status: "BLOCKED_BY_MEASUREMENT"
+    evidence: []
+    open_questions: ["Horn type?", "Linkage type?", "Required nozzle angle and servo travel mapping?"]
+  - interface_id: "IF-GIMBAL-PIVOT-001"
+    side_a: "CMP-TVC-MECHANISM-001"
+    side_b: "CMP-PIVOT-HARDWARE-001"
+    datum: "TBD pivot axes in DTM-AA-001"
+    attachment_type: "UNKNOWN"
+    known_dimensions: []
+    required_clearance: "TBD"
+    motion_requirement: "Two-axis rotation with mechanical hard stops; values TBD"
+    service_access: "Pivot retention inspectable and replaceable"
+    wire_clearance: "No pinch point may intersect wiring"
+    status: "BLOCKED_BY_MEASUREMENT"
+    evidence: []
+    open_questions: ["Bearing or plain pivot?", "Diameter?", "Retention?", "Load basis?"]
+  - interface_id: "IF-ELECTRONICS-FRAME-001"
+    side_a: "CMP-FC-001; CMP-WIFI-001; CMP-SENSOR-MODULE-001"
+    side_b: "CMP-FRAME-TUBE-001"
+    datum: "DTM-AA-001"
+    attachment_type: "UNKNOWN"
+    known_dimensions: []
+    required_clearance: "Board envelopes plus connector/service keepouts"
+    motion_requirement: "Fixed; sensor orientation TBD"
+    service_access: "Connectors and programming access remain reachable"
+    wire_clearance: "Strain relief and protected routing required"
+    status: "BLOCKED_BY_MEASUREMENT"
+    evidence: []
+    open_questions: ["Board form factors?", "Mounting holes?", "Sensor-axis orientation?"]
+  - interface_id: "IF-WIRING-MOTION-001"
+    side_a: "CMP-WIRING-001"
+    side_b: "CMP-TVC-MECHANISM-001; CMP-EDF-001; CMP-TVC-SERVO-PITCH-001; CMP-TVC-SERVO-ROLL-001"
+    datum: "DTM-AA-001 and moving-axis datums"
+    attachment_type: "Protected routed harness; exact method TBD"
+    known_dimensions: []
+    required_clearance: "Full motion envelope plus non-pinching bend allowance"
+    motion_requirement: "No tension, snag, abrasion, or pinch through required motion"
+    service_access: "Harness disconnect accessible with power removed"
+    wire_clearance: "TBD from actual cables and connectors"
+    status: "BLOCKED_BY_MEASUREMENT"
+    evidence: []
+    open_questions: ["Actual connectors and wire lengths?", "Moving/fixed transition location?"]
+  - interface_id: "IF-POWER-FRAME-001"
+    side_a: "CMP-POWER-SOURCE-001; CMP-REGULATOR-BEC-001"
+    side_b: "CMP-FRAME-TUBE-001"
+    datum: "DTM-AA-001"
+    attachment_type: "UNKNOWN"
+    known_dimensions: []
+    required_clearance: "Actual envelope, connector, and wire-exit keepouts"
+    motion_requirement: "Fixed and outside TVC moving/pinch regions"
+    service_access: "Removable without disturbing TVC alignment"
+    wire_clearance: "Connector and relaxed lead exit protected"
+    status: "BLOCKED_BY_MEASUREMENT"
+    evidence: []
+    open_questions: ["What power items exist?", "What retention and service direction are needed?"]

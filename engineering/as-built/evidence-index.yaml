@@ -1,0 +1,11 @@
+schema_version: 1
+article_id: "AA-TVC-BENCH-001"
+evidence_records: []
+accepted_record_locations:
+  - "engineering/evidence/records/"
+rules:
+  measured_requires_record: true
+  observation_requires_record: true
+  datasheet_requires_model_match: true
+  historical_cad_is_measurement: false
+notes: "No physical observation or measurement evidence record exists at R2 intake creation."
