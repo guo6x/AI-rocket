@@ -1,78 +1,98 @@
-# R2 user measurement checklist
+# R2 staged user measurement checklist
 
 Article: `AA-TVC-BENCH-001`
 
-Use a phone camera, ruler or caliper, removable labels, and an electronic scale. Keep every item unpowered. Put a ruler in dimensional photos, take straight-on and side views, and assign a visible item ID so photos cannot be confused later. Enter results in `R2_PHYSICAL_MEASUREMENT_WORKSHEET.md`, then create evidence records from `engineering/evidence/templates/`.
+Keep every item unpowered. Use a phone camera, ruler or caliper, removable labels, and an electronic scale only in the later phases that need them. A ruler should be visible in dimensional photos. Record `PRESENT`, `NOT_PRESENT`, or `UNKNOWN`; absence is a valid evidence-backed result.
 
-## MUST HAVE BEFORE CAD — 35 missing
+Priority (`P0/P1/P2`) describes execution urgency. The phase and `required_for` dependency determine which engineering gate a result blocks.
 
-### EDF
+## Phase A — photo inventory first
 
-- [ ] `M-P0-EDF-01` Label/model plus front and rear photos.
-- [ ] `M-P0-EDF-02` Maximum rigid outer diameter: ___ mm.
+Complete this before deciding what must be measured.
+
+- [ ] `M-P0-STRUCT-01` Put every part intended or considered for `AA-TVC-BENCH-001` on a clear surface. Take an overall photo, then front/side/label photos with a ruler for each major item. Record presence, actual label/model where visible, intended article inclusion, and reuse intent.
+
+Include at least:
+
+- EDF, if present;
+- two TVC servos;
+- existing frame, tube, printed parts, pivot hardware, or TVC mechanical parts, if present;
+- STM32, ESP, and sensor board;
+- power source, regulator/BEC, wiring, and connectors, if present;
+- recovery servo or other optional article parts, if intended for inclusion.
+
+If a frame or old TVC part is `NOT_PRESENT` or `NOT_REUSED`, its conditional dimensions are not required. The observation record and photos are still required to justify that result.
+
+## Phase B — minimum CAD-start measurements
+
+These establish only enough geometry for initial parametric TVC CAD exploration. They do not establish motion acceptance, loads, manufacturing readiness, or full article integration.
+
+### EDF retention geometry
+
+- [ ] `M-P0-EDF-01` Exact model/label and front/rear identity photos.
+- [ ] `M-P0-EDF-02` Maximum rigid external diameter: ___ mm.
 - [ ] `M-P0-EDF-03` Intended retention/body diameter and axial location: ___ mm / ___.
 - [ ] `M-P0-EDF-04` Overall and rigid-body lengths: ___ / ___ mm.
-- [ ] `M-P0-EDF-05` Inlet diameter and photographed reference plane: ___ mm.
 - [ ] `M-P0-EDF-06` Outlet diameter and photographed reference plane: ___ mm.
 - [ ] `M-P0-EDF-07` Mounting-feature type/count/thickness: ___ / ___ / ___ mm.
-- [ ] `M-P0-EDF-08` Mounting-hole center pattern from a named datum: ___.
+- [ ] `M-P0-EDF-08` Mounting-hole center pattern from the selected datum: ___.
 - [ ] `M-P0-EDF-09` Mounting-hole diameter(s): ___ mm.
-- [ ] `M-P0-EDF-10` Usable unobstructed clamping-zone start/end and obstructions: ___.
+- [ ] `M-P0-EDF-10` Usable retention/clamping-zone start/end and obstructions: ___.
 - [ ] `M-P0-EDF-11` Cable exit position/direction, connector envelope, relaxed keepout: ___.
-- [ ] `M-P0-EDF-12` EDF mass with normal attached leads: ___ g.
-
-For photos, include the full EDF, both axial ends, every label, every mounting feature, and a ruler in the same plane as the feature being measured.
 
 ### Two TVC servos
 
-- [ ] `M-P0-SERVO-01` Label each unit PITCH/ROLL; photograph labels and all sides.
-- [ ] `M-P0-SERVO-02` Body L × W × H for each unit: P ___ × ___ × ___; R ___ × ___ × ___ mm.
-- [ ] `M-P0-SERVO-03` Tab length/width/thickness/location for each unit: ___.
-- [ ] `M-P0-SERVO-04` Hole diameters and center coordinates from two body faces: ___.
-- [ ] `M-P0-SERVO-05` Shaft-center coordinates, shaft diameter, protrusion: ___.
-- [ ] `M-P0-SERVO-06` Horn type, attachment, retained screw, linkage-hole positions: ___.
-- [ ] `M-P0-SERVO-07` Label/datasheet or gentle unpowered usable-range evidence: ___. Do not force or energize.
-- [ ] `M-P0-SERVO-08` Cable exit, cable diameter, connector dimensions: ___.
-- [ ] `M-P0-SERVO-09` Mass with selected horn and normal lead: P ___ g; R ___ g.
+- [ ] `M-P0-SERVO-01` Label each unit PITCH/ROLL and photograph its identity.
+- [ ] `M-P0-SERVO-02` Body L × W × H for each unit.
+- [ ] `M-P0-SERVO-03` Mounting-tab length, width, thickness, and case location.
+- [ ] `M-P0-SERVO-04` Mounting-hole diameters and center coordinates.
+- [ ] `M-P0-SERVO-05` Shaft-center datum, shaft diameter, and protrusion.
+- [ ] `M-P0-SERVO-06` Horn type/attachment and linkage-hole coordinates.
+- [ ] `M-P0-SERVO-08` Cable exit, cable diameter, connector dimensions, and keepout.
 
-### Flight electronics
+### Datum and conditional existing structure
 
-- [ ] `M-P0-ELEC-01` STM32 board label, PCB L/W, maximum heights, mounting holes.
-- [ ] `M-P0-ELEC-02` ESP label and board form factor, PCB L/W, heights, mounting holes.
-- [ ] `M-P0-ELEC-03` GY-91/sensor board both faces, L/W/heights, holes, axis markings.
-- [ ] `M-P0-ELEC-04` Each connector type, mating direction, keepout length, wire exit.
+- [ ] `M-P0-DATUM-01` Apply removable X/Y/Z/origin labels and photograph the EDF reference plane.
+- [ ] `M-P0-STRUCT-02` Only if Phase A proves an existing frame/printed/TVC part is present and selected for reuse: measure its envelope, thickness, interface datum, and hole pattern.
 
-Photograph boards unpowered from directly above and from each connector side. Include the ruler at PCB height.
+STM32, ESP, sensor-board, power, assembled-mass, and CG measurements are not CAD_START blockers.
 
-### Power items — mechanical data only
+## Phase C — motion verification and detail design
 
-- [ ] `M-P0-POWER-01` Photograph actual power source and regulator/BEC labels, or record that no item is present.
-- [ ] `M-P0-POWER-02` Each present item's rigid L × W × H: ___.
-- [ ] `M-P0-POWER-03` Each present item's intact unpowered mass: ___ g.
-- [ ] `M-P0-POWER-04` Connector type/dimensions, wire exit, relaxed lead keepout: ___.
+Required TVC range comes from a governed system/control requirement. Servo or mechanism measurement establishes available range; it does not define the required angle.
 
-Do not open, charge, discharge, connect, or energize a power item for R2 measurement.
+- [ ] `M-P0-SERVO-07` Available servo range from model-specific datasheet or gentle unpowered evidence. Do not force or energize.
+- [ ] `M-P1-WIRE-01` Relaxed moving-wire lengths, bend zones, connectors, and strain-relief candidates, if wiring is included.
+- [ ] `M-P0-EDF-05` EDF inlet diameter/reference plane for detailed flow/interface geometry.
+- [ ] `M-P0-EDF-12` EDF mass for load/pivot sizing and article integration: ___ g.
+- [ ] `M-P0-SERVO-09` Each TVC servo mass with intended horn/lead: ___ / ___ g.
+- [ ] `M-P0-STRUCT-03` Material markings and hardware identity only for observed reuse candidates.
+- [ ] `M-P1-FASTENER-01` Fastener/pivot head, retention, and tool-access envelopes only for selected hardware.
 
-### Existing structure and article properties
+Motion verification must later prove:
 
-- [ ] `M-P0-STRUCT-01` Lay out and photograph every tube, frame, plate, bracket, printed part, and existing TVC part; record absent categories.
-- [ ] `M-P0-STRUCT-02` Measure each present envelope, wall/plate thickness, and hole pattern.
-- [ ] `M-P0-STRUCT-03` Record markings, known material evidence, fastener/pivot types and quantities; leave unknown material blank.
-- [ ] `M-P0-MASS-01` List the exact assembled configuration and measure total unpowered mass: ___ g.
-- [ ] `M-P0-MASS-02` Measure longitudinal CG from the selected datum using the static guide: ___ mm.
-- [ ] `M-P0-DATUM-01` Apply removable X/Y/Z and origin labels; photograph the EDF reference plane and article orientation.
+`available mechanical motion >= approved required TVC motion envelope`
 
-## SHOULD HAVE BEFORE DETAIL DESIGN
+The required pitch/roll range remains `TBD_SYSTEM_REQUIREMENT`; historical ±15° is not accepted.
 
-- [ ] `M-P1-WIRE-01` Relaxed harness lengths, connectors, bend zones, and strain-relief candidates.
-- [ ] `M-P1-SERVICE-01` Connector mating directions and required tool/service access.
-- [ ] `M-P1-CG-01` Transverse CG balance status after the longitudinal measurement.
-- [ ] `M-P1-FASTENER-01` Actual candidate fastener/pivot head, tool, and retention envelopes.
+## Phase D — article integration
 
-## CAN DEFER
+- [ ] `M-P0-ELEC-01` STM32 identity, board envelope, heights, and mounting features.
+- [ ] `M-P0-ELEC-02` ESP identity/form factor, envelope, heights, and mounting features.
+- [ ] `M-P0-ELEC-03` Sensor-board identity, envelope, mounting features, and axis markings.
+- [ ] `M-P0-ELEC-04` Electronics connector, mating, wire-exit, and service keepouts.
+- [ ] `M-P0-POWER-01` Included power-component identities; evidence-backed `NOT_PRESENT` is valid for optional items.
+- [ ] `M-P0-POWER-02` Included power-component external envelopes.
+- [ ] `M-P0-POWER-03` Included power-component masses.
+- [ ] `M-P0-POWER-04` Included power connector/wire-exit envelopes.
+- [ ] `M-P0-MASS-01` Exact assembled configuration and total unpowered mass.
+- [ ] `M-P0-MASS-02` Longitudinal CG from `DTM-AA-001` using the static guide.
+- [ ] `M-P1-SERVICE-01` Connector mating and tool/service access paths.
+- [ ] `M-P1-CG-01` Transverse CG status after longitudinal CG is established.
+- [ ] `M-P2-MASS-01` CH340, ST-Link, or recovery-servo mass only if installed in the reviewed article configuration.
 
-- [ ] `M-P2-MASS-01` Accessory masses for CH340, ST-Link, or recovery servo only if a later configuration installs them.
+Do not open, charge, discharge, connect, or energize power items for these measurements.
 
 ## Evidence handoff
 
-For each completed line, record the measurement ID, component ID, date, operator, method, tool, raw value, unit, uncertainty, and photo references. A blank or uncertain result should remain `UNKNOWN`; do not substitute an internet dimension or an old CAD value.
+For each completed or not-applicable measurement, record the measurement ID, component ID, date, operator, method, tool, raw result, unit, uncertainty, and photo/evidence references. `NOT_PRESENT` and `NOT_APPLICABLE` require observation evidence. Never substitute an internet dimension or historical CAD value.

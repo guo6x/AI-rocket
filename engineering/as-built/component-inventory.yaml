@@ -1,6 +1,15 @@
 schema_version: 1
 article_id: "AA-TVC-BENCH-001"
 allowed_evidence_classes: [OBSERVED, MEASURED, DATASHEET, INFERRED, HISTORICAL, UNKNOWN]
+ownership_status_vocabulary: [CONFIRMED_PRESENT, REPORTED_PRESENT, NOT_PRESENT, UNKNOWN, HISTORICAL_REFERENCE, NOT_PART_OF_CURRENT_ARTICLE]
+reuse_intent_vocabulary: [REUSE, NOT_REUSE, UNKNOWN]
+component_state_defaults:
+  article_inclusion: "UNKNOWN"
+  reuse_intent: "UNKNOWN"
+state_evidence_policy: >-
+  CONFIRMED_PRESENT, NOT_PRESENT, INCLUDED, REUSE, and NOT_REUSE decisions
+  require an OBSERVED or MEASURED evidence record. Missing per-component fields
+  use the UNKNOWN defaults above.
 components:
   - component_id: "CMP-EDF-001"
     category: "propulsion_mechanical_envelope"

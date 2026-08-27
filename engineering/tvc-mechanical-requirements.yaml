@@ -16,10 +16,12 @@ requirements:
     - {requirement_id: "TVC-I-003", parameter: "actual_frame_interface", value: null, unit: "mm", status: "BLOCKED_BY_MEASUREMENT", measurement_ids: ["M-P0-STRUCT-01", "M-P0-STRUCT-02", "M-P0-STRUCT-03"]}
     - {requirement_id: "TVC-I-004", parameter: "cable_exit_and_connector_keepouts", value: null, unit: "mm", status: "BLOCKED_BY_MEASUREMENT", measurement_ids: ["M-P0-EDF-11", "M-P0-SERVO-08", "M-P0-ELEC-04", "M-P0-POWER-04"]}
   motion:
-    - {requirement_id: "TVC-M-001", parameter: "pitch_required_range", value: null, unit: "deg", status: "TBD_MEASURED", source: "Must be derived from governed system need plus actual mechanism/servo evidence; historical +/-15 deg is not authority"}
-    - {requirement_id: "TVC-M-002", parameter: "roll_required_range", value: null, unit: "deg", status: "TBD_MEASURED", source: "Must be derived from governed system need plus actual mechanism/servo evidence; historical +/-15 deg is not authority"}
-    - {requirement_id: "TVC-M-003", parameter: "mechanical_hard_stop", value: null, unit: "deg and geometry", status: "TBD_REQUIREMENT", source: "No load or safe motion basis exists"}
-    - {requirement_id: "TVC-M-004", parameter: "linkage_clearance", value: null, unit: "mm", status: "BLOCKED_BY_MEASUREMENT", source: "Actual horn, linkage, servo, and frame geometry required"}
+    - {requirement_id: "TVC-M-001", parameter: "pitch_required_range", value: null, unit: "deg", status: "TBD_SYSTEM_REQUIREMENT", source: "Governed system/control requirement; historical +/-15 deg is not authority"}
+    - {requirement_id: "TVC-M-002", parameter: "roll_required_range", value: null, unit: "deg", status: "TBD_SYSTEM_REQUIREMENT", source: "Governed system/control requirement; historical +/-15 deg is not authority"}
+    - {requirement_id: "TVC-M-003", parameter: "available_servo_range", value: null, unit: "deg", status: "TBD_MEASURED_OR_DATASHEET", source: "M-P0-SERVO-07 and model-specific evidence"}
+    - {requirement_id: "TVC-M-004", parameter: "available_mechanical_tvc_range", value: null, unit: "deg", status: "TBD_DESIGN_VERIFICATION", source: "Future CAD motion study using measured envelopes"}
+    - {requirement_id: "TVC-M-005", parameter: "mechanical_hard_stop", value: null, unit: "deg and geometry", status: "TBD_SYSTEM_REQUIREMENT", source: "No safe motion/load basis exists"}
+    - {requirement_id: "TVC-M-006", parameter: "linkage_clearance", value: null, unit: "mm", status: "BLOCKED_BY_MEASUREMENT", source: "Actual horn, linkage, servo, wire, and frame geometry required"}
   assembly:
     - {requirement_id: "TVC-A-001", statement: "The EDF retention and all safety-relevant joints shall be inspectable.", status: "ACTIVE"}
     - {requirement_id: "TVC-A-002", statement: "The EDF shall be removable without destroying the primary frame or gimbal.", status: "ACTIVE"}
@@ -34,6 +36,7 @@ requirements:
   verification:
     - {requirement_id: "TVC-V-001", statement: "Prove no static interference in neutral configuration.", method: "CAD interference check"}
     - {requirement_id: "TVC-V-002", statement: "Prove no interference across the complete required two-axis motion envelope.", method: "Parametric CAD motion sweep"}
+    - {requirement_id: "TVC-V-002A", statement: "Prove available mechanical pitch and roll motion are each greater than or equal to the governed required TVC motion envelope.", method: "Compare measured/datasheet servo availability and CAD mechanism motion against approved system requirements"}
     - {requirement_id: "TVC-V-003", statement: "Prove all measured component envelopes and interface features fit.", method: "Envelope/interface traceability review"}
     - {requirement_id: "TVC-V-004", statement: "Prove fasteners and required tools have access.", method: "CAD service-envelope review"}
     - {requirement_id: "TVC-V-005", statement: "Prove wires have a protected route across motion.", method: "Routed-harness clearance review"}

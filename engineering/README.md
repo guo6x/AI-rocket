@@ -63,4 +63,4 @@ Run the unified, hardware-independent check:
 python scripts\check.py
 ```
 
-The terminal lines `R0 SOFTWARE CHECK: PASS` and `R1 COMMAND SAFETY CHECK: PASS` cover syntax, YAML parsing, ground-station and simulated-link tests, read-only simulation smoke checks, native flight/command/relay tests, and STM32/ESP8266 source builds. `R2 PHYSICAL BASELINE STRUCTURE CHECK: PASS` validates the intake structure and traceability. `R2 PHYSICAL MEASUREMENT GATE: BLOCKED` is the expected state until the user supplies the required as-built evidence; it does not fail the software gate.
+The terminal lines `R0 SOFTWARE CHECK: PASS` and `R1 COMMAND SAFETY CHECK: PASS` cover syntax, YAML parsing, ground-station and simulated-link tests, read-only simulation smoke checks, native flight/command/relay tests, and STM32/ESP8266 source builds. `R2 PHYSICAL BASELINE STRUCTURE CHECK: PASS` validates intake structure and traceability. R2 separately reports inventory, CAD-start, motion-verification, and article-integration gates plus AeroForge concept/design-review intake. A blocked evidence gate does not fail the software/structure gate.

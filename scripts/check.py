@@ -95,6 +95,10 @@ def main() -> int:
             "R2 physical baseline structure",
             [sys.executable, "scripts/r2_physical_baseline_check.py"],
         ),
+        (
+            "R2 gate behavior tests",
+            [sys.executable, "-m", "pytest", "scripts/tests/test_r2_physical_baseline_check.py", "-q"],
+        ),
     ]
 
     results = [run_step(label, command, env) for label, command in steps]

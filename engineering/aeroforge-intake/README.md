@@ -1,5 +1,5 @@
 # AeroForge mechanical-design intake
 
-This directory is a machine-readable handoff for the future AeroForge design agent. `tvc-assembly-intake.yaml` is intentionally blocked: it defines the design goal and traceability structure without inventing component geometry.
+This directory is a machine-readable handoff for the future AeroForge design agent. `tvc-assembly-intake.yaml` separates concept intake from design-review intake without inventing component geometry.
 
-AeroForge may ingest this package only after every required human input is supported by an evidence record and the R2 physical measurement gate reports `READY`. Historical CAD can be supplied as reference topology, never as the current dimensional authority.
+AeroForge concept intake becomes ready when the inventory and minimum CAD-start gates are ready; that permits parametric exploration only. Design-review intake additionally requires motion, detail, and article-integration evidence. Manufacture remains unauthorized in both states. Historical CAD can be supplied as reference topology, never as current dimensional authority.
