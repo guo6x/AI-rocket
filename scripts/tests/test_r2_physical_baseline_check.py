@@ -2,6 +2,7 @@ from scripts.r2_physical_baseline_check import (
     clone_documents,
     evaluate_documents,
     load_documents,
+    main,
 )
 
 
@@ -169,3 +170,10 @@ def test_historical_cad_cannot_supply_current_numeric_requirement():
     pitch["source"] = "historical CAD +/-15 deg"
     errors, _ = evaluate_documents(documents)
     assert any("only from historical CAD" in error for error in errors)
+
+
+def test_cli_reports_detail_design_gate(capsys):
+    assert main() == 0
+    output = capsys.readouterr().out
+    assert "R2 DETAIL_DESIGN blockers:" in output
+    assert "R2 DETAIL DESIGN GATE:" in output

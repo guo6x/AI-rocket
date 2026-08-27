@@ -7,7 +7,7 @@ evidence_ceiling: "REQUIREMENT_BASELINE_ONLY"
 requirements:
   functional:
     - {requirement_id: "TVC-F-001", statement: "Retain the actual EDF mechanically in the restrained bench article.", status: "ACTIVE", source: "R2 scope", verification: "CAD interface review and later restrained physical inspection"}
-    - {requirement_id: "TVC-F-002", statement: "Permit commanded two-axis angular motion about the defined transverse axes.", status: "ACTIVE_NUMERIC_RANGE_TBD", source: "R2 scope and current two-axis software architecture", verification: "CAD motion study after measured range requirement"}
+    - {requirement_id: "TVC-F-002", statement: "Permit commanded two-axis angular motion about the defined transverse axes.", status: "ACTIVE_NUMERIC_RANGE_TBD", source: "R2 scope and current two-axis software architecture", verification: "CAD motion study after the governed system TVC range requirement is defined"}
     - {requirement_id: "TVC-F-003", statement: "Provide a defined neutral geometry compatible with controlled software neutral/hold behavior.", status: "ACTIVE_MAPPING_TBD", source: "R2 scope and current command safety contract", verification: "Datum and linkage mapping review; no physical claim in R2"}
     - {requirement_id: "TVC-F-004", statement: "Prevent wiring and connectors from entering moving, abrasion, or pinch regions across the required motion envelope.", status: "ACTIVE_ENVELOPE_TBD", source: "R2 scope", verification: "CAD routed-harness clearance study"}
   interface:

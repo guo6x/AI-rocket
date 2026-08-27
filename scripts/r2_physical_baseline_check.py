@@ -387,6 +387,7 @@ def main() -> int:
         "INVENTORY_BASELINE": ("PHOTO INVENTORY", "INVENTORY OBSERVATION"),
         "CAD_START": ("CAD_START", "CAD START"),
         "MOTION_VERIFICATION": ("MOTION_VERIFICATION", "MOTION VERIFICATION"),
+        "DETAIL_DESIGN": ("DETAIL_DESIGN", "DETAIL DESIGN"),
         "ARTICLE_INTEGRATION": ("ARTICLE_INTEGRATION", "ARTICLE INTEGRATION"),
     }
     for gate, (count_name, gate_name) in display_names.items():
