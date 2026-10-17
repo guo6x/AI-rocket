@@ -96,8 +96,8 @@ def main() -> int:
             [sys.executable, "scripts/r2_physical_baseline_check.py"],
         ),
         (
-            "R2 gate behavior tests",
-            [sys.executable, "-m", "pytest", "scripts/tests/test_r2_physical_baseline_check.py", "-q"],
+            "R2 gate and evidence behavior tests",
+            [sys.executable, "-m", "pytest", "scripts/tests", "-q"],
         ),
     ]
 

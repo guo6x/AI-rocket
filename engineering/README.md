@@ -14,9 +14,9 @@ This directory is the current engineering-status entry point for Project Ad Astr
 8. `as-built/` — R2 article, inventory, datum, measurement, interface, mass, and evidence authority.
 9. `tvc-mechanical-requirements.yaml` — requirement baseline for a future measured TVC assembly; not CAD.
 10. `aeroforge-intake/` — blocked-by-measurement design-agent handoff.
-8. `command-safety-contract.yaml` — R1 canonical command states, actions, ACK/NACK, and link-loss rules.
-9. `../docs/R1_COMMAND_SAFETY_LINK.md` — R1 command-link design and operator meaning.
-10. `../docs/R1_GOVERNED_COMMAND_SAFETY_LINK_REPORT.md` — R1 implementation and exact-head evidence.
+11. `command-safety-contract.yaml` — R1 canonical command states, actions, ACK/NACK, and link-loss rules.
+12. `../docs/R1_COMMAND_SAFETY_LINK.md` — R1 command-link design and operator meaning.
+13. `../docs/R1_GOVERNED_COMMAND_SAFETY_LINK_REPORT.md` — R1 implementation and exact-head evidence.
 
 ## Status vocabulary
 
@@ -64,3 +64,25 @@ python scripts\check.py
 ```
 
 The terminal lines `R0 SOFTWARE CHECK: PASS` and `R1 COMMAND SAFETY CHECK: PASS` cover syntax, YAML parsing, ground-station and simulated-link tests, read-only simulation smoke checks, native flight/command/relay tests, and STM32/ESP8266 source builds. `R2 PHYSICAL BASELINE STRUCTURE CHECK: PASS` validates intake structure and traceability. R2 separately reports inventory, CAD-start, motion-verification, and article-integration gates plus AeroForge concept/design-review intake. A blocked evidence gate does not fail the software/structure gate.
+
+## Inspect R2 blockers without hardware
+
+From the repository root, use the existing Python environment with PyYAML:
+
+```powershell
+python scripts/r2_physical_baseline_check.py --details --gate CAD_START
+python scripts/r2_physical_baseline_check.py --format json
+python -m pytest scripts/tests -q
+```
+
+`--details` lists each blocker with its collection method and tool. JSON includes
+component IDs, required fields and affected gates for measurement blockers.
+`--gate` filters output only; all authority files and indexed evidence are still
+validated. Both formats exit 0 for valid structure even when real-world gates are
+`BLOCKED`, and exit 1 for invalid input. On invalid input JSON reports
+`NOT_EVALUATED`, never `READY`. No files or physical states are modified.
+
+Register actual records using [the evidence guide](evidence/README.md). Record
+integrity and metadata checks do not verify photo authenticity or physical fit.
+The repository still contains no physical evidence records; CAD, energized tests,
+manufacture and flight readiness are not established by these commands.

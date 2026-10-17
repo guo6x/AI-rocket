@@ -63,6 +63,9 @@ authoritative_sources:
     - "ground_station/tests/**"
     - "esp8266_firmware/test/**"
     - "scripts/simulation_smoke.py"
+    - "scripts/r2_physical_baseline_check.py"
+    - "scripts/r2_evidence.py"
+    - "scripts/tests/**"
 
 deprecated_sources:
   status: "HISTORICAL_OR_STALE"

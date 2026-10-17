@@ -12,5 +12,6 @@ raw_measurement: null
 unit: null
 uncertainty: null
 photo_refs: []
+# Each entry: {location: "stable storage reference", sha256: "64 lowercase hex characters"}
 source_commit: "REPLACE_WITH_CAPTURE_COMMIT"
 notes: "Do not change evidence_class to MEASURED unless a measurement record is also completed."

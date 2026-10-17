@@ -2,13 +2,20 @@
 
 from __future__ import annotations
 
+import argparse
 from copy import deepcopy
 from dataclasses import dataclass
+import json
 import re
 from pathlib import Path
 from typing import Any
 
 import yaml
+
+if __package__:
+    from .r2_evidence import validate_evidence_files
+else:
+    from r2_evidence import validate_evidence_files
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -33,8 +40,11 @@ INPUT_GROUPS = {
 @dataclass(frozen=True)
 class GateResult:
     blockers: dict[str, tuple[str, ...]]
+    evaluated: bool = True
 
     def status(self, gate: str) -> str:
+        if not self.evaluated:
+            return "NOT_EVALUATED"
         return "BLOCKED" if self.blockers[gate] else "READY"
 
     def union(self, gates: list[str]) -> tuple[str, ...]:
@@ -84,7 +94,11 @@ def evidence_ids(documents: dict[str, Any]) -> set[str]:
 
 
 def refs_are_valid(refs: list[str], known_evidence: set[str]) -> bool:
-    return bool(refs) and set(refs).issubset(known_evidence)
+    return (
+        isinstance(refs, list) and bool(refs)
+        and all(isinstance(ref, str) for ref in refs)
+        and set(refs).issubset(known_evidence)
+    )
 
 
 def component_has_observation(component: dict[str, Any], known_evidence: set[str]) -> bool:
@@ -127,6 +141,16 @@ def measurement_is_complete(measurement: dict[str, Any], known_evidence: set[str
 
 
 def evaluate_documents(documents: dict[str, Any]) -> tuple[list[str], GateResult]:
+    """Evaluate in-memory contracts. File integrity is checked by evaluate_repository."""
+    try:
+        return _evaluate_documents(documents)
+    except (KeyError, TypeError, ValueError, AttributeError, StopIteration) as exc:
+        return [f"Invalid R2 document structure: {type(exc).__name__}: {exc}"], GateResult(
+            {gate: () for gate in GATES}, evaluated=False
+        )
+
+
+def _evaluate_documents(documents: dict[str, Any]) -> tuple[list[str], GateResult]:
     errors: list[str] = []
     article = documents["article"]
     inventory = documents["inventory"]
@@ -165,6 +189,15 @@ def evaluate_documents(documents: dict[str, Any]) -> tuple[list[str], GateResult
     allowed_classes = set(inventory.get("allowed_evidence_classes") or [])
     allowed_ownership = set(inventory.get("ownership_status_vocabulary") or [])
     known_evidence = evidence_ids(documents)
+    records = evidence.get("evidence_records") or []
+    record_ids = [record.get("record_id") for record in records]
+    if len(record_ids) != len(set(record_ids)) or any(
+        not isinstance(record_id, str) or not record_id.strip() for record_id in record_ids
+    ):
+        errors.append("Evidence record IDs must be non-empty and unique")
+    for record in records:
+        if record.get("article_id") != article_id:
+            errors.append(f"Evidence {record.get('record_id')} article_id does not match article.yaml")
     for item in component_items:
         missing_fields = sorted(required_component_fields - set(item))
         if missing_fields:
@@ -173,12 +206,15 @@ def evaluate_documents(documents: dict[str, Any]) -> tuple[list[str], GateResult
             errors.append(f"{item.get('component_id')} has invalid evidence_class")
         if item.get("ownership_status") not in allowed_ownership:
             errors.append(f"{item.get('component_id')} has invalid ownership_status")
-        if item.get("ownership_status") in {"CONFIRMED_PRESENT", "NOT_PRESENT"}:
+        if item.get("evidence_class") in {"OBSERVED", "MEASURED"}:
+            if not component_has_observation(item, known_evidence):
+                errors.append(f"{item.get('component_id')} evidence_class lacks valid evidence")
+        if item.get("ownership_status") in {"CONFIRMED_PRESENT", "NOT_PRESENT", "NOT_PART_OF_CURRENT_ARTICLE"}:
             if not component_has_observation(item, known_evidence):
                 errors.append(
                     f"{item.get('component_id')} {item.get('ownership_status')} lacks observation evidence"
                 )
-        if item.get("article_inclusion") == "INCLUDED" or item.get("reuse_intent") in {
+        if item.get("article_inclusion") == "INCLUDED" or item.get("installed_status") == "INSTALLED" or item.get("reuse_intent") in {
             "REUSE", "NOT_REUSE"
         }:
             if not component_has_observation(item, known_evidence):
@@ -210,6 +246,11 @@ def evaluate_documents(documents: dict[str, Any]) -> tuple[list[str], GateResult
     if dependency_vocabulary != set(GATES):
         errors.append("Measurement dependency gate vocabulary is incomplete")
     for measurement in measurements:
+        if measurement.get("status") not in {"MISSING", "RECORDED", "NOT_APPLICABLE"}:
+            errors.append(f"{measurement.get('measurement_id')} has invalid status")
+        if measurement.get("status") in {"RECORDED", "NOT_APPLICABLE"}:
+            if not measurement_is_complete(measurement, known_evidence):
+                errors.append(f"{measurement.get('measurement_id')} completed status lacks valid evidence")
         required_for = set(measurement.get("required_for") or [])
         if not required_for or not required_for.issubset(set(GATES)):
             errors.append(f"{measurement.get('measurement_id')} has invalid required_for")
@@ -218,8 +259,21 @@ def evaluate_documents(documents: dict[str, Any]) -> tuple[list[str], GateResult
                 errors.append(f"{measurement['measurement_id']} references unknown {component_id}")
         try:
             condition_is_active(measurement.get("condition"), components, known_evidence)
-        except ValueError as exc:
+        except (ValueError, KeyError) as exc:
             errors.append(str(exc))
+
+    if "M-P0-STRUCT-01" not in measurement_set:
+        errors.append("Photo inventory measurement M-P0-STRUCT-01 is required")
+    expected_intake_gates = {
+        "concept_intake": {"INVENTORY_BASELINE", "CAD_START"},
+        "design_review_intake": set(GATES),
+    }
+    for name, expected in expected_intake_gates.items():
+        required = intake.get(name, {}).get("required_gates")
+        if not isinstance(required, list) or set(required) != expected or len(required) != len(expected):
+            errors.append(f"AeroForge {name} required_gates must match {sorted(expected)}")
+    if errors:
+        return errors, GateResult({gate: () for gate in GATES}, evaluated=False)
 
     # Evidence rigor remains global, independent of readiness staging.
     for key, document in documents.items():
@@ -365,14 +419,75 @@ def evaluate_repository() -> tuple[list[str], GateResult, int]:
         except Exception as exc:  # pragma: no cover - output is the evidence
             errors.append(f"YAML parse failed: {path.relative_to(ROOT)}: {exc}")
     if errors:
-        return errors, GateResult({gate: () for gate in GATES}), 0
-    documents = load_documents()
+        return errors, GateResult({gate: () for gate in GATES}, evaluated=False), 0
+    try:
+        documents = load_documents()
+    except (OSError, UnicodeError, yaml.YAMLError) as exc:
+        return [f"Cannot load R2 documents: {exc}"], GateResult(
+            {gate: () for gate in GATES}, evaluated=False
+        ), 0
     validation_errors, gate_result = evaluate_documents(documents)
-    return validation_errors, gate_result, len(documents["plan"].get("measurements") or [])
+    if not validation_errors:
+        validation_errors.extend(validate_evidence_files(documents, ROOT))
+    if validation_errors:
+        gate_result = GateResult(gate_result.blockers, evaluated=False)
+    if not isinstance(documents.get("plan"), dict):
+        return validation_errors, gate_result, 0
+    measurements = documents["plan"].get("measurements")
+    return validation_errors, gate_result, len(measurements) if isinstance(measurements, list) else 0
 
 
-def main() -> int:
+def build_report(errors: list[str], gates: GateResult, measurement_count: int,
+                 documents: dict[str, Any] | None = None, gate: str | None = None) -> dict[str, Any]:
+    """Deterministic report, with no timestamps or invented hardware measurements."""
+    documents = documents or {}
+    measurements = {
+        item["measurement_id"]: item
+        for item in documents.get("plan", {}).get("measurements", [])
+    } if not errors else {}
+    selected = [gate] if gate else list(GATES)
+    report: dict[str, Any] = {
+        "schema_version": 1,
+        "structure_status": "FAIL" if errors else "PASS",
+        "errors": errors,
+        "measurement_count": measurement_count,
+        "hardware_verified": False,
+        "manufacture_authorized": False,
+        "gates": {},
+    }
+    for name in selected:
+        blockers = []
+        for blocker_id in gates.blockers[name] if not errors else ():
+            measurement = measurements.get(blocker_id)
+            if measurement:
+                blockers.append({
+                    "id": blocker_id, "kind": "measurement",
+                    **{key: measurement.get(key) for key in (
+                        "title", "priority", "component_ids", "fields", "method", "tool", "required_for"
+                    )},
+                })
+            else:
+                blockers.append({"id": blocker_id, "kind": "decision",
+                                 "title": "Resolve the governed requirement or inventory presence decision"})
+        report["gates"][name] = {
+            "status": "NOT_EVALUATED" if errors else gates.status(name),
+            "blockers": blockers,
+        }
+    return report
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--format", choices=("text", "json"), default="text")
+    parser.add_argument("--gate", choices=GATES, help="Filter blocker details; validation still covers all gates")
+    parser.add_argument("--details", action="store_true", help="List blocker IDs, methods and tools")
+    args = parser.parse_args(argv)
     errors, gates, measurement_count = evaluate_repository()
+    if args.format == "json":
+        report = build_report(errors, gates, measurement_count,
+                              load_documents() if not errors else None, args.gate)
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+        return 1 if errors else 0
     if errors:
         for error in errors:
             print(f"R2 ERROR: {error}")
@@ -391,8 +506,17 @@ def main() -> int:
         "ARTICLE_INTEGRATION": ("ARTICLE_INTEGRATION", "ARTICLE INTEGRATION"),
     }
     for gate, (count_name, gate_name) in display_names.items():
+        if args.gate and gate != args.gate:
+            continue
         print(f"R2 {count_name} blockers: {len(gates.blockers[gate])}")
         print(f"R2 {gate_name} GATE: {gates.status(gate)}")
+    if args.details:
+        report = build_report(errors, gates, measurement_count, documents, args.gate)
+        for gate, result in report["gates"].items():
+            for blocker in result["blockers"]:
+                print(f"[{gate}] {blocker['id']}: {blocker['title']}")
+                if blocker["kind"] == "measurement":
+                    print(f"  Method: {blocker['method']}; tool: {blocker['tool']}")
     print(f"AEROFORGE TVC CONCEPT INTAKE: {concept}")
     print(f"AEROFORGE TVC DESIGN-REVIEW INTAKE: {review}")
     print("R2 PHYSICAL BASELINE STRUCTURE CHECK: PASS")

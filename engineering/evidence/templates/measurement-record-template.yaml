@@ -12,5 +12,6 @@ raw_measurement: null
 unit: "REPLACE_ME"
 uncertainty: null
 photo_refs: []
+# Each entry: {location: "stable storage reference", sha256: "64 lowercase hex characters"}
 source_commit: "REPLACE_WITH_CAPTURE_COMMIT"
 notes: "Record repeated readings or calculation inputs without deleting raw values."

@@ -103,6 +103,7 @@ The list is evidence-based as of audited input commit `b6006c9`. Priorities refl
 - Evidence: Markdown claims sensors, wiring, servo motion, flashing, and bidirectional communication, but no dated procedure/result/configuration bundle is tracked.
 - Impact: `VERIFIED_HARDWARE` cannot be assigned.
 - Required closure: use a hardware test-record template that captures article ID, wiring, firmware commit, procedure, raw result, operator/date, and pass criteria.
+- 2026-10-18 software progress: the R2 checker now validates indexed local record files, SHA-256, required observation/measurement metadata and reference identity, and can list actionable blockers in text or JSON. No physical records were added; this issue remains `BLOCKED`.
 
 ## P2 — maintainability and clarity
 

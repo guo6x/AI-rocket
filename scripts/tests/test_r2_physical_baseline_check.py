@@ -1,4 +1,12 @@
+import json
+
+import pytest
+
+from scripts import r2_physical_baseline_check as checker
 from scripts.r2_physical_baseline_check import (
+    GATES,
+    GateResult,
+    build_report,
     clone_documents,
     evaluate_documents,
     load_documents,
@@ -173,7 +181,93 @@ def test_historical_cad_cannot_supply_current_numeric_requirement():
 
 
 def test_cli_reports_detail_design_gate(capsys):
-    assert main() == 0
+    assert main([]) == 0
     output = capsys.readouterr().out
     assert "R2 DETAIL_DESIGN blockers:" in output
     assert "R2 DETAIL DESIGN GATE:" in output
+
+
+@pytest.mark.parametrize("status", ["RECORDED", "NOT_APPLICABLE"])
+def test_completed_status_without_evidence_fails(status):
+    documents = fresh_documents()
+    measurement(documents, "M-P0-EDF-02")["status"] = status
+    errors, gates = evaluate_documents(documents)
+    assert any("completed status lacks valid evidence" in error for error in errors)
+    assert gates.status("CAD_START") == "NOT_EVALUATED"
+
+
+@pytest.mark.parametrize("mutation", [
+    lambda d: d["plan"].update(measurements=None),
+    lambda d: d.update(plan=[]),
+    lambda d: measurement(d, "M-P0-EDF-02").update(required_for=["TYPO"]),
+    lambda d: measurement(d, "M-P0-EDF-02").update(condition={"type": "TYPO"}),
+    lambda d: measurement(d, "M-P0-EDF-02").update(condition={
+        "type": "ANY_COMPONENT_INCLUDED", "component_ids": ["CMP-NOT-FOUND"]}),
+    lambda d: d["intake"]["concept_intake"].update(required_gates=[]),
+    lambda d: d["intake"]["concept_intake"].update(required_gates=["CAD_START"]),
+    lambda d: d["intake"]["design_review_intake"].update(required_gates=["TYPO"]),
+    lambda d: measurement(d, "M-P0-EDF-02").update(status="TYPO"),
+])
+def test_malformed_dependencies_fail_closed(mutation):
+    documents = fresh_documents()
+    mutation(documents)
+    errors, gates = evaluate_documents(documents)
+    assert errors
+    assert all(gates.status(gate) == "NOT_EVALUATED" for gate in GATES)
+
+
+def test_duplicate_and_cross_article_evidence_rejected():
+    documents = fresh_documents()
+    add_evidence(documents)
+    add_evidence(documents)
+    documents["evidence"]["evidence_records"][0]["article_id"] = "OTHER"
+    errors, _ = evaluate_documents(documents)
+    assert any("unique" in error for error in errors)
+    assert any("article_id" in error for error in errors)
+
+
+def test_json_report_is_actionable_and_gate_filter_does_not_change_validation(capsys):
+    assert main(["--format", "json", "--gate", "CAD_START"]) == 0
+    report = json.loads(capsys.readouterr().out)
+    assert report["structure_status"] == "PASS"
+    assert list(report["gates"]) == ["CAD_START"]
+    assert report["gates"]["CAD_START"]["status"] == "BLOCKED"
+    assert len(report["gates"]["CAD_START"]["blockers"]) == 19
+    item = next(x for x in report["gates"]["CAD_START"]["blockers"] if x["id"] == "M-P0-EDF-02")
+    assert item["method"] and item["tool"] and item["fields"]
+    assert report["hardware_verified"] is False
+    assert report["manufacture_authorized"] is False
+
+
+def test_failed_report_never_advertises_ready():
+    report = build_report(["Bad YAML"], GateResult({gate: () for gate in GATES}), 0)
+    assert report["structure_status"] == "FAIL"
+    assert all(item["status"] == "NOT_EVALUATED" for item in report["gates"].values())
+
+
+def test_text_details_list_methods(capsys):
+    assert main(["--details", "--gate", "INVENTORY_BASELINE"]) == 0
+    output = capsys.readouterr().out
+    assert "M-P0-STRUCT-01" in output
+    assert "Method:" in output
+    assert "[CAD_START]" not in output
+
+
+@pytest.mark.parametrize("field,value", [
+    ("installed_status", "INSTALLED"),
+    ("ownership_status", "NOT_PART_OF_CURRENT_ARTICLE"),
+])
+def test_presence_decisions_cannot_bypass_observation(field, value):
+    documents = fresh_documents()
+    component(documents, "CMP-EDF-001")[field] = value
+    errors, _ = evaluate_documents(documents)
+    assert any("observation evidence" in error for error in errors)
+
+
+def test_json_failure_is_valid_json_and_nonzero(monkeypatch, capsys):
+    monkeypatch.setattr(checker, "evaluate_repository", lambda: (
+        ["Broken unrelated gate"], GateResult({gate: () for gate in GATES}), 0))
+    assert main(["--format", "json", "--gate", "CAD_START"]) == 1
+    report = json.loads(capsys.readouterr().out)
+    assert report["errors"] == ["Broken unrelated gate"]
+    assert report["gates"]["CAD_START"]["status"] == "NOT_EVALUATED"

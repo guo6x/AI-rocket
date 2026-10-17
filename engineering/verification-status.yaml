@@ -104,8 +104,8 @@ verification_items:
     classification: "TESTED_SOFTWARE"
     result: "PASS"
     command: "python scripts/r2_physical_baseline_check.py"
-    evidence: "Recursive YAML/reference/evidence/release/AeroForge/checklist validation plus 8 staged-gate behavioral tests."
-    limitations: "A passing structure gate proves no physical dimensions, ownership, assembly, fit, strength, or manufacturability."
+    evidence: "2026-10-18 continuation: recursive YAML/reference/release/AeroForge/checklist validation, indexed record file/SHA-256/metadata checks, and 50 gate/evidence/report tests via python -m pytest scripts/tests -q."
+    limitations: "A passing structure gate proves no physical dimensions, ownership, assembly, fit, strength, or manufacturability. Photo locations/hashes are required metadata but photos are not fetched or authenticated; capture SHA existence and measurement completeness require review."
 
   - id: "r2_staged_readiness_gates"
     verification_type: "staged_physical_evidence_gates"
