@@ -68,6 +68,21 @@
 - 不自动授权：动力系统采购/改造、推进剂/点火、通电 EDF 推力试验、自由飞行、实物 PID 调参、放行或产品认证。
 - **接受真实失败**：测试不通过、资料不足、许可证不清晰时保留 `BLOCKED`，不为了“完成研究”填造结论。
 
+
+## 2026-10-19｜第二轮源码级研究新增材料
+
+第二轮已从“上游 README 筛选”推进到**上游具体文档/测试代码和本项目源码交叉核查**，新材料：
+
+| 源码研究卡 | 有依据的源码发现 | 研究/实操状态 |
+| --- | --- | --- |
+| [KR-2026-001 传感器失效语义](records/KR-2026-001-sensor-fault-contract.md) | 本项目 MPU 读取未检查请求字节数、BMP 初始化故障未阻断读取；对照 NASA NOS3 的虚拟总线/硬件模型/数据提供者架构及 F´ 健康组件合同 | \`ANALYZED\`，仅设计故障注入用例 |
+| [KR-2026-002 仿真结果可信来源](records/KR-2026-002-simulation-provenance.md) | 本项目两套模拟脚本输出符号不同且旧 CSV 缺可追溯信息；对照 RocketPy 导出数据回归测试 | \`ANALYZED\`；只读 [归档检查 PoC](examples/README.md) 本地 14/14 自测 PASS |
+| [KR-2026-003 CAD 失败传播](records/KR-2026-003-cad-validation.md) | 历史 \`verify_v10.py\` 逻辑检查不通过但最终只打印状态；CadQuery 上游包含 STEP 导出回读的正/反例 | \`ANALYZED\`，未修改原 CAD 验证脚本 |
+
+**重要区别**：上述本项目源码核查是真实、已读的静态分析；代码本地自测只覆盖归档工具；**NASA NOS3、F´、RocketPy、CadQuery 上游程序并未在本轮独立构建/运行，也没有任何实物验证**。研究发现不能关闭 \`engineering/\` 中的 R0/R1/R2 问题。
+
+可执行示例：[\`examples/simulation_manifest.py\`](examples/simulation_manifest.py) 和 [14 个回归用例](examples/test_simulation_manifest.py)。它们不接入飞控、仿真运行主路径或 AeroForge；归档哈希一致并不等于物理模型正确。
+
 ## 更新机制
 
 新增材料 → 用 [研究卡模板](research-record-template.md) 写研究卡 → 与 [差距矩阵](ad-astra-gap-matrix.md) 建立双向链接 → 记录独立实验 → 受控评审 → 决定是否进入产品和工程分支。每次修订记来源检索日期、原仓库 commit/tag、具体文件路径、测试环境及评审人。

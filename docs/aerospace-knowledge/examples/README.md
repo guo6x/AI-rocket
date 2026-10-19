@@ -1,0 +1,95 @@
+# 离线仿真结果来源检查器｜研究示例，不进入生产/飞控
+
+> 2026-10-19 第一版。目标：验证归档的**输入/输出文件内容与声明的 SHA256 是否相符**，以及基本的研究元数据是否完整。该示例并非对真实动力学模型的验证、厂商认证或软硬件准入。详见 [KR-2026-002](../records/KR-2026-002-simulation-provenance.md)。
+
+文件：
+- \`simulation_manifest.py\` — 标准库实现、只读文件检查；不启动仿真，也不修改任何输入/输出。
+- \`test_simulation_manifest.py\` — 14 个正反例测试，使用 Python 临时目录，不连接外设。
+
+## 怎么自行复现
+
+需要 Python 3.10+（推荐 Python 3.11/3.12），**无需 pip 安装第三方库**。
+
+在本目录运行：
+
+\`\`\`bash
+python -m unittest -v test_simulation_manifest.py
+python simulation_manifest.py path/to/archived-run/manifest.json
+\`\`\`
+
+- 校验成功 → 退出码 \`0\`，输出“archive structure and file hashes match; NOT a simulation validity certification”。
+- 任何元数据/工件问题 → 退出码 \`1\`，打印对应的 \`FAIL\` 诊断。
+- 实际本轮开发容器本地执行记录：2026-10-19，\`Ran 14 tests ... OK\`，未在 Ad Astra 完整生产 CI 运行，未对上游 NASA/RocketPy 构建。
+- **源 commit 只检查 40 位小写十六进制格式**，不联网校验是否存在；版本字符串、依赖、命令也只检查字段，不实际运行/比对环境。
+
+## 一个归档目录示意
+
+\`\`\`text
+archived-run/
+  manifest.json
+  inputs/
+    model.json
+  outputs/
+    result.csv
+\`\`\`
+
+\`manifest.json\` 规范示意（使用占位 SHA256 的数据仅说明**格式**，不能通过实际校验）：
+
+\`\`\`json
+{
+  "schema_version": 1,
+  "run_id": "RESEARCH-EXAMPLE-001",
+  "classification": "SOFTWARE_SIMULATION_ONLY",
+  "intended_use": "Review a synthetic no-propulsion numerical exercise",
+  "unsupported_uses": ["flight readiness", "hardware validation", "manufacturing release"],
+  "model": {
+    "name": "synthetic-kinematic-model",
+    "version": "draft-1",
+    "coordinate_system": "1D x-positive",
+    "units": {"position": "m", "time": "s"},
+    "assumptions": ["constant velocity", "no forces"],
+    "physical_correlation_status": "NONE"
+  },
+  "source": {
+    "repository": "guo6x/AI-rocket",
+    "commit": "44edda14982618627a020f1d8475ab6f750acb05"
+  },
+  "runtime": {
+    "python_version": "3.11",
+    "dependencies": {},
+    "command": "placeholder: synthetic numerical demonstration",
+    "random_seed": 0
+  },
+  "inputs": [
+    {"path": "inputs/model.json", "sha256": "<replace with exact lowercase SHA256 of this file>"}
+  ],
+  "outputs": [
+    {"path": "outputs/result.csv", "sha256": "<replace with exact lowercase SHA256 of this file>"}
+  ]
+}
+\`\`\`
+
+**注意**：如果使用说明中这个占位示意，需要将字符串改为真实的 64 字符 SHA256，并实际创建相应文件。这里的示例没有被当成已验证数据结果。
+
+## 已测试的错误条件
+
+1. 正确归档被接受。
+2. 输出内容遭篡改。
+3. 文件不存在。
+4. 路径使用 \`../\`。
+5. 使用绝对路径。
+6. 哈希不是 64 字符。
+7. 同一文件重复登记。
+8. commit 不是 40 字符。
+9. 将分类虚假升级为 \`VERIFIED_HARDWARE\`。
+10. 删除 \`unsupported_uses\`。
+11. 无任何输出文件。
+12. Windows/反斜线路径。
+13. 清单企图把自身作为工件。
+14. 通过软链接逃逸归档目录。
+
+## 不能证明的事情
+
+这段代码不能验证源提交是否真实、项目是否 dirty、仿真是否运行过、输入数值是否合理、坐标和单位实际是否正确、结果有无伪造、是否可重复算出、控制是否稳定或硬件是否安全。存档的操作者可以同时更改数据和 SHA256，因此还需要外部不可篡改证据、审阅和模型独立验证。
+
+这就是为什么它仅为 **R0-009 证据来源治理的最小 PoC**。任何正式接入仿真生产流程的提案，都必须补上 CI、已知平台兼容性、供应链审查及实际结果复算，不可自动提升当前 \`engineering/\` 的验证等级。
