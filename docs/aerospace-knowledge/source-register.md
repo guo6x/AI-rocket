@@ -10,7 +10,7 @@
 | ID / 原始仓库 | 仓库证据（已查看） | 适合借鉴 | 对应项目问题 | 许可原文/风险 | pushed (UTC) |
 |---|---|---|---|---|---|
 | GH-01 [NASA F´](https://github.com/nasa/fprime) | README：组件化接口、异步任务/消息、代码生成、单元/集成测试；存在 docs/、CI 与测试工程 | 将飞控数据流拆为可独立测试组件；遥测/指令模型 | `R0-005` 传感器错误、`R1-001` 命令身份、组件边界 | Apache-2.0；架构体量大，不应未经资源评测整体移植到 STM32F103 | 2026-10-18 |
-| GH-02 [NASA NOS3](https://github.com/nasa/nos3) | README：模拟设备、动力学环境、多目标构建、地面站和测试环境；有 docs/ | 为软件创建虚拟设备与故障注入环境 | `R1-002` 集成证据缺失、`R0-005` 无效传感器、`R0-014` | README 与 LICENSE 均写 NOSA 1.3；需逐条确认二次分发义务；本阶段只参考方法 | 2026-10-07 |
+| GH-02 [NASA NOS3](https://github.com/nasa/nos3) | README：模拟设备、动力学环境、多目标构建、地面站和测试环境；有 docs/ | 为软件创建虚拟设备与故障注入环境 | `R1-002` 集成证据缺失、`R0-005` 无效传感器、`R0-014` | README 与 LICENSE 头部均写 NOSA 1.3，但 LICENSE 第 1.G 节出现与 NOS3 不一致的“Core Flight System Cryptography Library”文本；**许可/来源澄清前禁止复制代码**；目前只借鉴方法 | 2026-10-07 |
 | GH-03 [RocketPy](https://github.com/RocketPy-Team/RocketPy) | README：6DOF、可变质量、气象、降落伞与蒙特卡洛；有 tests/、docs/、验证论文链接 | 追踪输入与输出、模型假设、随机性和数值误差 | `R0-008` 模型极性不统一、`R0-009` 可追溯不足 | MIT；**本项目旧 RocketPy 文件属于历史固体火箭基线，不可当成现 EDF 装置模型** | 2026-10-05 |
 | GH-04 [NASA IKOS](https://github.com/NASA-SW-VnV/ikos) | README：LLVM/C/C++ 抽象解释静态分析，示例包括数组越界；CI 信息 | 检测可证明的运行时错误与边界问题 | 飞控固件解析/边界检查、`R0-005` 输入处理 | README 标 NOSA 1.3；实际兼容平台/编译工具链尚未测试 | 2026-05-31 |
 | GH-05 [CadQuery](https://github.com/CadQuery/cadquery) | README：参数化 CAD、无 GUI API、STEP/装配、tests/examples；LICENSE 正文写 Apache 2.0 | 几何参数输入、模型来源、导出和装配验证 | `R0-011` CAD 版本混乱、`R0-012` 假通过 | Apache-2.0；几何检查不等于强度、工艺、公差及制造放行 | 2026-10-18 |
@@ -41,7 +41,7 @@
 - CadQuery：Apache-2.0。
 - OpenMDAO：Apache-2.0。
 - OpenRocket：GPL v3 或更新版本（附加许可见 LICENSE.TXT）。
-- NOS3：NOSA 1.3。
+- NOS3：README/Licence 标 NOSA 1.3，但 LICENSE 正文第 1.G 节存在疑似模板残留/项目名不一致；必须向项目维护方确认适用许可文本后再考虑源代码复制或再分发。
 - NASA IKOS：README 标 NOSA 1.3；正式代码复用须进一步审查许可证正文。
 
 有些仓库内容包含来自其他第三方的代码/资产，主体许可证**不一定覆盖全部子组件**。本库默认仅研究概念，若进入复制、链接、修改、商用分发，必须形成逐文件依赖与许可结论。
