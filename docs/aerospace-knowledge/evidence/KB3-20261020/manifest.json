@@ -1,0 +1,65 @@
+{
+  "classification": "SOFTWARE_SIMULATION_ONLY",
+  "inputs": [
+    {
+      "path": "inputs/physics_engine.py",
+      "sha256": "3aa387699abec402af3aac3045ccb7210f43c01b5b887f98a50564fdddc7ebe6"
+    },
+    {
+      "path": "inputs/reference_case.json",
+      "sha256": "3780bd21b801a018d777b41b6722f23f484a4bcc48f196c2030124e8e5b3bc4b"
+    }
+  ],
+  "intended_use": "Check archived prototype model zero-thrust numerical integration against an independent small-angle analytic approximation",
+  "model": {
+    "assumptions": [
+      "no thrust",
+      "fixed I=(1/3)m(2Lcg)^2",
+      "linearized analytic reference sin(theta)\u2248theta",
+      "damping coefficient 0.5 Nm s/rad",
+      "historical prototype, not current device"
+    ],
+    "coordinate_system": "theta=0 at upward vertical, clockwise positive; angle in rad for archived state",
+    "name": "legacy-InvertedPendulum1D",
+    "physical_correlation_status": "NOT_MEASURED_OR_CORRELATED",
+    "units": {
+      "angle": "rad",
+      "angular_rate": "rad/s",
+      "force": "N",
+      "length": "m",
+      "mass": "kg",
+      "time": "s"
+    },
+    "version": "Ad Astra 2026-10-19 main model snapshot"
+  },
+  "outputs": [
+    {
+      "path": "outputs/samples.csv",
+      "sha256": "7a9818b53f3317bcf34b7b5f7de88dd2023f68abc2f4d1c353a8baee502dcb89"
+    },
+    {
+      "path": "outputs/summary.json",
+      "sha256": "e1fe54afae271d2602169fa9a727d5122b1ca353423a9662d43c11823ffa4500"
+    }
+  ],
+  "run_id": "KB3-ZERO-THRUST-REFERENCE-001",
+  "runtime": {
+    "command": "python docs/aerospace-knowledge/examples/run_reference_experiment.py --output-dir <new-empty-dir>",
+    "dependencies": {},
+    "python_version": "3.13.5",
+    "random_seed": null
+  },
+  "schema_version": 1,
+  "source": {
+    "commit": "25b0f6c31f01ab9178cf6dd96d7e0ca8eff7cc99",
+    "repository": "guo6x/AI-rocket"
+  },
+  "unsupported_uses": [
+    "powered thrust tests",
+    "real control tuning",
+    "hardware verification",
+    "free flight readiness",
+    "manufacturing release"
+  ]
+}
+
