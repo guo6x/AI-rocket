@@ -12,7 +12,7 @@ class ReferenceExperimentTests(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)
-        self.repo = Path(__file__).resolve().parents[1]
+        self.repo = Path(__file__).resolve().parents[3]
 
     def test_model_git_blob_matches_pinned_AdAstra_baseline(self):
         source = (self.repo / "dynamics_sim" / "physics_engine.py").read_bytes()
