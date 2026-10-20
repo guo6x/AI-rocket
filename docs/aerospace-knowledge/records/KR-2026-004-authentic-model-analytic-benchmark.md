@@ -105,3 +105,16 @@ python docs/aerospace-knowledge/examples/simulation_manifest.py research-output/
 - Python 版本、硬件/操作系统以及执行环境不同可能改变浮点最后几位；只针对这两次相同环境执行断言归档逐字节一致。
 
 **结论与下一步**：此研究案例的 \`REPRODUCED\` 是真实的，但作用范围很小；下一步应进行积分步长收敛和独立数值求解器交叉校核，再扩大**纯软件**数学测试覆盖。**不得因为本研究卡通过而把现有 \`engineering/\` 中的物理状态提升为已验证**。
+
+
+## 7. 合并前的真实仓库目录复测（2026-10-20）
+
+将已通过的运行器、旧归档工具及两组 unittest 放到与 GitHub **相同的相对目录层级**，把测试文件的仓库根目录解析固定为 \`Path(__file__).resolve().parents[3]\`，再次运行：
+
+\`\`\`bash
+python -m unittest discover -s docs/aerospace-knowledge/examples -p 'test_*.py' -v
+\`\`\`
+
+**结果：22/22 PASS**（上一轮归档工具的 14 项 + KB3 新增的 8 项），无跳过；使用无第三方库的 Python 3.13.5。通过该真实目录结构重新生成的 manifest、samples.csv 与 summary.json 的 SHA256 均与原始归档**完全一致**。GitHub 分支中的代码亦核对与这次真实运行文件 Git Blob 相同。
+
+复测仅涉及知识库独立软件，并未执行 AI-rocket 完整 \`scripts/check.py\`、PlatformIO 飞控目标或任何实物。研究声明仍严格局限于本文数值参考场景。
