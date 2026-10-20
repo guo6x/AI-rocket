@@ -93,3 +93,28 @@ archived-run/
 这段代码不能验证源提交是否真实、项目是否 dirty、仿真是否运行过、输入数值是否合理、坐标和单位实际是否正确、结果有无伪造、是否可重复算出、控制是否稳定或硬件是否安全。存档的操作者可以同时更改数据和 SHA256，因此还需要外部不可篡改证据、审阅和模型独立验证。
 
 这就是为什么它仅为 **R0-009 证据来源治理的最小 PoC**。任何正式接入仿真生产流程的提案，都必须补上 CI、已知平台兼容性、供应链审查及实际结果复算，不可自动提升当前 \`engineering/\` 的验证等级。
+
+
+## KB3｜现有动力学源码的首次实际数学参考运行（2026-10-20）
+
+新增：
+- [\`run_reference_experiment.py\`](run_reference_experiment.py)：实际导入并核对 Git Blob SHA 与历史 \`dynamics_sim/physics_engine.py\` 匹配，然后运行**零推力、小角度** RK4 数值计算；对照线性化解析近似；将源代码快照、输入参数、CSV 结果、误差摘要和 SHA256 manifest 保存到一个全新目录。
+- [\`test_reference_experiment.py\`](test_reference_experiment.py)：八个纯软件测试，覆盖原始源码版本锁、解析近似误差、零平衡点、正负对称、重复归档逐字节一致、结果被修改能检出、存在目录拒绝覆盖、源码改动被拒绝。
+- [**完整实测软件证据**](../evidence/KB3-20261020/) 和 [**研究报告**](../records/KR-2026-004-authentic-model-analytic-benchmark.md)。
+
+在 \`AI-rocket\` 仓库根目录：
+
+\`\`\`bash
+python -m unittest discover -s docs/aerospace-knowledge/examples -p 'test_reference_experiment.py' -v
+python docs/aerospace-knowledge/examples/run_reference_experiment.py --output-dir research-output/KB3-new-run
+python docs/aerospace-knowledge/examples/simulation_manifest.py research-output/KB3-new-run/manifest.json
+\`\`\`
+
+上述命令不会通电、不会调用 EDF/舵机/推进系统、不会写回现有仿真成果，要求输出目录此前不存在。
+
+**本次实际实验**：8/8 自测通过；0.4s / 200 步 / 0.1° 初值 / 0 N；最大解析近似偏差 \`4.4732188604276746e-09 rad\`，预设阈值 \`1e-7 rad\`；同一 Python 3.13.5 环境下两次运行档案逐字节一致。此处是对**同一物理假设下的数值行为**做有限检验，不验证真实火箭性能，也不意味着原有项目 R0/R1/R2 问题已关闭。
+
+
+### 合并前复测记录
+
+在模拟真实 GitHub 目录层级下运行 \`python -m unittest discover -s docs/aerospace-knowledge/examples -p 'test_*.py' -v\`，结果为 **22/22 PASS**，其中包括原 \`test_simulation_manifest.py\` 的 14 项与新 \`test_reference_experiment.py\` 的 8 项。曾发现并修复测试模块仓库根目录计算的层级错误（\`parents[1]\` → \`parents[3]\`），随后重新执行的完整实验归档 SHA256 与本轮证据一致。**不是整仓库 CI 验收**。

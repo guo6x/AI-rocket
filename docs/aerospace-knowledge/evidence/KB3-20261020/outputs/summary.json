@@ -1,0 +1,27 @@
+{
+  "archive_source_matches_pinned_git_blob": true,
+  "limitations": [
+    "No external force/thrust",
+    "Very small initial pitch angle",
+    "Linearized reference approximates sin(theta)",
+    "Historical prototype parameters, not measurements",
+    "No controls, electronics, physical hardware, or flight qualification"
+  ],
+  "max_abs_analytic_error_rad": 4.4732188604276746e-09,
+  "max_abs_equilibrium_angle_rad": 0.0,
+  "max_abs_equilibrium_rate_rad_s": 0.0,
+  "max_pos_neg_symmetry_angle_rad": 0.0,
+  "max_pos_neg_symmetry_rate_rad_s": 0.0,
+  "model_name": "legacy_unpowered_inverted_pendulum_1d",
+  "points_recorded": 11,
+  "reference": "small-angle linearization of original nonlinear zero-thrust ODE",
+  "source_git_blob_sha1": "f804ab126d13781928036ee4a22b99cf0ea59be6",
+  "status": "PASS_NUMERICAL_REFERENCE_ONLY",
+  "thresholds": {
+    "analytic_error_rad": 1e-07,
+    "equilibrium_angle_rad": 1e-14,
+    "equilibrium_rate_rad_s": 1e-14,
+    "symmetry_angle_rad": 1e-13,
+    "symmetry_rate_rad_s": 1e-13
+  }
+}
