@@ -113,3 +113,8 @@ python docs/aerospace-knowledge/examples/simulation_manifest.py research-output/
 上述命令不会通电、不会调用 EDF/舵机/推进系统、不会写回现有仿真成果，要求输出目录此前不存在。
 
 **本次实际实验**：8/8 自测通过；0.4s / 200 步 / 0.1° 初值 / 0 N；最大解析近似偏差 \`4.4732188604276746e-09 rad\`，预设阈值 \`1e-7 rad\`；同一 Python 3.13.5 环境下两次运行档案逐字节一致。此处是对**同一物理假设下的数值行为**做有限检验，不验证真实火箭性能，也不意味着原有项目 R0/R1/R2 问题已关闭。
+
+
+### 合并前复测记录
+
+在模拟真实 GitHub 目录层级下运行 \`python -m unittest discover -s docs/aerospace-knowledge/examples -p 'test_*.py' -v\`，结果为 **22/22 PASS**，其中包括原 \`test_simulation_manifest.py\` 的 14 项与新 \`test_reference_experiment.py\` 的 8 项。曾发现并修复测试模块仓库根目录计算的层级错误（\`parents[1]\` → \`parents[3]\`），随后重新执行的完整实验归档 SHA256 与本轮证据一致。**不是整仓库 CI 验收**。
