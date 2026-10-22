@@ -20,17 +20,17 @@ lines:
       - "AST-PROTOTYPE-BREADBOARD-001"
       - "AST-PROTOTYPE-DUPONT-MM-001"
       - "AST-PROTOTYPE-DUPONT-FF-001"
-    status: "ASSET_SUFFICIENT_FOR_BRINGUP_PLANNING"
-    next_gate: "HARDWARE_BRINGUP"
+    status: "HISTORICALLY_DEMONSTRATED_REBASELINE_REQUIRED"
+    next_gate: "CURRENT_HARDWARE_REBASELINE"
     blockers:
       - "APM32F103C8T6 versus current STM32F103C8T6 firmware/toolchain compatibility not yet proven on hardware."
       - "GY-91 physical pinout/orientation and actual populated sensor identity not yet inspected."
-      - "No repeatable flash/boot/sensor/servo evidence bundle exists."
+      - "Historical cloud records report successful flash, sensor reads, servo PWM, WiFi command-to-servo behavior, and attitude-driven stabilization, but the old run lacks a current immutable/repeatable evidence bundle tied to the present firmware/configuration."
     allowed_next_work:
-      - "Software compatibility audit"
-      - "Pin/interface plan"
-      - "Unpowered wiring review"
-      - "Controlled flashing and low-energy bench bring-up after explicit human execution"
+      - "Recover and classify historical hardware evidence"
+      - "Audit current firmware against the historically working hardware configuration"
+      - "Run only the minimum regression needed to re-establish the current configuration"
+      - "Do not repeat already-proven bench steps unless required by a changed target, firmware, or evidence gap"
     prohibited_claims:
       - "hardware-qualified controller"
       - "flight-ready stabilization"
@@ -48,10 +48,10 @@ lines:
       - "AST-TOOL-CH340-001"
       - "AST-TOOL-LOGIC-001"
       - "AST-TOOL-DMM-001"
-    status: "ASSET_SUFFICIENT_FOR_ARCHITECTURE_AND_BRINGUP_PLANNING"
-    next_gate: "TARGET_COMPATIBILITY_AND_POWER_INTERFACE_AUDIT"
+    status: "HISTORICALLY_DEMONSTRATED_REBASELINE_REQUIRED"
+    next_gate: "CURRENT_AVIONICS_REBASELINE"
     blockers:
-      - "ESP-01S physical target differs from current NodeMCU-v2 firmware target."
+      - "Historical cloud records report ESP8266-01S UDP telemetry/command operation, while the current PlatformIO environment still names NodeMCU-v2; reconcile the historically working configuration with the current build target."
       - "No accepted bench power architecture exists."
       - "ESP32-S3 role is intentionally undecided."
     allowed_next_work:
