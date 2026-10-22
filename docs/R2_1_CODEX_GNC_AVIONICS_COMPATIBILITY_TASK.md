@@ -41,8 +41,30 @@ Do not start TVC CAD, propulsion work, PID tuning, free-flight preparation, or r
 - `engineering/bringup/gnc-avionics-bringup.yaml`
 - `docs/R2_1_REAL_ASSET_MULTI_BENCH_ARCHITECTURE.md`
 - `docs/R2_1_TARGET_COMPATIBILITY_PREAUDIT.md`
+- `engineering/historical-hardware-capabilities.yaml`
+- `docs/R2_1_HISTORICAL_HARDWARE_RECOVERY.md`
 
 Also inspect the latest main research commits so nothing is overwritten.
+
+## 1.5 Historical-to-current delta table
+
+Before changing production code, produce a machine-readable or Markdown delta table for every historically demonstrated capability:
+
+- historical capability
+- historical source
+- current code continuity
+- changed implementation/configuration since the historical run
+- whether physical regression is required
+- smallest regression needed
+- evidence ceiling after that regression
+
+Important known finding:
+
+The initial public flight-controller PlatformIO configuration at `b6006c9` already contained the domestic-compatible `CPUTAPID 0x2ba01477` upload override. Treat the APM32-vs-STM32 naming mismatch as a historical configuration-recovery problem, not evidence that no hardware had ever been flashed.
+
+Important WiFi contradiction:
+
+Historical prose reports WiFi command uplink driving a servo, but the initial public ESP8266 source at `b6006c9` only implements UART-to-UDP telemetry and no UDP command receive path. Do not invent the missing historical implementation. Record the contradiction and focus on validating the present R1 bidirectional implementation.
 
 ## 2. APM32F103C8T6 compatibility audit
 
