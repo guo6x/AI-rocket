@@ -1,0 +1,133 @@
+schema_version: 1
+plan_id: "AA-GNC-AVIONICS-BRINGUP-001"
+applies_to:
+  - "AA-GNC-BENCH-001"
+  - "AA-AVIONICS-BENCH-001"
+status: "BLOCKED_BEFORE_HUMAN_WIRING"
+principle: "Resolve software/target assumptions before asking the project owner to connect or energize hardware."
+
+stages:
+  - stage_id: "S0-ASSET-AND-TARGET-AUDIT"
+    owner: "ASSISTANT_OR_CODEX"
+    physical_action: false
+    status: "PARTIAL"
+    required_outputs:
+      - "APM32F103C8T6 compatibility matrix for used pins/peripherals/toolchain"
+      - "GY-91 identity/read-validity plan"
+      - "ESP-01S-specific PlatformIO target and build result"
+    exit_criteria:
+      - "No unresolved board-target assumption is hidden behind an existing source-build PASS."
+
+  - stage_id: "S1-BENCH-WIRING-PLAN"
+    owner: "CODEX_THEN_ASSISTANT_REVIEW"
+    physical_action: false
+    status: "BLOCKED_BY_S0"
+    required_outputs:
+      - "Exact board pin-label mapping based on the purchased board/module form factors"
+      - "Voltage-domain and grounding plan"
+      - "Programmer/USB-TTL connection plan"
+      - "Sensor I2C connection plan"
+      - "Servo signal/power separation plan"
+      - "Explicit DO-NOT-CONNECT list"
+    exit_criteria:
+      - "Assistant review passes"
+      - "No EDF, propulsion, or recovery actuator is involved"
+
+  - stage_id: "S2-PROGRAMMER-DETECTION"
+    owner: "HUMAN_EXECUTION_WITH_CODEX_GUIDANCE"
+    physical_action: true
+    status: "BLOCKED_BY_S1"
+    energy_scope: "logic/debug only"
+    required_evidence:
+      - "photo or board marking confirmation"
+      - "tool command/output"
+      - "detected target/debug ID"
+      - "firmware commit SHA"
+    stop_conditions:
+      - "unexpected voltage"
+      - "unexpected device ID"
+      - "programmer cannot detect target"
+      - "board heating or unstable power"
+
+  - stage_id: "S3-FLASH-AND-BOOT"
+    owner: "HUMAN_EXECUTION_WITH_CODEX_GUIDANCE"
+    physical_action: true
+    status: "BLOCKED_BY_S2"
+    required_evidence:
+      - "flash command/output"
+      - "serial boot output"
+      - "firmware exact SHA"
+    prohibited:
+      - "servo movement"
+      - "closed-loop control"
+      - "EDF connection"
+
+  - stage_id: "S4-SENSOR-READ-VALIDITY"
+    owner: "HUMAN_EXECUTION_WITH_CODEX_GUIDANCE"
+    physical_action: true
+    status: "BLOCKED_BY_S3"
+    required_evidence:
+      - "actual IMU identity"
+      - "BMP280 identity/address"
+      - "validity/fault behavior"
+      - "stationary sensor readings"
+    exit_criteria:
+      - "Sensor identity and read validity are explicitly checked in software."
+
+  - stage_id: "S5-SINGLE-SERVO-COMMAND"
+    owner: "HUMAN_EXECUTION_WITH_CODEX_GUIDANCE"
+    physical_action: true
+    status: "BLOCKED_BY_S4"
+    energy_scope: "low-energy restrained servo bench only"
+    required_evidence:
+      - "servo model/unit ID"
+      - "separate servo power arrangement"
+      - "neutral command behavior"
+      - "small bounded command behavior"
+      - "E-STOP/RESET neutral behavior"
+    prohibited:
+      - "PID auto mode"
+      - "EDF"
+      - "free-moving vehicle"
+
+  - stage_id: "S6-DUAL-SERVO-AND-COMMAND-LINK"
+    owner: "HUMAN_EXECUTION_WITH_CODEX_GUIDANCE"
+    physical_action: true
+    status: "BLOCKED_BY_S5"
+    required_evidence:
+      - "two independently identified servo units"
+      - "USB command ACK/NACK behavior"
+      - "transport-buffer isolation observation"
+      - "E-STOP/RESET repetition"
+    prohibited:
+      - "physical PID tuning"
+      - "free flight"
+
+  - stage_id: "S7-ESP01S-RELAY"
+    owner: "HUMAN_EXECUTION_WITH_CODEX_GUIDANCE"
+    physical_action: true
+    status: "BLOCKED_BY_S3_AND_ESP01S_BUILD"
+    required_evidence:
+      - "ESP-01S flash/boot record"
+      - "UART relay record"
+      - "UDP command/ACK record"
+      - "telemetry return record"
+    evidence_ceiling: "RESTRAINED_BENCH_VERIFIED_ONLY"
+
+  - stage_id: "S8-CLOSED_LOOP-BENCH-PLANNING"
+    owner: "ASSISTANT_AND_CODEX"
+    physical_action: false
+    status: "BLOCKED_BY_SENSOR_AND_ACTUATOR_EVIDENCE"
+    required_inputs:
+      - "sensor validity"
+      - "actuator direction/range"
+      - "measured bench plant definition"
+      - "safe restraint design"
+    note: "PID values are not selected from historical filenames or simulation outputs."
+
+global_prohibitions:
+  - "No EDF energized testing in this bring-up plan."
+  - "No free flight."
+  - "No recovery deployment."
+  - "No energetic propulsion work."
+  - "No hardware VERIFIED claim without an evidence record."
