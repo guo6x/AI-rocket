@@ -88,8 +88,9 @@ capabilities:
       - "ground_station/**"
     current_status: "CURRENT_REBASELINE_REQUIRED"
     delta_reasons:
-      - "Current PlatformIO environment still names nodemcuv2 rather than the purchased ESP-01S form factor."
-      - "R1 added governed ACK/NACK and changed relay behavior after the historical run."
+      - "The initial published ESP8266 source at b6006c9 only relays STM32 UART telemetry to UDP and contains no UDP-command receive path, while historical verification prose reports WiFi command uplink to physical servo. This is a historical source/configuration contradiction that must be recovered rather than silently resolved."
+      - "Both the initial and current PlatformIO environments name nodemcuv2 rather than the purchased ESP-01S form factor."
+      - "R1 later added the governed UDP-to-UART command path and ACK/NACK behavior."
 
   - capability_id: "HWCAP-GROUNDSTATION-001"
     capability: "ground station receives telemetry and sends commands"
@@ -102,6 +103,7 @@ capabilities:
       - "ground_station/**"
     current_status: "CURRENT_REBASELINE_REQUIRED"
     delta_reasons:
+      - "Historical prose reports WiFi command-to-servo behavior, but the initial published ESP relay source lacks UDP command reception; the exact historically working code/configuration is therefore not present in the public snapshot."
       - "R1 changed command status, ACK/NACK, timeout, and UDP source-correlation behavior."
 
   - capability_id: "HWCAP-LORA-001"
