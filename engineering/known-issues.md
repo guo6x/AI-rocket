@@ -155,3 +155,34 @@ The list is evidence-based as of audited input commit `b6006c9`. Priorities refl
 - Evidence: Ground Station target validation rejects unspecified IPv4, multicast, and limited broadcast `255.255.255.255`, but has no subnet prefix or netmask input.
 - Impact: software alone does not independently prove that every subnet-directed broadcast address is classified and rejected.
 - Required closure: provide explicit network context in a separately scoped link-hardening task if directed-broadcast classification must become a software proof. This is not an authentication control.
+
+
+## R2.1 real-asset / multi-bench blockers
+
+### R2_1-001 — Purchased controller is APM32F103C8T6, not the nominal STM32F103C8T6 target
+
+- Status: `BLOCKED` for hardware bring-up claims.
+- Evidence: project asset registry records the completed APM32F103C8T6 purchase; current firmware/toolchain still names STM32F103C8T6.
+- Impact: source compatibility is plausible but not sufficient to claim successful flashing, clock/peripheral equivalence, boot behavior, or hardware execution.
+- Required closure: perform a datasheet/toolchain compatibility audit, then a controlled programmer-detect/flash/boot evidence run on `AA-GNC-BENCH-001`.
+
+### R2_1-002 — Purchased ESP8266 is ESP-01S while the firmware build target is NodeMCU-v2 style
+
+- Status: `BLOCKED` for physical WiFi-link claims.
+- Evidence: project asset registry records ESP-01S ownership; repository PlatformIO target remains a different development-board form factor.
+- Impact: flash layout, GPIO availability, reset/boot wiring, power interface, and serial pins cannot be assumed equivalent from a successful source build.
+- Required closure: audit the target definition and memory/pin/reset assumptions, then produce an ESP-01S-specific bring-up procedure before physical flashing.
+
+### R2_1-003 — No repeatable GNC bench hardware evidence bundle exists
+
+- Status: `BLOCKED`.
+- Evidence: the project owns the controller, GY-91, two SG92R servos, programmer, USB-TTL, logic analyzer, multimeter, breadboard, and jumpers, but no repository record yet links a physical configuration to flash/boot/sensor/servo results.
+- Impact: R0/R1 software cannot be promoted to hardware proof.
+- Required closure: freeze a low-energy bench configuration and capture exact board markings, wiring revision, firmware commit, tool output, sensor reads, actuator command behavior, and pass/fail criteria.
+
+### R2_1-004 — Avionics bench power/interface architecture is not yet accepted
+
+- Status: `BLOCKED`.
+- Evidence: LM2596S and prototyping assets are owned, but no accepted voltage-domain, current-budget, grounding, connector, or protection configuration exists.
+- Impact: hardware should not be wired from historical prose or guessed pinouts.
+- Required closure: define and review the bench-only power/interface plan before human wiring.
