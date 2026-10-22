@@ -12,7 +12,24 @@ Do not merge.
 
 ## Objective
 
-Close as much of R2.1 S0 as possible without requiring the user to wire or energize hardware.
+Important correction from the project owner and cloud-history audit:
+
+This is NOT a first-time hardware bring-up.
+
+Historical repository records explicitly report that the project previously achieved:
+- controller firmware flashed/running;
+- GY-91 sensor communication and attitude data;
+- two SG92R TVC servos physically driven;
+- Ground Station / ESP8266 telemetry and command path;
+- command uplink producing physical servo deflection;
+- `auto_on` attitude stabilization behavior in which filtered pitch/roll feeds PID outputs and the servos move in response.
+
+Current `flight_computer/src/main.cpp` still contains that closed-loop path:
+filtered pitch/roll -> PID.compute() -> servo writes.
+
+Therefore the task is to RECOVER, RECONCILE, and RE-BASELINE an already demonstrated hardware capability against current code and purchased hardware, not to assume the hardware has never worked.
+
+Close as much of the historical-evidence recovery and current-target reconciliation as possible without requiring unnecessary repeated physical work.
 
 Do not start TVC CAD, propulsion work, PID tuning, free-flight preparation, or recovery actuation.
 
@@ -132,17 +149,27 @@ Do not make missing physical evidence fail the software structure gate.
 
 ## 6. Produce the exact human handoff, but do not execute it
 
-Only after the above audits/builds pass, create:
+First determine whether a new physical action is actually needed.
+
+If historical evidence plus current code is sufficient for a given fact, do NOT ask the user to repeat it just to recreate history.
+
+Only request a physical regression where:
+- the hardware target has changed or is mismatched;
+- current firmware materially changed the behavior;
+- the old claim cannot be mapped to the current configuration;
+- or a present evidence gap blocks the next engineering decision.
+
+Then create:
 
 `docs/R2_1_GNC_AVIONICS_HUMAN_HANDOFF.md`
 
 It must contain only the next smallest physical action.
 
-Preferred first physical gate:
+The next physical gate is NOT predetermined to be ST-LINK detection.
 
-ST-LINK target detection on the purchased APM32 board, with no sensor, servo, EDF, ESP, or other load attached.
+Choose the smallest regression that closes the highest-value CURRENT uncertainty after historical evidence recovery.
 
-However, derive exact pins/connection from the actual purchased-board form factor and documentation. If the exact board pinout still cannot be proven from repository/purchase evidence, do not invent it; instead make the human handoff request one close-up photo of the board front/back and labels.
+If the exact purchased-board/module form factor still cannot be proven from repository/purchase evidence, the next human action should be only the minimum observation needed (for example, one close-up photo of the relevant board front/back and labels).
 
 Do not give a multi-page sequence of physical actions all at once.
 
