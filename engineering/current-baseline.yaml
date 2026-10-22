@@ -44,11 +44,11 @@ owned_asset_summary:
     - "LoRa 150 mm cable order shown as transaction closed"
 
 current_near_term_priority:
-  first: "GNC hardware bring-up planning"
-  second: "Avionics target/power/interface audit"
+  first: "GNC historical-hardware recovery and current re-baseline"
+  second: "Avionics historical-configuration recovery and current target reconciliation"
   reason:
     - "The project already owns the necessary low-cost controller, sensor, servo, debug, and prototyping assets."
-    - "This directly tests whether R0/R1 software assumptions survive contact with real hardware."
+    - "Historical cloud records already report successful real-hardware stabilization, sensor reads, servo actuation, and ESP8266 command/telemetry behavior; the task is to recover and re-baseline that capability against current code."
     - "TVC CAD remains blocked by missing actual EDF/frame geometry."
 
 current_blockers:
@@ -57,9 +57,9 @@ current_blockers:
   - id: "R2_1-002"
     summary: "Purchased ESP8266 module is ESP-01S while the repository ESP build target is NodeMCU-v2-style; flash/pin/memory compatibility is not yet audited."
   - id: "R2_1-003"
-    summary: "No repeatable physical flash/boot/sensor/servo evidence bundle exists for AA-GNC-BENCH-001."
+    summary: "Historical records report successful flash/boot/sensor/servo/self-stabilization behavior, but no current immutable/repeatable evidence bundle ties those results to the present firmware/configuration."
   - id: "R2_1-004"
-    summary: "No accepted bench power/interface configuration exists for AA-AVIONICS-BENCH-001."
+    summary: "Historical wiring records describe a working avionics bench, but the current accepted power/interface configuration has not yet been re-baselined against the purchased APM32/ESP-01S hardware and current firmware."
   - id: "R0-006"
     summary: "No PID profile is hardware-qualified; source values conflict."
   - id: "R0-007"
