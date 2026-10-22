@@ -1,0 +1,123 @@
+schema_version: 1
+registry_id: "AA-HIST-HW-CAP-001"
+project: "Project Ad Astra / AI-rocket"
+purpose: >-
+  Preserve historically demonstrated hardware capabilities without promoting them
+  to current VERIFIED_HARDWARE. Each claim records the historical source, whether
+  the current code still contains the relevant path, and what changed enough to
+  justify a targeted regression.
+
+evidence_levels:
+  HISTORICALLY_REPORTED_HARDWARE: "Repository historical records explicitly state that real hardware behavior was observed."
+  CURRENT_CODE_CONTINUITY: "The current production source still contains the relevant functional path."
+  CURRENT_REBASELINE_REQUIRED: "The old hardware result is useful evidence, but a changed target/configuration or missing immutable record prevents current VERIFIED_HARDWARE status."
+
+capabilities:
+  - capability_id: "HWCAP-FC-FLASH-001"
+    capability: "flight controller firmware flashed and running"
+    historical_level: "HISTORICALLY_REPORTED_HARDWARE"
+    historical_sources:
+      - "project-overview.md: STM32F103C8T6 (Blue Pill) — 烧录运行中"
+      - "project-overview.md: ST-Link V2 — 在用"
+    current_code_continuity: true
+    current_sources:
+      - "flight_computer/platformio.ini"
+      - "flight_computer/src/main.cpp"
+    current_status: "CURRENT_REBASELINE_REQUIRED"
+    delta_reasons:
+      - "Purchased controller record is APM32F103C8T6 rather than the historical Blue Pill identity."
+      - "Current firmware has materially changed since the historical hardware run."
+
+  - capability_id: "HWCAP-GY91-I2C-001"
+    capability: "GY-91 sensor communication and attitude acquisition"
+    historical_level: "HISTORICALLY_REPORTED_HARDWARE"
+    historical_sources:
+      - "project-overview.md: GY-91 — I2C 通信正常"
+      - "verification-protocol.md: 传感器硬件验证 — MPU6500 + BMP280 I2C 通信，数据读取正确"
+      - "hardware-wiring-STM32.md: PB6/PB7 historical working I2C wiring"
+    current_code_continuity: true
+    current_sources:
+      - "flight_computer/src/main.cpp"
+    current_status: "CURRENT_REBASELINE_REQUIRED"
+    delta_reasons:
+      - "Purchase record identifies GY-91 order variant as MPU9250 + BMP280, while current source labels the inertial path MPU6500."
+      - "Current source does not robustly verify IMU identity or I2C read validity."
+
+  - capability_id: "HWCAP-SERVO-DUAL-001"
+    capability: "two SG92R TVC servos physically driven"
+    historical_level: "HISTORICALLY_REPORTED_HARDWARE"
+    historical_sources:
+      - "project-overview.md: TVC 舵机 SG92R ×2 — PWM 驱动验证"
+      - "verification-protocol.md: 地面站 WiFi UDP 接收遥测 + 指令上行到舵机 — 舵机物理偏转验证"
+      - "hardware-wiring-STM32.md: PA6 pitch / PA7 roll historical wiring"
+    current_code_continuity: true
+    current_sources:
+      - "flight_computer/src/main.cpp: Servo attach on PA6/PA7 and command writes"
+    current_status: "CURRENT_REBASELINE_REQUIRED"
+    delta_reasons:
+      - "Current command-safety processor and E-STOP/RESET semantics were changed in R1."
+      - "No current immutable physical trace ties the historical servo run to the present firmware."
+
+  - capability_id: "HWCAP-SELF-STABILIZE-001"
+    capability: "attitude-driven stabilization path commands TVC servos"
+    historical_level: "HISTORICALLY_REPORTED_HARDWARE"
+    historical_sources:
+      - "project-overview.md: PID 自动姿态稳定 (auto_on 激活)"
+      - "verification-protocol.md: PID 桌面抖动测试 describes servo corrective response to tilt"
+      - "user project-history correction: physical stabilization had been run"
+    current_code_continuity: true
+    current_sources:
+      - "flight_computer/src/main.cpp: pitch/roll -> Kalman -> PID.compute() -> servo.write() when auto_mode"
+    current_status: "CURRENT_REBASELINE_REQUIRED"
+    delta_reasons:
+      - "PID profile values and timing assumptions have changed/conflicted across history."
+      - "Sensor identity/validity needs correction before present closed-loop regression."
+      - "R1 command-safety behavior must be preserved during any regression."
+    note: "Do not interpret this historical result as current PID qualification."
+
+  - capability_id: "HWCAP-WIFI-ESP01S-001"
+    capability: "ESP8266-01S telemetry and command relay used with ground station"
+    historical_level: "HISTORICALLY_REPORTED_HARDWARE"
+    historical_sources:
+      - "project-overview.md: ESP8266-01S — UDP 透传固件已烧录"
+      - "verification-protocol.md: WiFi UDP telemetry plus command uplink to physical servo verified"
+      - "hardware-wiring-STM32.md: ESP8266-01S historical UART2 wiring and flash-mode notes"
+    current_code_continuity: true
+    current_sources:
+      - "esp8266_firmware/src/main.cpp"
+      - "ground_station/**"
+    current_status: "CURRENT_REBASELINE_REQUIRED"
+    delta_reasons:
+      - "Current PlatformIO environment still names nodemcuv2 rather than the purchased ESP-01S form factor."
+      - "R1 added governed ACK/NACK and changed relay behavior after the historical run."
+
+  - capability_id: "HWCAP-GROUNDSTATION-001"
+    capability: "ground station receives telemetry and sends commands"
+    historical_level: "HISTORICALLY_REPORTED_HARDWARE"
+    historical_sources:
+      - "project-overview.md: Python PyQtGraph ground station — WiFi/serial dual-mode receive"
+      - "verification-protocol.md: command uplink to servo physically verified"
+    current_code_continuity: true
+    current_sources:
+      - "ground_station/**"
+    current_status: "CURRENT_REBASELINE_REQUIRED"
+    delta_reasons:
+      - "R1 changed command status, ACK/NACK, timeout, and UDP source-correlation behavior."
+
+  - capability_id: "HWCAP-LORA-001"
+    capability: "SX1278 / 433 MHz LoRa telemetry"
+    historical_level: "NOT_FOUND"
+    historical_sources:
+      - "verification-protocol.md lists LoRa replacement as a future stage"
+      - "project-memory.md lists SX1278 as available hardware reserve"
+    current_code_continuity: false
+    current_sources: []
+    current_status: "ASSET_OWNED_NOT_HISTORICALLY_VERIFIED"
+    delta_reasons:
+      - "No RA-02/SX1278 production firmware or equivalent physical-link evidence was found in the current cloud repository search."
+
+rebaseline_policy:
+  - "Do not repeat a historically demonstrated physical step solely because old raw logs are missing."
+  - "Repeat only the minimum regression needed for a changed target, changed firmware behavior, or a blocker to the next decision."
+  - "Historical reports may support HISTORICALLY_REPORTED_HARDWARE but never CURRENT VERIFIED_HARDWARE by themselves."
+  - "LoRa must not inherit WiFi's historical verification status."
