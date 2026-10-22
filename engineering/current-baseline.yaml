@@ -1,37 +1,65 @@
-schema_version: 1
+schema_version: 2
 project: "Project Ad Astra / AI-rocket"
-baseline_name: "R2 As-Built Physical Baseline & Mechanical Design Intake"
-audit_date: "2026-08-27"
-baseline_commit: "38c662d42db68823da8946c4d7f16e247cc79691"
-prior_r1_head: "4d4bf7f1349fdaf78f2b5ac71cf73bb868c255df"
+baseline_name: "R2.1 Real Asset Registry & Multi-Bench Architecture"
+audit_date: "2026-10-22"
+branch_base_commit: "f59dc2c5791ee88f3d853112930de55d0c31f4d3"
+prior_r2_merge: "66861c7c9f0d468e81a2e09c7a354ed6058dd20f"
 
-current_phase: "R2 as-built physical baseline and mechanical design intake"
+current_phase: "R2.1 real-asset registry and multi-bench development architecture"
 current_objective: >-
-  Convert claimed physical components into a traceable article, measurement,
-  datum, interface, mass-property, requirement, and AeroForge intake structure
-  without inventing measurements or starting TVC CAD.
+  Use the project's actually purchased hardware and tools to organize independent
+  GNC, avionics, RF, TVC, recovery, propulsion-science, and later system-integration
+  benches. Ownership, article assignment, physical configuration, and hardware
+  verification remain distinct evidence levels.
 
-current_physical_platform:
-  intended_platform: "restrained EDF TVC bench / experimental avionics platform"
-  assembled_state: "UNKNOWN"
-  confirmed_in_repository:
-    - "STM32F103C8T6 firmware target is configured in PlatformIO."
-    - "ESP8266 firmware target is configured in PlatformIO."
-    - "Firmware assigns three servo channels; physical servo identities are not confirmed."
-  not_confirmed_in_repository:
-    - "actual installed EDF diameter and thrust"
-    - "actual vehicle or bench mass and CG"
-    - "current wiring configuration"
-    - "integrated actuator direction and range"
-    - "physical recovery assembly"
-    - "ownership and installation state of every claimed physical component"
-    - "actual component envelopes, mounting features, connectors, and masses"
+project_development_model:
+  principle: "Mature technical lines independently, then integrate only evidence-backed configurations."
+  technical_lines:
+    - {line_id: "GNC", article_id: "AA-GNC-BENCH-001"}
+    - {line_id: "AVIONICS", article_id: "AA-AVIONICS-BENCH-001"}
+    - {line_id: "RF", article_id: "AA-RF-BENCH-001"}
+    - {line_id: "TVC", article_id: "AA-TVC-BENCH-001"}
+    - {line_id: "RECOVERY", article_id: "AA-RECOVERY-BENCH-001"}
+    - {line_id: "MATERIALS_PROPULSION_SCIENCE", article_id: "AA-PROPULSION-SCIENCE-001"}
+    - {line_id: "SYSTEM_INTEGRATION", article_id: "AA-SYSTEM-INTEGRATION-001"}
+
+owned_asset_summary:
+  authority: "engineering/assets/project-asset-registry.yaml"
+  ownership_basis: "completed purchase records supplied by the project owner"
+  near_term_core_assets:
+    - "APM32F103C8T6 core board"
+    - "GY-91 order variant: MPU9250 + BMP280"
+    - "2x SG92R metal-gear 9 g servos"
+    - "ESP8266 ESP-01S"
+    - "ESP32-S3 DevKitC-1 N16R8"
+    - "ST-LINK V2"
+    - "CH340G USB-TTL"
+    - "USB logic analyzer"
+    - "digital multimeter"
+    - "830-hole breadboard and jumper wires"
+    - "LM2596S adjustable buck module"
+    - "10 kg / 0.1 g electronic scale"
+    - "2x SX1278 RA-02 plus 433 MHz RF accessories"
+  excluded_transaction:
+    - "LoRa 150 mm cable order shown as transaction closed"
+
+current_near_term_priority:
+  first: "GNC hardware bring-up planning"
+  second: "Avionics target/power/interface audit"
+  reason:
+    - "The project already owns the necessary low-cost controller, sensor, servo, debug, and prototyping assets."
+    - "This directly tests whether R0/R1 software assumptions survive contact with real hardware."
+    - "TVC CAD remains blocked by missing actual EDF/frame geometry."
 
 current_blockers:
-  - id: "R1-001"
-    summary: "The plaintext UDP command link has no authentication, integrity protection, or request ID."
-  - id: "R1-002"
-    summary: "No repeatable physical USB/UART/WiFi/servo command-link evidence exists."
+  - id: "R2_1-001"
+    summary: "Purchased flight-controller board is APM32F103C8T6 while the repository nominal firmware target is STM32F103C8T6; compatibility is not hardware-proven."
+  - id: "R2_1-002"
+    summary: "Purchased ESP8266 module is ESP-01S while the repository ESP build target is NodeMCU-v2-style; flash/pin/memory compatibility is not yet audited."
+  - id: "R2_1-003"
+    summary: "No repeatable physical flash/boot/sensor/servo evidence bundle exists for AA-GNC-BENCH-001."
+  - id: "R2_1-004"
+    summary: "No accepted bench power/interface configuration exists for AA-AVIONICS-BENCH-001."
   - id: "R0-006"
     summary: "No PID profile is hardware-qualified; source values conflict."
   - id: "R0-007"
@@ -44,6 +72,8 @@ current_blockers:
 authoritative_sources:
   current_status:
     - "engineering/current-baseline.yaml"
+    - "engineering/assets/project-asset-registry.yaml"
+    - "engineering/experimental-lines.yaml"
     - "engineering/component-status.yaml"
     - "engineering/parameter-registry.yaml"
     - "engineering/verification-status.yaml"
@@ -52,6 +82,7 @@ authoritative_sources:
     - "engineering/as-built/**"
     - "engineering/tvc-mechanical-requirements.yaml"
     - "engineering/aeroforge-intake/**"
+    - "docs/R2_1_REAL_ASSET_MULTI_BENCH_ARCHITECTURE.md"
   implementation:
     - "flight_computer/src/**"
     - "esp8266_firmware/src/**"
@@ -59,31 +90,28 @@ authoritative_sources:
     - "ground_station/ui/**"
   repeatable_software_verification:
     - "scripts/check.py"
-    - "flight_computer/test/test_kalman.cpp"
+    - "flight_computer/test/**"
     - "ground_station/tests/**"
     - "esp8266_firmware/test/**"
     - "scripts/simulation_smoke.py"
 
-deprecated_sources:
-  status: "HISTORICAL_OR_STALE"
-  sources:
-    - "project-memory.md"
-    - "project-overview.md"
-    - "software-architecture.md"
-    - "hardware-wiring-STM32.md"
-    - "verification-protocol.md"
-    - "reports/**"
-    - "aero_sim/rocket_config.py as a project-wide source of truth"
-    - "generate_rocket*.py and generated CAD as current vehicle authority"
+evidence_rules:
+  ownership: "A completed purchase record is sufficient to mark a project asset as owned."
+  article_assignment: "Assignment to a bench/article is configuration control and must be explicit."
+  physical_configuration: "Wiring, pinout, geometry, orientation, calibration, and installed state require bench-specific evidence."
+  hardware_verification: "Only a repeatable procedure/configuration/result/date evidence bundle may support VERIFIED_HARDWARE."
 
 safety_scope:
-  current_focus: "unpowered observation/measurement planning and mechanical-input traceability for a restrained EDF bench"
-  excluded_from_r2:
-    - "high-energy propulsion changes"
+  current_focus:
+    - "low-energy GNC and avionics bring-up planning"
+    - "software compatibility and interface audits"
+    - "unpowered TVC measurement planning"
+    - "RF bench architecture within applicable radio rules"
+    - "foundational chemistry/materials/thermofluid learning and inert-fluid planning"
+  excluded:
     - "free-flight readiness claims"
-    - "new or modified TVC CAD"
-    - "hardware procurement decisions"
-    - "physical PID tuning"
-    - "physical recovery triggering"
-    - "EDF energized or thrust testing"
-    - "structural strength conclusions"
+    - "unqualified hardware control claims"
+    - "energetic propellant preparation or processing instructions"
+    - "ignition development for energetic propulsion tests"
+    - "unsupervised motor or combustion testing"
+    - "automatic promotion of purchased assets to VERIFIED_HARDWARE"
