@@ -22,6 +22,7 @@ protocol:
       - unknown_command
       - overlong
       - sensor_invalid
+      - recovery_disabled
   acknowledgement_limit: >-
     ACK means only that the STM32 command processor accepted the command. It does
     not prove actuator motion, recovery deployment, hardware operation, or safety.
@@ -59,7 +60,8 @@ safety_invariants:
   - "RESET does not claim that a physical recovery mechanism was reloaded."
   - "ARM, AUTO_ON and SET_SERVO require checked current sensor validity on both transports; rejection is NACK sensor_invalid."
   - "A sensor fault cannot be cleared by ESTOP/RESET or a later successful-looking sample."
-  - "ESTOP/RESET and explicit emergency deployment semantics remain available; sensor failure never fabricates automatic recovery data."
+  - "In the default profile, ESTOP/RESET and explicit emergency deployment semantics remain available; sensor failure never fabricates automatic recovery data."
+  - "The opt-in GNC-only bench profile rejects deploy_chute as NACK recovery_disabled and has no recovery-servo attach/write or automatic recovery transition; the default profile remains unchanged."
   - "Malformed, duplicate, truncated, or overlong input cannot partially mutate actuator state."
   - "UDP send success is SENT, not ACKNOWLEDGED."
   - "A UDP ACK/NACK resolves a pending command only when its source IP and port match the explicitly configured ESP command target."
@@ -167,7 +169,7 @@ commands:
     rejected_from: [boot, idle]
     state_effect: "control state unchanged; recovery FSM handles its own one-way software state"
     actuator_effect: "Request recovery deployment; ACK does not prove physical movement."
-    acknowledgement: "ACK deploy_chute when the request is accepted by software."
+    acknowledgement: "ACK deploy_chute when the default profile accepts the request; the opt-in GNC-only bench profile returns NACK recovery_disabled without changing recovery state."
     idempotency: "Repeated requests are safe in software; the recovery FSM does not redeploy."
     safety_relevance: "critical"
     confirmation: "Ground Station requires UI confirmation; firmware additionally enforces allowed control states."

@@ -55,6 +55,28 @@ stages:
       - "Assistant review passes"
       - "No EDF, propulsion, or recovery actuator is involved"
 
+  - stage_id: "S2B-GNC-ONLY-BENCH-SOFTWARE-ISOLATION"
+    owner: "ASSISTANT_OR_CODEX"
+    physical_action: false
+    status: "COMPLETE_SOFTWARE"
+    depends_on: ["S2-MINIMUM-REGRESSION-PLAN"]
+    evidence_records: []
+    software_evidence:
+      - "docs/R2_2_GNC_ONLY_BENCH_ISOLATION.md"
+      - "flight_computer/platformio.ini"
+      - "flight_computer/src/main.cpp"
+      - "flight_computer/src/command_processor.cpp"
+      - "flight_computer/test/test_kalman.cpp"
+      - "flight_computer/test/gnc_only_bench_cases.h"
+    required_outputs:
+      - "Explicit opt-in GNC-only build target; default historical firmware target is unchanged."
+      - "Recovery servo is not attached or written, recovery FSM transitions are not run, and deploy_chute is rejected as recovery_disabled."
+      - "TVC attitude/manual-servo path, sensor validity, E-STOP and RESET remain covered by native fake-boundary tests."
+    exit_criteria:
+      - "Profile and native tests pass without hardware, upload, power or actuator connection."
+      - "Recovery qualification remains BLOCKED; this profile earns TESTED_SOFTWARE only."
+    evidence_ceiling: "TESTED_SOFTWARE"
+
   - stage_id: "S2A-UNPOWERED-BOARD-OBSERVATION"
     owner: "HUMAN_EXECUTION_WITH_CODEX_GUIDANCE"
     physical_action: true

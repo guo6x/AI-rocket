@@ -3,6 +3,10 @@
 
 #include <stddef.h>
 
+#ifndef AI_ROCKET_GNC_ONLY_BENCH
+#define AI_ROCKET_GNC_ONLY_BENCH 0
+#endif
+
 enum CommandControlState {
     COMMAND_IDLE,
     COMMAND_ARMED,
@@ -17,7 +21,8 @@ enum CommandResultCode {
     COMMAND_NACK_OUT_OF_RANGE,
     COMMAND_NACK_ESTOP_LATCHED,
     COMMAND_NACK_UNKNOWN,
-    COMMAND_NACK_SENSOR_INVALID
+    COMMAND_NACK_SENSOR_INVALID,
+    COMMAND_NACK_RECOVERY_DISABLED
 };
 
 enum CommandAction {

@@ -96,11 +96,16 @@ CommandDecision CommandProcessor::process(const char* line, bool recovery_deploy
     }
 
     if (strcmp(command, "deploy_chute") == 0) {
+#if AI_ROCKET_GNC_ONLY_BENCH
+            return decision(COMMAND_NACK_RECOVERY_DISABLED, ACTION_NONE,
+                            "deploy_chute", state_);
+#else
         if (state_ == COMMAND_ESTOP_LATCHED || state_ == COMMAND_ARMED ||
             state_ == COMMAND_AUTO_ENABLED) {
             return decision(COMMAND_ACK, ACTION_DEPLOY_CHUTE, "deploy_chute", state_);
         }
         return decision(COMMAND_NACK_INVALID_STATE, ACTION_NONE, "deploy_chute", state_);
+#endif
     }
 
     if (strcmp(command, "arm") == 0) {
@@ -225,6 +230,7 @@ const char* CommandProcessor::resultText(CommandResultCode result) {
         case COMMAND_NACK_ESTOP_LATCHED: return "estop_latched";
         case COMMAND_NACK_UNKNOWN: return "unknown_command";
         case COMMAND_NACK_SENSOR_INVALID: return "sensor_invalid";
+        case COMMAND_NACK_RECOVERY_DISABLED: return "recovery_disabled";
     }
     return "unknown_command";
 }

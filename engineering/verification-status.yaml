@@ -27,6 +27,14 @@ verification_items:
     evidence: "43 tests passed for Kalman, production FSM, canonical command processor, sensor identity/configuration/read validity, production-main fake-bus/control gating, recovery-deployed AUTO inhibition, E-STOP/reset, malformed/range/NUL handling, and isolated buffers."
     limitations: "No Arduino peripherals, sensors, or physical servos are exercised."
 
+  - id: "gnc_only_bench_native_tests"
+    verification_type: "software_test"
+    classification: "TESTED_SOFTWARE"
+    result: "PASS"
+    command: "platformio test -d flight_computer -e native_gnc_only_bench"
+    evidence: "4 tests passed with fake sensors, serial transports and Servo objects: valid manual/automatic TVC intent, recovery command rejection, invalid-sensor neutralization and command rejection, and ESTOP/RESET/re-arm while the recovery FSM/output remains idle."
+    limitations: "Captures software write intent only; no physical sensor, servo, wiring, power, timing or recovery behavior is established."
+
   - id: "esp_relay_native_tests"
     verification_type: "software_test"
     classification: "TESTED_SOFTWARE"
@@ -40,7 +48,7 @@ verification_items:
     classification: "TESTED_SOFTWARE"
     result: "PASS"
     command: "platformio run -d flight_computer -e bluepill_f103c8"
-    evidence: "Final frozen-source build passes: flash 55,136/65,536 bytes (84.1%); RAM 3,060/20,480 bytes (14.9%). Binary SHA-256: 58b830790b16c51303a984de30b9636fafbfe07cbb3aac6c73831641f84c65d4."
+    evidence: "Final frozen-source build passes: flash 55,160/65,536 bytes (84.2%); RAM 3,060/20,480 bytes (14.9%). Binary SHA-256: 33b76d83ec1a01e578bf73d5f80d821a997adfc4743e7463bbfea341d2c8a7a7."
     limitations: "Build success does not prove flashing, boot, timing, wiring, or sensor operation."
 
   - id: "esp8266_source_build"
@@ -56,8 +64,16 @@ verification_items:
     classification: "TESTED_SOFTWARE"
     result: "PASS"
     command: "platformio run -d flight_computer -e apm32f103c8_compat"
-    evidence: "Final frozen-source compatibility build passes: flash 55,136/65,536 bytes (84.1%); RAM 3,060/20,480 bytes (14.9%). Binary SHA-256 matches bluepill build: 58b830790b16c51303a984de30b9636fafbfe07cbb3aac6c73831641f84c65d4."
+    evidence: "Final frozen-source compatibility build passes: flash 55,160/65,536 bytes (84.2%); RAM 3,060/20,480 bytes (14.9%). Binary SHA-256 matches bluepill build: 33b76d83ec1a01e578bf73d5f80d821a997adfc4743e7463bbfea341d2c8a7a7."
     limitations: "This is an opt-in STM32-core compatibility alias; no APM32 board was flashed, detected or run."
+
+  - id: "gnc_only_bench_source_build"
+    verification_type: "software_test"
+    classification: "TESTED_SOFTWARE"
+    result: "PASS"
+    command: "platformio run -d flight_computer -e gnc_only_bench"
+    evidence: "Opt-in recovery-isolated source build passes: flash 54,592/65,536 bytes (83.3%); RAM 3,060/20,480 bytes (14.9%). Binary SHA-256: 949729337011951a70d38b6d58b79ec4bad71cbbfb1b958d38ae6585fc1fa35b."
+    limitations: "The compile-time profile is not flashed or powered; build success does not prove TVC motion, sensor accuracy, or physical recovery isolation."
 
   - id: "esp01s_source_build"
     verification_type: "software_test"
@@ -96,7 +112,7 @@ verification_items:
     classification: "TESTED_SOFTWARE"
     result: "PASS"
     command: "python -m pytest scripts/tests -q"
-    evidence: "125 tests passed: retained R2 checks plus 116 R2.1 deterministic checker tests."
+    evidence: "134 tests passed: retained R2 checks plus the R2.1 deterministic checker and recovery-configuration-audit scenarios."
     limitations: "Fixtures and mutation tests do not create physical evidence."
 
   - id: "research_offline_regressions"

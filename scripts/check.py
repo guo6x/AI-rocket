@@ -89,9 +89,11 @@ def main() -> int:
         ("Ground station tests", [sys.executable, "-m", "pytest", "ground_station/tests", "-q"]),
         ("Simulation smoke", [sys.executable, "scripts/simulation_smoke.py"]),
         ("Flight core native tests", [platformio, "test", "-d", "flight_computer", "-e", "native"]),
+        ("GNC-only bench native tests", [platformio, "test", "-d", "flight_computer", "-e", "native_gnc_only_bench"]),
         ("ESP relay native tests", [platformio, "test", "-d", "esp8266_firmware", "-e", "native"]),
         ("STM32 source build", [platformio, "run", "-d", "flight_computer", "-e", "bluepill_f103c8"]),
         ("APM32 experimental compatibility build", [platformio, "run", "-d", "flight_computer", "-e", "apm32f103c8_compat"]),
+        ("GNC-only bench source build", [platformio, "run", "-d", "flight_computer", "-e", "gnc_only_bench"]),
         ("ESP8266 source build", [platformio, "run", "-d", "esp8266_firmware", "-e", "nodemcuv2"]),
         ("ESP-01S source build", [platformio, "run", "-d", "esp8266_firmware", "-e", "esp01_1m"]),
         (

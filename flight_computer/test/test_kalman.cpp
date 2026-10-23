@@ -1,3 +1,22 @@
+#ifndef AI_ROCKET_GNC_ONLY_BENCH
+#define AI_ROCKET_GNC_ONLY_BENCH 0
+#endif
+
+#if AI_ROCKET_GNC_ONLY_BENCH
+
+#include "gnc_only_bench_cases.h"
+
+int main(int argc, char **argv) {
+    UNITY_BEGIN();
+    RUN_TEST(test_gnc_only_valid_sensor_keeps_tvc_and_no_recovery_output);
+    RUN_TEST(test_gnc_only_deploy_command_is_rejected_without_recovery_state_or_output);
+    RUN_TEST(test_gnc_only_sensor_fault_neutralizes_tvc_and_rejects_control);
+    RUN_TEST(test_gnc_only_estop_reset_rearms_tvc_without_recovery_fsm);
+    return UNITY_END();
+}
+
+#else
+
 #include <unity.h>
 #include "../src/algorithms/kalman.h"
 #include "../src/algorithms/kalman.cpp" // 直接包含以方便 native 编译，或者在 platformio.ini 中配置
@@ -305,6 +324,8 @@ void test_ack_nack_reason_vocabulary() {
                              CommandProcessor::resultText(COMMAND_NACK_ESTOP_LATCHED));
     TEST_ASSERT_EQUAL_STRING("unknown_command",
                              CommandProcessor::resultText(COMMAND_NACK_UNKNOWN));
+    TEST_ASSERT_EQUAL_STRING("recovery_disabled",
+                             CommandProcessor::resultText(COMMAND_NACK_RECOVERY_DISABLED));
 }
 
 void test_line_buffer_to_canonical_processor_end_to_end() {
@@ -368,3 +389,5 @@ int main(int argc, char **argv) {
     RUN_TEST(test_actual_loop_failed_init_never_reads_or_moves_with_control_commands);
     return UNITY_END();
 }
+
+#endif

@@ -16,6 +16,10 @@
 #include "sensor_validity.h"
 #include "wire_sensor_bus.h"
 
+#ifndef AI_ROCKET_GNC_ONLY_BENCH
+#define AI_ROCKET_GNC_ONLY_BENCH 0
+#endif
+
 // ========== 硬件串口显式注册 ==========
 HardwareSerial Serial2(USART2);
 
@@ -97,7 +101,9 @@ void applyCommandDecision(const CommandDecision& decision) {
 
   switch (decision.action) {
     case ACTION_ARM:
+#if !AI_ROCKET_GNC_ONLY_BENCH
       fsm.arm(sensorSample.altitude_m, millis());
+#endif
       break;
     case ACTION_AUTO_ON:
       auto_mode = true;
@@ -132,6 +138,7 @@ void applyCommandDecision(const CommandDecision& decision) {
       fsm.disarm();
       break;
     case ACTION_DEPLOY_CHUTE: {
+#if !AI_ROCKET_GNC_ONLY_BENCH
       const bool was_deployed = fsm.isChuteDeployed();
       fsm.deployChute("GROUND_CMD");
       if (!was_deployed && fsm.isChuteDeployed()) {
@@ -140,6 +147,7 @@ void applyCommandDecision(const CommandDecision& decision) {
         commandProcessor.disableAutoForSafety();
         neutralizeTvc();
       }
+#endif
       break;
     }
     case ACTION_PROFILE_FLIGHT:
@@ -209,9 +217,13 @@ void setup() {
   servoRoll.write(90);
   Serial.println("[SERVO] Pitch(PA6) + Roll(PA7) attached. Centered at 90.");
 
-  servoRecovery.attach(SERVO_RECOVERY_PIN);
-  servoRecovery.write(90);
-  Serial.println("[SERVO] Recovery(PB0) attached. Locked at 90.");
+#if !AI_ROCKET_GNC_ONLY_BENCH
+    servoRecovery.attach(SERVO_RECOVERY_PIN);
+    servoRecovery.write(90);
+    Serial.println("[SERVO] Recovery(PB0) attached. Locked at 90.");
+#else
+    Serial.println("[SERVO] Recovery output disabled (GNC-only bench profile).");
+#endif
 
   lastTime = micros();
   delay(500);
@@ -255,16 +267,18 @@ void loop() {
   float roll_flt = kfRoll.update(roll_raw, gx, dt);
   float yaw = gz;
 
-  bool was_chute_deployed = fsm.isChuteDeployed();
-  fsm.update(az, altitude, millis());
+#if !AI_ROCKET_GNC_ONLY_BENCH
+    bool was_chute_deployed = fsm.isChuteDeployed();
+    fsm.update(az, altitude, millis());
 
-  if (!was_chute_deployed && fsm.isChuteDeployed()) {
-    servoRecovery.write(0);
-    auto_mode = false;
-    commandProcessor.disableAutoForSafety();
-    neutralizeTvc();
-    Serial.println("[RECOV] !!! CHUTE DEPLOYED !!!");
-  }
+    if (!was_chute_deployed && fsm.isChuteDeployed()) {
+      servoRecovery.write(0);
+      auto_mode = false;
+      commandProcessor.disableAutoForSafety();
+      neutralizeTvc();
+      Serial.println("[RECOV] !!! CHUTE DEPLOYED !!!");
+    }
+#endif
 
   if (auto_mode && !fsm.isChuteDeployed()) {
     int servo_p = constrain(90 + (int)pidPitch.compute(pitch_flt, dt), 0, 180);

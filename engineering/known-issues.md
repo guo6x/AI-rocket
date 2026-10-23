@@ -195,3 +195,9 @@ Initial findings used public comparison anchor `b6006c9`; later R0/R1 closures a
 - R2.1 decision: preserve existing scale and FSM thresholds; do not silently retune or broaden this GNC/avionics compatibility task into recovery control redesign. Sensor invalidity is prevented from triggering the FSM.
 - Remaining closure: a separate configuration/control-contract decision and corresponding tests before any future recovery qualification. No physical recovery action is requested.
 - R2.1 offline follow-up: `scripts/recovery_configuration_audit.py` now reads the production ACCEL_CONFIG register, `az` count-to-g divisor, strict launch threshold, and comparator. It prints an explicit known-blocker status and never grants recovery qualification. Use `--json` to inspect; `--strict` exits nonzero when mathematically blocked. Test coverage: `scripts/tests/test_recovery_configuration_audit.py`. This is read-only static analysis, not a hardware test.
+
+### R2_2-001 — GNC-only bench isolation is software-only
+
+- Status: `TESTED_SOFTWARE`; recovery qualification remains `BLOCKED`.
+- Evidence: opt-in `gnc_only_bench` and `native_gnc_only_bench` targets; profile omits recovery-servo attach/write, leaves the recovery FSM unarmed/unupdated, and returns `NACK recovery_disabled` for `deploy_chute`. Native fake-sensor/fake-servo tests preserve TVC manual/automatic control while covering invalid sensors, E-STOP/RESET and attempted deployment.
+- Boundary: this profile cannot produce recovery-output intent, but it does not prove physical TVC direction, load, neutral timing, sensor accuracy, or recovery behavior. The default historical firmware profile remains unchanged.
