@@ -33,6 +33,7 @@ class MainWindow(QMainWindow):
         self.last_rx_monotonic = None
         self.command_tracker = CommandTracker(timeout_seconds=1.5)
         self.parser = TelemetryParser()
+        self.sensor_fault_active = False
 
         import os
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -113,6 +114,11 @@ class MainWindow(QMainWindow):
 
         # ========== 2. 仪表盘 ==========
         self.dashboard = DashboardWidget()
+        # Sensor validity is independent of transport activity / command ACKs.
+        self.sensor_status_label = QLabel()
+        self.sensor_status_label.setTextFormat(Qt.PlainText)
+        self.sensor_status_label.setWordWrap(True)
+        self.sensor_status_label.setFont(font)
 
         # ========== 3. 图表（Tab 切换） ==========
         from ui.plot_widget import RealtimePlotWidget
@@ -155,9 +161,56 @@ class MainWindow(QMainWindow):
 
         # ========== 组装主布局 ==========
         main_layout.addLayout(control_layout)
+        main_layout.addWidget(self.sensor_status_label)
         main_layout.addWidget(self.dashboard)
         main_layout.addWidget(self.tab_widget, stretch=2)
         main_layout.addLayout(bottom_layout, stretch=1)
+        self.set_sensor_visual_state("SENSOR: unavailable — no telemetry", False)
+
+    def set_sensor_visual_state(self, message, available, *, legacy=False):
+        """Freeze old visuals explicitly; never synthesize a zero sensor sample."""
+        self.sensor_status_label.setText(message)
+        color = "#ff9800" if legacy else ("#4caf50" if available else "#f44336")
+        self.sensor_status_label.setStyleSheet(
+            f"color: {color}; background-color: #242424; padding: 6px;"
+        )
+        self.dashboard.setEnabled(available)
+        self.tab_widget.setEnabled(available)
+        self.dashboard.setToolTip(message)
+        self.tab_widget.setToolTip(message)
+
+    def sensor_telemetry_available(self, parsed):
+        if "sensor_valid" not in parsed:
+            # Legacy compatibility cannot erase a newly reported current fault.
+            if self.sensor_fault_active:
+                return False
+            self.set_sensor_visual_state(
+                "SENSOR: legacy telemetry — sensor validity unverified", True,
+                legacy=True,
+            )
+            return True
+
+        flag = parsed["sensor_valid"]
+        if flag is True or (type(flag) is int and flag == 1):
+            self.sensor_fault_active = False
+            self.set_sensor_visual_state(
+                "SENSOR: valid sample reported — no control authority granted", True
+            )
+            return True
+
+        self.sensor_fault_active = True
+        if flag is False or (type(flag) is int and flag == 0):
+            reason = parsed.get("sensor_fault")
+            if not isinstance(reason, str) or not reason.strip():
+                reason = "unspecified sensor fault"
+            reason = reason.strip().replace("\n", " ")[:200]
+        else:
+            reason = "invalid sensor_valid flag"
+        self.set_sensor_visual_state(
+            f"SENSOR FAULT — {reason}; telemetry unavailable; last visuals frozen (not current)",
+            False,
+        )
+        return False
 
     # ---- 模式切换 ----
     def on_mode_changed(self, index):
@@ -234,6 +287,8 @@ class MainWindow(QMainWindow):
         self.data_thread.start()
         self.command_tracker.clear()
         self.last_rx_monotonic = None
+        self.sensor_fault_active = False
+        self.set_sensor_visual_state("SENSOR: unavailable — waiting for telemetry", False)
 
         self.connect_btn.setText("⛔ 断开")
         self.connect_btn.setStyleSheet("background-color: #f44336; color: white;")
@@ -258,6 +313,8 @@ class MainWindow(QMainWindow):
         self.last_fstate = None
         self.plot_panel.clear()
         self.comparison_panel.clear()
+        self.sensor_fault_active = False
+        self.set_sensor_visual_state("SENSOR: unavailable — disconnected", False)
 
         self.connect_btn.setText("🔌 连接")
         self.connect_btn.setStyleSheet("")
@@ -294,6 +351,12 @@ class MainWindow(QMainWindow):
 
         for parsed in parsed_list:
             if parsed:
+                # Preserve both evidence streams even when numeric display is
+                # unavailable. Sensor-fault frames must never become default
+                # altitude/attitude zeroes in dashboards, plots or the 3D view.
+                self.data_logger.log(parsed)
+                if not self.sensor_telemetry_available(parsed):
+                    continue
                 self.dashboard.update_indicators(parsed)
 
                 # 飞行阶段变化回显 (彩色高亮)
@@ -329,9 +392,6 @@ class MainWindow(QMainWindow):
                         self.view3d_panel.update_attitude(roll, pitch, yaw)
                     except Exception:
                         pass
-
-                # Log structured data as well
-                self.data_logger.log(parsed)
 
         # Always log raw data
         self.data_logger.log(data)

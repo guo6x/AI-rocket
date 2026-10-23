@@ -23,9 +23,9 @@ lines:
     status: "HISTORICALLY_DEMONSTRATED_REBASELINE_REQUIRED"
     next_gate: "CURRENT_HARDWARE_REBASELINE"
     blockers:
-      - "APM32F103C8T6 versus current STM32F103C8T6 firmware/toolchain compatibility not yet proven on hardware."
+      - "APM32 subset/toolchain audit and experimental compatibility build are software evidence only; exact board identity, clock and current runtime remain hardware-gated. Historical domestic-compatible flash support is preserved."
       - "GY-91 physical pinout/orientation and actual populated sensor identity not yet inspected."
-      - "Historical cloud records report successful flash, sensor reads, servo PWM, WiFi command-to-servo behavior, and attitude-driven stabilization, but the old run lacks a current immutable/repeatable evidence bundle tied to the present firmware/configuration."
+      - "Historical flash, sensor, PWM and stabilization reports are preserved. Only changed/uncertain current behavior needs minimal regression; absent old raw logs alone do not require repeating it. WiFi uplink has a historical implementation/configuration gap."
     allowed_next_work:
       - "Recover and classify historical hardware evidence"
       - "Audit current firmware against the historically working hardware configuration"
@@ -51,7 +51,7 @@ lines:
     status: "HISTORICALLY_DEMONSTRATED_REBASELINE_REQUIRED"
     next_gate: "CURRENT_AVIONICS_REBASELINE"
     blockers:
-      - "Historical cloud records report ESP8266-01S UDP telemetry/command operation, while the current PlatformIO environment still names NodeMCU-v2; reconcile the historically working configuration with the current build target."
+      - "ESP-01S-specific 1 MB build is software-only. Historical prose claims command-to-servo but initial ESP source lacks UDP reception; validate today's R1 ACK/NACK route without inventing missing historical code."
       - "No accepted bench power architecture exists."
       - "ESP32-S3 role is intentionally undecided."
     allowed_next_work:
@@ -157,7 +157,7 @@ priority_order:
   - "SYSTEM_INTEGRATION"
 
 near_term_decision:
-  recommendation: "Start with GNC + Avionics hardware bring-up planning before TVC CAD."
+  recommendation: "Recover GNC/Avionics history, close software deltas, then obtain only the minimum current-configuration observation before TVC CAD."
   rationale:
     - "The required low-cost electronics and debug tools are already owned."
     - "It directly tests whether R0/R1 software assumptions survive contact with actual boards."

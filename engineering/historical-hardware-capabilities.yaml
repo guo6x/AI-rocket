@@ -1,5 +1,7 @@
 schema_version: 1
 registry_id: "AA-HIST-HW-CAP-001"
+delta_audit: "docs/R2_1_HISTORICAL_TO_CURRENT_DELTA_AUDIT.md"
+audit_input_commit: "e9510e61b6de518b272ea6fdb8433bbab4c501c5"
 project: "Project Ad Astra / AI-rocket"
 purpose: >-
   Preserve historically demonstrated hardware capabilities without promoting them
@@ -25,7 +27,7 @@ capabilities:
       - "flight_computer/src/main.cpp"
     current_status: "CURRENT_REBASELINE_REQUIRED"
     delta_reasons:
-      - "Purchased controller record is APM32F103C8T6 rather than the historical Blue Pill identity."
+      - "Historical Blue Pill naming is not exact chip identity: b6006c9 already includes CPUTAPID 0x2ba01477 explicitly for a domestic-compatible chip; recover the APM32 board mapping rather than treating it as never flashed."
       - "Current firmware has materially changed since the historical hardware run."
 
   - capability_id: "HWCAP-GY91-I2C-001"
@@ -40,8 +42,8 @@ capabilities:
       - "flight_computer/src/main.cpp"
     current_status: "CURRENT_REBASELINE_REQUIRED"
     delta_reasons:
-      - "Purchase record identifies GY-91 order variant as MPU9250 + BMP280, while current source labels the inertial path MPU6500."
-      - "Current source does not robustly verify IMU identity or I2C read validity."
+      - "Purchase record identifies GY-91 order variant as MPU9250 + BMP280; input e9510e61 used a fixed MPU6500-style path. R2.1 now explicitly checks supported MPU6500/MPU9250 identities; populated silicon remains unobserved."
+      - "R2.1 adds checked identity/configuration/read validity and a latched sensor-fault control boundary; these changes are TESTED_SOFTWARE only until the present sensor configuration is observed."
 
   - capability_id: "HWCAP-SERVO-DUAL-001"
     capability: "two SG92R TVC servos physically driven"
@@ -70,8 +72,8 @@ capabilities:
       - "flight_computer/src/main.cpp: pitch/roll -> Kalman -> PID.compute() -> servo.write() when auto_mode"
     current_status: "CURRENT_REBASELINE_REQUIRED"
     delta_reasons:
-      - "PID profile values and timing assumptions have changed/conflicted across history."
-      - "Sensor identity/validity needs correction before present closed-loop regression."
+      - "Public PID source is unchanged from b6006c9, but historical prose conflicts with its values; the exact tested binary and timing remain unknown. R2.1 does not tune PID."
+      - "R2.1 closes the sensor identity/validity software gap; present hardware identity, sample/fault behavior and restrained control response still require targeted evidence before current closed-loop qualification."
       - "R1 command-safety behavior must be preserved during any regression."
     note: "Do not interpret this historical result as current PID qualification."
 
@@ -89,7 +91,7 @@ capabilities:
     current_status: "CURRENT_REBASELINE_REQUIRED"
     delta_reasons:
       - "The initial published ESP8266 source at b6006c9 only relays STM32 UART telemetry to UDP and contains no UDP-command receive path, while historical verification prose reports WiFi command uplink to physical servo. This is a historical source/configuration contradiction that must be recovered rather than silently resolved."
-      - "Both the initial and current PlatformIO environments name nodemcuv2 rather than the purchased ESP-01S form factor."
+      - "The initial snapshot and input e9510e61 only offered nodemcuv2. R2.1 adds and builds esp01_1m while retaining NodeMCU; actual flash population, boot and the current R1 physical return path remain unverified."
       - "R1 later added the governed UDP-to-UART command path and ACK/NACK behavior."
 
   - capability_id: "HWCAP-GROUNDSTATION-001"

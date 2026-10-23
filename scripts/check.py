@@ -1,4 +1,4 @@
-"""Unified R0/R1 software regression and R2 baseline-structure check."""
+"""Unified R0/R1/R2/R2.1 software gates; never uploads or touches hardware."""
 
 from __future__ import annotations
 
@@ -62,6 +62,7 @@ def main() -> int:
         print("R0 SOFTWARE CHECK: FAIL")
         print("R1 COMMAND SAFETY CHECK: FAIL")
         print("R2 PHYSICAL BASELINE STRUCTURE CHECK: FAIL")
+        print("R2.1 COMPATIBILITY STRUCTURE CHECK: FAIL")
         return 1
     add_platformio_mingw_to_path(env, platformio)
 
@@ -83,21 +84,31 @@ def main() -> int:
         ("Engineering YAML", [sys.executable, "-c", (
             "import pathlib,yaml; "
             "[yaml.safe_load(p.read_text(encoding='utf-8')) "
-            "for p in pathlib.Path('engineering').glob('*.yaml')]"
+            "for p in sorted(pathlib.Path('engineering').rglob('*.yaml'))]"
         )]),
         ("Ground station tests", [sys.executable, "-m", "pytest", "ground_station/tests", "-q"]),
         ("Simulation smoke", [sys.executable, "scripts/simulation_smoke.py"]),
         ("Flight core native tests", [platformio, "test", "-d", "flight_computer", "-e", "native"]),
         ("ESP relay native tests", [platformio, "test", "-d", "esp8266_firmware", "-e", "native"]),
         ("STM32 source build", [platformio, "run", "-d", "flight_computer", "-e", "bluepill_f103c8"]),
+        ("APM32 experimental compatibility build", [platformio, "run", "-d", "flight_computer", "-e", "apm32f103c8_compat"]),
         ("ESP8266 source build", [platformio, "run", "-d", "esp8266_firmware", "-e", "nodemcuv2"]),
+        ("ESP-01S source build", [platformio, "run", "-d", "esp8266_firmware", "-e", "esp01_1m"]),
         (
             "R2 physical baseline structure",
             [sys.executable, "scripts/r2_physical_baseline_check.py"],
         ),
         (
-            "R2 gate behavior tests",
-            [sys.executable, "-m", "pytest", "scripts/tests/test_r2_physical_baseline_check.py", "-q"],
+            "R2.1 ownership and dependency structure",
+            [sys.executable, "scripts/r2_1_check.py"],
+        ),
+        (
+            "R2 and R2.1 deterministic gate tests",
+            [sys.executable, "-m", "pytest", "scripts/tests", "-q"],
+        ),
+        (
+            "Preserved research offline regressions",
+            [sys.executable, "-m", "pytest", "docs/aerospace-knowledge/examples", "-q"],
         ),
     ]
 
@@ -106,6 +117,7 @@ def main() -> int:
     print("\nHardware checks: MANUAL / HARDWARE-GATED (not part of this exit code)")
     print(f"R0 SOFTWARE CHECK: {'PASS' if passed else 'FAIL'}")
     print(f"R1 COMMAND SAFETY CHECK: {'PASS' if passed else 'FAIL'}")
+    print(f"R2.1 SOFTWARE REGRESSION CHECK: {'PASS' if passed else 'FAIL'}")
     return 0 if passed else 1
 
 

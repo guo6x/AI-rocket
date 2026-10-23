@@ -21,7 +21,7 @@ assets:
     verification: "PURCHASE_CONFIRMED"
     candidate_lines: [GNC, AVIONICS]
     assignment: "CANDIDATE"
-    notes: "Important mismatch with repository STM32F103C8T6 target; requires compatibility and hardware bring-up audit before treating firmware build as hardware proof."
+    notes: "Historical b6006c9 already has a domestic-compatible TAP-ID override. R2.1 provides an explicit experimental BluePill-core compatibility environment, not native APM32 support; exact board mapping/runtime remains hardware-gated. See docs/R2_1_APM32_COMPATIBILITY_MATRIX.md."
 
   - asset_id: "AST-MCU-ESP32S3-001"
     category: "high_performance_mcu"
@@ -43,7 +43,7 @@ assets:
     verification: "PURCHASE_CONFIRMED"
     candidate_lines: [AVIONICS, COMMUNICATIONS]
     assignment: "CANDIDATE"
-    notes: "Important form-factor mismatch with the repository NodeMCU-v2 build target; requires target/flash/pin audit."
+    notes: "R2.1 adds a separate 1 MB esp01_1m software target and retains historical NodeMCU-v2. Build does not establish actual flash population, boot, power or R1 bidirectional link operation."
 
   - asset_id: "AST-SENSOR-GY91-001"
     category: "imu_barometer_module"

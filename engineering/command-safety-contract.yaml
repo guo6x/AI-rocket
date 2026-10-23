@@ -1,5 +1,6 @@
 schema_version: 1
 contract: "Ad Astra R1 governed plaintext command link"
+sensor_delta: "R2.1: checked current sensor validity gates ARM, AUTO_ON and SET_SERVO."
 baseline_commit: "d40585f77e1b73d270dd9972823a5939cbfcd81a"
 evidence_classification: "TESTED_SOFTWARE when all R1 gates pass; never VERIFIED_HARDWARE"
 
@@ -20,6 +21,7 @@ protocol:
       - estop_latched
       - unknown_command
       - overlong
+      - sensor_invalid
   acknowledgement_limit: >-
     ACK means only that the STM32 command processor accepted the command. It does
     not prove actuator motion, recovery deployment, hardware operation, or safety.
@@ -38,8 +40,11 @@ state_model:
     timeout: "No matching ACK/NACK arrived before the software timeout."
   degraded_states:
     degraded_sensor: >-
-      Reserved for explicit sensor-health gating. R1 records the need but does not
-      invent sensor validity that production firmware does not yet provide.
+      R2.1 validates physical sensor identity, configuration and current reads
+      before command dispatch. Failure latches until reboot, disables AUTO,
+      resets PID history and selects neutral TVC; invalid data never enters
+      Kalman/PID/FSM. RESET does not clear this sensor latch. Software evidence
+      does not establish physical neutralization or sensor accuracy.
     degraded_command: >-
       An overlong, malformed, or truncated line is discarded and produces no
       actuator action; a valid subsequent line starts from a clean boundary.
@@ -52,6 +57,9 @@ safety_invariants:
   - "RESET never restores a retained automatic or manual actuator command."
   - "ARM and AUTO_ON after RESET require new explicit commands."
   - "RESET does not claim that a physical recovery mechanism was reloaded."
+  - "ARM, AUTO_ON and SET_SERVO require checked current sensor validity on both transports; rejection is NACK sensor_invalid."
+  - "A sensor fault cannot be cleared by ESTOP/RESET or a later successful-looking sample."
+  - "ESTOP/RESET and explicit emergency deployment semantics remain available; sensor failure never fabricates automatic recovery data."
   - "Malformed, duplicate, truncated, or overlong input cannot partially mutate actuator state."
   - "UDP send success is SENT, not ACKNOWLEDGED."
   - "A UDP ACK/NACK resolves a pending command only when its source IP and port match the explicitly configured ESP command target."
@@ -63,7 +71,8 @@ commands:
     rejected_from: [boot, armed, auto_control_enabled, estop_latched]
     state_effect: "idle -> armed"
     actuator_effect: "TVC remains neutral; recovery software FSM receives arm request only if not already deployed."
-    acknowledgement: "ACK arm after acceptance; otherwise NACK invalid_state or estop_latched."
+    additional_precondition: "Current sensor validity required; no latched sensor fault."
+    acknowledgement: "ACK arm after acceptance; otherwise NACK invalid_state, estop_latched or sensor_invalid."
     idempotency: "A duplicate after the first accepted arm is rejected as invalid_state."
     safety_relevance: "high"
     confirmation: "No UI confirmation; firmware state enforcement is authoritative."
@@ -74,7 +83,7 @@ commands:
     syntax: "auto_on"
     allowed_from: [armed]
     rejected_from: [boot, idle, auto_control_enabled, estop_latched]
-    additional_precondition: "Recovery must not be deployed."
+    additional_precondition: "Recovery must not be deployed; checked current sensors and no latched sensor fault."
     state_effect: "armed -> auto_control_enabled"
     actuator_effect: "Reset PID history, then permit automatic TVC output on subsequent control cycles."
     acknowledgement: "ACK auto_on only after the state transition is accepted; NACK invalid_state if recovery is deployed."
@@ -104,6 +113,7 @@ commands:
     rejected_from: [boot, idle, auto_control_enabled, estop_latched]
     state_effect: "none"
     actuator_effect: "Set both manual TVC servo targets atomically."
+    additional_precondition: "Checked current sensors and no latched sensor fault."
     acknowledgement: "ACK set_servo after both values parse and pass range checks."
     idempotency: "Duplicate values are accepted and have the same target."
     safety_relevance: "high"

@@ -17,6 +17,8 @@ This directory is the current engineering-status entry point for Project Ad Astr
 11. `aeroforge-intake/` — staged TVC concept/design-review handoff.
 12. `command-safety-contract.yaml` — R1 canonical command states, actions, ACK/NACK, and link-loss rules.
 13. `../docs/R2_1_REAL_ASSET_MULTI_BENCH_ARCHITECTURE.md` — current project-level development model.
+14. `historical-hardware-capabilities.yaml` and `../docs/R2_1_HISTORICAL_TO_CURRENT_DELTA_AUDIT.md` — preserved historical capability and the seven-field current delta audit, not a request to repeat every experiment.
+15. `../docs/R2_1_COMPATIBILITY_CLOSURE_REPORT.md` — current software/target closure, remaining hardware boundaries and the single-action handoff.
 
 ## Status vocabulary
 
@@ -39,7 +41,17 @@ For current project status, use this directory first. For implementation behavio
 
 ## Current answer in one paragraph
 
-The repository contains an implemented flight-control code path, governed plaintext command processor, software-tested ESP command relay, staged R2 mechanical intake, and substantial simulation/research assets. R2.1 now records the project's real owned hardware/tool base and treats Ad Astra as multiple experimental lines that mature independently before system integration. The strongest near-term physical opportunity is GNC/avionics bench bring-up because the project already owns a controller board, GY-91, two SG92R servos, programmers/debuggers, and prototyping tools. Two critical compatibility gaps remain before hardware work: the purchased flight-controller board is APM32F103C8T6 rather than the repository's nominal STM32F103C8T6 target, and the purchased ESP8266 is ESP-01S rather than the current NodeMCU-v2-style build target. These are not hardware-proven until bench evidence exists.
+The repository preserves historical reports of controller flash/boot, GY-91
+sensing, two physical TVC servos, telemetry, ground-station interaction and
+attitude-driven stabilization. R2.1 is recovery and current re-baselining, not
+first-time bring-up. Current software adds checked sensor identity/read validity,
+an explicit experimental APM32 compatibility environment, an ESP-01S 1 MB target
+and deterministic ownership/stage checks. Historical WiFi command-to-servo prose
+conflicts with the initial telemetry-only ESP source: that remains an
+implementation/configuration gap, not invented missing code. Software gates do
+not establish current target runtime, sensor accuracy, servo response or R1
+end-to-end physical transport. Only changed/uncertain behavior needs bounded
+regression; absent old raw logs alone is not a reason to repeat the old bench.
 
 ## Software check
 
@@ -64,3 +76,16 @@ python scripts\check.py
 ```
 
 The existing R0/R1/R2 checks retain their original evidence ceilings. R2.1 adds a project-level ownership and multi-bench configuration layer; it must not silently upgrade any subsystem to `VERIFIED_HARDWARE`.
+
+Read-only R2.1 structure diagnostics are also available independently:
+
+```powershell
+python scripts\r2_1_check.py --json
+```
+
+`structure_status: PASS` is compatible with `hardware_status: NOT_EVALUATED`.
+Pending physical stages do not need invented evidence to pass software checks.
+READY/COMPLETED physical stages require satisfied dependencies and stage-bound,
+hash-checked records/raw artifacts confined to `engineering/evidence/records/`.
+Conditional stages may be omitted only with an explicit rationale; this does not
+create a hardware-verification claim.

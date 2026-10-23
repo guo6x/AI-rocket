@@ -1,5 +1,5 @@
 schema_version: 1
-audit_date: "2026-08-26"
+audit_date: "2026-10-23"
 software_baseline_command: "python scripts/check.py"
 hardware_policy: "Hardware-gated checks are reported separately and do not fail the software-only check."
 verification_items:
@@ -16,7 +16,7 @@ verification_items:
     classification: "TESTED_SOFTWARE"
     result: "PASS"
     command: "python -m pytest ground_station/tests -q"
-    evidence: "27 passed, including command tracking, target/source validation, wrong-source ACK/NACK rejection, MainWindow/UI status, simulated UDP ACK, and telemetry return."
+    evidence: "49 passed, including the retained R0/R1 command/link regressions plus R2.1 explicit sensor-validity UI, raw/structured logging, invalid-frame freeze and recovery behavior."
     limitations: "No physical serial or ESP8266 hardware is involved."
 
   - id: "flight_core_native_tests"
@@ -24,7 +24,7 @@ verification_items:
     classification: "TESTED_SOFTWARE"
     result: "PASS"
     command: "platformio test -d flight_computer -e native"
-    evidence: "21 tests passed for Kalman, production FSM, canonical command processor, recovery-deployed AUTO inhibition, E-STOP/reset, malformed/range/NUL handling, and isolated buffers."
+    evidence: "43 tests passed for Kalman, production FSM, canonical command processor, sensor identity/configuration/read validity, production-main fake-bus/control gating, recovery-deployed AUTO inhibition, E-STOP/reset, malformed/range/NUL handling, and isolated buffers."
     limitations: "No Arduino peripherals, sensors, or physical servos are exercised."
 
   - id: "esp_relay_native_tests"
@@ -40,7 +40,7 @@ verification_items:
     classification: "TESTED_SOFTWARE"
     result: "PASS"
     command: "platformio run -d flight_computer -e bluepill_f103c8"
-    evidence: "R1 review-corrected build passes: flash 58,764/65,536 bytes; RAM 3,172/20,480 bytes."
+    evidence: "Final frozen-source build passes: flash 55,136/65,536 bytes (84.1%); RAM 3,060/20,480 bytes (14.9%). Binary SHA-256: 58b830790b16c51303a984de30b9636fafbfe07cbb3aac6c73831641f84c65d4."
     limitations: "Build success does not prove flashing, boot, timing, wiring, or sensor operation."
 
   - id: "esp8266_source_build"
@@ -48,8 +48,24 @@ verification_items:
     classification: "TESTED_SOFTWARE"
     result: "PASS"
     command: "platformio run -d esp8266_firmware -e nodemcuv2"
-    evidence: "R1 build passes: flash 273,147/1,044,464 bytes; RAM 28,296/81,920 bytes."
+    evidence: "Final frozen-source NodeMCU build passes: flash 273,147/1,044,464 bytes; RAM 28,296/81,920 bytes. Binary SHA-256: 0b4e0a22405f2cfc4004ce8efd3a0d05845b0c4258a3f721060149003d8cae2a."
     limitations: "No WiFi association, packet delivery, range, or reconnect behavior is verified."
+
+  - id: "apm32_compat_source_build"
+    verification_type: "software_test"
+    classification: "TESTED_SOFTWARE"
+    result: "PASS"
+    command: "platformio run -d flight_computer -e apm32f103c8_compat"
+    evidence: "Final frozen-source compatibility build passes: flash 55,136/65,536 bytes (84.1%); RAM 3,060/20,480 bytes (14.9%). Binary SHA-256 matches bluepill build: 58b830790b16c51303a984de30b9636fafbfe07cbb3aac6c73831641f84c65d4."
+    limitations: "This is an opt-in STM32-core compatibility alias; no APM32 board was flashed, detected or run."
+
+  - id: "esp01s_source_build"
+    verification_type: "software_test"
+    classification: "TESTED_SOFTWARE"
+    result: "PASS"
+    command: "platformio run -d esp8266_firmware -e esp01_1m"
+    evidence: "Final build passes: flash 273,147/761,840 bytes (35.9% program region); RAM 28,296/81,920 bytes (34.5%). Binary SHA-256: e6a37fb554ef1420495cf9aa96a42c2bae0db307002237650f9a5a163ef9a209."
+    limitations: "Build used a pre-existing ignored local wifi_config.h; no WiFi association, flash, boot, UART or physical relay path was exercised."
 
   - id: "simulation_smoke"
     verification_type: "simulation"
@@ -66,6 +82,30 @@ verification_items:
     command: "python -m pytest ground_station/tests/test_wifi_link_contract.py -q"
     evidence: "Behavioral socket tests cover Ground Station unicast send, simulated ESP/STM ACK and telemetry return, and wrong-source ACK/NACK rejection before configured-source resolution; native component tests and both target builds also pass."
     limitations: "No physical ESP8266/STM32/UART/WiFi integration; source correlation is not authentication, and UDP remains unauthenticated without request IDs or replay protection."
+
+  - id: "r2_1_ownership_dependency_structure"
+    verification_type: "engineering_structure_check"
+    classification: "TESTED_SOFTWARE"
+    result: "PASS"
+    command: "python scripts/r2_1_check.py"
+    evidence: "Deterministic ownership, reference, dependency, evidence-confinement and physical/software boundary checks pass; hardware_status remains NOT_EVALUATED."
+    limitations: "Structure validity does not establish physical execution or current hardware identity."
+
+  - id: "r2_r2_1_script_tests"
+    verification_type: "software_test"
+    classification: "TESTED_SOFTWARE"
+    result: "PASS"
+    command: "python -m pytest scripts/tests -q"
+    evidence: "125 tests passed: retained R2 checks plus 116 R2.1 deterministic checker tests."
+    limitations: "Fixtures and mutation tests do not create physical evidence."
+
+  - id: "research_offline_regressions"
+    verification_type: "software_test"
+    classification: "TESTED_SOFTWARE"
+    result: "PASS"
+    command: "python -m pytest docs/aerospace-knowledge/examples -q"
+    evidence: "22 preserved research offline tests passed; historical evidence files were not modified."
+    limitations: "Offline research checks do not validate hardware or provider execution."
 
   - id: "imu_barometer_bench"
     verification_type: "bench_hardware_test"

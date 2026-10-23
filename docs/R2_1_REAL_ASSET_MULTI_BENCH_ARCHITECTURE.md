@@ -54,16 +54,19 @@ Purpose: state estimation, stabilization logic, controller behavior, and actuato
 
 This is the strongest near-term physical line because the project already owns the MCU, sensor, two servos, programmer, serial adapter, logic analyzer, multimeter, and prototyping hardware.
 
-The next meaningful gate is not new code. It is an APM32/GY-91/servo hardware bring-up plan and then controlled human execution.
+Historical flash, sensing, dual-servo and stabilization reports are recovered,
+not first-time bring-up. R2.1 closes current software compatibility/validity
+deltas first; the next physical observation is selected from that audit rather
+than asking for the whole historical bench again.
 
 ### AA-AVIONICS-BENCH-001
 
 Purpose: sensing, power, command, logging, communications, and fault/interface work.
 
-Two compatibility questions are intentionally open:
+Two runtime compatibility questions remain hardware-gated after software audit:
 
-1. Repository firmware targets STM32F103C8T6, while the purchased board is APM32F103C8T6.
-2. Repository ESP8266 build targets a NodeMCU-v2 style environment, while the purchased radio module is ESP-01S.
+1. APM32 uses an explicit experimental compatibility environment that retains the historical STM32 core/72 MHz/64 KiB/20 KiB assumptions; it is not a native APM32 port.
+2. ESP-01S now has a separate 1 MB `esp01_1m` environment while NodeMCU-v2 remains the historical development target; boot/power/current R1 transport are not hardware-proven.
 
 A source build is not hardware evidence for either mismatch.
 

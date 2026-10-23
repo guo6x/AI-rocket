@@ -1,5 +1,12 @@
 # R2.1 Historical Hardware Recovery Findings
 
+Follow-up: the per-capability seven-field delta audit was saved before
+production changes in `R2_1_HISTORICAL_TO_CURRENT_DELTA_AUDIT.md`. Current
+software closure and the sole next physical observation are recorded in
+`R2_1_COMPATIBILITY_CLOSURE_REPORT.md` and
+`R2_1_GNC_AVIONICS_HUMAN_HANDOFF.md`; the findings below remain historical
+recovery context rather than a request to repeat old experiments.
+
 ## Executive finding
 
 The project should not be treated as first-time hardware bring-up.

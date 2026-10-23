@@ -16,7 +16,8 @@ enum CommandResultCode {
     COMMAND_NACK_INVALID_STATE,
     COMMAND_NACK_OUT_OF_RANGE,
     COMMAND_NACK_ESTOP_LATCHED,
-    COMMAND_NACK_UNKNOWN
+    COMMAND_NACK_UNKNOWN,
+    COMMAND_NACK_SENSOR_INVALID
 };
 
 enum CommandAction {
@@ -52,8 +53,10 @@ class CommandProcessor {
 public:
     CommandProcessor();
 
-    CommandDecision process(const char* line, bool recovery_deployed = false,
-                            bool recovery_idle = true);
+    // Every caller must explicitly supply current safety context; no default
+    // healthy-sensor assumption is permitted at future call sites.
+    CommandDecision process(const char* line, bool recovery_deployed,
+                            bool recovery_idle, bool sensors_valid);
     CommandControlState state() const { return state_; }
     bool autoEnabled() const { return state_ == COMMAND_AUTO_ENABLED; }
     bool estopLatched() const { return state_ == COMMAND_ESTOP_LATCHED; }

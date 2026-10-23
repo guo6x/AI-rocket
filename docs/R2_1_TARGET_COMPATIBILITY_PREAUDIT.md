@@ -1,5 +1,17 @@
 # R2.1 Target Compatibility Pre-Audit
 
+Historical pre-audit at R2.1 input HEAD. The completed 2026-10-23 software
+delta, actual toolchain matrix and remaining hardware boundary are in
+`R2_1_HISTORICAL_TO_CURRENT_DELTA_AUDIT.md`,
+`R2_1_APM32_COMPATIBILITY_MATRIX.md`, `R2_1_ESP01S_TARGET.md` and
+`R2_1_COMPATIBILITY_CLOSURE_REPORT.md`. Statements below about missing software
+checks describe the pre-audit, not the post-closure implementation.
+
+In particular, the live vendor index now links the ESP-01S specification dated
+2025-08-02 (internal V1.1): its 3.3 V / at least 500 mA peak recommendation
+supersedes the weaker >300 mA reference below. See the current target document's
+retrieved-source hash. This is an interface constraint, not a power-on request.
+
 ## Scope
 
 This is a pre-audit only. It uses the current repository configuration plus current vendor/platform documentation to identify what is already plausible, what is definitely mismatched, and what must be proven locally before human wiring/flashing.
