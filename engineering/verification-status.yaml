@@ -96,7 +96,7 @@ verification_items:
     classification: "TESTED_SOFTWARE"
     result: "PASS"
     command: "python -m pytest scripts/tests/test_gnc_offline_oracle.py -q"
-    evidence: "5 tests passed; an independent Python float32 oracle matched 34 production C++ PID/Kalman rows from 49 fixed trace records. Native production tests add signed/zero/step, static Kalman, output-limit and per-call rate-limit vectors."
+    evidence: "5 tests passed; an independent Python float32 oracle matched 34 production C++ PID/Kalman rows from 49 fixed trace records. Native production tests add signed/zero/step, static Kalman, output-limit, per-call rate-limit and dt-fallback vectors. Trace artifact: engineering/offline-evidence/r2_3/gnc_offline_trace.json (source SHA e8a2f271c7ac647c216130814f307afeb9f77e2d; SHA-256 d027dd49c2b2170582af63908f419736306dae9ffee3675962f0b60a8868b182)."
     limitations: "This is source-equivalence evidence only. Firmware scheduler period, integer servo installation direction, sensor mounting, plant dynamics, and physical stability remain unmeasured/unknown."
 
   - id: "wifi_command_downlink"

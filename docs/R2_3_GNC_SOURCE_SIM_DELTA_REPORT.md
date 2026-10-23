@@ -110,6 +110,12 @@ the generated JSON is committed in a later commit, the delivery record must
 also report that artifact commit SHA; do not silently present the later commit
 as the source SHA captured by the run.
 
+The generated trace is committed at
+`engineering/offline-evidence/r2_3/gnc_offline_trace.json`. It was generated
+from source SHA `e8a2f271c7ac647c216130814f307afeb9f77e2d`; the pre-commit
+artifact SHA-256 is
+`d027dd49c2b2170582af63908f419736306dae9ffee3675962f0b60a8868b182`.
+
 ## Physical and release boundary
 
 This report does not establish physical polarity, sensor mounting, servo
