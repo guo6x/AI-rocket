@@ -64,7 +64,7 @@ stages:
     energy_scope: "unpowered observation only"
     required_evidence:
       - "One clear top-side photo of the existing flight-controller board showing MCU marking and pin silkscreen."
-    note: "The sole next human action; no wiring, programmer detection, flashing or power-on is requested."
+    note: "DEFERRED_UNTIL_PHYSICAL_WORK: purchase evidence already supports the purchased part class. No photo is needed to continue software tasks; later photo only confirms exact board markings/pinout before physical activity."
 
   - stage_id: "S3-PROGRAMMER-DETECTION-IF_REQUIRED"
     owner: "HUMAN_EXECUTION_WITH_CODEX_GUIDANCE"
