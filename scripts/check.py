@@ -99,6 +99,10 @@ def main() -> int:
             [sys.executable, "scripts/r2_physical_baseline_check.py"],
         ),
         (
+            "Recovery detectability audit (advisory; known safety blocker)",
+            [sys.executable, "scripts/recovery_configuration_audit.py"],
+        ),
+        (
             "R2.1 ownership and dependency structure",
             [sys.executable, "scripts/r2_1_check.py"],
         ),
