@@ -429,7 +429,11 @@ def run(write_json: Path | None = None) -> Dict[str, object]:
     result = manifest(rows, actual, "py -3 scripts/gnc_dual_period.py --write-json engineering/offline-evidence/r2_3/gnc_dual_period_trace.json")
     if write_json:
         write_json.parent.mkdir(parents=True, exist_ok=True)
-        write_json.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        write_json.write_text(
+            json.dumps(result, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+            newline="\n",
+        )
     return result
 
 
