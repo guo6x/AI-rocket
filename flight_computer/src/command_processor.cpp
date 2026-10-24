@@ -72,7 +72,7 @@ CommandDecision CommandProcessor::decision(CommandResultCode result,
 }
 
 CommandDecision CommandProcessor::process(const char* line, bool recovery_deployed,
-                                          bool recovery_idle) {
+                                          bool recovery_idle, bool sensors_valid) {
     char command[MAX_COMMAND_BYTES + 1];
     if (!copyTrimmed(line, command, sizeof(command))) {
         return decision(COMMAND_NACK_MALFORMED, ACTION_NONE, "unknown", state_);
@@ -96,16 +96,24 @@ CommandDecision CommandProcessor::process(const char* line, bool recovery_deploy
     }
 
     if (strcmp(command, "deploy_chute") == 0) {
+#if AI_ROCKET_GNC_ONLY_BENCH
+            return decision(COMMAND_NACK_RECOVERY_DISABLED, ACTION_NONE,
+                            "deploy_chute", state_);
+#else
         if (state_ == COMMAND_ESTOP_LATCHED || state_ == COMMAND_ARMED ||
             state_ == COMMAND_AUTO_ENABLED) {
             return decision(COMMAND_ACK, ACTION_DEPLOY_CHUTE, "deploy_chute", state_);
         }
         return decision(COMMAND_NACK_INVALID_STATE, ACTION_NONE, "deploy_chute", state_);
+#endif
     }
 
     if (strcmp(command, "arm") == 0) {
         if (state_ == COMMAND_ESTOP_LATCHED) {
             return decision(COMMAND_NACK_ESTOP_LATCHED, ACTION_NONE, "arm", state_);
+        }
+        if (!sensors_valid) {
+            return decision(COMMAND_NACK_SENSOR_INVALID, ACTION_NONE, "arm", state_);
         }
         if (state_ != COMMAND_IDLE || recovery_deployed || !recovery_idle) {
             return decision(COMMAND_NACK_INVALID_STATE, ACTION_NONE, "arm", state_);
@@ -118,6 +126,9 @@ CommandDecision CommandProcessor::process(const char* line, bool recovery_deploy
     if (strcmp(command, "auto_on") == 0) {
         if (state_ == COMMAND_ESTOP_LATCHED) {
             return decision(COMMAND_NACK_ESTOP_LATCHED, ACTION_NONE, "auto_on", state_);
+        }
+        if (!sensors_valid) {
+            return decision(COMMAND_NACK_SENSOR_INVALID, ACTION_NONE, "auto_on", state_);
         }
         if (state_ != COMMAND_ARMED || recovery_deployed) {
             return decision(COMMAND_NACK_INVALID_STATE, ACTION_NONE, "auto_on", state_);
@@ -152,6 +163,9 @@ CommandDecision CommandProcessor::process(const char* line, bool recovery_deploy
         }
         if (state_ == COMMAND_ESTOP_LATCHED) {
             return decision(COMMAND_NACK_ESTOP_LATCHED, ACTION_NONE, "set_servo", state_);
+        }
+        if (!sensors_valid) {
+            return decision(COMMAND_NACK_SENSOR_INVALID, ACTION_NONE, "set_servo", state_);
         }
         if (state_ != COMMAND_ARMED) {
             return decision(COMMAND_NACK_INVALID_STATE, ACTION_NONE, "set_servo", state_);
@@ -215,6 +229,8 @@ const char* CommandProcessor::resultText(CommandResultCode result) {
         case COMMAND_NACK_OUT_OF_RANGE: return "out_of_range";
         case COMMAND_NACK_ESTOP_LATCHED: return "estop_latched";
         case COMMAND_NACK_UNKNOWN: return "unknown_command";
+        case COMMAND_NACK_SENSOR_INVALID: return "sensor_invalid";
+        case COMMAND_NACK_RECOVERY_DISABLED: return "recovery_disabled";
     }
     return "unknown_command";
 }

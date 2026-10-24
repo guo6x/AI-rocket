@@ -3,7 +3,6 @@
  * @brief Ad Astra - 阶段六 飞行控制固件 (TVC + Recovery) - 模块化重构版
  */
 
-#include <Adafruit_BMP280.h>
 #include <Arduino.h>
 #include <Servo.h>
 #include <Wire.h>
@@ -14,17 +13,20 @@
 #include "command_line_buffer.h"
 #include "command_processor.h"
 #include "flight_fsm.h"
+#include "sensor_validity.h"
+#include "wire_sensor_bus.h"
+
+#ifndef AI_ROCKET_GNC_ONLY_BENCH
+#define AI_ROCKET_GNC_ONLY_BENCH 0
+#endif
 
 // ========== 硬件串口显式注册 ==========
 HardwareSerial Serial2(USART2);
 
 // ========== 传感器 ==========
-Adafruit_BMP280 bmp;
-const int MPU_ADDR = 0x68;
-const int PWR_MGMT_1 = 0x6B;
-const int ACCEL_XOUT_H = 0x3B;
-const float ACCEL_SCALE = 16384.0;
-const float GYRO_SCALE = 131.0;
+WireSensorBus sensorBus;
+SensorValidity sensors;
+SensorSample sensorSample;
 
 // ========== TVC 舵机 ==========
 Servo servoPitch;
@@ -58,12 +60,50 @@ void neutralizeTvc() {
   servoRoll.write(90);
 }
 
+void disableUnsafeControl() {
+  auto_mode = false;
+  commandProcessor.disableAutoForSafety();
+  pidPitch.reset();
+  pidRoll.reset();
+  neutralizeTvc();
+}
+
+void sendSensorState(Print& output) {
+  output.print("{\"source_mode\":\"PHYSICAL\",\"sensor_valid\":");
+  output.print(sensors.controlReady() ? 1 : 0);
+  output.print(",\"sensor_fault\":\"");
+  output.print(SensorValidity::faultText(sensors.fault()));
+  output.print("\",\"sensor_fault_latched\":");
+  output.print(sensors.faultLatched() ? 1 : 0);
+  output.print(",\"sensor_io_budget_expired\":");
+  output.print(sensorBus.sampleBudgetExpired() ? 1 : 0);
+  output.print(",\"auto\":");
+  output.print(auto_mode ? 1 : 0);
+  output.print(",\"control_state\":\"");
+  output.print(CommandProcessor::stateText(commandProcessor.state()));
+  output.print("\"");
+  output.print(",\"imu_address\":");
+  output.print(sensors.imuAddress());
+  output.print(",\"imu_id\":");
+  output.print(sensors.imuIdentity());
+  output.print(",\"bmp_address\":");
+  output.print(sensors.bmpAddress());
+  output.print(",\"bmp_id\":");
+  output.print(sensors.bmpIdentity());
+  output.print(",\"time\":");
+  output.print(millis());
+  // Invalid attitude/altitude are deliberately omitted, not reported as zero.
+  output.println("}");
+}
+
 void applyCommandDecision(const CommandDecision& decision) {
   if (!decision.accepted()) return;
 
   switch (decision.action) {
     case ACTION_ARM:
-      fsm.arm(bmp.readAltitude(1013.25), millis());
+#if !AI_ROCKET_GNC_ONLY_BENCH
+      fsm.arm(sensorSample.altitude_m, millis());
+#endif
       break;
     case ACTION_AUTO_ON:
       auto_mode = true;
@@ -98,6 +138,7 @@ void applyCommandDecision(const CommandDecision& decision) {
       fsm.disarm();
       break;
     case ACTION_DEPLOY_CHUTE: {
+#if !AI_ROCKET_GNC_ONLY_BENCH
       const bool was_deployed = fsm.isChuteDeployed();
       fsm.deployChute("GROUND_CMD");
       if (!was_deployed && fsm.isChuteDeployed()) {
@@ -106,6 +147,7 @@ void applyCommandDecision(const CommandDecision& decision) {
         commandProcessor.disableAutoForSafety();
         neutralizeTvc();
       }
+#endif
       break;
     }
     case ACTION_PROFILE_FLIGHT:
@@ -144,7 +186,8 @@ void handleCommandInput(Stream& input, Print& response,
     } else if (event == COMMAND_LINE_READY) {
       const CommandDecision decision =
           commandProcessor.process(buffer.line(), fsm.isChuteDeployed(),
-                                   fsm.getState() == FS_IDLE);
+                                   fsm.getState() == FS_IDLE,
+                                   sensors.controlReady());
       applyCommandDecision(decision);
       sendCommandResponse(response, decision);
     }
@@ -160,20 +203,10 @@ void setup() {
   Wire.begin();
   Wire.setClock(100000);
 
-  if (!bmp.begin(0x76)) {
-    Serial.println("[SENSOR] BMP280 FAIL");
-  } else {
-    bmp.setSampling(Adafruit_BMP280::MODE_NORMAL, Adafruit_BMP280::SAMPLING_X2,
-                    Adafruit_BMP280::SAMPLING_X16, Adafruit_BMP280::FILTER_X16,
-                    Adafruit_BMP280::STANDBY_MS_1);
-    Serial.println("[SENSOR] BMP280 OK");
-  }
-
-  Wire.beginTransmission(MPU_ADDR);
-  Wire.write(PWR_MGMT_1);
-  Wire.write(0);
-  Wire.endTransmission();
-  Serial.println("[SENSOR] MPU6500 OK");
+  sensors.begin(sensorBus);
+  Serial.print("[SENSOR] ");
+  Serial.println(SensorValidity::faultText(sensors.fault()));
+  sendSensorState(Serial);
 
   kfPitch.init();
   kfRoll.init();
@@ -184,9 +217,13 @@ void setup() {
   servoRoll.write(90);
   Serial.println("[SERVO] Pitch(PA6) + Roll(PA7) attached. Centered at 90.");
 
-  servoRecovery.attach(SERVO_RECOVERY_PIN);
-  servoRecovery.write(90);
-  Serial.println("[SERVO] Recovery(PB0) attached. Locked at 90.");
+#if !AI_ROCKET_GNC_ONLY_BENCH
+    servoRecovery.attach(SERVO_RECOVERY_PIN);
+    servoRecovery.write(90);
+    Serial.println("[SERVO] Recovery(PB0) attached. Locked at 90.");
+#else
+    Serial.println("[SERVO] Recovery output disabled (GNC-only bench profile).");
+#endif
 
   lastTime = micros();
   delay(500);
@@ -194,8 +231,20 @@ void setup() {
 }
 
 void loop() {
+  // Refresh validity BEFORE either command transport can request ARM/AUTO or
+  // manual motion. A previous good sample cannot authorize a failed new cycle.
+  sensorBus.beginSample();
+  if (!sensors.read(sensorBus, millis(), sensorSample)) disableUnsafeControl();
+
   handleCommandInput(Serial2, Serial2, serial2CommandBuffer);
   handleCommandInput(Serial, Serial, serialCommandBuffer);
+
+  if (!sensors.controlReady()) {
+    sendSensorState(Serial);
+    sendSensorState(Serial2);
+    delay(50);
+    return; // no invalid values enter Kalman, PID, or recovery FSM
+  }
 
   if (commandProcessor.estopLatched()) {
     delay(50);
@@ -207,27 +256,9 @@ void loop() {
   lastTime = now_us;
   if (dt <= 0 || dt > 0.5) dt = 0.01;
 
-  float altitude = bmp.readAltitude(1013.25);
-
-  Wire.beginTransmission(MPU_ADDR);
-  Wire.write(ACCEL_XOUT_H);
-  Wire.endTransmission(false);
-  Wire.requestFrom((uint8_t)MPU_ADDR, (uint8_t)14);
-
-  int16_t AcX = Wire.read() << 8 | Wire.read();
-  int16_t AcY = Wire.read() << 8 | Wire.read();
-  int16_t AcZ = Wire.read() << 8 | Wire.read();
-  int16_t Tmp = Wire.read() << 8 | Wire.read();
-  int16_t GyX = Wire.read() << 8 | Wire.read();
-  int16_t GyY = Wire.read() << 8 | Wire.read();
-  int16_t GyZ = Wire.read() << 8 | Wire.read();
-
-  float ax = AcX / ACCEL_SCALE;
-  float ay = AcY / ACCEL_SCALE;
-  float az = AcZ / ACCEL_SCALE;
-  float gx = GyX / GYRO_SCALE;
-  float gy = GyY / GYRO_SCALE;
-  float gz = GyZ / GYRO_SCALE;
+  const float altitude = sensorSample.altitude_m;
+  const float ax = sensorSample.ax, ay = sensorSample.ay, az = sensorSample.az;
+  const float gx = sensorSample.gx, gy = sensorSample.gy, gz = sensorSample.gz;
 
   float pitch_raw = atan2(-ax, sqrt(ay * ay + az * az)) * 180.0 / PI;
   float roll_raw = atan2(ay, az) * 180.0 / PI;
@@ -236,16 +267,18 @@ void loop() {
   float roll_flt = kfRoll.update(roll_raw, gx, dt);
   float yaw = gz;
 
-  bool was_chute_deployed = fsm.isChuteDeployed();
-  fsm.update(az, altitude, millis());
+#if !AI_ROCKET_GNC_ONLY_BENCH
+    bool was_chute_deployed = fsm.isChuteDeployed();
+    fsm.update(az, altitude, millis());
 
-  if (!was_chute_deployed && fsm.isChuteDeployed()) {
-    servoRecovery.write(0);
-    auto_mode = false;
-    commandProcessor.disableAutoForSafety();
-    neutralizeTvc();
-    Serial.println("[RECOV] !!! CHUTE DEPLOYED !!!");
-  }
+    if (!was_chute_deployed && fsm.isChuteDeployed()) {
+      servoRecovery.write(0);
+      auto_mode = false;
+      commandProcessor.disableAutoForSafety();
+      neutralizeTvc();
+      Serial.println("[RECOV] !!! CHUTE DEPLOYED !!!");
+    }
+#endif
 
   if (auto_mode && !fsm.isChuteDeployed()) {
     int servo_p = constrain(90 + (int)pidPitch.compute(pitch_flt, dt), 0, 180);
@@ -262,6 +295,8 @@ void loop() {
       ", \"roll_raw\":" + String(roll_raw, 2) +
       ", \"roll_flt\":" + String(roll_flt, 2) + ", \"yaw\":" + String(yaw, 2) +
       ", \"alt\":" + String(altitude, 2) +
+      ", \"sensor_valid\":1, \"source_mode\":\"PHYSICAL\"" +
+      ", \"sample_time_ms\":" + String(sensorSample.time_ms) +
       ", \"auto\":" + String(auto_mode ? 1 : 0) +
       ", \"control_state\":\"" + String(CommandProcessor::stateText(commandProcessor.state())) + "\"" +
       ", \"chute\":" + String(fsm.isChuteDeployed() ? 1 : 0) + ", \"fstate\":\"" +

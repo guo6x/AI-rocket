@@ -1,0 +1,210 @@
+schema_version: 1
+plan_id: "AA-GNC-AVIONICS-BRINGUP-001"
+applies_to:
+  - "AA-GNC-BENCH-001"
+  - "AA-AVIONICS-BENCH-001"
+status: "HISTORICAL_CAPABILITY_REBASELINE"
+principle: "Recover the previously demonstrated hardware path first; only repeat physical steps when current code, target configuration, or missing evidence requires it."
+
+stages:
+  - stage_id: "S0-HISTORICAL-EVIDENCE-RECOVERY"
+    owner: "ASSISTANT_OR_CODEX"
+    physical_action: false
+    status: "COMPLETE_SOFTWARE"
+    depends_on: []
+    evidence_records: []
+    software_evidence:
+      - "docs/R2_1_HISTORICAL_TO_CURRENT_DELTA_AUDIT.md"
+    required_outputs:
+      - "Map historical claims of successful flash, GY-91 reads, servo PWM, WiFi command/telemetry, and attitude-driven stabilization to the current source tree."
+      - "Identify which historical claims remain directly supported by current code and which depend on changed hardware/targets."
+      - "Do not classify the project as first-time hardware bring-up."
+
+  - stage_id: "S1-ASSET-AND-TARGET-RECONCILIATION"
+    owner: "ASSISTANT_OR_CODEX"
+    physical_action: false
+    status: "COMPLETE_SOFTWARE"
+    depends_on: ["S0-HISTORICAL-EVIDENCE-RECOVERY"]
+    evidence_records: []
+    software_evidence:
+      - "docs/R2_1_APM32_COMPATIBILITY_MATRIX.md"
+      - "docs/R2_1_ESP01S_TARGET.md"
+      - "flight_computer/src/sensor_validity.h"
+    required_outputs:
+      - "APM32F103C8T6 compatibility matrix for used pins/peripherals/toolchain"
+      - "GY-91 identity/read-validity plan"
+      - "ESP-01S-specific PlatformIO target and build result"
+    exit_criteria:
+      - "No unresolved board-target assumption is hidden behind an existing source-build PASS."
+
+  - stage_id: "S2-MINIMUM-REGRESSION-PLAN"
+    owner: "CODEX_THEN_ASSISTANT_REVIEW"
+    physical_action: false
+    status: "COMPLETE_SOFTWARE"
+    depends_on: ["S1-ASSET-AND-TARGET-RECONCILIATION"]
+    evidence_records: []
+    software_evidence:
+      - "docs/R2_1_HISTORICAL_TO_CURRENT_DELTA_AUDIT.md"
+      - "docs/R2_1_GNC_AVIONICS_HUMAN_HANDOFF.md"
+    required_outputs:
+      - "Historical working wiring map recovered and compared with current code"
+      - "Only changed/uncertain connections called out for re-check"
+      - "Exact minimal physical regression sequence needed to re-establish present evidence"
+      - "Explicit list of previously demonstrated steps that do not need blind repetition"
+    exit_criteria:
+      - "Assistant review passes"
+      - "No EDF, propulsion, or recovery actuator is involved"
+
+  - stage_id: "S2B-GNC-ONLY-BENCH-SOFTWARE-ISOLATION"
+    owner: "ASSISTANT_OR_CODEX"
+    physical_action: false
+    status: "COMPLETE_SOFTWARE"
+    depends_on: ["S2-MINIMUM-REGRESSION-PLAN"]
+    evidence_records: []
+    software_evidence:
+      - "docs/R2_2_GNC_ONLY_BENCH_ISOLATION.md"
+      - "flight_computer/platformio.ini"
+      - "flight_computer/src/main.cpp"
+      - "flight_computer/src/command_processor.cpp"
+      - "flight_computer/test/test_kalman.cpp"
+      - "flight_computer/test/gnc_only_bench_cases.h"
+    required_outputs:
+      - "Explicit opt-in GNC-only build target; default historical firmware target is unchanged."
+      - "Recovery servo is not attached or written, recovery FSM transitions are not run, and deploy_chute is rejected as recovery_disabled."
+      - "TVC attitude/manual-servo path, sensor validity, E-STOP and RESET remain covered by native fake-boundary tests."
+    exit_criteria:
+      - "Profile and native tests pass without hardware, upload, power or actuator connection."
+      - "Recovery qualification remains BLOCKED; this profile earns TESTED_SOFTWARE only."
+    evidence_ceiling: "TESTED_SOFTWARE"
+
+  - stage_id: "S2A-UNPOWERED-BOARD-OBSERVATION"
+    owner: "HUMAN_EXECUTION_WITH_CODEX_GUIDANCE"
+    physical_action: true
+    status: "PENDING_HARDWARE"
+    depends_on: ["S2-MINIMUM-REGRESSION-PLAN"]
+    evidence_records: []
+    energy_scope: "unpowered observation only"
+    required_evidence:
+      - "One clear top-side photo of the existing flight-controller board showing MCU marking and pin silkscreen."
+    note: "DEFERRED_UNTIL_PHYSICAL_WORK: purchase evidence already supports the purchased part class. No photo is needed to continue software tasks; later photo only confirms exact board markings/pinout before physical activity."
+
+  - stage_id: "S3-PROGRAMMER-DETECTION-IF_REQUIRED"
+    owner: "HUMAN_EXECUTION_WITH_CODEX_GUIDANCE"
+    physical_action: true
+    status: "PENDING_HARDWARE"
+    depends_on: ["S2A-UNPOWERED-BOARD-OBSERVATION"]
+    evidence_records: []
+    optional: true
+    note: "Conditional: do not repeat historical programmer detection if the accepted configuration mapping already resolves the current uncertainty."
+    energy_scope: "logic/debug only"
+    required_evidence:
+      - "photo or board marking confirmation"
+      - "tool command/output"
+      - "detected target/debug ID"
+      - "firmware commit SHA"
+    stop_conditions:
+      - "unexpected voltage"
+      - "unexpected device ID"
+      - "programmer cannot detect target"
+      - "board heating or unstable power"
+
+  - stage_id: "S4-FLASH-AND-BOOT-IF_REQUIRED"
+    owner: "HUMAN_EXECUTION_WITH_CODEX_GUIDANCE"
+    physical_action: true
+    status: "PENDING_HARDWARE"
+    depends_on: ["S3-PROGRAMMER-DETECTION-IF_REQUIRED"]
+    evidence_records: []
+    optional: true
+    note: "Conditional current-binary mapping only, not proof that the controller had never been flashed."
+    required_evidence:
+      - "flash command/output"
+      - "serial boot output"
+      - "firmware exact SHA"
+    prohibited:
+      - "servo movement"
+      - "closed-loop control"
+      - "EDF connection"
+
+  - stage_id: "S5-SENSOR-READ-VALIDITY-REGRESSION"
+    owner: "HUMAN_EXECUTION_WITH_CODEX_GUIDANCE"
+    physical_action: true
+    status: "PENDING_HARDWARE"
+    depends_on: ["S4-FLASH-AND-BOOT-IF_REQUIRED"]
+    evidence_records: []
+    required_evidence:
+      - "actual IMU identity"
+      - "BMP280 identity/address"
+      - "validity/fault behavior"
+      - "stationary sensor readings"
+    exit_criteria:
+      - "Sensor identity and read validity are explicitly checked in software."
+
+  - stage_id: "S6-SERVO-AND-STABILIZATION-REGRESSION"
+    owner: "HUMAN_EXECUTION_WITH_CODEX_GUIDANCE"
+    physical_action: true
+    status: "PENDING_HARDWARE"
+    depends_on: ["S5-SENSOR-READ-VALIDITY-REGRESSION"]
+    evidence_records: []
+    energy_scope: "low-energy restrained servo bench only"
+    required_evidence:
+      - "servo model/unit ID"
+      - "separate servo power arrangement"
+      - "neutral command behavior"
+      - "small bounded command behavior"
+      - "E-STOP/RESET neutral behavior"
+    prohibited:
+      - "PID auto mode"
+      - "EDF"
+      - "free-moving vehicle"
+
+  - stage_id: "S7-COMMAND-LINK-REGRESSION"
+    owner: "HUMAN_EXECUTION_WITH_CODEX_GUIDANCE"
+    physical_action: true
+    status: "PENDING_HARDWARE"
+    depends_on: ["S6-SERVO-AND-STABILIZATION-REGRESSION"]
+    evidence_records: []
+    required_evidence:
+      - "two independently identified servo units"
+      - "USB command ACK/NACK behavior"
+      - "transport-buffer isolation observation"
+      - "E-STOP/RESET repetition"
+    prohibited:
+      - "physical PID tuning"
+      - "free flight"
+
+  - stage_id: "S8-ESP01S-RELAY-REBASELINE"
+    owner: "HUMAN_EXECUTION_WITH_CODEX_GUIDANCE"
+    physical_action: true
+    status: "PENDING_HARDWARE"
+    depends_on: ["S5-SENSOR-READ-VALIDITY-REGRESSION"]
+    evidence_records: []
+    note: "Independent of servo motion: validate the changed R1 command/ACK/NACK/telemetry route without actuators. Historical implementation/configuration gap remains unresolved."
+    required_evidence:
+      - "ESP-01S flash/boot record"
+      - "UART relay record"
+      - "UDP command/ACK record"
+      - "telemetry return record"
+    evidence_ceiling: "RESTRAINED_BENCH_VERIFIED_ONLY"
+
+  - stage_id: "S9-CURRENT_CLOSED_LOOP_BASELINE"
+    owner: "ASSISTANT_AND_CODEX"
+    physical_action: false
+    status: "PENDING_SOFTWARE"
+    depends_on:
+      - "S6-SERVO-AND-STABILIZATION-REGRESSION"
+      - "S7-COMMAND-LINK-REGRESSION"
+      - "S8-ESP01S-RELAY-REBASELINE"
+    evidence_records: []
+    required_inputs:
+      - "sensor validity"
+      - "actuator direction/range"
+      - "measured bench plant definition"
+      - "safe restraint design"
+    note: "PID values are not selected from historical filenames or simulation outputs."
+
+global_prohibitions:
+  - "No EDF energized testing in this bring-up plan."
+  - "No free flight."
+  - "No recovery deployment."
+  - "No energetic propulsion work."
+  - "No hardware VERIFIED claim without an evidence record."

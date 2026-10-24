@@ -1,0 +1,164 @@
+schema_version: 1
+project: "Project Ad Astra / AI-rocket"
+architecture_id: "AA-MULTI-BENCH-001"
+principle: >-
+  Mature key technical lines independently with explicit evidence and interfaces,
+  then integrate only after each line has earned its own readiness.
+
+lines:
+  - line_id: "GNC"
+    article_id: "AA-GNC-BENCH-001"
+    purpose: "State estimation, stabilization logic, controller behavior, actuator-command verification, and safe bench tuning."
+    current_assets:
+      - "AST-MCU-APM32-001"
+      - "AST-SENSOR-GY91-001"
+      - "AST-SERVO-SG92R-001"
+      - "AST-TOOL-STLINK-001"
+      - "AST-TOOL-CH340-001"
+      - "AST-TOOL-LOGIC-001"
+      - "AST-TOOL-DMM-001"
+      - "AST-PROTOTYPE-BREADBOARD-001"
+      - "AST-PROTOTYPE-DUPONT-MM-001"
+      - "AST-PROTOTYPE-DUPONT-FF-001"
+    status: "HISTORICALLY_DEMONSTRATED_REBASELINE_REQUIRED"
+    next_gate: "CURRENT_HARDWARE_REBASELINE"
+    blockers:
+      - "APM32 subset/toolchain audit and experimental compatibility build are software evidence only; exact board identity, clock and current runtime remain hardware-gated. Historical domestic-compatible flash support is preserved."
+      - "GY-91 physical pinout/orientation and actual populated sensor identity not yet inspected."
+      - "Historical flash, sensor, PWM and stabilization reports are preserved. Only changed/uncertain current behavior needs minimal regression; absent old raw logs alone do not require repeating it. WiFi uplink has a historical implementation/configuration gap."
+    allowed_next_work:
+      - "Recover and classify historical hardware evidence"
+      - "Audit current firmware against the historically working hardware configuration"
+      - "Run only the minimum regression needed to re-establish the current configuration"
+      - "Do not repeat already-proven bench steps unless required by a changed target, firmware, or evidence gap"
+    prohibited_claims:
+      - "hardware-qualified controller"
+      - "flight-ready stabilization"
+
+  - line_id: "AVIONICS"
+    article_id: "AA-AVIONICS-BENCH-001"
+    purpose: "Power, sensing, command, logging, communications, fault handling, and interface integration."
+    current_assets:
+      - "AST-MCU-APM32-001"
+      - "AST-MCU-ESP32S3-001"
+      - "AST-WIFI-ESP01S-001"
+      - "AST-SENSOR-GY91-001"
+      - "AST-POWER-LM2596-001"
+      - "AST-TOOL-STLINK-001"
+      - "AST-TOOL-CH340-001"
+      - "AST-TOOL-LOGIC-001"
+      - "AST-TOOL-DMM-001"
+    status: "HISTORICALLY_DEMONSTRATED_REBASELINE_REQUIRED"
+    next_gate: "CURRENT_AVIONICS_REBASELINE"
+    blockers:
+      - "ESP-01S-specific 1 MB build is software-only. Historical prose claims command-to-servo but initial ESP source lacks UDP reception; validate today's R1 ACK/NACK route without inventing missing historical code."
+      - "No accepted bench power architecture exists."
+      - "ESP32-S3 role is intentionally undecided."
+    allowed_next_work:
+      - "Target compatibility audit"
+      - "Bench interface definition"
+      - "Logging/telemetry role comparison"
+      - "Low-energy staged bring-up planning"
+
+  - line_id: "RF"
+    article_id: "AA-RF-BENCH-001"
+    purpose: "Independent telemetry-link experimentation and measurement."
+    current_assets:
+      - "AST-RF-RA02-001"
+      - "AST-RF-SMA-IPEX1-001"
+      - "AST-RF-ANT-WHIP-001"
+      - "AST-RF-ANT-35DBI-001"
+      - "AST-MCU-ESP32S3-001"
+      - "AST-TOOL-LOGIC-001"
+      - "AST-TOOL-DMM-001"
+    status: "PARTIAL_ASSET_SET"
+    next_gate: "INTERFACE_AND_REGULATORY_COMPATIBILITY_AUDIT"
+    blockers:
+      - "Exact antenna/module connector compatibility has not been physically inspected."
+      - "Regional RF operating constraints and intended bench test configuration have not been defined."
+      - "Closed LoRa cable transaction is excluded from owned assets."
+    allowed_next_work:
+      - "Datasheet/interface review"
+      - "Software packet-format prototype"
+      - "Bench-only low-power link planning within applicable radio rules"
+
+  - line_id: "TVC"
+    article_id: "AA-TVC-BENCH-001"
+    purpose: "Two-axis mechanical actuation, gimbal geometry, motion/interference, serviceability, and later restrained bench integration."
+    current_assets:
+      - "AST-SERVO-SG92R-001"
+      - "AST-TOOL-SCALE-001"
+    status: "BLOCKED_BY_MISSING_MECHANICAL_INPUTS"
+    next_gate: "R2_CAD_START"
+    blockers:
+      - "No actual EDF purchase/geometry is recorded in the current asset registry."
+      - "No confirmed frame/gimbal structure is recorded."
+      - "Servo dimensions/horn geometry remain to be measured or sourced from a model-specific datasheet."
+    allowed_next_work:
+      - "Servo identity/dimension capture"
+      - "EDF procurement decision only when budget and requirements justify it"
+      - "AeroForge concept intake after CAD_START evidence is ready"
+
+  - line_id: "RECOVERY"
+    article_id: "AA-RECOVERY-BENCH-001"
+    purpose: "Recovery-state logic, sensing, low-risk actuator/mechanism verification, and failure-state behavior."
+    current_assets: []
+    status: "SOFTWARE_FOUNDATION_ONLY"
+    next_gate: "DEDICATED_LOW_RISK_BENCH_DEFINITION"
+    blockers:
+      - "No dedicated recovery actuator/mechanism asset is assigned."
+      - "Physical deployment mechanism is not defined."
+    allowed_next_work:
+      - "FSM and software-in-the-loop verification"
+      - "Low-risk mechanism concept work after dedicated hardware is selected"
+
+  - line_id: "MATERIALS_PROPULSION_SCIENCE"
+    article_id: "AA-PROPULSION-SCIENCE-001"
+    purpose: >-
+      Build foundational chemistry, materials, instrumentation, thermofluid,
+      cold-flow, and propulsion-system knowledge without treating energetic
+      propellant manufacture as an unsupervised bench activity.
+    current_assets:
+      - "AST-CHEM-PH-001"
+      - "AST-TOOL-SCALE-001"
+      - "AST-TOOL-DMM-001"
+    status: "FOUNDATIONAL_ONLY"
+    next_gate: "SAFE_LAB_FOUNDATION"
+    allowed_next_work:
+      - "Foundational chemistry and measurement"
+      - "Materials compatibility study"
+      - "Thermodynamics/heat-transfer/fluids modeling"
+      - "Instrumentation and data-acquisition planning"
+      - "Inert-fluid cold-flow architecture"
+      - "Public literature review"
+    prohibited_work:
+      - "Unsupervised energetic propellant preparation"
+      - "Energetic-material mixing/casting/processing instructions"
+      - "Ignition-system development for energetic propellant tests"
+      - "Motor or combustion testing outside an appropriate qualified facility"
+
+  - line_id: "SYSTEM_INTEGRATION"
+    article_id: "AA-SYSTEM-INTEGRATION-001"
+    purpose: "Integrate only matured, interface-controlled technical lines."
+    status: "BLOCKED_BY_UPSTREAM_MATURITY"
+    entry_criteria:
+      - "Each participating line has a frozen configuration identifier."
+      - "Interfaces and evidence are traceable."
+      - "Known safety-critical blockers are explicit."
+      - "No subsystem is promoted from software proof to hardware proof by integration alone."
+
+priority_order:
+  - "GNC"
+  - "AVIONICS"
+  - "TVC"
+  - "RF"
+  - "RECOVERY"
+  - "MATERIALS_PROPULSION_SCIENCE"
+  - "SYSTEM_INTEGRATION"
+
+near_term_decision:
+  recommendation: "Recover GNC/Avionics history, close software deltas, then obtain only the minimum current-configuration observation before TVC CAD."
+  rationale:
+    - "The required low-cost electronics and debug tools are already owned."
+    - "It directly tests whether R0/R1 software assumptions survive contact with actual boards."
+    - "TVC remains blocked by missing EDF/frame geometry."

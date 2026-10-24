@@ -1,37 +1,68 @@
-schema_version: 1
+schema_version: 2
 project: "Project Ad Astra / AI-rocket"
-baseline_name: "R2 As-Built Physical Baseline & Mechanical Design Intake"
-audit_date: "2026-08-27"
-baseline_commit: "38c662d42db68823da8946c4d7f16e247cc79691"
-prior_r1_head: "4d4bf7f1349fdaf78f2b5ac71cf73bb868c255df"
+baseline_name: "R2.1 Real Asset Registry & Multi-Bench Architecture"
+audit_date: "2026-10-23"
+compatibility_input_commit: "e9510e61b6de518b272ea6fdb8433bbab4c501c5"
+branch_base_commit: "f59dc2c5791ee88f3d853112930de55d0c31f4d3"
+prior_r2_merge: "66861c7c9f0d468e81a2e09c7a354ed6058dd20f"
 
-current_phase: "R2 as-built physical baseline and mechanical design intake"
+current_phase: "R2.1 real-asset registry and multi-bench development architecture"
 current_objective: >-
-  Convert claimed physical components into a traceable article, measurement,
-  datum, interface, mass-property, requirement, and AeroForge intake structure
-  without inventing measurements or starting TVC CAD.
+  Use the project's actually purchased hardware and tools to organize independent
+  GNC, avionics, RF, TVC, recovery, propulsion-science, and later system-integration
+  benches. Ownership, article assignment, physical configuration, and hardware
+  verification remain distinct evidence levels.
 
-current_physical_platform:
-  intended_platform: "restrained EDF TVC bench / experimental avionics platform"
-  assembled_state: "UNKNOWN"
-  confirmed_in_repository:
-    - "STM32F103C8T6 firmware target is configured in PlatformIO."
-    - "ESP8266 firmware target is configured in PlatformIO."
-    - "Firmware assigns three servo channels; physical servo identities are not confirmed."
-  not_confirmed_in_repository:
-    - "actual installed EDF diameter and thrust"
-    - "actual vehicle or bench mass and CG"
-    - "current wiring configuration"
-    - "integrated actuator direction and range"
-    - "physical recovery assembly"
-    - "ownership and installation state of every claimed physical component"
-    - "actual component envelopes, mounting features, connectors, and masses"
+project_development_model:
+  principle: "Mature technical lines independently, then integrate only evidence-backed configurations."
+  technical_lines:
+    - {line_id: "GNC", article_id: "AA-GNC-BENCH-001"}
+    - {line_id: "AVIONICS", article_id: "AA-AVIONICS-BENCH-001"}
+    - {line_id: "RF", article_id: "AA-RF-BENCH-001"}
+    - {line_id: "TVC", article_id: "AA-TVC-BENCH-001"}
+    - {line_id: "RECOVERY", article_id: "AA-RECOVERY-BENCH-001"}
+    - {line_id: "MATERIALS_PROPULSION_SCIENCE", article_id: "AA-PROPULSION-SCIENCE-001"}
+    - {line_id: "SYSTEM_INTEGRATION", article_id: "AA-SYSTEM-INTEGRATION-001"}
+
+owned_asset_summary:
+  authority: "engineering/assets/project-asset-registry.yaml"
+  ownership_basis: "completed purchase records supplied by the project owner"
+  near_term_core_assets:
+    - "APM32F103C8T6 core board"
+    - "GY-91 order variant: MPU9250 + BMP280"
+    - "2x SG92R metal-gear 9 g servos"
+    - "ESP8266 ESP-01S"
+    - "ESP32-S3 DevKitC-1 N16R8"
+    - "ST-LINK V2"
+    - "CH340G USB-TTL"
+    - "USB logic analyzer"
+    - "digital multimeter"
+    - "830-hole breadboard and jumper wires"
+    - "LM2596S adjustable buck module"
+    - "10 kg / 0.1 g electronic scale"
+    - "2x SX1278 RA-02 plus 433 MHz RF accessories"
+  excluded_transaction:
+    - "LoRa 150 mm cable order shown as transaction closed"
+
+current_near_term_priority:
+  first: "GNC historical-hardware recovery and current re-baseline"
+  second: "Avionics historical-configuration recovery and current target reconciliation"
+  reason:
+    - "The project already owns the necessary low-cost controller, sensor, servo, debug, and prototyping assets."
+    - "Historical cloud records already report successful real-hardware stabilization, sensor reads, servo actuation, and ESP8266 command/telemetry behavior; the task is to recover and re-baseline that capability against current code."
+    - "TVC CAD remains blocked by missing actual EDF/frame geometry."
 
 current_blockers:
-  - id: "R1-001"
-    summary: "The plaintext UDP command link has no authentication, integrity protection, or request ID."
-  - id: "R1-002"
-    summary: "No repeatable physical USB/UART/WiFi/servo command-link evidence exists."
+  - id: "R2_1-001"
+    summary: "Historical domestic-compatible TAP-ID support recovered; subset compatibility audit and explicit experimental environment do not establish exact APM32 board, startup, clock or runtime proof."
+  - id: "R2_1-002"
+    summary: "Separate 1 MB ESP-01S target closes software form-factor/flash audit; physical boot, power and current R1 command/ACK/NACK return remain hardware-gated."
+  - id: "R2_1-003"
+    summary: "Historical flash/boot/sensor/servo/self-stabilization reports recovered, not erased. Only changed sensor-validity/R1-safety/current-transport behavior needs minimal regression; WiFi historical implementation/configuration gap remains."
+  - id: "R2_1-004"
+    summary: "Historical wiring records describe a working avionics bench, but the current accepted power/interface configuration has not yet been re-baselined against the purchased APM32/ESP-01S hardware and current firmware."
+  - id: "R2_1-005"
+    summary: "Pre-existing +/-2 g IMU range cannot reach recovery FSM's >2.5 g launch threshold; recovery qualification needs a separate configuration decision, not silent retuning in R2.1."
   - id: "R0-006"
     summary: "No PID profile is hardware-qualified; source values conflict."
   - id: "R0-007"
@@ -44,6 +75,8 @@ current_blockers:
 authoritative_sources:
   current_status:
     - "engineering/current-baseline.yaml"
+    - "engineering/assets/project-asset-registry.yaml"
+    - "engineering/experimental-lines.yaml"
     - "engineering/component-status.yaml"
     - "engineering/parameter-registry.yaml"
     - "engineering/verification-status.yaml"
@@ -52,6 +85,11 @@ authoritative_sources:
     - "engineering/as-built/**"
     - "engineering/tvc-mechanical-requirements.yaml"
     - "engineering/aeroforge-intake/**"
+    - "docs/R2_1_REAL_ASSET_MULTI_BENCH_ARCHITECTURE.md"
+    - "engineering/historical-hardware-capabilities.yaml"
+    - "engineering/bringup/gnc-avionics-bringup.yaml"
+    - "docs/R2_1_HISTORICAL_TO_CURRENT_DELTA_AUDIT.md"
+    - "docs/R2_1_COMPATIBILITY_CLOSURE_REPORT.md"
   implementation:
     - "flight_computer/src/**"
     - "esp8266_firmware/src/**"
@@ -59,31 +97,30 @@ authoritative_sources:
     - "ground_station/ui/**"
   repeatable_software_verification:
     - "scripts/check.py"
-    - "flight_computer/test/test_kalman.cpp"
+    - "flight_computer/test/**"
     - "ground_station/tests/**"
     - "esp8266_firmware/test/**"
     - "scripts/simulation_smoke.py"
+    - "scripts/r2_1_check.py"
+    - "scripts/tests/**"
 
-deprecated_sources:
-  status: "HISTORICAL_OR_STALE"
-  sources:
-    - "project-memory.md"
-    - "project-overview.md"
-    - "software-architecture.md"
-    - "hardware-wiring-STM32.md"
-    - "verification-protocol.md"
-    - "reports/**"
-    - "aero_sim/rocket_config.py as a project-wide source of truth"
-    - "generate_rocket*.py and generated CAD as current vehicle authority"
+evidence_rules:
+  ownership: "A completed purchase record is sufficient to mark a project asset as owned."
+  article_assignment: "Assignment to a bench/article is configuration control and must be explicit."
+  physical_configuration: "Wiring, pinout, geometry, orientation, calibration, and installed state require bench-specific evidence."
+  hardware_verification: "Only a repeatable procedure/configuration/result/date evidence bundle may support VERIFIED_HARDWARE."
 
 safety_scope:
-  current_focus: "unpowered observation/measurement planning and mechanical-input traceability for a restrained EDF bench"
-  excluded_from_r2:
-    - "high-energy propulsion changes"
+  current_focus:
+    - "low-energy GNC and avionics bring-up planning"
+    - "software compatibility and interface audits"
+    - "unpowered TVC measurement planning"
+    - "RF bench architecture within applicable radio rules"
+    - "foundational chemistry/materials/thermofluid learning and inert-fluid planning"
+  excluded:
     - "free-flight readiness claims"
-    - "new or modified TVC CAD"
-    - "hardware procurement decisions"
-    - "physical PID tuning"
-    - "physical recovery triggering"
-    - "EDF energized or thrust testing"
-    - "structural strength conclusions"
+    - "unqualified hardware control claims"
+    - "energetic propellant preparation or processing instructions"
+    - "ignition development for energetic propulsion tests"
+    - "unsupervised motor or combustion testing"
+    - "automatic promotion of purchased assets to VERIFIED_HARDWARE"

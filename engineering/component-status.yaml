@@ -1,5 +1,5 @@
 schema_version: 1
-audit_date: "2026-08-26"
+audit_date: "2026-10-23"
 components:
   flight_computer:
     status: "TESTED_SOFTWARE"
@@ -8,42 +8,49 @@ components:
       - "flight_computer/src/flight_fsm.cpp"
       - "flight_computer/src/command_processor.cpp"
       - "flight_computer/src/command_line_buffer.h"
+      - "flight_computer/src/sensor_validity.cpp"
+      - "flight_computer/src/wire_sensor_bus.h"
       - "flight_computer/src/algorithms/**"
     test_source:
       - "flight_computer/test/test_kalman.cpp"
       - "PlatformIO bluepill_f103c8 source build"
-    hardware_evidence: "UNKNOWN; historical documents claim operation but no repeatable evidence bundle is tracked."
+      - "PlatformIO apm32f103c8_compat experimental source build"
+      - "flight_computer/test/main_loop_cases.h (native production-main orchestration with fake boundaries)"
+    hardware_evidence: "HISTORICALLY_REPORTED_HARDWARE flash/boot/stabilization recovered; current exact configuration remains UNKNOWN."
     known_gaps:
       - "No hardware-in-loop test."
-      - "Sensor initialization reports MPU6500 OK without checking the transaction result."
       - "No physical command-path, E-STOP, or actuator-neutral verification."
     notes: "Production code exists and builds; this is not a flight-readiness claim."
 
   imu:
-    status: "IMPLEMENTED"
+    status: "TESTED_SOFTWARE"
     implementation_source:
       - "flight_computer/src/main.cpp"
       - "flight_computer/src/algorithms/kalman.cpp"
+      - "flight_computer/src/sensor_validity.cpp"
+      - "flight_computer/src/wire_sensor_bus.h"
     test_source:
       - "flight_computer/test/test_kalman.cpp"
-    hardware_evidence: "UNKNOWN"
+      - "flight_computer/test/sensor_validity_cases.h"
+      - "flight_computer/test/main_loop_cases.h"
+    hardware_evidence: "Historical GY-91 reads/attitude reported; current actual WHO_AM_I and validity behavior UNKNOWN."
     known_gaps:
-      - "No checked I2C identity/read-length handling in production."
+      - "Actual populated silicon/model, orientation and current fault response require configuration-specific observation."
       - "No calibration record or sensor noise characterization."
-    notes: "Kalman math is native-tested; physical sensor behavior is not repository-verified."
+    notes: "MPU6500 0x70 / MPU9250 0x71 are explicit supported IMU IDs; unknown identities fail closed. MPU9250 magnetometer is unused, not claimed verified."
 
   barometer:
-    status: "IMPLEMENTED"
+    status: "TESTED_SOFTWARE"
     implementation_source:
       - "flight_computer/src/main.cpp"
+      - "flight_computer/src/sensor_validity.cpp"
     test_source:
-      - "STM32 source build only"
+      - "Native fake-bus BMP280 reference compensation/identity/read-failure tests and source builds"
     hardware_evidence: "UNKNOWN"
     known_gaps:
       - "Fixed 1013.25 hPa sea-level pressure."
-      - "No failure behavior after bmp.begin() failure."
       - "No repeatable altitude-noise or calibration evidence."
-    notes: "Used by arming and FSM altitude history."
+    notes: "BMP280 ID0x58 and checked raw/calibration reads replace library getters that hid I2C failures. Invalid input never enters ARM/FSM; no physical accuracy proof."
 
   tvc_servo_control:
     status: "IMPLEMENTED"
@@ -71,6 +78,7 @@ components:
     known_gaps:
       - "No physical mechanism test record."
       - "No load, jam, repeated-cycle, or deployment timing evidence."
+      - "Pre-existing +/-2 g sensor range cannot reach the FSM >2.5 g automatic-launch threshold (R2_1-005); native synthetic FSM logic tests do not close that configuration gap."
     notes: "Software command and state transition exist; hardware deployment is unverified."
 
   esp8266:
@@ -80,12 +88,13 @@ components:
       - "esp8266_firmware/src/relay_router.cpp"
     test_source:
       - "PlatformIO nodemcuv2 source build"
+      - "PlatformIO esp01_1m 1 MiB class source build"
       - "PlatformIO native relay-router tests"
     hardware_evidence: "UNKNOWN"
     known_gaps:
       - "No physical packet-loss, reconnect, range, or throughput test record."
       - "No authentication, integrity protection, request IDs, or multi-client arbitration."
-    notes: "Unicast UDP-to-UART commands and UART ACK/NACK return are TESTED_SOFTWARE only."
+    notes: "Historical ESP-01S telemetry recovered. Historical command-to-servo prose conflicts with the initial telemetry-only source; current R1 UDP/UART/ACK path remains TESTED_SOFTWARE only."
 
   telemetry_uplink:
     status: "IMPLEMENTED"

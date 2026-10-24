@@ -1,0 +1,258 @@
+schema_version: 1
+project: "Project Ad Astra / AI-rocket"
+registry_id: "AA-ASSET-REGISTRY-001"
+source_basis:
+  - id: "SRC-PURCHASE-2026-10-22"
+    type: "USER_PURCHASE_RECORD"
+    description: "User-provided completed transaction records covering the current project hardware/tool purchases."
+    ownership_policy: "Completed purchase records are accepted as ownership evidence unless the record itself shows the transaction was closed/cancelled."
+status_vocabulary:
+  ownership: [OWNED, EXCLUDED_CLOSED_TRANSACTION]
+  assignment: [UNASSIGNED, BENCH_TOOL, CANDIDATE, ASSIGNED]
+  verification: [PURCHASE_CONFIRMED, CONFIGURATION_UNVERIFIED, MODEL_TO_BE_PHOTO_CONFIRMED]
+
+assets:
+  - asset_id: "AST-MCU-APM32-001"
+    category: "flight_controller_mcu"
+    item: "APM32F103C8T6 core board"
+    quantity: 1
+    ownership: "OWNED"
+    ownership_evidence: "SRC-PURCHASE-2026-10-22"
+    verification: "PURCHASE_CONFIRMED"
+    candidate_lines: [GNC, AVIONICS]
+    assignment: "CANDIDATE"
+    notes: "Historical b6006c9 already has a domestic-compatible TAP-ID override. R2.1 provides an explicit experimental BluePill-core compatibility environment, not native APM32 support; exact board mapping/runtime remains hardware-gated. See docs/R2_1_APM32_COMPATIBILITY_MATRIX.md."
+
+  - asset_id: "AST-MCU-ESP32S3-001"
+    category: "high_performance_mcu"
+    item: "ESP32-S3 DevKitC-1 N16R8, 44-pin"
+    quantity: 1
+    ownership: "OWNED"
+    ownership_evidence: "SRC-PURCHASE-2026-10-22"
+    verification: "PURCHASE_CONFIRMED"
+    candidate_lines: [AVIONICS, RF, DATA_LOGGING]
+    assignment: "CANDIDATE"
+    notes: "Do not replace the APM32 flight-control path merely because this board is newer; evaluate as a separate node first."
+
+  - asset_id: "AST-WIFI-ESP01S-001"
+    category: "wifi_module"
+    item: "ESP8266 ESP-01S"
+    quantity: 1
+    ownership: "OWNED"
+    ownership_evidence: "SRC-PURCHASE-2026-10-22"
+    verification: "PURCHASE_CONFIRMED"
+    candidate_lines: [AVIONICS, COMMUNICATIONS]
+    assignment: "CANDIDATE"
+    notes: "R2.1 adds a separate 1 MB esp01_1m software target and retains historical NodeMCU-v2. Build does not establish actual flash population, boot, power or R1 bidirectional link operation."
+
+  - asset_id: "AST-SENSOR-GY91-001"
+    category: "imu_barometer_module"
+    item: "GY-91 module, MPU9250 + BMP280 order specification"
+    quantity: 1
+    ownership: "OWNED"
+    ownership_evidence: "SRC-PURCHASE-2026-10-22"
+    verification: "PURCHASE_CONFIRMED"
+    candidate_lines: [GNC, AVIONICS]
+    assignment: "CANDIDATE"
+
+  - asset_id: "AST-SERVO-SG92R-001"
+    category: "servo_actuator"
+    item: "SG92R 9g metal-gear servo"
+    quantity: 2
+    unit_ids: ["AST-SERVO-SG92R-U1", "AST-SERVO-SG92R-U2"]
+    ownership: "OWNED"
+    ownership_evidence: "SRC-PURCHASE-2026-10-22"
+    verification: "PURCHASE_CONFIRMED"
+    candidate_lines: [GNC, TVC]
+    assignment: "CANDIDATE"
+    notes: "Two units are suitable for two-axis bench work; exact dimensions/range remain measurement or datasheet inputs, not assumed from historical CAD."
+
+  - asset_id: "AST-POWER-LM2596-001"
+    category: "dc_dc_converter"
+    item: "LM2596S adjustable DC-DC buck module"
+    quantity: 1
+    ownership: "OWNED"
+    ownership_evidence: "SRC-PURCHASE-2026-10-22"
+    verification: "PURCHASE_CONFIRMED"
+    candidate_lines: [AVIONICS]
+    assignment: "CANDIDATE"
+    notes: "Bench power-conversion experiment asset; not accepted as final vehicle power architecture."
+
+  - asset_id: "AST-RF-RA02-001"
+    category: "lora_transceiver"
+    item: "SX1278 LoRa RA-02 module"
+    quantity: 2
+    ownership: "OWNED"
+    ownership_evidence: "SRC-PURCHASE-2026-10-22"
+    verification: "PURCHASE_CONFIRMED"
+    candidate_lines: [RF, TELEMETRY]
+    assignment: "CANDIDATE"
+
+  - asset_id: "AST-RF-SMA-IPEX1-001"
+    category: "rf_adapter"
+    item: "SMA-to-IPEX1/U.FL adapter"
+    quantity: 2
+    ownership: "OWNED"
+    ownership_evidence: "SRC-PURCHASE-2026-10-22"
+    verification: "PURCHASE_CONFIRMED"
+    candidate_lines: [RF]
+    assignment: "CANDIDATE"
+
+  - asset_id: "AST-RF-ANT-WHIP-001"
+    category: "rf_antenna"
+    item: "433 MHz short whip antenna, approximately 5 cm order variant"
+    quantity: 1
+    ownership: "OWNED"
+    ownership_evidence: "SRC-PURCHASE-2026-10-22"
+    verification: "PURCHASE_CONFIRMED"
+    candidate_lines: [RF]
+    assignment: "CANDIDATE"
+
+  - asset_id: "AST-RF-ANT-35DBI-001"
+    category: "rf_antenna"
+    item: "433 MHz / 3.5 dBi / 185 mm antenna with approximately 3 m feedline"
+    quantity: 1
+    ownership: "OWNED"
+    ownership_evidence: "SRC-PURCHASE-2026-10-22"
+    verification: "PURCHASE_CONFIRMED"
+    candidate_lines: [RF]
+    assignment: "CANDIDATE"
+
+  - asset_id: "AST-TOOL-STLINK-001"
+    category: "programmer_debugger"
+    item: "ST-LINK V2"
+    quantity: 1
+    ownership: "OWNED"
+    ownership_evidence: "SRC-PURCHASE-2026-10-22"
+    verification: "PURCHASE_CONFIRMED"
+    candidate_lines: [GNC, AVIONICS]
+    assignment: "BENCH_TOOL"
+
+  - asset_id: "AST-TOOL-CH340-001"
+    category: "usb_uart"
+    item: "CH340G USB-TTL module"
+    quantity: 1
+    ownership: "OWNED"
+    ownership_evidence: "SRC-PURCHASE-2026-10-22"
+    verification: "PURCHASE_CONFIRMED"
+    candidate_lines: [GNC, AVIONICS, RF]
+    assignment: "BENCH_TOOL"
+
+  - asset_id: "AST-TOOL-LOGIC-001"
+    category: "logic_analyzer"
+    item: "USB logic analyzer"
+    quantity: 1
+    ownership: "OWNED"
+    ownership_evidence: "SRC-PURCHASE-2026-10-22"
+    verification: "PURCHASE_CONFIRMED"
+    candidate_lines: [GNC, AVIONICS, RF]
+    assignment: "BENCH_TOOL"
+
+  - asset_id: "AST-TOOL-DMM-001"
+    category: "digital_multimeter"
+    item: "9205A-class digital multimeter"
+    quantity: 1
+    ownership: "OWNED"
+    ownership_evidence: "SRC-PURCHASE-2026-10-22"
+    verification: "PURCHASE_CONFIRMED"
+    candidate_lines: [GNC, AVIONICS, RF, MATERIALS_PROPULSION_SCIENCE]
+    assignment: "BENCH_TOOL"
+
+  - asset_id: "AST-TOOL-SCALE-001"
+    category: "electronic_scale"
+    item: "10 kg / 0.1 g electronic scale"
+    quantity: 1
+    ownership: "OWNED"
+    ownership_evidence: "SRC-PURCHASE-2026-10-22"
+    verification: "PURCHASE_CONFIRMED"
+    candidate_lines: [TVC, GNC, AVIONICS, MATERIALS_PROPULSION_SCIENCE]
+    assignment: "BENCH_TOOL"
+
+  - asset_id: "AST-PROTOTYPE-BREADBOARD-001"
+    category: "breadboard_kit"
+    item: "830-hole breadboard with jumper-wire set"
+    quantity: 1
+    ownership: "OWNED"
+    ownership_evidence: "SRC-PURCHASE-2026-10-22"
+    verification: "PURCHASE_CONFIRMED"
+    candidate_lines: [GNC, AVIONICS, RF]
+    assignment: "BENCH_TOOL"
+
+  - asset_id: "AST-PROTOTYPE-DUPONT-MM-001"
+    category: "jumper_wire"
+    item: "20 cm male-to-male Dupont wires"
+    quantity: 20
+    ownership: "OWNED"
+    ownership_evidence: "SRC-PURCHASE-2026-10-22"
+    verification: "PURCHASE_CONFIRMED"
+    candidate_lines: [GNC, AVIONICS, RF]
+    assignment: "BENCH_TOOL"
+
+  - asset_id: "AST-PROTOTYPE-DUPONT-FF-001"
+    category: "jumper_wire"
+    item: "20 cm female-to-female Dupont wires"
+    quantity: 20
+    ownership: "OWNED"
+    ownership_evidence: "SRC-PURCHASE-2026-10-22"
+    verification: "PURCHASE_CONFIRMED"
+    candidate_lines: [GNC, AVIONICS, RF]
+    assignment: "BENCH_TOOL"
+
+  - asset_id: "AST-TOOL-USB-AA-001"
+    category: "usb_cable"
+    item: "USB-A male-to-male data cable, 0.5 m order variant"
+    quantity: 1
+    ownership: "OWNED"
+    ownership_evidence: "SRC-PURCHASE-2026-10-22"
+    verification: "PURCHASE_CONFIRMED"
+    candidate_lines: [AVIONICS]
+    assignment: "BENCH_TOOL"
+
+  - asset_id: "AST-TRAINING-STC89-001"
+    category: "training_mcu_board"
+    item: "STC89C52RC 51-MCU development/learning kit"
+    quantity: 1
+    ownership: "OWNED"
+    ownership_evidence: "SRC-PURCHASE-2026-10-22"
+    verification: "PURCHASE_CONFIRMED"
+    candidate_lines: [TRAINING]
+    assignment: "UNASSIGNED"
+
+  - asset_id: "AST-TOOL-HOTGLUE-001"
+    category: "fabrication_tool"
+    item: "Small hot-glue gun with glue sticks"
+    quantity: 1
+    ownership: "OWNED"
+    ownership_evidence: "SRC-PURCHASE-2026-10-22"
+    verification: "PURCHASE_CONFIRMED"
+    candidate_lines: [PROTOTYPING]
+    assignment: "BENCH_TOOL"
+    notes: "For non-structural temporary prototyping only unless a specific engineering use is validated."
+
+  - asset_id: "AST-CHEM-PH-001"
+    category: "chemistry_measurement_consumable"
+    item: "pH test-strip set"
+    quantity: 1
+    ownership: "OWNED"
+    ownership_evidence: "SRC-PURCHASE-2026-10-22"
+    verification: "PURCHASE_CONFIRMED"
+    candidate_lines: [MATERIALS_PROPULSION_SCIENCE]
+    assignment: "BENCH_TOOL"
+    notes: "Foundational chemistry measurement only."
+
+  - asset_id: "AST-TOOL-TORCH-001"
+    category: "general_workshop_tool"
+    item: "Small butane/gas torch"
+    quantity: 1
+    ownership: "OWNED"
+    ownership_evidence: "SRC-PURCHASE-2026-10-22"
+    verification: "PURCHASE_CONFIRMED"
+    candidate_lines: [GENERAL_WORKSHOP]
+    assignment: "UNASSIGNED"
+    restrictions:
+      - "Not authorized by this registry for propulsion, propellant, energetic-material, ignition, or motor testing."
+
+excluded_transactions:
+  - record_id: "TX-EXCLUDED-LORA-CABLE-001"
+    item: "LoRa 150 mm connection cable, quantity 2"
+    reason: "User-provided transaction record showed transaction closed / timeout closed."

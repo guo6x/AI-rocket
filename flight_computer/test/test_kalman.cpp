@@ -1,3 +1,22 @@
+#ifndef AI_ROCKET_GNC_ONLY_BENCH
+#define AI_ROCKET_GNC_ONLY_BENCH 0
+#endif
+
+#if AI_ROCKET_GNC_ONLY_BENCH
+
+#include "gnc_only_bench_cases.h"
+
+int main(int argc, char **argv) {
+    UNITY_BEGIN();
+    RUN_TEST(test_gnc_only_valid_sensor_keeps_tvc_and_no_recovery_output);
+    RUN_TEST(test_gnc_only_deploy_command_is_rejected_without_recovery_state_or_output);
+    RUN_TEST(test_gnc_only_sensor_fault_neutralizes_tvc_and_rejects_control);
+    RUN_TEST(test_gnc_only_estop_reset_rearms_tvc_without_recovery_fsm);
+    return UNITY_END();
+}
+
+#else
+
 #include <unity.h>
 #include "../src/algorithms/kalman.h"
 #include "../src/algorithms/kalman.cpp" // 直接包含以方便 native 编译，或者在 platformio.ini 中配置
@@ -6,6 +25,9 @@
 #include "../src/command_line_buffer.h"
 #include "../src/command_processor.h"
 #include "../src/command_processor.cpp"
+#include "../src/sensor_validity.h"
+#include "../src/sensor_validity.cpp"
+#include "sensor_validity_cases.h"
 
 void setUp() {}
 void tearDown() {}
@@ -19,10 +41,10 @@ void test_kalman_initial_state() {
 void test_kalman_update() {
     KalmanFilter kf;
     kf.init(0.001f, 0.003f, 0.03f);
-    
+
     // 模拟 1 秒钟，角度从 0 变到 10，角速度为 10
     float angle = kf.update(10.0f, 10.0f, 1.0f);
-    
+
     // 经过一次更新，估计值应该向测量值靠近，但不完全相等（由于滤波）
     TEST_ASSERT_TRUE(angle > 0.0f);
     TEST_ASSERT_TRUE(angle < 15.0f); // 应该在合理范围内
@@ -31,7 +53,7 @@ void test_kalman_update() {
 void test_kalman_convergence() {
     KalmanFilter kf;
     kf.init(0.001f, 0.003f, 0.03f);
-    
+
     // 多次更新，模拟稳定在 45 度
     float angle = 0;
     for(int i = 0; i < 1000; i++) {
@@ -123,107 +145,107 @@ void test_fsm_disarm_does_not_reload_recovery() {
 void test_command_valid_state_sequence_and_actions() {
     CommandProcessor processor;
 
-    CommandDecision pid = processor.process("set_pid:1.0,0.1,0.3");
+    CommandDecision pid = processor.process("set_pid:1.0,0.1,0.3", false, true, true);
     TEST_ASSERT_TRUE(pid.accepted());
     TEST_ASSERT_EQUAL(ACTION_SET_PID, pid.action);
     TEST_ASSERT_FLOAT_WITHIN(0.0001f, 1.0f, pid.kp);
 
-    CommandDecision arm = processor.process("arm");
+    CommandDecision arm = processor.process("arm", false, true, true);
     TEST_ASSERT_TRUE(arm.accepted());
     TEST_ASSERT_EQUAL(COMMAND_ARMED, processor.state());
 
-    CommandDecision servo = processor.process("set_servo:90,91");
+    CommandDecision servo = processor.process("set_servo:90,91", false, true, true);
     TEST_ASSERT_TRUE(servo.accepted());
     TEST_ASSERT_EQUAL(90, servo.servo_pitch);
     TEST_ASSERT_EQUAL(91, servo.servo_roll);
 
-    TEST_ASSERT_TRUE(processor.process("auto_on").accepted());
+    TEST_ASSERT_TRUE(processor.process("auto_on", false, true, true).accepted());
     TEST_ASSERT_TRUE(processor.autoEnabled());
-    TEST_ASSERT_TRUE(processor.process("auto_off").accepted());
+    TEST_ASSERT_TRUE(processor.process("auto_off", false, true, true).accepted());
     TEST_ASSERT_EQUAL(COMMAND_ARMED, processor.state());
-    TEST_ASSERT_TRUE(processor.process("auto_off").accepted());
-    TEST_ASSERT_TRUE(processor.process("deploy_chute").accepted());
+    TEST_ASSERT_TRUE(processor.process("auto_off", false, true, true).accepted());
+    TEST_ASSERT_TRUE(processor.process("deploy_chute", false, true, true).accepted());
 }
 
 void test_estop_reset_never_restores_auto() {
     CommandProcessor processor;
-    TEST_ASSERT_TRUE(processor.process("arm").accepted());
-    TEST_ASSERT_TRUE(processor.process("auto_on").accepted());
+    TEST_ASSERT_TRUE(processor.process("arm", false, true, true).accepted());
+    TEST_ASSERT_TRUE(processor.process("auto_on", false, true, true).accepted());
     TEST_ASSERT_TRUE(processor.autoEnabled());
 
-    CommandDecision estop = processor.process("estop");
+    CommandDecision estop = processor.process("estop", false, true, true);
     TEST_ASSERT_TRUE(estop.accepted());
     TEST_ASSERT_EQUAL(ACTION_ESTOP, estop.action);
     TEST_ASSERT_TRUE(processor.estopLatched());
     TEST_ASSERT_FALSE(processor.autoEnabled());
 
-    CommandDecision reset = processor.process("reset");
+    CommandDecision reset = processor.process("reset", false, true, true);
     TEST_ASSERT_TRUE(reset.accepted());
     TEST_ASSERT_EQUAL(ACTION_RESET, reset.action);
     TEST_ASSERT_EQUAL(COMMAND_IDLE, processor.state());
     TEST_ASSERT_FALSE(processor.autoEnabled());
     TEST_ASSERT_EQUAL(COMMAND_NACK_INVALID_STATE,
-                      processor.process("auto_on").result);
+                      processor.process("auto_on", false, true, true).result);
 }
 
 void test_estop_is_idempotent_and_gates_unsafe_commands() {
     CommandProcessor processor;
-    TEST_ASSERT_TRUE(processor.process("estop").accepted());
-    TEST_ASSERT_TRUE(processor.process("estop").accepted());
+    TEST_ASSERT_TRUE(processor.process("estop", false, true, true).accepted());
+    TEST_ASSERT_TRUE(processor.process("estop", false, true, true).accepted());
     TEST_ASSERT_EQUAL(COMMAND_NACK_ESTOP_LATCHED,
-                      processor.process("set_servo:90,90").result);
+                      processor.process("set_servo:90,90", false, true, true).result);
     TEST_ASSERT_EQUAL(COMMAND_NACK_ESTOP_LATCHED,
-                      processor.process("set_pid:1,0,0.1").result);
+                      processor.process("set_pid:1,0,0.1", false, true, true).result);
     TEST_ASSERT_EQUAL(COMMAND_NACK_ESTOP_LATCHED,
-                      processor.process("arm").result);
+                      processor.process("arm", false, true, true).result);
     TEST_ASSERT_EQUAL(COMMAND_NACK_MALFORMED,
-                      processor.process("set_servo:bad").result);
-    TEST_ASSERT_TRUE(processor.process("deploy_chute").accepted());
+                      processor.process("set_servo:bad", false, true, true).result);
+    TEST_ASSERT_TRUE(processor.process("deploy_chute", false, true, true).accepted());
 }
 
 void test_malformed_unknown_and_extra_arguments_are_atomic() {
     CommandProcessor processor;
-    TEST_ASSERT_EQUAL(COMMAND_NACK_MALFORMED, processor.process("").result);
-    TEST_ASSERT_EQUAL(COMMAND_NACK_UNKNOWN, processor.process("launch").result);
-    TEST_ASSERT_EQUAL(COMMAND_NACK_UNKNOWN, processor.process("set_ser").result);
+    TEST_ASSERT_EQUAL(COMMAND_NACK_MALFORMED, processor.process("", false, true, true).result);
+    TEST_ASSERT_EQUAL(COMMAND_NACK_UNKNOWN, processor.process("launch", false, true, true).result);
+    TEST_ASSERT_EQUAL(COMMAND_NACK_UNKNOWN, processor.process("set_ser", false, true, true).result);
     TEST_ASSERT_EQUAL(COMMAND_NACK_MALFORMED,
-                      processor.process("set_servo:90").result);
+                      processor.process("set_servo:90", false, true, true).result);
     TEST_ASSERT_EQUAL(COMMAND_NACK_MALFORMED,
-                      processor.process("set_servo:ninety,90").result);
+                      processor.process("set_servo:ninety,90", false, true, true).result);
     TEST_ASSERT_EQUAL(COMMAND_NACK_MALFORMED,
-                      processor.process("set_servo:90,90,90").result);
+                      processor.process("set_servo:90,90,90", false, true, true).result);
     TEST_ASSERT_EQUAL(COMMAND_NACK_MALFORMED,
-                      processor.process("set_pid:1.0,0.1").result);
+                      processor.process("set_pid:1.0,0.1", false, true, true).result);
     TEST_ASSERT_EQUAL(COMMAND_NACK_MALFORMED,
-                      processor.process("set_pid:1.0,0.1,nan").result);
+                      processor.process("set_pid:1.0,0.1,nan", false, true, true).result);
     TEST_ASSERT_EQUAL(COMMAND_NACK_MALFORMED,
-                      processor.process("set_pid:1.0,0.1,0.3,extra").result);
+                      processor.process("set_pid:1.0,0.1,0.3,extra", false, true, true).result);
     TEST_ASSERT_EQUAL(COMMAND_IDLE, processor.state());
 }
 
 void test_command_ranges_and_state_gates() {
     CommandProcessor processor;
     TEST_ASSERT_EQUAL(COMMAND_NACK_OUT_OF_RANGE,
-                      processor.process("set_servo:-1,90").result);
+                      processor.process("set_servo:-1,90", false, true, true).result);
     TEST_ASSERT_EQUAL(COMMAND_NACK_OUT_OF_RANGE,
-                      processor.process("set_servo:90,181").result);
+                      processor.process("set_servo:90,181", false, true, true).result);
     TEST_ASSERT_EQUAL(COMMAND_NACK_OUT_OF_RANGE,
-                      processor.process("set_pid:10.1,0,0").result);
+                      processor.process("set_pid:10.1,0,0", false, true, true).result);
     TEST_ASSERT_EQUAL(COMMAND_NACK_INVALID_STATE,
-                      processor.process("set_servo:90,90").result);
+                      processor.process("set_servo:90,90", false, true, true).result);
     TEST_ASSERT_EQUAL(COMMAND_NACK_INVALID_STATE,
-                      processor.process("arm", true).result);
+                      processor.process("arm", true, true, true).result);
     TEST_ASSERT_EQUAL(COMMAND_NACK_INVALID_STATE,
-                      processor.process("arm", false, false).result);
+                      processor.process("arm", false, false, true).result);
     TEST_ASSERT_EQUAL(COMMAND_NACK_INVALID_STATE,
-                      processor.process("reset").result);
+                      processor.process("reset", false, true, true).result);
 }
 
 void test_auto_on_rejects_deployed_recovery_context() {
     CommandProcessor processor;
-    TEST_ASSERT_TRUE(processor.process("arm").accepted());
+    TEST_ASSERT_TRUE(processor.process("arm", false, true, true).accepted());
 
-    CommandDecision auto_on = processor.process("auto_on", true);
+    CommandDecision auto_on = processor.process("auto_on", true, true, true);
     TEST_ASSERT_EQUAL(COMMAND_NACK_INVALID_STATE, auto_on.result);
     TEST_ASSERT_EQUAL(ACTION_NONE, auto_on.action);
     TEST_ASSERT_EQUAL(COMMAND_ARMED, processor.state());
@@ -234,9 +256,9 @@ void test_automatic_recovery_transition_prevents_auto_reenable() {
     FlightStateMachine fsm;
     CommandProcessor processor;
     TEST_ASSERT_TRUE(processor.process(
-        "arm", fsm.isChuteDeployed(), fsm.getState() == FS_IDLE).accepted());
+        "arm", fsm.isChuteDeployed(), fsm.getState() == FS_IDLE, true).accepted());
     fsm.arm(0.0f, 1000);
-    TEST_ASSERT_TRUE(processor.process("auto_on").accepted());
+    TEST_ASSERT_TRUE(processor.process("auto_on", false, true, true).accepted());
 
     drive_to_powered(fsm, 1010);
     fsm.update(1.0f, 0.0f, 1040 + 15001);
@@ -244,7 +266,7 @@ void test_automatic_recovery_transition_prevents_auto_reenable() {
     processor.disableAutoForSafety();
 
     CommandDecision auto_on = processor.process(
-        "auto_on", fsm.isChuteDeployed(), fsm.getState() == FS_IDLE);
+        "auto_on", fsm.isChuteDeployed(), fsm.getState() == FS_IDLE, true);
     TEST_ASSERT_EQUAL(COMMAND_NACK_INVALID_STATE, auto_on.result);
     TEST_ASSERT_EQUAL(COMMAND_ARMED, processor.state());
     TEST_ASSERT_FALSE(processor.autoEnabled());
@@ -302,19 +324,23 @@ void test_ack_nack_reason_vocabulary() {
                              CommandProcessor::resultText(COMMAND_NACK_ESTOP_LATCHED));
     TEST_ASSERT_EQUAL_STRING("unknown_command",
                              CommandProcessor::resultText(COMMAND_NACK_UNKNOWN));
+    TEST_ASSERT_EQUAL_STRING("recovery_disabled",
+                             CommandProcessor::resultText(COMMAND_NACK_RECOVERY_DISABLED));
 }
 
 void test_line_buffer_to_canonical_processor_end_to_end() {
     CommandLineBuffer wifi_uart;
     CommandProcessor processor;
     TEST_ASSERT_EQUAL(COMMAND_LINE_READY, feed(wifi_uart, "arm\n"));
-    CommandDecision decision = processor.process(wifi_uart.line());
+    CommandDecision decision = processor.process(wifi_uart.line(), false, true, true);
     TEST_ASSERT_TRUE(decision.accepted());
     TEST_ASSERT_EQUAL_STRING("arm", decision.command_name);
     TEST_ASSERT_EQUAL_STRING("accepted",
                              CommandProcessor::resultText(decision.result));
     TEST_ASSERT_EQUAL(COMMAND_ARMED, processor.state());
 }
+
+#include "main_loop_cases.h"
 
 int main(int argc, char **argv) {
     UNITY_BEGIN();
@@ -339,5 +365,29 @@ int main(int argc, char **argv) {
     RUN_TEST(test_embedded_nul_discards_entire_line);
     RUN_TEST(test_ack_nack_reason_vocabulary);
     RUN_TEST(test_line_buffer_to_canonical_processor_end_to_end);
+    RUN_TEST(test_gy91_supported_identities_and_addresses);
+    RUN_TEST(test_gy91_unknown_and_missing_identity_fail_closed);
+    RUN_TEST(test_gy91_checked_writes_and_scale_readback);
+    RUN_TEST(test_gy91_every_short_imu_read_is_invalid);
+    RUN_TEST(test_gy91_signed_decode_and_reference_barometer_sample);
+    RUN_TEST(test_gy91_invalid_raw_samples_do_not_become_zero_attitude);
+    RUN_TEST(test_gy91_bmp_identity_calibration_and_config_failures);
+    RUN_TEST(test_gy91_bmp_waits_for_sleep_and_calibration_copy);
+    RUN_TEST(test_gy91_bmp_short_and_disabled_samples_fail_closed);
+    RUN_TEST(test_gy91_nonfinite_and_out_of_range_values_fail_closed);
+    RUN_TEST(test_gy91_runtime_identity_or_scale_change_latches);
+    RUN_TEST(test_sensor_fault_command_gate_preserves_emergency_paths);
+    RUN_TEST(test_sensor_fault_reset_never_restores_control);
+    RUN_TEST(test_sensor_fault_transport_command_parity);
+    RUN_TEST(test_actual_wire_adapter_rejects_nack_short_and_negative_reads);
+    RUN_TEST(test_actual_wire_adapter_enforces_sample_io_budget);
+    RUN_TEST(test_actual_loop_gates_commands_before_first_and_lost_sample);
+    RUN_TEST(test_actual_loop_budget_exhaustion_still_services_estop);
+    RUN_TEST(test_actual_loop_fault_skips_kalman_pid_and_recovery_fsm);
+    RUN_TEST(test_actual_loop_reset_and_reconnected_sensor_cannot_resume_auto);
+    RUN_TEST(test_actual_loop_estop_reset_and_emergency_deploy_survive_sensor_fault);
+    RUN_TEST(test_actual_loop_failed_init_never_reads_or_moves_with_control_commands);
     return UNITY_END();
 }
+
+#endif
