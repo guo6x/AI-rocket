@@ -55,3 +55,53 @@ def test_main_window_ignores_udp_response_from_wrong_source():
     window.data_thread = None
     window.close()
     app.processEvents()
+
+
+
+def test_main_window_displays_sensor_nack_not_ack_or_timeout():
+    app = QApplication.instance() or QApplication([])
+    window = MainWindow()
+    transport = FakeConnectedTransport()
+    window.data_thread = transport
+    try:
+        window.on_send_command("arm")
+        assert window.command_tracker.pending
+        window.on_data_received("NACK sensor_invalid arm")
+        label = window.command_panel.command_status_label.text()
+        assert "COMMAND: NACK arm" in label
+        assert "sensor_invalid" in label
+        assert "ACKNOWLEDGED" not in label
+        assert "TIMEOUT" not in label
+        assert not window.command_tracker.pending
+    finally:
+        window.data_thread = None
+        window.close()
+        app.processEvents()
+
+
+def test_main_window_udp_recovery_disabled_nack_keeps_source_correlation():
+    app = QApplication.instance() or QApplication([])
+    window = MainWindow()
+    transport = UdpReader(target_addr=("192.0.2.10", 9876))
+    transport.is_running = True
+    window.data_thread = transport
+    try:
+        window.command_tracker.mark_sent("deploy_chute", now=10.0)
+        window.on_udp_command_response(
+            "NACK recovery_disabled deploy_chute", ("192.0.2.11", 9876)
+        )
+        assert window.command_tracker.pending
+        window.on_udp_command_response(
+            "NACK recovery_disabled deploy_chute", ("192.0.2.10", 9876)
+        )
+        label = window.command_panel.command_status_label.text()
+        assert not window.command_tracker.pending
+        assert "COMMAND: NACK deploy_chute" in label
+        assert "recovery_disabled" in label
+        assert "ACKNOWLEDGED" not in label
+        assert "TIMEOUT" not in label
+    finally:
+        transport.is_running = False
+        window.data_thread = None
+        window.close()
+        app.processEvents()

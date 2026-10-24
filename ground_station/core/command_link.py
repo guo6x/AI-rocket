@@ -10,7 +10,7 @@ import time
 ACK_RE = re.compile(r"^ACK ([a-z_]+)$")
 NACK_RE = re.compile(
     r"^NACK (malformed|invalid_state|out_of_range|estop_latched|"
-    r"unknown_command|overlong) ([a-z_]+)$"
+    r"unknown_command|overlong|sensor_invalid|recovery_disabled) ([a-z_]+)$"
 )
 
 
