@@ -341,6 +341,7 @@ void test_line_buffer_to_canonical_processor_end_to_end() {
 }
 
 #include "main_loop_cases.h"
+#include "gnc_offline_cases.h"
 
 int main(int argc, char **argv) {
     UNITY_BEGIN();
@@ -387,6 +388,10 @@ int main(int argc, char **argv) {
     RUN_TEST(test_actual_loop_reset_and_reconnected_sensor_cannot_resume_auto);
     RUN_TEST(test_actual_loop_estop_reset_and_emergency_deploy_survive_sensor_fault);
     RUN_TEST(test_actual_loop_failed_init_never_reads_or_moves_with_control_commands);
+    RUN_TEST(test_production_pid_signed_zero_and_step);
+    RUN_TEST(test_production_pid_output_and_rate_limits);
+    RUN_TEST(test_production_kalman_signed_static_and_step);
+    RUN_TEST(test_main_dt_invalid_values_fall_back_to_10ms);
     return UNITY_END();
 }
 

@@ -1,0 +1,97 @@
+schema_version: 1
+contract_id: "AA-GNC-OFFLINE-CONTRACT-001"
+phase: "R2.3"
+source_baseline: "f2af1326db5ea627c20d5b3c2045b707ecf72d5e"
+development_mode: "OFFLINE_SOURCE_AND_MODEL_RECONCILIATION"
+evidence_ceiling: "TESTED_SOFTWARE"
+target_profile: "gnc_only_bench"
+status: "AUDIT_CONTRACT_OPEN"
+principles:
+  - "The production firmware, not a Python model, defines the implemented control law."
+  - "Simulation is a hypothesis-testing environment, never a physical validation substitute."
+  - "Unknown sensor mounting and servo-to-mechanism directions are unknown, not inferred from code or old plots."
+  - "Avoid changing production gains, servo direction, safety-command semantics, physical limits or flight profiles."
+  - "No hardware, RF emission, energetic propulsion, EDF actuation, recovery deployment or free flight."
+
+production_control_path:
+  source:
+    - "flight_computer/src/main.cpp"
+    - "flight_computer/src/algorithms/kalman.cpp"
+    - "flight_computer/src/algorithms/pid.cpp"
+    - "flight_computer/src/sensor_validity.cpp"
+  imu_channels:
+    pitch_measurement: "atan2(-ax, sqrt(ay*ay+az*az)), degrees"
+    roll_measurement: "atan2(ay, az), degrees"
+    pitch_gyro_channel: "gy"
+    roll_gyro_channel: "gx"
+    source_units: "g and degrees_per_second"
+    mounting_transform: "UNKNOWN"
+    sensor_axis_to_bench_axis: "UNKNOWN"
+  feedback:
+    signed_error: "target - current"
+    targets:
+      pitch_deg: 0
+      roll_deg: 0
+    actuator_commands:
+      pitch: "servoPitch.write(constrain(90 + PID(pitch_flt,dt), 0, 180))"
+      roll: "servoRoll.write(constrain(90 + PID(roll_flt,dt), 0, 180))"
+    pitch_actuator_pin: "PA6"
+    roll_actuator_pin: "PA7"
+    physical_actuator_sign: "UNKNOWN"
+    simulated_plant_polarity: "NOT_AUTHORIZED_AS_PHYSICAL_FACT"
+  timing:
+    implementation: "one controller update per valid loop with delay(50) and additional sample, comm and reporting work"
+    loop_period_measured: false
+    dt_source: "micros() difference; fallback 0.01s if dt <= 0 or dt > 0.5s"
+    pid_rate_limit_unit: "degrees_per_compute_call (not degrees_per_second)"
+    existing_sim_model:
+      source: "dynamics_sim/physics_engine_2d.py"
+      control_update_hz: 100
+      integration_step_s: 0.001
+    comparison_status: "MISMATCH"
+  existing_physical_assumptions:
+    mass: "UNKNOWN"
+    cg: "UNKNOWN"
+    moment_of_inertia: "UNKNOWN"
+    servo_linkage_to_nozzle_map: "UNKNOWN"
+    physical_thrust: "UNKNOWN"
+    plant_axis_sign: "UNKNOWN"
+
+observed_conflicts:
+  - id: "R2_3-001"
+    type: "POLARITY_CONVENTION"
+    description: "Firmware uses error=target-current, 90+PID output. dynamics_sim physics uses negative thrust torque for positive servo offset and its PID2D uses error=current; legacy sweep scripts disagree on extra negation."
+    conclusion: "Contradictory conventions in models. Actual physical corrective sign remains unknown."
+  - id: "R2_3-002"
+    type: "CONTROL_SAMPLE_RATE"
+    description: "Firmware loop has delay(50) plus processing; 2D model calls PID every 10 ms. A per-call rate limiter changes its effective degrees/second limit with call frequency."
+    conclusion: "Prior 100 Hz simulated stability cannot qualify the nominal ~20 Hz source behavior."
+  - id: "R2_3-003"
+    type: "AXIS_NAMING_AND_MAPPING"
+    description: "Firmware uses pitch/roll and gy/gx; 2D simulation labels theta_x/theta_y as pitch/yaw; mounting and actuator installation orientation are unproven."
+    conclusion: "No credible physical axis transformation or sign matrix exists."
+  - id: "R2_3-004"
+    type: "MISSING_PHYSICAL_PLANT"
+    description: "Mass/CG/inertia/EDF/linkage parameters from old studies are different hypothetical articles."
+    conclusion: "A simulation may be numerically consistent but cannot support physical tuning or flight readiness."
+  - id: "R2_3-005"
+    type: "DT_PATH"
+    description: "Firmware clamps anomalous dt to 0.01 s rather than proving actual deterministic scheduler timing."
+    conclusion: "Need simulation-only boundary cases; do not silently change runtime behavior without regression."
+
+software_acceptance:
+  - "Trace exact pitch/roll sensor, Kalman and PID signs with executable deterministic tests."
+  - "Compare current C++ PID to an independent Python oracle over identical input sequences and dt; flag any divergence rather than tuning outputs."
+  - "Compare a synthetic signed perturbation in both directions for each axis; distinguish algorithm response from plant-corrective response."
+  - "Test invalid readings/NaN guard, E-STOP/RESET, sensor fault neutralization and recovery-disabled guards in the GNC-only mode."
+  - "Demonstrate timing semantics with nominal and irregular dt and the actual degrees-per-call rate limit."
+  - "Treat simulation model sign as configurable only in an offline audit harness; never assume physical servo linkage sign from simulation."
+  - "Preserve all historical models/results without overwriting original files."
+  - "Record exact git SHA, commands, dependencies, source hashes and deterministic seed for any generated outputs."
+  - "Explicitly report whether each question is PASS, FAIL, UNKNOWN_MOUNTING, UNKNOWN_PLANT or NEEDS_LATER_HARDWARE_OBSERVATION."
+
+release_limits:
+  - "No PID tuning, gains change, actuator range change or autonomous flight control release."
+  - "No physical corrective-direction claim without actual IMU mounting and servo linkage evidence."
+  - "No guidance or navigation target tracking, trajectory optimization or energetic motor experimentation."
+  - "R2_1-005 recovery detection remains BLOCKED and outside this scope."

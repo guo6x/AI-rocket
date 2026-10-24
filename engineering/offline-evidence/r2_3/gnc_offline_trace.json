@@ -1,0 +1,485 @@
+{
+  "command": "python scripts/gnc_offline_oracle.py --write-json engineering/offline-evidence/r2_3/gnc_offline_trace.json",
+  "comparison": "PASS",
+  "contract": "AA-GNC-OFFLINE-CONTRACT-001",
+  "cpp_rows": [
+    {
+      "case": "positive_perturbation",
+      "kind": "PID",
+      "step": 0,
+      "value": -0.300000012
+    },
+    {
+      "case": "positive_perturbation",
+      "kind": "PID",
+      "step": 1,
+      "value": -0.600000024
+    },
+    {
+      "case": "positive_perturbation",
+      "kind": "PID",
+      "step": 2,
+      "value": -0.300000012
+    },
+    {
+      "case": "negative_perturbation",
+      "kind": "PID",
+      "step": 0,
+      "value": 0.300000012
+    },
+    {
+      "case": "negative_perturbation",
+      "kind": "PID",
+      "step": 1,
+      "value": 0.600000024
+    },
+    {
+      "case": "negative_perturbation",
+      "kind": "PID",
+      "step": 2,
+      "value": 0.300000012
+    },
+    {
+      "case": "zero_and_step",
+      "kind": "PID",
+      "step": 0,
+      "value": 0.0
+    },
+    {
+      "case": "zero_and_step",
+      "kind": "PID",
+      "step": 1,
+      "value": 0.0
+    },
+    {
+      "case": "zero_and_step",
+      "kind": "PID",
+      "step": 2,
+      "value": -0.300000012
+    },
+    {
+      "case": "zero_and_step",
+      "kind": "PID",
+      "step": 3,
+      "value": -0.600000024
+    },
+    {
+      "case": "zero_and_step",
+      "kind": "PID",
+      "step": 4,
+      "value": -0.300000012
+    },
+    {
+      "case": "flight_limit_and_rate",
+      "kind": "PID",
+      "step": 0,
+      "value": -0.300000012
+    },
+    {
+      "case": "flight_limit_and_rate",
+      "kind": "PID",
+      "step": 1,
+      "value": 0.0
+    },
+    {
+      "case": "flight_limit_and_rate",
+      "kind": "PID",
+      "step": 2,
+      "value": -0.300000012
+    },
+    {
+      "case": "flight_limit_and_rate",
+      "kind": "PID",
+      "step": 3,
+      "value": 0.0
+    },
+    {
+      "case": "irregular_dt",
+      "kind": "PID",
+      "step": 0,
+      "value": -0.300000012
+    },
+    {
+      "case": "irregular_dt",
+      "kind": "PID",
+      "step": 1,
+      "value": -0.600000024
+    },
+    {
+      "case": "irregular_dt",
+      "kind": "PID",
+      "step": 2,
+      "value": -0.900000036
+    },
+    {
+      "case": "irregular_dt",
+      "kind": "PID",
+      "step": 3,
+      "value": -0.600000024
+    },
+    {
+      "case": "testbench_profile",
+      "kind": "PID",
+      "step": 0,
+      "value": -1.0
+    },
+    {
+      "case": "testbench_profile",
+      "kind": "PID",
+      "step": 1,
+      "value": 0.0
+    },
+    {
+      "case": "testbench_profile",
+      "kind": "PID",
+      "step": 2,
+      "value": -1.0
+    },
+    {
+      "case": "kalman_static_zero",
+      "kind": "KALMAN",
+      "step": 0,
+      "value": 0.0
+    },
+    {
+      "case": "kalman_static_zero",
+      "kind": "KALMAN",
+      "step": 1,
+      "value": 0.0
+    },
+    {
+      "case": "kalman_static_zero",
+      "kind": "KALMAN",
+      "step": 2,
+      "value": 0.0
+    },
+    {
+      "case": "kalman_static_zero",
+      "kind": "KALMAN",
+      "step": 3,
+      "value": 0.0
+    },
+    {
+      "case": "kalman_positive_step",
+      "kind": "KALMAN",
+      "step": 0,
+      "value": 0.003332223
+    },
+    {
+      "case": "kalman_positive_step",
+      "kind": "KALMAN",
+      "step": 1,
+      "value": 0.059958804
+    },
+    {
+      "case": "kalman_positive_step",
+      "kind": "KALMAN",
+      "step": 2,
+      "value": 0.083158053
+    },
+    {
+      "case": "kalman_positive_step",
+      "kind": "KALMAN",
+      "step": 3,
+      "value": -0.016767714
+    },
+    {
+      "case": "kalman_negative_step",
+      "kind": "KALMAN",
+      "step": 0,
+      "value": -0.003332223
+    },
+    {
+      "case": "kalman_negative_step",
+      "kind": "KALMAN",
+      "step": 1,
+      "value": -0.059958804
+    },
+    {
+      "case": "kalman_negative_step",
+      "kind": "KALMAN",
+      "step": 2,
+      "value": -0.083158053
+    },
+    {
+      "case": "kalman_negative_step",
+      "kind": "KALMAN",
+      "step": 3,
+      "value": 0.016767714
+    }
+  ],
+  "dependencies": {
+    "pytest": "8.0.0",
+    "pyyaml": "6.0.1"
+  },
+  "failures": [],
+  "input_rows": 49,
+  "input_trace_sha256": "d2a104b5e9f3e5e9bdd1981eaa44d1ed48414c6cefc0daa88c44f776002bbf07",
+  "output_rows": 34,
+  "physical_hardware": false,
+  "plant_or_mounting_claim": false,
+  "recovery_output_touched": false,
+  "results": [
+    {
+      "case": "positive_perturbation",
+      "kind": "PID",
+      "step": 0,
+      "value": -0.30000001192092896
+    },
+    {
+      "case": "positive_perturbation",
+      "kind": "PID",
+      "step": 1,
+      "value": -0.6000000238418579
+    },
+    {
+      "case": "positive_perturbation",
+      "kind": "PID",
+      "step": 2,
+      "value": -0.30000001192092896
+    },
+    {
+      "case": "negative_perturbation",
+      "kind": "PID",
+      "step": 0,
+      "value": 0.30000001192092896
+    },
+    {
+      "case": "negative_perturbation",
+      "kind": "PID",
+      "step": 1,
+      "value": 0.6000000238418579
+    },
+    {
+      "case": "negative_perturbation",
+      "kind": "PID",
+      "step": 2,
+      "value": 0.30000001192092896
+    },
+    {
+      "case": "zero_and_step",
+      "kind": "PID",
+      "step": 0,
+      "value": 0.0
+    },
+    {
+      "case": "zero_and_step",
+      "kind": "PID",
+      "step": 1,
+      "value": 0.0
+    },
+    {
+      "case": "zero_and_step",
+      "kind": "PID",
+      "step": 2,
+      "value": -0.30000001192092896
+    },
+    {
+      "case": "zero_and_step",
+      "kind": "PID",
+      "step": 3,
+      "value": -0.6000000238418579
+    },
+    {
+      "case": "zero_and_step",
+      "kind": "PID",
+      "step": 4,
+      "value": -0.30000001192092896
+    },
+    {
+      "case": "flight_limit_and_rate",
+      "kind": "PID",
+      "step": 0,
+      "value": -0.30000001192092896
+    },
+    {
+      "case": "flight_limit_and_rate",
+      "kind": "PID",
+      "step": 1,
+      "value": -1.1920929132713809e-08
+    },
+    {
+      "case": "flight_limit_and_rate",
+      "kind": "PID",
+      "step": 2,
+      "value": -0.30000001192092896
+    },
+    {
+      "case": "flight_limit_and_rate",
+      "kind": "PID",
+      "step": 3,
+      "value": -1.1920929132713809e-08
+    },
+    {
+      "case": "irregular_dt",
+      "kind": "PID",
+      "step": 0,
+      "value": -0.30000001192092896
+    },
+    {
+      "case": "irregular_dt",
+      "kind": "PID",
+      "step": 1,
+      "value": -0.6000000238418579
+    },
+    {
+      "case": "irregular_dt",
+      "kind": "PID",
+      "step": 2,
+      "value": -0.9000000357627869
+    },
+    {
+      "case": "irregular_dt",
+      "kind": "PID",
+      "step": 3,
+      "value": -0.6000000238418579
+    },
+    {
+      "case": "testbench_profile",
+      "kind": "PID",
+      "step": 0,
+      "value": -1.0
+    },
+    {
+      "case": "testbench_profile",
+      "kind": "PID",
+      "step": 1,
+      "value": 0.0
+    },
+    {
+      "case": "testbench_profile",
+      "kind": "PID",
+      "step": 2,
+      "value": -1.0
+    },
+    {
+      "case": "kalman_static_zero",
+      "kind": "KALMAN",
+      "step": 0,
+      "value": 0.0
+    },
+    {
+      "case": "kalman_static_zero",
+      "kind": "KALMAN",
+      "step": 1,
+      "value": 0.0
+    },
+    {
+      "case": "kalman_static_zero",
+      "kind": "KALMAN",
+      "step": 2,
+      "value": 0.0
+    },
+    {
+      "case": "kalman_static_zero",
+      "kind": "KALMAN",
+      "step": 3,
+      "value": 0.0
+    },
+    {
+      "case": "kalman_positive_step",
+      "kind": "KALMAN",
+      "step": 0,
+      "value": 0.0033322228118777275
+    },
+    {
+      "case": "kalman_positive_step",
+      "kind": "KALMAN",
+      "step": 1,
+      "value": 0.0599588043987751
+    },
+    {
+      "case": "kalman_positive_step",
+      "kind": "KALMAN",
+      "step": 2,
+      "value": 0.08315805345773697
+    },
+    {
+      "case": "kalman_positive_step",
+      "kind": "KALMAN",
+      "step": 3,
+      "value": -0.016767717897892
+    },
+    {
+      "case": "kalman_negative_step",
+      "kind": "KALMAN",
+      "step": 0,
+      "value": -0.0033322228118777275
+    },
+    {
+      "case": "kalman_negative_step",
+      "kind": "KALMAN",
+      "step": 1,
+      "value": -0.0599588043987751
+    },
+    {
+      "case": "kalman_negative_step",
+      "kind": "KALMAN",
+      "step": 2,
+      "value": -0.08315805345773697
+    },
+    {
+      "case": "kalman_negative_step",
+      "kind": "KALMAN",
+      "step": 3,
+      "value": 0.016767717897892
+    }
+  ],
+  "schema_version": 1,
+  "seed": "not_applicable_fixed_trace",
+  "source": [
+    "docs/R2_2_GNC_ONLY_BENCH_ISOLATION.md",
+    "docs/R2_3_GNC_SOURCE_SIM_DELTA_REPORT.md",
+    "docs/R2_3_OFFLINE_GNC_SOURCE_AUDIT.md",
+    "dynamics_sim/cg_impact_study.py",
+    "dynamics_sim/param_sweep.py",
+    "dynamics_sim/physics_engine_2d.py",
+    "dynamics_sim/test_polarity.py",
+    "engineering/gnc-offline-contract.yaml",
+    "engineering/verification-status.yaml",
+    "flight_computer/src/algorithms/kalman.cpp",
+    "flight_computer/src/algorithms/kalman.h",
+    "flight_computer/src/algorithms/pid.cpp",
+    "flight_computer/src/algorithms/pid.h",
+    "flight_computer/src/main.cpp",
+    "flight_computer/src/sensor_validity.cpp",
+    "flight_computer/src/sensor_validity.h",
+    "flight_computer/test/gnc_offline_cases.h",
+    "flight_computer/test/test_kalman.cpp",
+    "scripts/check.py",
+    "scripts/gnc_offline_cpp_probe.cpp",
+    "scripts/gnc_offline_oracle.py",
+    "scripts/tests/test_gnc_offline_oracle.py"
+  ],
+  "source_git_sha": "e8a2f271c7ac647c216130814f307afeb9f77e2d",
+  "source_sha256": {
+    "docs/R2_2_GNC_ONLY_BENCH_ISOLATION.md": "275a751538f6c2a678fb28e6eff125821da734d235ea22a15952e6ca5db91346",
+    "docs/R2_3_GNC_SOURCE_SIM_DELTA_REPORT.md": "a5129f4dcb3bf6c23c57cfb92740bcef8eaf07e7e5b94a7c1a05c33741f20cbf",
+    "docs/R2_3_OFFLINE_GNC_SOURCE_AUDIT.md": "3bbf3e350965ddd91e23f3af4adeed0888ad8e5229e07cbba22b2f037eca81da",
+    "dynamics_sim/cg_impact_study.py": "bd383ece0472954441ee8a375fb916c0118b310a8ee5e9c4031bc657d8dd8cb6",
+    "dynamics_sim/param_sweep.py": "ebda6b30efd3b5b2cfc69316dfe68c30f711ffe951270b0e9d8d6d8d4aee91af",
+    "dynamics_sim/physics_engine_2d.py": "4570e77e992881fe97b81edba6f01fc1d6e194b83ac17c2c8d7dccd47396f3d8",
+    "dynamics_sim/test_polarity.py": "1b5425f73a64da169652fecef310bff61daeba4825bba5aed1756f8f4a6974c7",
+    "engineering/gnc-offline-contract.yaml": "4c92d4cc4a5cbbdb03cba95dd53a2d1731d85238fbf224ba04bd20031fdcc9e7",
+    "engineering/verification-status.yaml": "8110fe4d823361936032e70c5463652d5daebbe0b93ef29332c7394822958041",
+    "flight_computer/src/algorithms/kalman.cpp": "dc26a536c67b1b396a2b7e137c30028c59092aa5adedb4f765953285e67962e0",
+    "flight_computer/src/algorithms/kalman.h": "02d64c8e28a4299eacdcd993a87c6ff7219ceb8452ce7ae2d99d792607c483a6",
+    "flight_computer/src/algorithms/pid.cpp": "abaceb2215d572cba73feee0ac0f83f4f1de77f0456389bcf1865e1fcd022ea5",
+    "flight_computer/src/algorithms/pid.h": "d18f71a10a5dbd61afe4f403d9c54bbacb6d377bb3aac1941728800b1aad85aa",
+    "flight_computer/src/main.cpp": "bbeefc88dda5b0586e5239d7473477b31b44b28351de231069902f0bfe884a07",
+    "flight_computer/src/sensor_validity.cpp": "b4a1650e08f9ec9b15b571f6472908d69596d6c6edec3db722add0510ab011c6",
+    "flight_computer/src/sensor_validity.h": "7ecd6ba7effa6c3b49f30b627f460d40a78bd3366030bd41c60ae7be50b35457",
+    "flight_computer/test/gnc_offline_cases.h": "6fa10426e1ac3cddd8341e975aa7329b1fa21e60fa554a32fae6b489a375a039",
+    "flight_computer/test/test_kalman.cpp": "3ea8413cf70ced2cc5c8ae1bd930b147ae7a8cf9b5761f5fa37e77a55f33042b",
+    "scripts/check.py": "056b6aedd4861b5d3768ea2f05eabd1f5d62ce9c42b38836f28e11cc8d38e3e2",
+    "scripts/gnc_offline_cpp_probe.cpp": "9323d02d3b394f3a70746c53f1625323901726d37047d0ffddb6940971a9b5c2",
+    "scripts/gnc_offline_oracle.py": "f7b20b9582bfe3bbb4b9b8fea6c65018a5e5cf84733a4638528ea3edf6f70ac0",
+    "scripts/tests/test_gnc_offline_oracle.py": "bf8dbb6aa22ea93d674238f2d5a373742827466c104daccabcbf56d5fdb3a7a8"
+  },
+  "tool_versions": {
+    "compiler": "g++.exe (i686-posix-dwarf-rev0, Built by MinGW-W64 project) 5.1.0",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "platformio": "PlatformIO Core, version 6.1.19",
+    "python": "3.13.1"
+  }
+}
