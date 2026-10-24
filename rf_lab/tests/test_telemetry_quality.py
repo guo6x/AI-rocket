@@ -154,6 +154,23 @@ class TelemetryQualityTests(unittest.TestCase):
         all_integer.observe(packet(2, 0), now_seconds=giant)
         self.assertEqual(all_integer.snapshot(now_seconds=giant + 1)["synthetic_age_seconds"], 1)
 
+    def test_snapshot_checks_clock_against_accepted_sample_after_rejection(self):
+        # A rejected packet can change the offer clock type without refreshing
+        # the accepted-sample clock. Snapshot must validate both anchors.
+        m = TelemetryQualityMonitor(stale_after_seconds=1)
+        m.observe(packet(1, 5), now_seconds=float(2**53))
+        m.observe(b"bad", now_seconds=2**53)
+        before = m.snapshot(now_seconds=2**53)
+
+        for clock in (2**53 + 1, 10**400):
+            with self.subTest(clock=clock):
+                with self.assertRaises(ValueError):
+                    m.snapshot(now_seconds=clock)
+                with self.assertRaises(ValueError):
+                    m.observe(packet(1, 6), now_seconds=clock)
+                self.assertEqual(m.snapshot(now_seconds=2**53), before)
+                self.assertEqual(m.window.last_sequence, 5)
+
     def test_bad_stale_threshold_rejected(self):
         for value in (0, -0.1, float("nan"), float("inf"), True, "2"):
             with self.subTest(value=value):

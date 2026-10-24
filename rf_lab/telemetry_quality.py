@@ -51,17 +51,22 @@ class TelemetryQualityMonitor:
 
     def _check_now(self, now_seconds: int | float) -> int | float:
         now = self._number(now_seconds)
-        if self._last_offer_at is not None:
-            previous = self._last_offer_at
+        for reference in (self._last_offer_at, self._last_accepted_at):
+            if reference is None:
+                continue
             # Python may coerce int/float subtraction to float, losing precision
             # or raising OverflowError for very large integers. Refuse such
-            # mixed clocks before any observable state changes. All-int
-            # clocks keep full precision, including 10**400.
-            if isinstance(now, int) != isinstance(previous, int):
-                if max(now, previous) > 2**53:
+            # mixed clocks before any observable state changes. Check both the
+            # latest offered clock and the accepted-sample clock: rejected or
+            # duplicate packets can advance the former without refreshing the
+            # latter. All-int clocks keep full precision, including 10**400.
+            if isinstance(now, int) != isinstance(reference, int):
+                if max(now, reference) > 2**53:
                     raise ValueError(
                         "mixed integer/float synthetic clocks exceed exact range"
                     )
+        if self._last_offer_at is not None:
+            previous = self._last_offer_at
             if now < previous:
                 raise ValueError("synthetic offer timestamps must be monotonic")
         return now

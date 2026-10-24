@@ -61,12 +61,15 @@ a narrow Python arithmetic edge: mixing a very large integer clock with a
 floating-point clock can silently round or raise `OverflowError` during age
 subtraction, even when both numbers are individually legal input values.
 
-The follow-up source now **rejects mixed int/float observations above 2**53**
-before mutating any monitor state; all-integer clocks continue to support
-exactly representable time differences beyond float range (e.g., `10**400`).
-Normal-range mixed synthetic clocks remain permitted. A dedicated atomicity
-regression is added. This is a defensive input-contract correction, **not** a
-new clock claim about hardware.
+The follow-up source now rejects mixed int/float observations above the exact
+integer boundary (`2**53`) before mutating monitor state or calculating age.
+This guard checks both the latest offered clock and the last accepted-sample
+clock, since rejected or duplicate packets can advance the former without
+refreshing the latter.
+All-integer clocks continue to support exactly representable time differences
+beyond float range (e.g., `10**400`); normal-range mixed synthetic clocks
+remain permitted. Atomicity regressions cover both anchors. This is a defensive
+input-contract correction, **not** a new clock claim about hardware.
 
 **Evidence provenance:** the existing committed R3.2 JSON remains an immutable
 record of the *earlier* source commit and has **not** been regenerated for the
