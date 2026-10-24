@@ -45,18 +45,27 @@ The receiver classifies accepted, duplicate, stale/out-of-order and new-session 
 From the repository root:
 
 ```powershell
-python -m unittest discover -s rf_lab/tests -v
-python -m rf_lab.offline_link_replay
+py -3 -m unittest discover -s rf_lab/tests -v
+py -3 -m rf_lab.offline_link_replay
+py -3 -m rf_lab.offline_link_replay --write-evidence engineering/offline-evidence/r3/rf_offline_replay.json
 ```
 
-I separately ran the candidate modules with Python's standard-library unittest runner in an isolated container: **31 tests passed**. This does **not** constitute a full exact-HEAD `scripts/check.py` pass in the project environment. Codex must run all existing checks/builds against the remote branch and report any discrepancy before integration.
+The original 31-test candidate result above is historical evidence and is retained as such; it is not the result for later branch heads. The current replay evidence records the exact delivered synthetic datagrams, explicit fault schedule, input-trace SHA-256, source-file SHA-256 values, source Git HEAD, whether provenance inputs were dirty, Python/platform versions, command and evidence ceiling. It is reproducible software evidence only.
+
+## Official RA-02 / SX1278 document review
+
+I reviewed Ai-Thinker's official **Ra-02 LoRa Product Specification V1.1** (two pages; PDF metadata date 2017-12-19): [official PDF](https://aithinker-static.oss-cn-shenzhen.aliyuncs.com/docs/Public%20Document%20Center/LoRa/lora/Specification/Ra-02_V1.1%20Specification-20171219.pdf) and [RA-02 documentation page](https://docs.ai-thinker.com/en/Ra-02/). The document identifies the RA-02/SX1278, SPI half-duplex, 410–525 MHz, typical 3.3 V supply, and describes a packet-CRC engine “up to 256 bytes.” This is vendor-document evidence, not identification or testing of the owned boards.
+
+The proposed maximum software frame is 176 bytes. Although 176 is numerically below 256, this comparison does **not** establish that 176 application bytes plus this protocol's four-byte IEEE CRC are supported by the module's packet/FIFO path: the short product specification does not define what is counted in the 256-byte statement or how that feature maps to this software frame. The packet engine's CRC and the software CRC are not assumed to be the same or interchangeable.
+
+The following chip/module adapter assumptions remain `UNKNOWN / NOT VERIFIED`: exact SMD-16 pin mapping and module revision; SPI register/FIFO addresses and transfer sequence, mode, clock and chip-select timing; DIO/RESET mapping and interrupt behavior; radio packet/header and CRC configuration; whether the software frame maps one-to-one to a radio packet or needs length adaptation/fragmentation; receive scheduling; and antenna/connector identity. Operating-region frequency and transmit authorization also remain unevaluated. Semtech's official [SX1276 product page](https://www.semtech.com/products/wireless-rf/lora-connect/sx1276) lists the `SX1276-7-8-9 Datasheet`, but its PDF body was not reviewed in this pass, so no register-level claims are attributed to it.
 
 ## Next-step acceptance
 
 1. Confirm exact committed SHA and run all RF unit tests directly from the branch.
 2. Perform negative/mutation testing on strict length checks, CRC handling, new-session freshness and sequence wrap.
 3. Run complete `python scripts/check.py` without resource-contention parallelism; report each pre-existing GNC/ESP/native/ground-station gate.
-4. Check compatibility of the software packet contract with the actual RA-02 vendor specification (maximum data payload and framing), **without** setting transmitter power/frequency or touching hardware.
+4. Treat the vendor-document comparison above as a limited desk review only; resolve the listed adapter assumptions from the exact vendor/module documentation before implementing a driver, without setting transmitter power/frequency or touching hardware.
 5. Identify operational risks separately: missing authenticated source identity, unauthenticated session resets, radio regulatory constraints, and physical antenna/module connector uncertainty.
 6. Preserve the existing WiFi transport and all historical source and evidence files. Do not connect RF telemetry to the flight-command path.
 

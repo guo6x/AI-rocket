@@ -20,6 +20,39 @@ hardware_verification:
   legal_frequency_tx_power_region: "NOT_EVALUATED"
   firmware_radio_driver: "NOT_IMPLEMENTED"
   transmitted_packets: 0
+device_compatibility_desk_review:
+  review_state: "OFFICIAL_DOCUMENT_REVIEWED; DEVICE_NOT_VERIFIED"
+  reviewed_on: "2026-10-24"
+  sources:
+    - publisher: "Ai-Thinker"
+      document: "Ra-02 LoRa Product Specification V1.1"
+      document_date: "2017-12-19"
+      reviewed_pages: "1-2 of 2"
+      url: "https://aithinker-static.oss-cn-shenzhen.aliyuncs.com/docs/Public%20Document%20Center/LoRa/lora/Specification/Ra-02_V1.1%20Specification-20171219.pdf"
+      confirmed_claims:
+        - "RA-02 model uses SX1278."
+        - "SPI half-duplex interface."
+        - "Frequency range 410-525 MHz."
+        - "Typical supply voltage 3.3 V."
+        - "Vendor feature text: packet CRC up to 256 bytes."
+    - publisher: "Semtech"
+      document: "SX1276-7-8-9 datasheet listing"
+      reviewed_scope: "Official product page listing only; datasheet PDF body not reviewed."
+      url: "https://www.semtech.com/products/wireless-rf/lora-connect/sx1276"
+  software_frame_byte_count:
+    maximum_frame_bytes: 176
+    arithmetic_comparison: "176 < 256 only; does not establish RA-02 packet/FIFO compatibility."
+    crc_inclusion_semantics: "UNKNOWN"
+  unresolved_interface_assumptions:
+    - "Exact SMD-16 pin mapping for the owned module revision/batch."
+    - "SPI register/FIFO addressing, transaction sequence, mode, clock and chip-select timing."
+    - "DIO and RESET signal mapping, electrical levels and interrupt/timing behavior."
+    - "Whether the 256-byte packet-CRC feature limit includes an application CRC trailer."
+    - "Whether this software frame maps 1:1 to a radio packet or needs length/header adaptation or fragmentation."
+    - "LoRa PHY, packet-header, CRC-enable and receive scheduling configuration."
+    - "Owned module revision/batch identity and antenna/connectors."
+    - "Legal frequency and transmit-power authorization for the operating region."
+  physical_verification: "NOT_PERFORMED"
 goal: >-
   Define a small, deterministic, read-only telemetry frame and verify its software
   behavior under loss, duplication, corruption and reordering before any RF

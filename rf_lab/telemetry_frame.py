@@ -30,7 +30,7 @@ class TelemetryFrame:
     payload: bytes
 
 
-def encode_telemetry(frame: TelemetryFrame) -> bytes:
+def _validate_frame_fields(frame: TelemetryFrame) -> None:
     if not isinstance(frame, TelemetryFrame):
         raise TypeError("expected TelemetryFrame")
     if not isinstance(frame.payload, bytes):
@@ -41,6 +41,10 @@ def encode_telemetry(frame: TelemetryFrame) -> bytes:
         raise FrameError("session_id_out_of_range")
     if type(frame.sequence) is not int or not (0 <= frame.sequence <= 0xFFFF):
         raise FrameError("sequence_out_of_range")
+
+
+def encode_telemetry(frame: TelemetryFrame) -> bytes:
+    _validate_frame_fields(frame)
     message = HEADER.pack(MAGIC, VERSION, KIND_TELEMETRY,
                           frame.session_id, frame.sequence, len(frame.payload)) + frame.payload
     return message + CRC.pack(zlib.crc32(message) & 0xFFFFFFFF)
@@ -96,8 +100,11 @@ class TelemetrySequenceWindow:
         self.last_sequence: int | None = None
 
     def ingest(self, frame: TelemetryFrame) -> Receipt:
-        if not isinstance(frame, TelemetryFrame):
-            raise TypeError("expected decoded telemetry frame")
+        # This public boundary may be called with a directly constructed
+        # dataclass, not only the return value of decode_telemetry(). Validate
+        # the same field invariants so out-of-range integers cannot be folded
+        # modulo 2**16 or poison the current session/window state.
+        _validate_frame_fields(frame)
         if self.session_id is None:
             self.session_id, self.last_sequence = frame.session_id, frame.sequence
             return Receipt(ReceiptStatus.ACCEPT)

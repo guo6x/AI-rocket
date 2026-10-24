@@ -17,6 +17,9 @@ class TelemetryProtocolTests(unittest.TestCase):
         self.assertEqual(ctx.exception.reason, reason)
 
     def test_round_trip(self): self.assertEqual(decode_telemetry(self.valid), self.frame)
+    def test_crc32_ieee_wire_golden_vector(self):
+        encoded = encode_telemetry(TelemetryFrame(0, 0, b'123456789'))
+        self.assertEqual(encoded[-4:], bytes.fromhex('dc9746a0'))
     def test_boundary_exact_payload(self):
         self.assertEqual(len(encode_telemetry(TelemetryFrame(0,65535,b'x'*MAX_PAYLOAD_BYTES))),OVERHEAD_BYTES+MAX_PAYLOAD_BYTES)
     def test_empty_payload(self):
@@ -66,9 +69,46 @@ class TelemetryProtocolTests(unittest.TestCase):
     def test_wrap_around(self):
         w=TelemetrySequenceWindow(); w.ingest(TelemetryFrame(1,65535,b'a'))
         self.assertEqual(w.ingest(TelemetryFrame(1,0,b'a')).status,ReceiptStatus.ACCEPT)
+    def test_wrap_around_gap_count(self):
+        w=TelemetrySequenceWindow(); w.ingest(TelemetryFrame(1,65534,b'a'))
+        receipt=w.ingest(TelemetryFrame(1,1,b'a'))
+        self.assertEqual(receipt.status,ReceiptStatus.ACCEPT)
+        self.assertEqual(receipt.unobserved_sequence_count,2)
     def test_session_change_not_authentic(self):
         w=TelemetrySequenceWindow(); w.ingest(self.frame)
         self.assertEqual(w.ingest(TelemetryFrame(2,0,b'a')).status,ReceiptStatus.SESSION_CHANGED)
+    def test_session_change_resets_sequence_window(self):
+        w=TelemetrySequenceWindow(); w.ingest(TelemetryFrame(1,100,b'a'))
+        self.assertEqual(w.ingest(TelemetryFrame(2,40000,b'a')).status,ReceiptStatus.SESSION_CHANGED)
+        self.assertEqual(w.ingest(TelemetryFrame(2,40001,b'a')).status,ReceiptStatus.ACCEPT)
+        self.assertEqual(w.ingest(TelemetryFrame(2,39999,b'a')).status,ReceiptStatus.STALE_OR_OUT_OF_ORDER)
+    def test_sequence_window_rejects_out_of_range_session_atomically(self):
+        w=TelemetrySequenceWindow(); w.ingest(TelemetryFrame(1,7,b'a'))
+        with self.assertRaises(FrameError): w.ingest(TelemetryFrame(2**32,8,b'a'))
+        self.assertEqual(w.ingest(TelemetryFrame(1,8,b'a')).status,ReceiptStatus.ACCEPT)
+    def test_sequence_window_rejects_out_of_range_sequence_atomically(self):
+        w=TelemetrySequenceWindow(); w.ingest(TelemetryFrame(1,7,b'a'))
+        with self.assertRaises(FrameError): w.ingest(TelemetryFrame(1,65536,b'a'))
+        receipt=w.ingest(TelemetryFrame(1,8,b'a'))
+        self.assertEqual(receipt.status,ReceiptStatus.ACCEPT)
+        self.assertEqual(receipt.unobserved_sequence_count,0)
+    def test_sequence_window_rejects_invalid_direct_payload_atomically(self):
+        w=TelemetrySequenceWindow(); w.ingest(TelemetryFrame(1,7,b'a'))
+        for payload, exception in [
+            ('text',TypeError),
+            (b'',FrameError),
+            (b'x'*(MAX_PAYLOAD_BYTES+1),FrameError),
+        ]:
+            with self.subTest(payload_type=type(payload).__name__,payload_length=len(payload)):
+                with self.assertRaises(exception): w.ingest(TelemetryFrame(1,8,payload))
+                self.assertEqual((w.session_id,w.last_sequence),(1,7))
+        self.assertEqual(w.ingest(TelemetryFrame(1,8,b'a')).status,ReceiptStatus.ACCEPT)
+    def test_forward_window_boundary_and_ambiguous_half_range(self):
+        w=TelemetrySequenceWindow(); w.ingest(TelemetryFrame(1,0,b'a'))
+        accepted=w.ingest(TelemetryFrame(1,32767,b'a'))
+        self.assertEqual(accepted.status,ReceiptStatus.ACCEPT)
+        self.assertEqual(accepted.unobserved_sequence_count,32766)
+        self.assertEqual(w.ingest(TelemetryFrame(1,(32767+32768)%65536,b'a')).status,ReceiptStatus.STALE_OR_OUT_OF_ORDER)
     def test_endianness(self):
         self.assertEqual(self.valid[4:10], b'\x00\x00\x00\x01\x00\x07')
     def test_no_command_decoding(self):
