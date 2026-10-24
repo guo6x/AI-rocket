@@ -1,0 +1,58 @@
+schema_version: 1
+contract_id: "AA-RF-TELEMETRY-QUALITY-001"
+phase: "R3.2"
+upstream:
+  required_pr: 16
+  branch: "feat/r3-1-telemetry-observability"
+  exact_source_head: "50a96183fdf1a0bd2bdadd90316359e73be170cc"
+stacked_branch: "feat/r3-2-telemetry-quality"
+scope: "Only read-only telemetry observability of synthetic datagrams"
+evidence_ceiling: "TESTED_SOFTWARE"
+source:
+  - "rf_lab/telemetry_frame.py"
+  - "rf_lab/telemetry_quality.py"
+  - "rf_lab/quality_demo.py"
+status: "IMPLEMENTED_PENDING_EXACT_HEAD_REGRESSION"
+source_trust: "UNAUTHENTICATED; no cryptographic sender identity"
+radio_link_quality: "NOT_MEASURED"
+data_quality_dimensions:
+  sample_freshness:
+    never_received: "NO_DECODED_SAMPLE"
+    syntactically_decoded_and_not_aged_out: "RECENT_UNAUTHENTICATED"
+    syntactically_decoded_but_aged_out: "STALE_UNAUTHENTICATED"
+    timestamp: "Injected synthetic, nonnegative, monotonic seconds only"
+    threshold: "Positive finite configurable synthetic window, default 2.0 seconds"
+    time_base: "Synthetic fixture; not measured real flight-controller or RF timestamp"
+  latest_packet_result:
+    initial: "NO_DATA"
+    accepted: "ACCEPT"
+    duplicate: "DUPLICATE"
+    out_of_order: "STALE_OR_OUT_OF_ORDER"
+    untrusted_session: "SESSION_CHANGED"
+    invalid: "REJECT_<FrameError reason>"
+  source_identity: "UNAUTHENTICATED regardless of CRC, time, session or sequence"
+  new_session:
+    treatment: "Refresh syntactic sample age; latch untrusted session-change warning"
+    proof_of_sender_identity: false
+    automatic_trusted_handover: false
+  sequence_gaps: "Unobserved indices only, not physical packet loss"
+  bad_or_duplicate_packets:
+    update_last_decoded_sample_at: false
+    gain_control_authority: false
+  state_storage: "Bounded counters, clock, freshness window and flags; no packet history or payload retention"
+assurance_invariants:
+  - "No command or actuator API, no flight-control authority."
+  - "Syntactically valid does not mean authenticated or physically correct."
+  - "Corrupt/duplicate/out-of-order datagrams never refresh latest decoded sample timestamp."
+  - "Malformed input and invalid synthetic clock do not advance the sequence window."
+  - "Session changes remain visible, untrusted and never establish identity."
+  - "Snapshots do not change state or last received time."
+  - "Unknown physical latency, link range, throughput, RSSI and packet-loss rate are never invented."
+  - "Do not alter R3.0 wire format or R3.1 deterministic evidence."
+offline_acceptance:
+  - "Run targeted telemetry-quality and demo test files."
+  - "Run rf_lab unit test discovery and deterministic R3.1 experiment."
+  - "Single-process full scripts/check.py including five existing source builds."
+  - "Label newly generated evidence TESTED_SOFTWARE; no real packets, drivers or RF transmission."
+physical_operation: "NOT_AUTHORIZED"
+next_gate: "R3.2_QUALITY_CLASSIFIER_FULL_REGRESSION"
