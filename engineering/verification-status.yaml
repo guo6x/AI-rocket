@@ -99,6 +99,14 @@ verification_items:
     evidence: "5 tests passed; an independent Python float32 oracle matched 34 production C++ PID/Kalman rows from 49 fixed trace records. Native production tests add signed/zero/step, static Kalman, output-limit, per-call rate-limit and dt-fallback vectors. Trace artifact: engineering/offline-evidence/r2_3/gnc_offline_trace.json (source SHA e8a2f271c7ac647c216130814f307afeb9f77e2d; SHA-256 d027dd49c2b2170582af63908f419736306dae9ffee3675962f0b60a8868b182)."
     limitations: "This is source-equivalence evidence only. Firmware scheduler period, integer servo installation direction, sensor mounting, plant dynamics, and physical stability remain unmeasured/unknown."
 
+  - id: "r2_3_dual_period_pid_trajectory"
+    verification_type: "software_source_equivalence_test"
+    classification: "TESTED_SOFTWARE"
+    result: "PASS"
+    command: "py -3 -m pytest scripts/tests/test_gnc_dual_period.py -q"
+    evidence: "5 tests passed. One fixed 0-2000 ms synthetic attitude trace was sampled at 10 ms (200 calls) and 50 ms (40 calls) with independent production PID states. At 40 common timestamps, float PID divergence was max 5.200000048 deg / RMS 2.254336377 deg; integer 90+int(PID) command divergence was max 5 / RMS 2.1213203436 counts. Artifact: engineering/offline-evidence/r2_3/gnc_dual_period_trace.json (SHA and source SHA recorded in the committed manifest)."
+    limitations: "The 50 ms cadence is an offline comparison assumption, not a measured flight-computer period. This proves cadence-dependent software behavior and quantization only; it does not establish physical stability, mounting direction, plant response, or recovery readiness."
+
   - id: "wifi_command_downlink"
     verification_type: "simulated_integration_test"
     classification: "TESTED_SOFTWARE"
@@ -120,7 +128,7 @@ verification_items:
     classification: "TESTED_SOFTWARE"
     result: "PASS"
     command: "python -m pytest scripts/tests -q"
-    evidence: "139 tests passed: retained R2 checks plus the R2.1 deterministic checker and recovery-configuration-audit scenarios, including the R2.3 oracle/manifest tests."
+    evidence: "144 tests passed: retained R2 checks plus the R2.1 deterministic checker and recovery-configuration-audit scenarios, including the R2.3 oracle/manifest and dual-period cadence tests."
     limitations: "Fixtures and mutation tests do not create physical evidence."
 
   - id: "research_offline_regressions"

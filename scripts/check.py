@@ -117,6 +117,10 @@ def main() -> int:
             [sys.executable, "-m", "pytest", "scripts/tests/test_gnc_offline_oracle.py", "-q"],
         ),
         (
+            "R2.3 deterministic dual-period GNC comparison",
+            [sys.executable, "-m", "pytest", "scripts/tests/test_gnc_dual_period.py", "-q"],
+        ),
+        (
             "Preserved research offline regressions",
             [sys.executable, "-m", "pytest", "docs/aerospace-knowledge/examples", "-q"],
         ),
