@@ -1,4 +1,4 @@
-"""Unified R0/R1/R2/R2.1/R2.3 software gates; never uploads or touches hardware."""
+"""Unified R0/R1/R2/R2.1/R2.3/R3 software gates; never uploads or touches hardware."""
 
 from __future__ import annotations
 
@@ -121,6 +121,10 @@ def main() -> int:
             [sys.executable, "-m", "pytest", "scripts/tests/test_gnc_dual_period.py", "-q"],
         ),
         (
+            "R3 RF offline telemetry framing and replay tests",
+            [sys.executable, "-m", "unittest", "discover", "-s", "rf_lab/tests"],
+        ),
+        (
             "Preserved research offline regressions",
             [sys.executable, "-m", "pytest", "docs/aerospace-knowledge/examples", "-q"],
         ),
@@ -133,6 +137,7 @@ def main() -> int:
     print(f"R1 COMMAND SAFETY CHECK: {'PASS' if passed else 'FAIL'}")
     print(f"R2.1 SOFTWARE REGRESSION CHECK: {'PASS' if passed else 'FAIL'}")
     print(f"R2.3 GNC SOURCE PARITY CHECK: {'PASS' if passed else 'FAIL'}")
+    print(f"R3 RF OFFLINE TELEMETRY CHECK: {'PASS' if passed else 'FAIL'}")
     return 0 if passed else 1
 
 
