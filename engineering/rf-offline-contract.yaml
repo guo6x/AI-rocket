@@ -1,0 +1,73 @@
+schema_version: 1
+contract_id: "AA-RF-OFFLINE-001"
+stage: "R3.0"
+base_main_sha: "15ceed01f784ae4bc2b641e4c52a191acf35b34e"
+line_id: "RF"
+article_id: "AA-RF-BENCH-001"
+classification: "OFFLINE_SOFTWARE_EXPERIMENT"
+evidence_ceiling: "TESTED_SOFTWARE"
+physical_operation_allowed: false
+hardware_owner_evidence:
+  - "AST-RF-RA02-001"
+  - "AST-RF-SMA-IPEX1-001"
+  - "AST-RF-ANT-WHIP-001"
+  - "AST-RF-ANT-35DBI-001"
+  - "AST-MCU-ESP32S3-001"
+hardware_verification:
+  spi_wiring: "UNKNOWN"
+  rf_connectors: "UNKNOWN"
+  antenna_match: "UNKNOWN"
+  legal_frequency_tx_power_region: "NOT_EVALUATED"
+  firmware_radio_driver: "NOT_IMPLEMENTED"
+  transmitted_packets: 0
+goal: >-
+  Define a small, deterministic, read-only telemetry frame and verify its software
+  behavior under loss, duplication, corruption and reordering before any RF
+  firmware or integration into the safety-critical flight command channel.
+protocol:
+  canonical_document: "docs/R3_RF_OFFLINE_PROTOCOL.md"
+  framing: "datagram; one complete frame per simulated datagram"
+  wire_endian: "big"
+  header_fields:
+    - "magic: 2 bytes ASCII AR"
+    - "version: uint8 = 1"
+    - "kind: uint8 = 1 telemetry only"
+    - "session_id: uint32 (non-authenticated epoch label)"
+    - "sequence: uint16"
+    - "payload_length: uint16"
+  trailer: "CRC32 IEEE of 12-byte header plus payload; uint32 big-endian"
+  overhead_bytes: 16
+  payload_max_bytes: 160
+  payload_semantics: "opaque telemetry bytes, no command vocabulary"
+  telemetry_only: true
+  authentication: false
+  confidentiality: false
+  crc_security_claim: false
+  rf_payload_limit_proven: false
+sequence_policy:
+  modulo: 65536
+  first_frame: "ACCEPT"
+  same_sequence: "DUPLICATE"
+  forward_delta_1_to_32767: "ACCEPT, with missing_sequence_count=delta-1 (unobserved, not proven lost)"
+  backward_or_ambiguous_half_window: "STALE_OR_OUT_OF_ORDER"
+  new_session_id: "SESSION_CHANGED; reset the receive window, not proof of authenticity"
+faults_to_test:
+  - "short frame"
+  - "unknown magic or version or kind"
+  - "declared payload overflow"
+  - "truncated/oversized frame"
+  - "CRC32 mismatch"
+  - "duplicate sequence"
+  - "forward gap and wraparound"
+  - "late/out-of-order data"
+  - "session transition"
+  - "deterministic lossy/corrupted simulator"
+hard_boundaries:
+  - "No control or actuation command frame of any kind."
+  - "No binding to STM32 Serial2, command_processor or ground station action controls."
+  - "No physical RF transmission or advice setting transmitter power/frequency."
+  - "No claim that CRC authenticates data or prevents injected messages."
+  - "No claim that packet reception proves remote firmware acceptance or device health."
+  - "No hardware, flight, propulsion or recovery qualification."
+  - "Do not overwrite any existing ESP/WiFi path or historical simulation artifacts."
+next_gate: "R3.1_OFFLINE_LINK_RELIABILITY_AND_INTEGRATION_AUDIT"
