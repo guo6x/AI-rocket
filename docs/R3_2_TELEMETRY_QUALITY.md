@@ -25,7 +25,7 @@ The R3.2 class `TelemetryQualityMonitor` keeps them distinct. It consumes only t
 
 A valid new session changes the observed sequence window (R3.0 behavior). R3.2 deliberately **does not claim** this is an authorized reset or reboot. Since a valid-CRC frame can be forged, a real deployment needs an independently designed and reviewed authentication/handover policy before treating a new session as trustworthy.
 
-A malformed frame, duplicate, or stale/out-of-order sequence never refreshes `last_accepted_at`. Thus an incoming CRC error can coexist with a prior accepted sample that has aged out; the monitor reports both facts, rather than labeling the stream healthy. A future-looking/invalid clock sample is rejected before counters/window change. The threshold defaults to **2 synthetic seconds** for illustration, not an actual radio timeout or flight-time requirement.
+A malformed frame, duplicate, or stale/out-of-order sequence never refreshes `last_accepted_at`. Thus an incoming CRC error can coexist with a prior accepted sample that has aged out; the monitor reports both facts, rather than labeling the stream healthy. A future-looking/invalid clock sample is rejected before counters/window change. Integer clock values retain exact precision (including values beyond floating-point range); finite floats are accepted as supplied. The threshold defaults to **2 synthetic seconds** for illustration, not an actual radio timeout or flight-time requirement.
 
 ## Reproduction
 
@@ -35,6 +35,7 @@ From repository root:
 py -3 -m unittest discover -s rf_lab/tests -v
 py -3 -m rf_lab.quality_demo --check
 py -3 -m rf_lab.reliability_experiment --check
+py -3 -m rf_lab.quality_evidence --write-evidence engineering/offline-evidence/r3/r3_2_telemetry_quality.json
 py -3 scripts/check.py
 ```
 

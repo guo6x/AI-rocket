@@ -20,7 +20,7 @@ data_quality_dimensions:
     never_received: "NO_DECODED_SAMPLE"
     syntactically_decoded_and_not_aged_out: "RECENT_UNAUTHENTICATED"
     syntactically_decoded_but_aged_out: "STALE_UNAUTHENTICATED"
-    timestamp: "Injected synthetic, nonnegative, monotonic seconds only"
+    timestamp: "Injected synthetic, nonnegative monotonic integer or finite-float seconds; integers retain exact precision"
     threshold: "Positive finite configurable synthetic window, default 2.0 seconds"
     time_base: "Synthetic fixture; not measured real flight-controller or RF timestamp"
   latest_packet_result:

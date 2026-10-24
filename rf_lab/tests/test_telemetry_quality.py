@@ -119,6 +119,18 @@ class TelemetryQualityTests(unittest.TestCase):
                 self.assertEqual(m.window.last_sequence, 5)
         self.assertEqual(m.observe(packet(1, 6), now_seconds=11)["event"], "ACCEPT")
 
+    def test_large_integer_clock_remains_exact_without_float_overflow(self):
+        base = 2**53
+        m = TelemetryQualityMonitor(stale_after_seconds=1)
+        m.observe(packet(1, 5), now_seconds=base)
+        at_one_second = m.snapshot(now_seconds=base + 1)
+        self.assertEqual(at_one_second["synthetic_age_seconds"], 1)
+        self.assertEqual(at_one_second["freshness"], "RECENT_UNAUTHENTICATED")
+
+        huge = 10**400
+        m.observe(packet(1, 6), now_seconds=huge)
+        self.assertEqual(m.snapshot(now_seconds=huge + 1)["synthetic_age_seconds"], 1)
+
     def test_bad_stale_threshold_rejected(self):
         for value in (0, -0.1, float("nan"), float("inf"), True, "2"):
             with self.subTest(value=value):

@@ -28,23 +28,28 @@ class TelemetryQualityMonitor:
         if self.stale_after_seconds <= 0:
             raise ValueError("stale_after_seconds must be positive")
         self.window = TelemetrySequenceWindow()
-        self._last_offer_at: float | None = None
-        self._last_accepted_at: float | None = None
+        self._last_offer_at: int | float | None = None
+        self._last_accepted_at: int | float | None = None
         self._last_event = "NO_DATA"
         self._session_change_seen = False
         self._counts: Counter[str] = Counter()
         self._forward_gaps = 0
 
     @staticmethod
-    def _number(value: float) -> float:
+    def _number(value: int | float) -> int | float:
         if isinstance(value, bool) or not isinstance(value, (int, float)):
             raise TypeError("synthetic timestamp must be a real number")
-        number = float(value)
-        if not math.isfinite(number) or number < 0:
+        # Keep integer clocks exact (including values outside float's range).
+        # Converting first would round large seconds values or raise OverflowError.
+        if isinstance(value, int):
+            if value < 0:
+                raise ValueError("synthetic timestamp must be finite and nonnegative")
+            return value
+        if not math.isfinite(value) or value < 0:
             raise ValueError("synthetic timestamp must be finite and nonnegative")
-        return number
+        return value
 
-    def _check_now(self, now_seconds: float) -> float:
+    def _check_now(self, now_seconds: int | float) -> int | float:
         now = self._number(now_seconds)
         if self._last_offer_at is not None and now < self._last_offer_at:
             raise ValueError("synthetic offer timestamps must be monotonic")
