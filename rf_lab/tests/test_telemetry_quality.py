@@ -131,6 +131,29 @@ class TelemetryQualityTests(unittest.TestCase):
         m.observe(packet(1, 6), now_seconds=huge)
         self.assertEqual(m.snapshot(now_seconds=huge + 1)["synthetic_age_seconds"], 1)
 
+    def test_very_large_mixed_numeric_clocks_fail_closed(self):
+        # Valid int and float clocks individually can be unsafe to subtract
+        # when mixed above IEEE-754's exact integer range.
+        m = TelemetryQualityMonitor(stale_after_seconds=1)
+        m.observe(packet(1, 5), now_seconds=1.25)
+        before = m.snapshot(now_seconds=1.25)
+        for operation in (
+            lambda: m.snapshot(now_seconds=10**400),
+            lambda: m.observe(packet(1, 6), now_seconds=10**400),
+            lambda: m.observe(packet(1, 6), now_seconds=2**53 + 1),
+        ):
+            with self.assertRaises(ValueError):
+                operation()
+            self.assertEqual(m.snapshot(now_seconds=1.25), before)
+            self.assertEqual(m.window.last_sequence, 5)
+        # Ordinary mixed clocks remain usable in the original synthetic demo.
+        self.assertEqual(m.observe(packet(1, 6), now_seconds=2)["event"], "ACCEPT")
+
+        all_integer = TelemetryQualityMonitor(stale_after_seconds=1)
+        giant = 10**400
+        all_integer.observe(packet(2, 0), now_seconds=giant)
+        self.assertEqual(all_integer.snapshot(now_seconds=giant + 1)["synthetic_age_seconds"], 1)
+
     def test_bad_stale_threshold_rejected(self):
         for value in (0, -0.1, float("nan"), float("inf"), True, "2"):
             with self.subTest(value=value):
