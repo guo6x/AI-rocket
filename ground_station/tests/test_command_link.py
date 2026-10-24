@@ -103,7 +103,7 @@ def test_current_firmware_rejection_reasons_parse_as_nack(
         "NACK unrecognized_reason arm",
         "NACK recovery_disabled",
         "NACK sensor_invalid arm extra",
-        "NACK sensor_invalid arm\\nauto_on",
+        "NACK sensor_invalid arm\nauto_on",
         "NACK sensor_invalid  arm",
         "ACKNOWLEDGED arm",
         '{"time":1}',
