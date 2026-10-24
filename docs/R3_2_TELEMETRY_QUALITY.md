@@ -52,3 +52,25 @@ Real-world sample age requires independently established sender timestamps, cloc
 Other unresolved work includes RF/SX1278 driver compatibility, sender authentication, cross-session replay protection, actual antenna/radio performance, and any physical hardware integration. Those are separate gates; R3.2 does not implement them.
 
 No hardware, RF transmission, GPS, flight navigation/commands, actuation, propulsion or recovery operation is authorized or part of this stage.
+
+## Independent review finding: extreme mixed clock types
+
+After the original R3.2 evidence artifact was generated at source commit
+`1e1ef5f3451d092a36080ccb6ef4acbffe585957`, independent review identified
+a narrow Python arithmetic edge: mixing a very large integer clock with a
+floating-point clock can silently round or raise `OverflowError` during age
+subtraction, even when both numbers are individually legal input values.
+
+The follow-up source now **rejects mixed int/float observations above 2**53**
+before mutating any monitor state; all-integer clocks continue to support
+exactly representable time differences beyond float range (e.g., `10**400`).
+Normal-range mixed synthetic clocks remain permitted. A dedicated atomicity
+regression is added. This is a defensive input-contract correction, **not** a
+new clock claim about hardware.
+
+**Evidence provenance:** the existing committed R3.2 JSON remains an immutable
+record of the *earlier* source commit and has **not** been regenerated for the
+post-review clock guard. Do not claim full exact-HEAD regression or matching
+source hashes for the new head until Codex reruns the entire software gate
+and emits a newly versioned evidence artifact. Neither PR #16 nor PR #18 is
+automatically merged by this follow-up.
