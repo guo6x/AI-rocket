@@ -1,0 +1,418 @@
+{
+  "artifact_path": "engineering/offline-evidence/r3/rf_offline_replay.json",
+  "command": "py -3 -m rf_lab.offline_link_replay --write-evidence 'engineering/offline-evidence/r3/rf_offline_replay.json'",
+  "contract": "AA-RF-OFFLINE-001",
+  "crc_is_authentication": false,
+  "dependencies": "Python standard library only",
+  "evidence_ceiling": "TESTED_SOFTWARE",
+  "fault_schedule": {
+    "corruptions": [
+      {
+        "byte_offset": 12,
+        "sequence": 115,
+        "session_id": 17,
+        "xor_mask": "0x80"
+      }
+    ],
+    "delayed_deliveries": [
+      {
+        "delivered_after_sequence": 112,
+        "sequence": 111,
+        "session_id": 17
+      }
+    ],
+    "duplicate_deliveries": [
+      {
+        "sequence": 107,
+        "session_id": 17
+      }
+    ],
+    "session_transitions": [
+      {
+        "first_sequence": 0,
+        "from": 17,
+        "to": 18
+      },
+      {
+        "first_sequence": 65534,
+        "from": 18,
+        "to": 19
+      }
+    ],
+    "synthetic_drops": [
+      {
+        "sequence": 103,
+        "session_id": 17
+      },
+      {
+        "sequence": 104,
+        "session_id": 17
+      }
+    ],
+    "wraparound": [
+      {
+        "from_sequence": 65535,
+        "session_id": 19,
+        "to_sequence": 0
+      }
+    ]
+  },
+  "flight_commands": 0,
+  "input_trace": [
+    {
+      "datagram_hex": "41520101000000110064000e7b2273616d706c65223a3130307dce6f0a2c",
+      "label": "normal"
+    },
+    {
+      "datagram_hex": "41520101000000110065000e7b2273616d706c65223a3130317d50d2f02e",
+      "label": "normal"
+    },
+    {
+      "datagram_hex": "41520101000000110066000e7b2273616d706c65223a3130327d2865f869",
+      "label": "normal"
+    },
+    {
+      "datagram_hex": "41520101000000110069000e7b2273616d706c65223a3130357da1a65d7b",
+      "label": "normal"
+    },
+    {
+      "datagram_hex": "4152010100000011006a000e7b2273616d706c65223a3130367dd911553c",
+      "label": "normal"
+    },
+    {
+      "datagram_hex": "4152010100000011006b000e7b2273616d706c65223a3130377d47acaf3e",
+      "label": "normal"
+    },
+    {
+      "datagram_hex": "4152010100000011006b000e7b2273616d706c65223a3130377d47acaf3e",
+      "label": "duplicate"
+    },
+    {
+      "datagram_hex": "4152010100000011006c000e7b2273616d706c65223a3130387de0a6cfba",
+      "label": "normal"
+    },
+    {
+      "datagram_hex": "4152010100000011006d000e7b2273616d706c65223a3130397d7e1b35b8",
+      "label": "normal"
+    },
+    {
+      "datagram_hex": "4152010100000011006e000e7b2273616d706c65223a3131307dfd81bf42",
+      "label": "normal"
+    },
+    {
+      "datagram_hex": "41520101000000110070000e7b2273616d706c65223a3131327d99c2bc2b",
+      "label": "normal"
+    },
+    {
+      "datagram_hex": "4152010100000011006f000e7b2273616d706c65223a3131317d633c4540",
+      "label": "out_of_order"
+    },
+    {
+      "datagram_hex": "41520101000000110071000e7b2273616d706c65223a3131337d077f4629",
+      "label": "normal"
+    },
+    {
+      "datagram_hex": "41520101000000110072000e7b2273616d706c65223a3131347d1ba48b6a",
+      "label": "normal"
+    },
+    {
+      "datagram_hex": "41520101000000110073000efb2273616d706c65223a3131357d85197168",
+      "label": "corrupted"
+    },
+    {
+      "datagram_hex": "41520101000000110074000e7b2273616d706c65223a3131367d8ea65ee0",
+      "label": "normal"
+    },
+    {
+      "datagram_hex": "41520101000000110075000e7b2273616d706c65223a3131377d101ba4e2",
+      "label": "normal"
+    },
+    {
+      "datagram_hex": "41520101000000110076000e7b2273616d706c65223a3131387dc419e3a9",
+      "label": "normal"
+    },
+    {
+      "datagram_hex": "41520101000000110077000e7b2273616d706c65223a3131397d5aa419ab",
+      "label": "normal"
+    },
+    {
+      "datagram_hex": "41520101000000110078000e7b2273616d706c65223a3132307d4fa22f6e",
+      "label": "normal"
+    },
+    {
+      "datagram_hex": "41520101000000120000000e7b227374617274223a747275657d98374a9b",
+      "label": "new_session"
+    },
+    {
+      "datagram_hex": "4152010100000013fffe000e7b227374617274223a747275657d41b5e16f",
+      "label": "wrap_session"
+    },
+    {
+      "datagram_hex": "4152010100000013ffff00107b2273616d706c65223a36353533357dc53e0df2",
+      "label": "wrap_before_zero"
+    },
+    {
+      "datagram_hex": "41520101000000130000000c7b2273616d706c65223a307d3d8c5337",
+      "label": "wrap_to_zero"
+    }
+  ],
+  "input_trace_sha256": "8bb58eb9f0d32defa0ba2699f317178505ed9d187c731abb0bc0fb88fe8c471e",
+  "physical_hardware": false,
+  "radio_transmissions": 0,
+  "reproduction_command": "py -3 -m rf_lab.offline_link_replay --write-evidence 'engineering/offline-evidence/r3/rf_offline_replay.json'",
+  "result": {
+    "counts": {
+      "ACCEPT": 19,
+      "DUPLICATE": 1,
+      "REJECT_crc_mismatch": 1,
+      "SESSION_CHANGED": 2,
+      "STALE_OR_OUT_OF_ORDER": 1
+    },
+    "event_count": 24,
+    "events": [
+      {
+        "label": "normal",
+        "sequence": 100,
+        "session_id": 17,
+        "status": "ACCEPT",
+        "unobserved_sequence_count": 0
+      },
+      {
+        "label": "normal",
+        "sequence": 101,
+        "session_id": 17,
+        "status": "ACCEPT",
+        "unobserved_sequence_count": 0
+      },
+      {
+        "label": "normal",
+        "sequence": 102,
+        "session_id": 17,
+        "status": "ACCEPT",
+        "unobserved_sequence_count": 0
+      },
+      {
+        "label": "normal",
+        "sequence": 105,
+        "session_id": 17,
+        "status": "ACCEPT",
+        "unobserved_sequence_count": 2
+      },
+      {
+        "label": "normal",
+        "sequence": 106,
+        "session_id": 17,
+        "status": "ACCEPT",
+        "unobserved_sequence_count": 0
+      },
+      {
+        "label": "normal",
+        "sequence": 107,
+        "session_id": 17,
+        "status": "ACCEPT",
+        "unobserved_sequence_count": 0
+      },
+      {
+        "label": "duplicate",
+        "sequence": 107,
+        "session_id": 17,
+        "status": "DUPLICATE",
+        "unobserved_sequence_count": 0
+      },
+      {
+        "label": "normal",
+        "sequence": 108,
+        "session_id": 17,
+        "status": "ACCEPT",
+        "unobserved_sequence_count": 0
+      },
+      {
+        "label": "normal",
+        "sequence": 109,
+        "session_id": 17,
+        "status": "ACCEPT",
+        "unobserved_sequence_count": 0
+      },
+      {
+        "label": "normal",
+        "sequence": 110,
+        "session_id": 17,
+        "status": "ACCEPT",
+        "unobserved_sequence_count": 0
+      },
+      {
+        "label": "normal",
+        "sequence": 112,
+        "session_id": 17,
+        "status": "ACCEPT",
+        "unobserved_sequence_count": 1
+      },
+      {
+        "label": "out_of_order",
+        "sequence": 111,
+        "session_id": 17,
+        "status": "STALE_OR_OUT_OF_ORDER",
+        "unobserved_sequence_count": 0
+      },
+      {
+        "label": "normal",
+        "sequence": 113,
+        "session_id": 17,
+        "status": "ACCEPT",
+        "unobserved_sequence_count": 0
+      },
+      {
+        "label": "normal",
+        "sequence": 114,
+        "session_id": 17,
+        "status": "ACCEPT",
+        "unobserved_sequence_count": 0
+      },
+      {
+        "label": "corrupted",
+        "status": "REJECT_crc_mismatch"
+      },
+      {
+        "label": "normal",
+        "sequence": 116,
+        "session_id": 17,
+        "status": "ACCEPT",
+        "unobserved_sequence_count": 1
+      },
+      {
+        "label": "normal",
+        "sequence": 117,
+        "session_id": 17,
+        "status": "ACCEPT",
+        "unobserved_sequence_count": 0
+      },
+      {
+        "label": "normal",
+        "sequence": 118,
+        "session_id": 17,
+        "status": "ACCEPT",
+        "unobserved_sequence_count": 0
+      },
+      {
+        "label": "normal",
+        "sequence": 119,
+        "session_id": 17,
+        "status": "ACCEPT",
+        "unobserved_sequence_count": 0
+      },
+      {
+        "label": "normal",
+        "sequence": 120,
+        "session_id": 17,
+        "status": "ACCEPT",
+        "unobserved_sequence_count": 0
+      },
+      {
+        "label": "new_session",
+        "sequence": 0,
+        "session_id": 18,
+        "status": "SESSION_CHANGED",
+        "unobserved_sequence_count": 0
+      },
+      {
+        "label": "wrap_session",
+        "sequence": 65534,
+        "session_id": 19,
+        "status": "SESSION_CHANGED",
+        "unobserved_sequence_count": 0
+      },
+      {
+        "label": "wrap_before_zero",
+        "sequence": 65535,
+        "session_id": 19,
+        "status": "ACCEPT",
+        "unobserved_sequence_count": 0
+      },
+      {
+        "label": "wrap_to_zero",
+        "sequence": 0,
+        "session_id": 19,
+        "status": "ACCEPT",
+        "unobserved_sequence_count": 0
+      }
+    ],
+    "fault_schedule": {
+      "corruptions": [
+        {
+          "byte_offset": 12,
+          "sequence": 115,
+          "session_id": 17,
+          "xor_mask": "0x80"
+        }
+      ],
+      "delayed_deliveries": [
+        {
+          "delivered_after_sequence": 112,
+          "sequence": 111,
+          "session_id": 17
+        }
+      ],
+      "duplicate_deliveries": [
+        {
+          "sequence": 107,
+          "session_id": 17
+        }
+      ],
+      "session_transitions": [
+        {
+          "first_sequence": 0,
+          "from": 17,
+          "to": 18
+        },
+        {
+          "first_sequence": 65534,
+          "from": 18,
+          "to": 19
+        }
+      ],
+      "synthetic_drops": [
+        {
+          "sequence": 103,
+          "session_id": 17
+        },
+        {
+          "sequence": 104,
+          "session_id": 17
+        }
+      ],
+      "wraparound": [
+        {
+          "from_sequence": 65535,
+          "session_id": 19,
+          "to_sequence": 0
+        }
+      ]
+    },
+    "flight_commands": 0,
+    "radio_transmissions": 0,
+    "scenario": "r3_readonly_replay_v1",
+    "synthetic_only": true,
+    "unobserved_sequence_total": 4,
+    "warning": "Gaps are unobserved sequence numbers, not measured packet-loss statistics; CRC is not authentication."
+  },
+  "scenario": "r3_readonly_replay_v1",
+  "schema_version": 1,
+  "seed": "not_applicable_fixed_trace",
+  "source_git_sha": "c145489319a71963a6ae1ab3326c00ad5801b3bb",
+  "source_sha256": {
+    "docs/R3_RF_OFFLINE_PROTOCOL.md": "070c131aa0ff05ada6888e339b446c628afc5cbd9f5f2455692c153e9d8551d0",
+    "engineering/rf-offline-contract.yaml": "ad58500b5b72df988d686052b576ab57ce69c1c568fa0b8231f2a3851d4e9cb0",
+    "rf_lab/offline_link_replay.py": "cbe4df77de2ef1eb544f162332b76bb79d0d61e1e28e9bcc7083f07acc2c1985",
+    "rf_lab/telemetry_frame.py": "61e9189240062ae9b43ed0e9867037f675060f74ab40c952bc220ac6fb945baa",
+    "rf_lab/tests/test_offline_link_replay.py": "c94e8eef50f9816498653bad43ffb5790e763e7738a3e5302892c10ad0e59348",
+    "rf_lab/tests/test_telemetry_frame.py": "e120cd284967fa2b097953a14cb6b9aac4605c93aa964acc5e719d92517af695",
+    "scripts/check.py": "890f4e7066d57d9fda2a48e1d9bca4529e8ed94151b67adb986b321855c1c312"
+  },
+  "source_worktree_changes": [],
+  "source_worktree_clean": true,
+  "synthetic_only": true,
+  "tool_versions": {
+    "platform": "Windows-11-10.0.26300-SP0",
+    "python": "3.13.1"
+  }
+}
