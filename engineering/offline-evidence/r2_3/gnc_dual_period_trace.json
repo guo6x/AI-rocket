@@ -1,0 +1,2477 @@
+{
+  "command": "py -3 scripts/gnc_dual_period.py --write-json engineering/offline-evidence/r2_3/gnc_dual_period_trace.json",
+  "comparison": "PASS",
+  "contract": "AA-GNC-OFFLINE-DUAL-PERIOD-001",
+  "dependencies": {
+    "pytest": "8.0.0",
+    "pyyaml": "6.0.1"
+  },
+  "duration_ms": 2000,
+  "failures": [],
+  "input_rows": 240,
+  "input_trace_sha256": "3159546dc4042de02cdfe2d3e50f927bcc7080a3d8d84c1976317fbe6985e092",
+  "metrics": {
+    "common_time_count": 40,
+    "common_time_end_ms": 2000,
+    "common_time_pid_max_abs_diff_deg": 5.200000048,
+    "common_time_pid_rms_diff_deg": 2.2543363769467684,
+    "common_time_servo_max_abs_diff_count": 5,
+    "common_time_servo_rms_diff_count": 2.1213203435596424,
+    "common_time_start_ms": 50,
+    "per_period": {
+      "10": {
+        "effective_rate_limit_deg_per_s": 30.0,
+        "pid_max_deg": 4.0,
+        "pid_min_deg": -4.0,
+        "quantization_error_max_abs_deg": 0.9999997620000016,
+        "quantization_error_rms_deg": 0.3560527022487882,
+        "sample_count": 200,
+        "servo_change_count": 22
+      },
+      "50": {
+        "effective_rate_limit_deg_per_s": 5.999999999999999,
+        "pid_max_deg": 0.083999999,
+        "pid_min_deg": -2.999999762,
+        "quantization_error_max_abs_deg": 0.9999997620000016,
+        "quantization_error_rms_deg": 0.48970233427542875,
+        "sample_count": 40,
+        "servo_change_count": 6
+      }
+    }
+  },
+  "output_rows": 240,
+  "period_50ms_is_measured": false,
+  "periods_ms": [
+    10,
+    50
+  ],
+  "physical_hardware": false,
+  "plant_or_mounting_claim": false,
+  "recovery_output_touched": false,
+  "results": [
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 90,
+      "step": 0,
+      "time_ms": 10
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 90,
+      "step": 1,
+      "time_ms": 20
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 90,
+      "step": 2,
+      "time_ms": 30
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 90,
+      "step": 3,
+      "time_ms": 40
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 90,
+      "step": 4,
+      "time_ms": 50
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 90,
+      "step": 5,
+      "time_ms": 60
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 90,
+      "step": 6,
+      "time_ms": 70
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 90,
+      "step": 7,
+      "time_ms": 80
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 90,
+      "step": 8,
+      "time_ms": 90
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 90,
+      "step": 9,
+      "time_ms": 100
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 90,
+      "step": 10,
+      "time_ms": 110
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 90,
+      "step": 11,
+      "time_ms": 120
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 90,
+      "step": 12,
+      "time_ms": 130
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 90,
+      "step": 13,
+      "time_ms": 140
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 90,
+      "step": 14,
+      "time_ms": 150
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 90,
+      "step": 15,
+      "time_ms": 160
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 90,
+      "step": 16,
+      "time_ms": 170
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 90,
+      "step": 17,
+      "time_ms": 180
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 90,
+      "step": 18,
+      "time_ms": 190
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 90,
+      "step": 19,
+      "time_ms": 200
+    },
+    {
+      "current_deg": 0.400000006,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -0.300000012,
+      "quantization_error_deg": 0.30000001199999815,
+      "servo_command": 90,
+      "step": 20,
+      "time_ms": 210
+    },
+    {
+      "current_deg": 0.800000012,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -0.600000024,
+      "quantization_error_deg": 0.6000000239999963,
+      "servo_command": 90,
+      "step": 21,
+      "time_ms": 220
+    },
+    {
+      "current_deg": 1.200000048,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -0.900000036,
+      "quantization_error_deg": 0.9000000359999945,
+      "servo_command": 90,
+      "step": 22,
+      "time_ms": 230
+    },
+    {
+      "current_deg": 1.600000024,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -1.200000048,
+      "quantization_error_deg": 0.2000000480000068,
+      "servo_command": 89,
+      "step": 23,
+      "time_ms": 240
+    },
+    {
+      "current_deg": 2.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -1.5,
+      "quantization_error_deg": 0.5,
+      "servo_command": 89,
+      "step": 24,
+      "time_ms": 250
+    },
+    {
+      "current_deg": 2.400000095,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -1.799999952,
+      "quantization_error_deg": 0.7999999519999932,
+      "servo_command": 89,
+      "step": 25,
+      "time_ms": 260
+    },
+    {
+      "current_deg": 2.799999952,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -2.099999905,
+      "quantization_error_deg": 0.09999990500000422,
+      "servo_command": 88,
+      "step": 26,
+      "time_ms": 270
+    },
+    {
+      "current_deg": 3.200000048,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -2.399999857,
+      "quantization_error_deg": 0.3999998569999974,
+      "servo_command": 88,
+      "step": 27,
+      "time_ms": 280
+    },
+    {
+      "current_deg": 3.599999905,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -2.699999809,
+      "quantization_error_deg": 0.6999998090000048,
+      "servo_command": 88,
+      "step": 28,
+      "time_ms": 290
+    },
+    {
+      "current_deg": 4.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -2.999999762,
+      "quantization_error_deg": 0.9999997620000016,
+      "servo_command": 88,
+      "step": 29,
+      "time_ms": 300
+    },
+    {
+      "current_deg": 4.400000095,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -3.299999714,
+      "quantization_error_deg": 0.2999997139999948,
+      "servo_command": 87,
+      "step": 30,
+      "time_ms": 310
+    },
+    {
+      "current_deg": 4.800000191,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -3.599999666,
+      "quantization_error_deg": 0.5999996660000022,
+      "servo_command": 87,
+      "step": 31,
+      "time_ms": 320
+    },
+    {
+      "current_deg": 5.199999809,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -3.899999619,
+      "quantization_error_deg": 0.899999618999999,
+      "servo_command": 87,
+      "step": 32,
+      "time_ms": 330
+    },
+    {
+      "current_deg": 5.599999905,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 33,
+      "time_ms": 340
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 34,
+      "time_ms": 350
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 35,
+      "time_ms": 360
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 36,
+      "time_ms": 370
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 37,
+      "time_ms": 380
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 38,
+      "time_ms": 390
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 39,
+      "time_ms": 400
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 40,
+      "time_ms": 410
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 41,
+      "time_ms": 420
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 42,
+      "time_ms": 430
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 43,
+      "time_ms": 440
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 44,
+      "time_ms": 450
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 45,
+      "time_ms": 460
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 46,
+      "time_ms": 470
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 47,
+      "time_ms": 480
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 48,
+      "time_ms": 490
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 49,
+      "time_ms": 500
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 50,
+      "time_ms": 510
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 51,
+      "time_ms": 520
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 52,
+      "time_ms": 530
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 53,
+      "time_ms": 540
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 54,
+      "time_ms": 550
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 55,
+      "time_ms": 560
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 56,
+      "time_ms": 570
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 57,
+      "time_ms": 580
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 58,
+      "time_ms": 590
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 59,
+      "time_ms": 600
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 60,
+      "time_ms": 610
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 61,
+      "time_ms": 620
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 62,
+      "time_ms": 630
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 63,
+      "time_ms": 640
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 64,
+      "time_ms": 650
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 65,
+      "time_ms": 660
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 66,
+      "time_ms": 670
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 67,
+      "time_ms": 680
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 68,
+      "time_ms": 690
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 69,
+      "time_ms": 700
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 86,
+      "step": 70,
+      "time_ms": 710
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -3.700000048,
+      "quantization_error_deg": 0.7000000480000068,
+      "servo_command": 87,
+      "step": 71,
+      "time_ms": 720
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -3.400000095,
+      "quantization_error_deg": 0.4000000949999958,
+      "servo_command": 87,
+      "step": 72,
+      "time_ms": 730
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -3.100000143,
+      "quantization_error_deg": 0.1000001430000026,
+      "servo_command": 87,
+      "step": 73,
+      "time_ms": 740
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -2.800000191,
+      "quantization_error_deg": 0.8000001909999952,
+      "servo_command": 88,
+      "step": 74,
+      "time_ms": 750
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -2.500000238,
+      "quantization_error_deg": 0.5000002379999984,
+      "servo_command": 88,
+      "step": 75,
+      "time_ms": 760
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -2.200000286,
+      "quantization_error_deg": 0.2000002860000052,
+      "servo_command": 88,
+      "step": 76,
+      "time_ms": 770
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -1.900000334,
+      "quantization_error_deg": 0.9000003339999978,
+      "servo_command": 89,
+      "step": 77,
+      "time_ms": 780
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -1.600000381,
+      "quantization_error_deg": 0.600000381000001,
+      "servo_command": 89,
+      "step": 78,
+      "time_ms": 790
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -1.300000429,
+      "quantization_error_deg": 0.3000004289999936,
+      "servo_command": 89,
+      "step": 79,
+      "time_ms": 800
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -1.000000477,
+      "quantization_error_deg": 4.770000003873065e-07,
+      "servo_command": 89,
+      "step": 80,
+      "time_ms": 810
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -0.700000465,
+      "quantization_error_deg": 0.7000004650000022,
+      "servo_command": 90,
+      "step": 81,
+      "time_ms": 820
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -0.400000453,
+      "quantization_error_deg": 0.4000004530000041,
+      "servo_command": 90,
+      "step": 82,
+      "time_ms": 830
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -0.100000441,
+      "quantization_error_deg": 0.10000044100000594,
+      "servo_command": 90,
+      "step": 83,
+      "time_ms": 840
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.199999571,
+      "quantization_error_deg": -0.19999957100000643,
+      "servo_command": 90,
+      "step": 84,
+      "time_ms": 850
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.499999583,
+      "quantization_error_deg": -0.4999995830000046,
+      "servo_command": 90,
+      "step": 85,
+      "time_ms": 860
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.799999595,
+      "quantization_error_deg": -0.7999995950000027,
+      "servo_command": 90,
+      "step": 86,
+      "time_ms": 870
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 1.099999666,
+      "quantization_error_deg": -0.09999966600000221,
+      "servo_command": 91,
+      "step": 87,
+      "time_ms": 880
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 1.399999619,
+      "quantization_error_deg": -0.39999961899999903,
+      "servo_command": 91,
+      "step": 88,
+      "time_ms": 890
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 1.699999571,
+      "quantization_error_deg": -0.6999995710000064,
+      "servo_command": 91,
+      "step": 89,
+      "time_ms": 900
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 1.999999523,
+      "quantization_error_deg": -0.9999995229999996,
+      "servo_command": 91,
+      "step": 90,
+      "time_ms": 910
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 2.299999475,
+      "quantization_error_deg": -0.2999994749999928,
+      "servo_command": 92,
+      "step": 91,
+      "time_ms": 920
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 2.599999428,
+      "quantization_error_deg": -0.5999994280000038,
+      "servo_command": 92,
+      "step": 92,
+      "time_ms": 930
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 2.89999938,
+      "quantization_error_deg": -0.899999379999997,
+      "servo_command": 92,
+      "step": 93,
+      "time_ms": 940
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 3.199999332,
+      "quantization_error_deg": -0.19999933200000442,
+      "servo_command": 93,
+      "step": 94,
+      "time_ms": 950
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 3.499999285,
+      "quantization_error_deg": -0.49999928500000124,
+      "servo_command": 93,
+      "step": 95,
+      "time_ms": 960
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 3.799999237,
+      "quantization_error_deg": -0.7999992369999944,
+      "servo_command": 93,
+      "step": 96,
+      "time_ms": 970
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 94,
+      "step": 97,
+      "time_ms": 980
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 94,
+      "step": 98,
+      "time_ms": 990
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 94,
+      "step": 99,
+      "time_ms": 1000
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 94,
+      "step": 100,
+      "time_ms": 1010
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 94,
+      "step": 101,
+      "time_ms": 1020
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 94,
+      "step": 102,
+      "time_ms": 1030
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 94,
+      "step": 103,
+      "time_ms": 1040
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 94,
+      "step": 104,
+      "time_ms": 1050
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 94,
+      "step": 105,
+      "time_ms": 1060
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 94,
+      "step": 106,
+      "time_ms": 1070
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 94,
+      "step": 107,
+      "time_ms": 1080
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 94,
+      "step": 108,
+      "time_ms": 1090
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 94,
+      "step": 109,
+      "time_ms": 1100
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 94,
+      "step": 110,
+      "time_ms": 1110
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 94,
+      "step": 111,
+      "time_ms": 1120
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 94,
+      "step": 112,
+      "time_ms": 1130
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 94,
+      "step": 113,
+      "time_ms": 1140
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 94,
+      "step": 114,
+      "time_ms": 1150
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 94,
+      "step": 115,
+      "time_ms": 1160
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 94,
+      "step": 116,
+      "time_ms": 1170
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 94,
+      "step": 117,
+      "time_ms": 1180
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 4.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 94,
+      "step": 118,
+      "time_ms": 1190
+    },
+    {
+      "current_deg": -5.760000229,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 3.700000048,
+      "quantization_error_deg": -0.7000000480000068,
+      "servo_command": 93,
+      "step": 119,
+      "time_ms": 1200
+    },
+    {
+      "current_deg": -5.519999981,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 3.400000095,
+      "quantization_error_deg": -0.4000000949999958,
+      "servo_command": 93,
+      "step": 120,
+      "time_ms": 1210
+    },
+    {
+      "current_deg": -5.28000021,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 3.100000143,
+      "quantization_error_deg": -0.1000001430000026,
+      "servo_command": 93,
+      "step": 121,
+      "time_ms": 1220
+    },
+    {
+      "current_deg": -5.039999962,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 2.800000191,
+      "quantization_error_deg": -0.8000001909999952,
+      "servo_command": 92,
+      "step": 122,
+      "time_ms": 1230
+    },
+    {
+      "current_deg": -4.800000191,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 2.500000238,
+      "quantization_error_deg": -0.5000002379999984,
+      "servo_command": 92,
+      "step": 123,
+      "time_ms": 1240
+    },
+    {
+      "current_deg": -4.559999943,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 2.200000286,
+      "quantization_error_deg": -0.2000002860000052,
+      "servo_command": 92,
+      "step": 124,
+      "time_ms": 1250
+    },
+    {
+      "current_deg": -4.320000172,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 1.900000334,
+      "quantization_error_deg": -0.9000003339999978,
+      "servo_command": 91,
+      "step": 125,
+      "time_ms": 1260
+    },
+    {
+      "current_deg": -4.079999924,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 1.600000381,
+      "quantization_error_deg": -0.600000381000001,
+      "servo_command": 91,
+      "step": 126,
+      "time_ms": 1270
+    },
+    {
+      "current_deg": -3.839999914,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 1.300000429,
+      "quantization_error_deg": -0.3000004289999936,
+      "servo_command": 91,
+      "step": 127,
+      "time_ms": 1280
+    },
+    {
+      "current_deg": -3.599999905,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 1.000000477,
+      "quantization_error_deg": -4.770000003873065e-07,
+      "servo_command": 91,
+      "step": 128,
+      "time_ms": 1290
+    },
+    {
+      "current_deg": -3.359999895,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.700000465,
+      "quantization_error_deg": -0.7000004650000022,
+      "servo_command": 90,
+      "step": 129,
+      "time_ms": 1300
+    },
+    {
+      "current_deg": -3.119999886,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.400000453,
+      "quantization_error_deg": -0.4000004530000041,
+      "servo_command": 90,
+      "step": 130,
+      "time_ms": 1310
+    },
+    {
+      "current_deg": -2.880000114,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.100000441,
+      "quantization_error_deg": -0.10000044100000594,
+      "servo_command": 90,
+      "step": 131,
+      "time_ms": 1320
+    },
+    {
+      "current_deg": -2.640000105,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -0.199999571,
+      "quantization_error_deg": 0.19999957100000643,
+      "servo_command": 90,
+      "step": 132,
+      "time_ms": 1330
+    },
+    {
+      "current_deg": -2.400000095,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -0.499999583,
+      "quantization_error_deg": 0.4999995830000046,
+      "servo_command": 90,
+      "step": 133,
+      "time_ms": 1340
+    },
+    {
+      "current_deg": -2.160000086,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -0.799999595,
+      "quantization_error_deg": 0.7999995950000027,
+      "servo_command": 90,
+      "step": 134,
+      "time_ms": 1350
+    },
+    {
+      "current_deg": -1.919999957,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -1.099999666,
+      "quantization_error_deg": 0.09999966600000221,
+      "servo_command": 89,
+      "step": 135,
+      "time_ms": 1360
+    },
+    {
+      "current_deg": -1.679999948,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -1.399999619,
+      "quantization_error_deg": 0.39999961899999903,
+      "servo_command": 89,
+      "step": 136,
+      "time_ms": 1370
+    },
+    {
+      "current_deg": -1.440000057,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -1.699999571,
+      "quantization_error_deg": 0.6999995710000064,
+      "servo_command": 89,
+      "step": 137,
+      "time_ms": 1380
+    },
+    {
+      "current_deg": -1.200000048,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -1.999999523,
+      "quantization_error_deg": 0.9999995229999996,
+      "servo_command": 89,
+      "step": 138,
+      "time_ms": 1390
+    },
+    {
+      "current_deg": -0.959999979,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -2.299999475,
+      "quantization_error_deg": 0.2999994749999928,
+      "servo_command": 88,
+      "step": 139,
+      "time_ms": 1400
+    },
+    {
+      "current_deg": -0.720000029,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -2.599999428,
+      "quantization_error_deg": 0.5999994280000038,
+      "servo_command": 88,
+      "step": 140,
+      "time_ms": 1410
+    },
+    {
+      "current_deg": -0.479999989,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -2.89999938,
+      "quantization_error_deg": 0.899999379999997,
+      "servo_command": 88,
+      "step": 141,
+      "time_ms": 1420
+    },
+    {
+      "current_deg": -0.239999995,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -3.199999332,
+      "quantization_error_deg": 0.19999933200000442,
+      "servo_command": 87,
+      "step": 142,
+      "time_ms": 1430
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -3.499999285,
+      "quantization_error_deg": 0.49999928500000124,
+      "servo_command": 87,
+      "step": 143,
+      "time_ms": 1440
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -3.199999332,
+      "quantization_error_deg": 0.19999933200000442,
+      "servo_command": 87,
+      "step": 144,
+      "time_ms": 1450
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -2.89999938,
+      "quantization_error_deg": 0.899999379999997,
+      "servo_command": 88,
+      "step": 145,
+      "time_ms": 1460
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -2.599999428,
+      "quantization_error_deg": 0.5999994280000038,
+      "servo_command": 88,
+      "step": 146,
+      "time_ms": 1470
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -2.299999475,
+      "quantization_error_deg": 0.2999994749999928,
+      "servo_command": 88,
+      "step": 147,
+      "time_ms": 1480
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -1.999999523,
+      "quantization_error_deg": 0.9999995229999996,
+      "servo_command": 89,
+      "step": 148,
+      "time_ms": 1490
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -1.699999571,
+      "quantization_error_deg": 0.6999995710000064,
+      "servo_command": 89,
+      "step": 149,
+      "time_ms": 1500
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -1.399999619,
+      "quantization_error_deg": 0.39999961899999903,
+      "servo_command": 89,
+      "step": 150,
+      "time_ms": 1510
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -1.099999666,
+      "quantization_error_deg": 0.09999966600000221,
+      "servo_command": 89,
+      "step": 151,
+      "time_ms": 1520
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -0.799999654,
+      "quantization_error_deg": 0.7999996540000041,
+      "servo_command": 90,
+      "step": 152,
+      "time_ms": 1530
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -0.499999642,
+      "quantization_error_deg": 0.4999996420000059,
+      "servo_command": 90,
+      "step": 153,
+      "time_ms": 1540
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": -0.19999963,
+      "quantization_error_deg": 0.19999962999999354,
+      "servo_command": 90,
+      "step": 154,
+      "time_ms": 1550
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 155,
+      "time_ms": 1560
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 156,
+      "time_ms": 1570
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 157,
+      "time_ms": 1580
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 158,
+      "time_ms": 1590
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 159,
+      "time_ms": 1600
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 160,
+      "time_ms": 1610
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 161,
+      "time_ms": 1620
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 162,
+      "time_ms": 1630
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 163,
+      "time_ms": 1640
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 164,
+      "time_ms": 1650
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 165,
+      "time_ms": 1660
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 166,
+      "time_ms": 1670
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 167,
+      "time_ms": 1680
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 168,
+      "time_ms": 1690
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 169,
+      "time_ms": 1700
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 170,
+      "time_ms": 1710
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 171,
+      "time_ms": 1720
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 172,
+      "time_ms": 1730
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 173,
+      "time_ms": 1740
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 174,
+      "time_ms": 1750
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 175,
+      "time_ms": 1760
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 176,
+      "time_ms": 1770
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 177,
+      "time_ms": 1780
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 178,
+      "time_ms": 1790
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 179,
+      "time_ms": 1800
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 180,
+      "time_ms": 1810
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 181,
+      "time_ms": 1820
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 182,
+      "time_ms": 1830
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 183,
+      "time_ms": 1840
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 184,
+      "time_ms": 1850
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 185,
+      "time_ms": 1860
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 186,
+      "time_ms": 1870
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 187,
+      "time_ms": 1880
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 188,
+      "time_ms": 1890
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 189,
+      "time_ms": 1900
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 190,
+      "time_ms": 1910
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 191,
+      "time_ms": 1920
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 192,
+      "time_ms": 1930
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 193,
+      "time_ms": 1940
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 194,
+      "time_ms": 1950
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 195,
+      "time_ms": 1960
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 196,
+      "time_ms": 1970
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 197,
+      "time_ms": 1980
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 198,
+      "time_ms": 1990
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.01,
+      "period_ms": 10,
+      "pid_output_deg": 0.096000008,
+      "quantization_error_deg": -0.0960000080000043,
+      "servo_command": 90,
+      "step": 199,
+      "time_ms": 2000
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": 0.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 90,
+      "step": 0,
+      "time_ms": 50
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": 0.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 90,
+      "step": 1,
+      "time_ms": 100
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": 0.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 90,
+      "step": 2,
+      "time_ms": 150
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": 0.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 90,
+      "step": 3,
+      "time_ms": 200
+    },
+    {
+      "current_deg": 2.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -0.300000012,
+      "quantization_error_deg": 0.30000001199999815,
+      "servo_command": 90,
+      "step": 4,
+      "time_ms": 250
+    },
+    {
+      "current_deg": 4.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -0.600000024,
+      "quantization_error_deg": 0.6000000239999963,
+      "servo_command": 90,
+      "step": 5,
+      "time_ms": 300
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -0.900000036,
+      "quantization_error_deg": 0.9000000359999945,
+      "servo_command": 90,
+      "step": 6,
+      "time_ms": 350
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -1.200000048,
+      "quantization_error_deg": 0.2000000480000068,
+      "servo_command": 89,
+      "step": 7,
+      "time_ms": 400
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -1.5,
+      "quantization_error_deg": 0.5,
+      "servo_command": 89,
+      "step": 8,
+      "time_ms": 450
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -1.799999952,
+      "quantization_error_deg": 0.7999999519999932,
+      "servo_command": 89,
+      "step": 9,
+      "time_ms": 500
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -2.099999905,
+      "quantization_error_deg": 0.09999990500000422,
+      "servo_command": 88,
+      "step": 10,
+      "time_ms": 550
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -2.399999857,
+      "quantization_error_deg": 0.3999998569999974,
+      "servo_command": 88,
+      "step": 11,
+      "time_ms": 600
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -2.699999809,
+      "quantization_error_deg": 0.6999998090000048,
+      "servo_command": 88,
+      "step": 12,
+      "time_ms": 650
+    },
+    {
+      "current_deg": 6.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -2.999999762,
+      "quantization_error_deg": 0.9999997620000016,
+      "servo_command": 88,
+      "step": 13,
+      "time_ms": 700
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -2.699999809,
+      "quantization_error_deg": 0.6999998090000048,
+      "servo_command": 88,
+      "step": 14,
+      "time_ms": 750
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -2.399999857,
+      "quantization_error_deg": 0.3999998569999974,
+      "servo_command": 88,
+      "step": 15,
+      "time_ms": 800
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -2.099999905,
+      "quantization_error_deg": 0.09999990500000422,
+      "servo_command": 88,
+      "step": 16,
+      "time_ms": 850
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -1.799999952,
+      "quantization_error_deg": 0.7999999519999932,
+      "servo_command": 89,
+      "step": 17,
+      "time_ms": 900
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -1.5,
+      "quantization_error_deg": 0.5,
+      "servo_command": 89,
+      "step": 18,
+      "time_ms": 950
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -1.200000048,
+      "quantization_error_deg": 0.2000000480000068,
+      "servo_command": 89,
+      "step": 19,
+      "time_ms": 1000
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -0.900000036,
+      "quantization_error_deg": 0.9000000359999945,
+      "servo_command": 90,
+      "step": 20,
+      "time_ms": 1050
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -0.600000024,
+      "quantization_error_deg": 0.6000000239999963,
+      "servo_command": 90,
+      "step": 21,
+      "time_ms": 1100
+    },
+    {
+      "current_deg": -6.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -0.300000012,
+      "quantization_error_deg": 0.30000001199999815,
+      "servo_command": 90,
+      "step": 22,
+      "time_ms": 1150
+    },
+    {
+      "current_deg": -5.760000229,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": 0.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 90,
+      "step": 23,
+      "time_ms": 1200
+    },
+    {
+      "current_deg": -4.559999943,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -0.300000012,
+      "quantization_error_deg": 0.30000001199999815,
+      "servo_command": 90,
+      "step": 24,
+      "time_ms": 1250
+    },
+    {
+      "current_deg": -3.359999895,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -0.600000024,
+      "quantization_error_deg": 0.6000000239999963,
+      "servo_command": 90,
+      "step": 25,
+      "time_ms": 1300
+    },
+    {
+      "current_deg": -2.160000086,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -0.900000036,
+      "quantization_error_deg": 0.9000000359999945,
+      "servo_command": 90,
+      "step": 26,
+      "time_ms": 1350
+    },
+    {
+      "current_deg": -0.959999979,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -1.200000048,
+      "quantization_error_deg": 0.2000000480000068,
+      "servo_command": 89,
+      "step": 27,
+      "time_ms": 1400
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -1.5,
+      "quantization_error_deg": 0.5,
+      "servo_command": 89,
+      "step": 28,
+      "time_ms": 1450
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -1.200000048,
+      "quantization_error_deg": 0.2000000480000068,
+      "servo_command": 89,
+      "step": 29,
+      "time_ms": 1500
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -0.900000036,
+      "quantization_error_deg": 0.9000000359999945,
+      "servo_command": 90,
+      "step": 30,
+      "time_ms": 1550
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -0.600000024,
+      "quantization_error_deg": 0.6000000239999963,
+      "servo_command": 90,
+      "step": 31,
+      "time_ms": 1600
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": -0.300000012,
+      "quantization_error_deg": 0.30000001199999815,
+      "servo_command": 90,
+      "step": 32,
+      "time_ms": 1650
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": 0.0,
+      "quantization_error_deg": 0.0,
+      "servo_command": 90,
+      "step": 33,
+      "time_ms": 1700
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": 0.083999999,
+      "quantization_error_deg": -0.08399999899999955,
+      "servo_command": 90,
+      "step": 34,
+      "time_ms": 1750
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": 0.083999999,
+      "quantization_error_deg": -0.08399999899999955,
+      "servo_command": 90,
+      "step": 35,
+      "time_ms": 1800
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": 0.083999999,
+      "quantization_error_deg": -0.08399999899999955,
+      "servo_command": 90,
+      "step": 36,
+      "time_ms": 1850
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": 0.083999999,
+      "quantization_error_deg": -0.08399999899999955,
+      "servo_command": 90,
+      "step": 37,
+      "time_ms": 1900
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": 0.083999999,
+      "quantization_error_deg": -0.08399999899999955,
+      "servo_command": 90,
+      "step": 38,
+      "time_ms": 1950
+    },
+    {
+      "current_deg": 0.0,
+      "dt_s": 0.050000001,
+      "period_ms": 50,
+      "pid_output_deg": 0.083999999,
+      "quantization_error_deg": -0.08399999899999955,
+      "servo_command": 90,
+      "step": 39,
+      "time_ms": 2000
+    }
+  ],
+  "schema_version": 1,
+  "seed": "not_applicable_fixed_trace",
+  "sequence": "fixed_piecewise_attitude_v1",
+  "source_git_sha": "a56e3067361b23eab12bf5f51c249b4089456077",
+  "source_sha256": {
+    "docs/R2_2_GNC_ONLY_BENCH_ISOLATION.md": "275a751538f6c2a678fb28e6eff125821da734d235ea22a15952e6ca5db91346",
+    "docs/R2_3_DUAL_PERIOD_CADENCE_SUPPLEMENT.md": "d9cb5cc0f9b29382be59e0eed5b338da22a5fa1b50354a8f2de8f57bdc2b7272",
+    "docs/R2_3_OFFLINE_GNC_SOURCE_AUDIT.md": "3bbf3e350965ddd91e23f3af4adeed0888ad8e5229e07cbba22b2f037eca81da",
+    "engineering/gnc-offline-contract.yaml": "4c92d4cc4a5cbbdb03cba95dd53a2d1731d85238fbf224ba04bd20031fdcc9e7",
+    "flight_computer/src/algorithms/pid.cpp": "abaceb2215d572cba73feee0ac0f83f4f1de77f0456389bcf1865e1fcd022ea5",
+    "flight_computer/src/algorithms/pid.h": "d18f71a10a5dbd61afe4f403d9c54bbacb6d377bb3aac1941728800b1aad85aa",
+    "flight_computer/src/main.cpp": "bbeefc88dda5b0586e5239d7473477b31b44b28351de231069902f0bfe884a07",
+    "flight_computer/test/fakes/Arduino.h": "78c7e696daf231bb6f8b773e85899430d65815b630cc935a3a08096389b607fa",
+    "scripts/check.py": "4ad8874a3cebdc2445b56910d2041f64cae8e067bc85f68e107aed720b5f1734",
+    "scripts/gnc_dual_period.py": "a656cbe3ecf02ba1a8923692f4d48e4e11e60bc6fc923b2d14b4682569903521",
+    "scripts/gnc_dual_period_cpp_probe.cpp": "8949c07c7ba19b8b671ac3168dbe342bd219a4ccdd3e3e28a48ecb97662e13cd",
+    "scripts/tests/test_gnc_dual_period.py": "06b05ff67b0b750ab7282c534fb431c8af47198d9b6e9c25094a083fdc8a4405"
+  },
+  "tool_versions": {
+    "compiler": "g++.exe (i686-posix-dwarf-rev0, Built by MinGW-W64 project) 5.1.0",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "platformio": "PlatformIO Core, version 6.1.19",
+    "python": "3.13.1"
+  }
+}

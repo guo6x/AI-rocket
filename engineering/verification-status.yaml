@@ -104,7 +104,7 @@ verification_items:
     classification: "TESTED_SOFTWARE"
     result: "PASS"
     command: "py -3 -m pytest scripts/tests/test_gnc_dual_period.py -q"
-    evidence: "5 tests passed. One fixed 0-2000 ms synthetic attitude trace was sampled at 10 ms (200 calls) and 50 ms (40 calls) with independent production PID states. At 40 common timestamps, float PID divergence was max 5.200000048 deg / RMS 2.254336377 deg; integer 90+int(PID) command divergence was max 5 / RMS 2.1213203436 counts. Artifact: engineering/offline-evidence/r2_3/gnc_dual_period_trace.json (SHA and source SHA recorded in the committed manifest)."
+    evidence: "5 tests passed. One fixed 0-2000 ms synthetic attitude trace was sampled at 10 ms (200 calls) and 50 ms (40 calls) with independent production PID states. At 40 common timestamps, float PID divergence was max 5.200000048 deg / RMS 2.254336377 deg; integer 90+int(PID) command divergence was max 5 / RMS 2.1213203436 counts. Artifact: engineering/offline-evidence/r2_3/gnc_dual_period_trace.json; source_git_sha=a56e3067361b23eab12bf5f51c249b4089456077; SHA-256=785d8c1ae1be67ab30b1cc37fa490cb32e1b6ba0ce62613c3ef10e2e29530356."
     limitations: "The 50 ms cadence is an offline comparison assumption, not a measured flight-computer period. This proves cadence-dependent software behavior and quantization only; it does not establish physical stability, mounting direction, plant response, or recovery readiness."
 
   - id: "wifi_command_downlink"
