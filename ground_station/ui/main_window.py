@@ -679,7 +679,9 @@ class MainWindow(QMainWindow):
                     if self._gl_no_frame_since is None:
                         self._gl_no_frame_since = now
                     if now - self._gl_no_frame_since >= 1.5:
-                        self.view3d_panel.on_render_failure("no successful OpenGL frame after 1.5 seconds")
+                        reason = "no successful OpenGL frame after 1.5 seconds"
+                        self.view3d_panel.on_render_failure(reason)
+                        self.on_3d_failed(reason)
                     else:
                         self.view3d_status_label.setText("3D DEGRADED / NOT_VERIFIED: awaiting visible frame; 2D fallback available")
         else:
