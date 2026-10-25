@@ -1,8 +1,10 @@
 # AI Rocket / Project Ad Astra
 
-一个面向小型实验火箭与 EDF 涵道 TVC 测试台的软硬件协同项目，覆盖 STM32 飞控、ESP8266 遥测中继、Python 地面站、气动/动力学仿真、CAD 自动化与 3D 打印模型。
+一个面向小型实验火箭与 EDF 涵道 TVC 测试台的软硬件协同项目，覆盖 STM32 飞控、ESP8266 遥测中继、Python 地面站、气动/动力学仿真及**历史 CAD 实验资料**。当前正式 CAD 尚未完成。
 
 > **R0 authority notice:** 仓库包含多个年代、不同构型的历史产物。当前可采信状态、参数冲突、验证等级和已知问题以 [`engineering/`](engineering/) 为准；旧报告中的“完成”“验证”“最终”等措辞不能视作当前实物证据。
+
+> **CAD 重要纠正（2026-10-25）：** 此前 AI 生成的 NX/STEP/STL/GLB/TVC/整箭模型已经被项目负责人否定，不存在当前可接受的正式 CAD、装配或制造放行。旧文件一律仅作历史资料，禁止直接打印、制造或当成当前尺寸基线。先阅读 [CAD 真实状态](engineering/cad-authority.yaml) 和 [CAD 清理/重建审计](docs/CAD_GROUND_TRUTH_RESET_2026-10-25.md)。
 
 > 当前仍处于物理验证阶段。涉及电池、旋转部件、推进或飞行测试时，请遵守当地法规，并使用固定试验台、隔离区域、护目装备和可靠的紧急停机措施。
 
@@ -17,9 +19,9 @@
 | `ground_station/` | PySide6/pyqtgraph 地面站与测试 |
 | `aero_sim/` | RocketPy 气动、弹道、参数扫描与 Monte Carlo 仿真 |
 | `dynamics_sim/` | 2D/6DOF 动力学、PID 与重心影响研究 |
-| `cad_automation/` | NX/CAD 自动化脚本及关键模型成果 |
-| `3d_print_files/` | 可预览、可打印的 STL/GLB 模型 |
-| `tvc_design/`、`outputs/`、`pro_outputs*/` | TVC 生成脚本及 STEP/STL/GLB 成果 |
+| `cad_automation/` | **不被接受的历史** NX/CAD 脚本和输出；非当前设计 |
+| `3d_print_files/` | 未经认证的历史 STL/GLB/预览，仅供旧资料回溯；**禁止视为可打印制造件** |
+| `tvc_design/`、`outputs/`、`pro_outputs*/` | 旧 AI 生成的 TVC 候选及 STEP/STL/GLB，已否定为当前设计 |
 | `reports/` | 各模块工程报告 |
 
 详细的硬件状态、引脚分配和下一步计划见 [project-overview.md](project-overview.md)。
@@ -57,6 +59,6 @@ pio run
 
 ## 说明
 
-- 仓库保留了关键 CAD、3D 打印和仿真结果，便于复现与查看。
+- 仓库暂时保留旧 AI CAD、STL/GLB 和仿真结果供历史审计；**不存在已完成的正式机械 CAD/制造装配**。
 - 本机虚拟环境、PlatformIO 构建目录、遥测日志、调试日志和私有网络配置不会纳入版本控制。
 - 部分 CAD 自动化脚本依赖 Siemens NX 或其他本机 CAD 环境。
