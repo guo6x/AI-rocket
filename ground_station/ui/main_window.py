@@ -64,6 +64,7 @@ class MainWindow(QMainWindow):
         self.replay = None
         self._input_epoch = 0
         self._session_receivers = []
+        self._gl_no_frame_since = None
 
         import os
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -664,15 +665,25 @@ class MainWindow(QMainWindow):
 
         if self.view3d_panel is not None and self.tab_widget.currentWidget() is self.view3d_panel:
             gl_view = getattr(self.view3d_panel, "gl_view", None)
-            if gl_view is not None and getattr(gl_view, "render_error", None):
+            if gl_view is None:
+                # Constructing pyqtgraph/GL failed; pure-Qt fallback is the tab.
+                self.view3d_status_label.setText("3D DEGRADED / NOT_VERIFIED: 2D fallback active (not CAD)")
+            elif getattr(gl_view, "render_error", None):
                 self.on_3d_failed(gl_view.render_error)
-            elif gl_view is not None and gl_view.isVisible():
+            elif gl_view.isVisible():
                 if gl_view.isValid() and getattr(gl_view, "render_ok", False):
+                    self._gl_no_frame_since = None
                     self.view3d_status_label.setText("3D: frame rendered; simplified attitude box, yaw unavailable (not CAD)")
                 else:
-                    fallback = getattr(self.view3d_panel, "fallback", None)
-                    detail = "2D fallback active" if fallback is not None and not fallback.isHidden() else "awaiting visible frame"
-                    self.view3d_status_label.setText(f"3D DEGRADED / NOT_VERIFIED: {detail}; dashboard and curves remain usable")
+                    now = time.monotonic()
+                    if self._gl_no_frame_since is None:
+                        self._gl_no_frame_since = now
+                    if now - self._gl_no_frame_since >= 1.5:
+                        self.view3d_panel.on_render_failure("no successful OpenGL frame after 1.5 seconds")
+                    else:
+                        self.view3d_status_label.setText("3D DEGRADED / NOT_VERIFIED: awaiting visible frame; 2D fallback available")
+        else:
+            self._gl_no_frame_since = None
 
     # ---- 错误处理 ----
     def on_error(self, error_msg):
