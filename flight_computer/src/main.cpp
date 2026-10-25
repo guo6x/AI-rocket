@@ -21,7 +21,15 @@
 #endif
 
 // ========== 硬件串口显式注册 ==========
+#if !defined(HAVE_HWSERIAL2)
+#if defined(ARDUINO_ARCH_STM32)
+// The core declares Serial2 as HardwareSerial in 2.x and Uart in 3.x.
+// Reuse that concrete type without changing the USART2 peripheral or its pins.
+decltype(Serial2) Serial2(USART2);
+#else
 HardwareSerial Serial2(USART2);
+#endif
+#endif
 
 // ========== 传感器 ==========
 WireSensorBus sensorBus;

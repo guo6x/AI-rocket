@@ -2,7 +2,7 @@ name: SYSTEM-V1 full software gate (no hardware)
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main, feat/system-v1-mainline-ci-20261025]
   push:
     branches: [main]
   workflow_dispatch:
@@ -47,20 +47,33 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements-dev.txt -r ground_station/requirements.txt -r aero_sim/requirements.txt
       - name: Record exact source and software environment
+        shell: bash
         run: |
-          git rev-parse HEAD
-          python --version
-          platformio --version
+          {
+            git rev-parse HEAD
+            git status --short
+            echo "event=${{ github.event_name }} head=${{ github.event.pull_request.head.sha }} base=${{ github.event.pull_request.base.sha }}"
+            python --version
+            platformio --version
+            python -m pip freeze
+            platformio system info
+          } | tee system-v1-environment.txt
       - name: Execute existing complete project software checks
         shell: bash
         run: |
-          set -o pipefail
+          set +e
           python -u scripts/check.py 2>&1 | tee system-v1-software-check.log
+          status=${PIPESTATUS[0]}
+          echo "$status" > system-v1-exit-code.txt
+          exit "$status"
       - name: Save attributable log including failures
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: system-v1-software-${{ github.sha }}-${{ github.run_id }}
-          path: system-v1-software-check.log
+          path: |
+            system-v1-software-check.log
+            system-v1-environment.txt
+            system-v1-exit-code.txt
           retention-days: 14
           if-no-files-found: ignore
