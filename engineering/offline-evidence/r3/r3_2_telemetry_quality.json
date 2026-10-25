@@ -1,0 +1,212 @@
+{
+  "artifact_path": "engineering/offline-evidence/r3/r3_2_telemetry_quality.json",
+  "command": "py -3 -m rf_lab.quality_evidence --write-evidence 'engineering/offline-evidence/r3/r3_2_telemetry_quality.json'",
+  "crc_is_authentication": false,
+  "dependencies": "Python standard library only",
+  "deterministic_result": {
+    "command_dispatches": 0,
+    "frames": [
+      {
+        "label": "before_data",
+        "status": {
+          "actual_rf_loss_latency_range_throughput": "NOT_MEASURED",
+          "control_or_actuator_channel_connected": false,
+          "event_counts": {},
+          "flight_control_authority": false,
+          "freshness": "NO_DECODED_SAMPLE",
+          "last_packet_outcome": "NO_DATA",
+          "last_sample_was_authenticated": false,
+          "packet_acceptance_is_sender_authentication": false,
+          "receiver_sequence_gaps_unobserved": 0,
+          "session_change_seen_untrusted": false,
+          "source_identity": "UNAUTHENTICATED",
+          "synthetic_age_seconds": null
+        }
+      },
+      {
+        "label": "first_decoded_untrusted",
+        "status": {
+          "actual_rf_loss_latency_range_throughput": "NOT_MEASURED",
+          "control_or_actuator_channel_connected": false,
+          "event_counts": {
+            "ACCEPT": 1
+          },
+          "flight_control_authority": false,
+          "freshness": "RECENT_UNAUTHENTICATED",
+          "last_packet_outcome": "ACCEPT",
+          "last_sample_was_authenticated": false,
+          "packet_acceptance_is_sender_authentication": false,
+          "receiver_sequence_gaps_unobserved": 0,
+          "session_change_seen_untrusted": false,
+          "source_identity": "UNAUTHENTICATED",
+          "synthetic_age_seconds": 0
+        }
+      },
+      {
+        "label": "corrupt_does_not_make_old_sample_recent",
+        "status": {
+          "actual_rf_loss_latency_range_throughput": "NOT_MEASURED",
+          "control_or_actuator_channel_connected": false,
+          "event_counts": {
+            "ACCEPT": 1,
+            "REJECT_crc_mismatch": 1
+          },
+          "flight_control_authority": false,
+          "freshness": "STALE_UNAUTHENTICATED",
+          "last_packet_outcome": "REJECT_crc_mismatch",
+          "last_sample_was_authenticated": false,
+          "packet_acceptance_is_sender_authentication": false,
+          "receiver_sequence_gaps_unobserved": 0,
+          "session_change_seen_untrusted": false,
+          "source_identity": "UNAUTHENTICATED",
+          "synthetic_age_seconds": 2.5
+        }
+      },
+      {
+        "label": "duplicate_does_not_make_old_sample_recent",
+        "status": {
+          "actual_rf_loss_latency_range_throughput": "NOT_MEASURED",
+          "control_or_actuator_channel_connected": false,
+          "event_counts": {
+            "ACCEPT": 1,
+            "DUPLICATE": 1,
+            "REJECT_crc_mismatch": 1
+          },
+          "flight_control_authority": false,
+          "freshness": "STALE_UNAUTHENTICATED",
+          "last_packet_outcome": "DUPLICATE",
+          "last_sample_was_authenticated": false,
+          "packet_acceptance_is_sender_authentication": false,
+          "receiver_sequence_gaps_unobserved": 0,
+          "session_change_seen_untrusted": false,
+          "source_identity": "UNAUTHENTICATED",
+          "synthetic_age_seconds": 3
+        }
+      },
+      {
+        "label": "new_label_is_not_authenticated",
+        "status": {
+          "actual_rf_loss_latency_range_throughput": "NOT_MEASURED",
+          "control_or_actuator_channel_connected": false,
+          "event_counts": {
+            "ACCEPT": 1,
+            "DUPLICATE": 1,
+            "REJECT_crc_mismatch": 1,
+            "SESSION_CHANGED": 1
+          },
+          "flight_control_authority": false,
+          "freshness": "RECENT_UNAUTHENTICATED",
+          "last_packet_outcome": "SESSION_CHANGED",
+          "last_sample_was_authenticated": false,
+          "packet_acceptance_is_sender_authentication": false,
+          "receiver_sequence_gaps_unobserved": 0,
+          "session_change_seen_untrusted": true,
+          "source_identity": "UNAUTHENTICATED",
+          "synthetic_age_seconds": 0
+        }
+      }
+    ],
+    "mode": "SYNTHETIC_READ_ONLY",
+    "radio_transmissions": 0
+  },
+  "deterministic_result_sha256": "fe0ff7c9e41ac28231ab8d935b7b1a19e449f780d1a33e5f471e58533bc4e9d7",
+  "evidence_ceiling": "TESTED_SOFTWARE",
+  "experiment": "r3_2_synthetic_telemetry_quality_v1",
+  "flight_commands": 0,
+  "input_trace": [
+    {
+      "label": "before_data",
+      "now_seconds": 0,
+      "operation": "snapshot"
+    },
+    {
+      "datagram_hex": "4152010100000065000a001873796e7468657469632061747469747564652062797465736f9dddb4",
+      "label": "first_decoded_untrusted",
+      "now_seconds": 0,
+      "operation": "observe_then_snapshot"
+    },
+    {
+      "datagram_hex": "4152010100000065000b000e73796e7468657469632064617461edcf677e",
+      "label": "corrupt_does_not_make_old_sample_recent",
+      "now_seconds": 2.5,
+      "operation": "observe_then_snapshot"
+    },
+    {
+      "datagram_hex": "4152010100000065000a001873796e7468657469632061747469747564652062797465736f9dddb4",
+      "label": "duplicate_does_not_make_old_sample_recent",
+      "now_seconds": 3,
+      "operation": "observe_then_snapshot"
+    },
+    {
+      "datagram_hex": "41520101000000ca00000015756e74727573746564206e65772073657373696f6e2455be03",
+      "label": "new_label_is_not_authenticated",
+      "now_seconds": 4,
+      "operation": "observe_then_snapshot"
+    }
+  ],
+  "input_trace_sha256": "0f294d94589ee021c400444b52321445fe1139667e772af398bf8b31ef7626f1",
+  "physical_hardware": false,
+  "quality_demo_check_result": "PASS",
+  "r3_1_replay": {
+    "artifact_path": "engineering/offline-evidence/r3/r3_1_telemetry_reliability.json",
+    "artifact_sha256": "b3ea8eb614ab60dbce52477f1bf809dfdb540c3ae69a85ad902fdf31d68d5a4a",
+    "command": "py -3 -m rf_lab.reliability_experiment --check",
+    "deterministic_result_sha256": "dd7b5919dce6d8345ee9e2955c0cdc414c84f0cc6602a0fe765469cac0128587",
+    "input_trace_sha256": "cf52f13de2763ffa6ee63a72c16278890f196e7bef59f6d2cff8e4bce7c288cf",
+    "result": "PASS",
+    "summary": {
+      "datagrams_offered_to_receiver": 589,
+      "flight_commands_dispatched": 0,
+      "flight_control_authority_granted": 0,
+      "known_synthetic_drops": 39,
+      "receiver_rejected_by_reason": {
+        "crc_mismatch": 33,
+        "payload_length_out_of_range": 1,
+        "payload_size_mismatch": 1,
+        "truncated_header_or_crc": 33
+      },
+      "receiver_status_counts": {
+        "ACCEPT": 458,
+        "DUPLICATE": 34,
+        "SESSION_CHANGED": 2,
+        "STALE_OR_OUT_OF_ORDER": 27
+      },
+      "scenario_count": 10,
+      "unique_frames_generated": 591,
+      "unobserved_forward_sequence_gap_count": 65660
+    }
+  },
+  "radio_transmissions": 0,
+  "reproduction_commands": [
+    "py -3 -m rf_lab.quality_demo --check",
+    "py -3 -m rf_lab.reliability_experiment --check",
+    "py -3 -m rf_lab.quality_evidence --write-evidence 'engineering/offline-evidence/r3/r3_2_telemetry_quality.json'"
+  ],
+  "schema_version": 1,
+  "sensor_measurement_time_observed": false,
+  "source_git_sha": "1e1ef5f3451d092a36080ccb6ef4acbffe585957",
+  "source_sha256": {
+    "docs/R3_1_RF_RELIABILITY_EXPERIMENT.md": "20e2e54ac7ea80673688056c3aa277b0cea347ffbc3077cb1a065ba9c868d7f7",
+    "docs/R3_2_TELEMETRY_QUALITY.md": "ea4e62bb8353eaa374d33f4a6282ee0c09c00f611b2a7e57573de98b67fb5115",
+    "engineering/rf-reliability-contract.yaml": "24a12c05fd18c58becbf531774a909aa1e428237b345dea99f3dd4eb6fc4fb1d",
+    "engineering/rf-telemetry-quality-contract.yaml": "7c1499d5ef4ebcbb6f4878b02082d78dccb302ce6541bc2202d7a051374f237d",
+    "rf_lab/quality_demo.py": "7b7229fb44b323633ead7fd3442094d788a21e5e289d6b465c1ea299459291fa",
+    "rf_lab/quality_evidence.py": "0c7416a4ca48cb0e7ad92427d96bbdf299d90e1871cc57cea8119576550a52f6",
+    "rf_lab/reliability_experiment.py": "3934c7e793e3c7cd80081dfb9f947efba6addeaae28900381e39db928b26fc11",
+    "rf_lab/telemetry_frame.py": "61e9189240062ae9b43ed0e9867037f675060f74ab40c952bc220ac6fb945baa",
+    "rf_lab/telemetry_quality.py": "9445adcb8c3e8b6d20e1e0fb144e45159b4e8f339d1a8154a43ae23eb9a5af6a",
+    "rf_lab/tests/test_quality_demo.py": "6f00209e4fa6e88d9c6a95ef02947683acafdad65d2368e049d327f846b4b960",
+    "rf_lab/tests/test_quality_evidence.py": "3bacf26ac616fee1d7fd0b1f53c4c3faf2ca89671638dea4b5465edf07ebebd8",
+    "rf_lab/tests/test_reliability_experiment.py": "90c96415a44e17902f396b4ced20410bc423c76b4b0a2903e42389b9088c36b8",
+    "rf_lab/tests/test_telemetry_frame.py": "e120cd284967fa2b097953a14cb6b9aac4605c93aa964acc5e719d92517af695",
+    "rf_lab/tests/test_telemetry_quality.py": "171b07605774b563966a20806a03b16781d8a7cf6106f18aafb73ac01b2d0806",
+    "scripts/check.py": "71842823ca6963125a02e987b6919a2cd50632c7534c201643a93988797a99ab"
+  },
+  "source_worktree_changes": [],
+  "source_worktree_clean": true,
+  "synthetic_only": true,
+  "tool_versions": {
+    "platform": "Windows-11-10.0.26300-SP0",
+    "python": "3.13.1"
+  }
+}
