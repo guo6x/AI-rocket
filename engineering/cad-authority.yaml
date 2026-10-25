@@ -1,0 +1,47 @@
+schema_version: 1
+record_date: "2026-10-25"
+scope: "Current Project Ad Astra mechanical CAD authority; not historical file availability"
+basis: "Project owner explicitly states previous AI-generated CAD outputs are poor and no acceptable current CAD has been completed"
+status: "NOT_STARTED"
+cad_start_status: "BLOCKED_BY_MEASUREMENT"
+accepted_geometry: null
+accepted_assembly: null
+accepted_drawings: []
+manufacturing_release: false
+flight_qualification: false
+evidence_ceiling: "HISTORICAL_REFERENCE_ONLY"
+current_article: "AA-TVC-BENCH-001"
+current_design_item: "TVC_ASSEMBLY_V1"
+governing_inputs:
+  - "engineering/as-built/article.yaml"
+  - "engineering/as-built/component-inventory.yaml"
+  - "engineering/as-built/measurement-plan.yaml"
+  - "engineering/as-built/datum-definition.yaml"
+  - "engineering/tvc-mechanical-requirements.yaml"
+  - "engineering/aeroforge-intake/tvc-assembly-intake.yaml"
+legacy_policy:
+  classification: "REJECTED_FOR_CURRENT_DESIGN"
+  current_design_sources: []
+  groups_to_quarantine:
+    - "generate_rocket*.py"
+    - "generate_all_3d_models.py"
+    - "cad_automation/**"
+    - "tvc_design/**"
+    - "3d_print_files/**"
+    - "outputs/**"
+    - "pro_outputs/**"
+    - "pro_outputs_v3/**"
+    - "verify_rocket.py"
+    - "verify_v10.py"
+    - "verify_viewer.py"
+  may_be_used_for_historical_analysis: true
+  may_supply_actual_dimensions_or_manufacturing_authority: false
+  automatic_reuse: false
+  removal_policy: "Do not bulk delete until dependency scan, historical preservation, and a dedicated cleanup diff are reviewed."
+current_gate_policy:
+  cad_start_requires_evidence: true
+  unknown_is_not_zero: true
+  never_backfill_from_legacy_geometry: true
+  release_requires_independent_review: true
+  no_model_can_be_selected_from_filename: true
+next_action: "Record current EDF / servo / frame mechanical observations against existing CAD_START measurement IDs; choose a controlled parametric design only after that evidence."
