@@ -1,4 +1,7 @@
-PySide6>=6.6.0
+# Tested Qt binding set: 6.12.0 passes assertions but aborts on CPython 3.11
+# Linux interpreter teardown (SYSTEM-V1 CI runs 40163661917 / 40166887126).
+# Keep the full tests/exit-code gate; upgrade only after that regression is fixed.
+PySide6==6.10.2
 pyserial>=3.5
 pyqtgraph>=0.13.3
 PyOpenGL>=3.1.7
