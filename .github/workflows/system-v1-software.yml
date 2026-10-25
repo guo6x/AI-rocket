@@ -66,6 +66,24 @@ jobs:
           status=${PIPESTATUS[0]}
           echo "$status" > system-v1-exit-code.txt
           exit "$status"
+      - name: Run actual Qt desktop fallback smoke (synthetic only)
+        shell: bash
+        run: |
+          set -o pipefail
+          python -u scripts/system_v1_runtime.py --output "${RUNNER_TEMP}/system-v1-ui-${GITHUB_SHA}" --soak-minutes 0.15 2>&1 | tee system-v1-ui-smoke.log
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          report = json.loads((Path(os.environ["RUNNER_TEMP"]) / ("system-v1-ui-" + os.environ["GITHUB_SHA"]) / "runtime_result.json").read_text())
+          fallback = report.get("fallback_2d", {}).get("status")
+          gl = report.get("opengl", {}).get("status")
+          assert report.get("qt_exit_code") == 0, report
+          assert fallback == "PASS" or gl == "PASS", (fallback, gl)
+          assert report["boundary"]["control_sends"] == 0
+          assert report["boundary"]["hardware_connections"] == 0
+          print("REAL_QT_SMOKE_PASS: visible 2D fallback or validated GL framebuffer, synthetic-only")
+          PY
       - name: Save attributable log including failures
         if: always()
         uses: actions/upload-artifact@v4
@@ -75,5 +93,7 @@ jobs:
             system-v1-software-check.log
             system-v1-environment.txt
             system-v1-exit-code.txt
+            system-v1-ui-smoke.log
+            ${{ runner.temp }}/system-v1-ui-${{ github.sha }}/
           retention-days: 14
           if-no-files-found: ignore
