@@ -38,8 +38,11 @@ INPUT_GROUPS = {
 @dataclass(frozen=True)
 class GateResult:
     blockers: dict[str, tuple[str, ...]]
+    evaluated: bool = True
 
     def status(self, gate: str) -> str:
+        if not self.evaluated:
+            return "NOT_EVALUATED"
         return "BLOCKED" if self.blockers[gate] else "READY"
 
     def union(self, gates: list[str]) -> tuple[str, ...]:
