@@ -6,20 +6,20 @@ This directory is the current engineering-status entry point for Project Ad Astr
 
 1. `current-baseline.yaml` — current objective, blockers, authority order, and R2.1 direction.
 2. **`cad-authority.yaml` — owner-corrected fact: current mechanical CAD is NOT_STARTED; legacy AI models are rejected, not a design baseline.**
-2. `assets/project-asset-registry.yaml` — project-level owned hardware/tools; ownership is separate from article assignment and hardware verification.
-3. `experimental-lines.yaml` — GNC, avionics, RF, TVC, recovery, propulsion-science, and system-integration benches.
-4. `component-status.yaml` — implementation, software-test, and hardware-evidence status by subsystem.
-5. `parameter-registry.yaml` — parameter values with provenance and conflicts; `UNKNOWN` is intentional.
-6. `verification-status.yaml` — repeatable software checks separated from hardware-gated work.
-7. `known-issues.md` — open engineering and safety-relevant gaps.
-8. `legacy-assets.md` — historical sources and generated assets that remain preserved but are not authoritative.
-9. `as-built/` — R2 TVC article, inventory, datum, measurement, interface, mass, and evidence authority.
-10. `tvc-mechanical-requirements.yaml` — requirement baseline for a future measured TVC assembly; not CAD.
-11. `aeroforge-intake/` — staged TVC concept/design-review handoff.
-12. `command-safety-contract.yaml` — R1 canonical command states, actions, ACK/NACK, and link-loss rules.
-13. `../docs/R2_1_REAL_ASSET_MULTI_BENCH_ARCHITECTURE.md` — current project-level development model.
-14. `historical-hardware-capabilities.yaml` and `../docs/R2_1_HISTORICAL_TO_CURRENT_DELTA_AUDIT.md` — preserved historical capability and the seven-field current delta audit, not a request to repeat every experiment.
-15. `../docs/R2_1_COMPATIBILITY_CLOSURE_REPORT.md` — current software/target closure, remaining hardware boundaries and the single-action handoff.
+3. `assets/project-asset-registry.yaml` — project-level owned hardware/tools; ownership is separate from article assignment and hardware verification.
+4. `experimental-lines.yaml` — GNC, avionics, RF, TVC, recovery, propulsion-science, and system-integration benches.
+5. `component-status.yaml` — implementation, software-test, and hardware-evidence status by subsystem.
+6. `parameter-registry.yaml` — parameter values with provenance and conflicts; `UNKNOWN` is intentional.
+7. `verification-status.yaml` — repeatable software checks separated from hardware-gated work.
+8. `known-issues.md` — open engineering and safety-relevant gaps.
+9. `legacy-assets.md` — historical sources and generated assets that remain preserved but are not authoritative.
+10. `as-built/` — R2 TVC article, inventory, datum, measurement, interface, mass, and evidence authority.
+11. `tvc-mechanical-requirements.yaml` — requirement baseline for a future measured TVC assembly; not CAD.
+12. `aeroforge-intake/` — staged TVC concept/design-review handoff.
+13. `command-safety-contract.yaml` — R1 canonical command states, actions, ACK/NACK, and link-loss rules.
+14. `../docs/R2_1_REAL_ASSET_MULTI_BENCH_ARCHITECTURE.md` — current project-level development model.
+15. `historical-hardware-capabilities.yaml` and `../docs/R2_1_HISTORICAL_TO_CURRENT_DELTA_AUDIT.md` — preserved historical capability and the seven-field current delta audit, not a request to repeat every experiment.
+16. `../docs/R2_1_COMPATIBILITY_CLOSURE_REPORT.md` — current software/target closure, remaining hardware boundaries and the single-action handoff.
 
 ## Status vocabulary
 
