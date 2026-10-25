@@ -5,6 +5,7 @@ This directory is the current engineering-status entry point for Project Ad Astr
 ## Read this first
 
 1. `current-baseline.yaml` — current objective, blockers, authority order, and R2.1 direction.
+2. **`cad-authority.yaml` — owner-corrected fact: current mechanical CAD is NOT_STARTED; legacy AI models are rejected, not a design baseline.**
 2. `assets/project-asset-registry.yaml` — project-level owned hardware/tools; ownership is separate from article assignment and hardware verification.
 3. `experimental-lines.yaml` — GNC, avionics, RF, TVC, recovery, propulsion-science, and system-integration benches.
 4. `component-status.yaml` — implementation, software-test, and hardware-evidence status by subsystem.
@@ -24,6 +25,7 @@ This directory is the current engineering-status entry point for Project Ad Astr
 
 | Status | Meaning |
 | --- | --- |
+| `NOT_STARTED` | Current accepted design work does not exist; retained historical files do not count. |
 | `IMPLEMENTED` | Production-path code exists. No test or hardware claim is implied. |
 | `TESTED_SOFTWARE` | A repeatable software test or source build passes. |
 | `VERIFIED_HARDWARE` | Repeatable repository evidence links a procedure, configuration, result, and date to real hardware. |
