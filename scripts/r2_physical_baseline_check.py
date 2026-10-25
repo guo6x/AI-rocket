@@ -10,6 +10,11 @@ from typing import Any
 
 import yaml
 
+if __package__:
+    from .r2_evidence import validate_evidence_files
+else:
+    from r2_evidence import validate_evidence_files
+
 
 ROOT = Path(__file__).resolve().parents[1]
 ENGINEERING = ROOT / "engineering"
@@ -33,8 +38,11 @@ INPUT_GROUPS = {
 @dataclass(frozen=True)
 class GateResult:
     blockers: dict[str, tuple[str, ...]]
+    evaluated: bool = True
 
     def status(self, gate: str) -> str:
+        if not self.evaluated:
+            return "NOT_EVALUATED"
         return "BLOCKED" if self.blockers[gate] else "READY"
 
     def union(self, gates: list[str]) -> tuple[str, ...]:
@@ -365,9 +373,20 @@ def evaluate_repository() -> tuple[list[str], GateResult, int]:
         except Exception as exc:  # pragma: no cover - output is the evidence
             errors.append(f"YAML parse failed: {path.relative_to(ROOT)}: {exc}")
     if errors:
-        return errors, GateResult({gate: () for gate in GATES}), 0
+        return errors, GateResult({gate: () for gate in GATES}, evaluated=False), 0
     documents = load_documents()
+    plan_measurements = documents.get("plan", {}).get("measurements")
+    if not isinstance(plan_measurements, list):
+        return (
+            ["Invalid R2 measurement plan: measurements must be a list"],
+            GateResult({gate: () for gate in GATES}, evaluated=False),
+            0,
+        )
     validation_errors, gate_result = evaluate_documents(documents)
+    integrity_errors = validate_evidence_files(documents, ROOT)
+    validation_errors.extend(integrity_errors)
+    if validation_errors:
+        return validation_errors, GateResult({gate: () for gate in GATES}, evaluated=False), 0
     return validation_errors, gate_result, len(documents["plan"].get("measurements") or [])
 
 
