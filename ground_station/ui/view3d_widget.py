@@ -79,12 +79,18 @@ class Rocket3DWidget(QWidget):
         self.reset_pose()
 
     def on_render_failure(self, error):
+        if not self.fallback.isHidden():
+            return
+        # Absence of a paint callback on a headless/broken Qt OpenGL backend is
+        # also a failure, not an infinite blank 3D tab.
+        if self.gl_view.render_error is None:
+            self.gl_view.render_error = str(error)
         self.error_label.setText(f"3D DEGRADED / NOT_VERIFIED — {error}\n2D fallback active; reported roll/pitch only, not CAD or hardware qualification.")
         self.error_label.show()
         self.fallback.show()
         # Defer GL widget hiding until paintGL has returned.
         QTimer.singleShot(0, self.gl_view, self.gl_view.hide)
-        self.render_failed.emit(error)
+        self.render_failed.emit(str(error))
 
     def reset_pose(self):
         self.update_attitude(0, 0, 0)
