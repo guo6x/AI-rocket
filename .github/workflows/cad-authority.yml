@@ -1,0 +1,43 @@
+name: CAD authority truthfulness (no geometry release)
+
+on:
+  pull_request:
+    paths:
+      - "engineering/cad-authority.yaml"
+      - "engineering/as-built/measurement-plan.yaml"
+      - "engineering/aeroforge-intake/tvc-assembly-intake.yaml"
+      - "scripts/cad_baseline_gate.py"
+      - "scripts/tests/test_cad_baseline_gate.py"
+      - "scripts/check.py"
+      - ".github/workflows/cad-authority.yml"
+  push:
+    branches: [main]
+    paths:
+      - "engineering/cad-authority.yaml"
+      - "engineering/as-built/measurement-plan.yaml"
+      - "engineering/aeroforge-intake/tvc-assembly-intake.yaml"
+      - "scripts/cad_baseline_gate.py"
+      - "scripts/tests/test_cad_baseline_gate.py"
+      - "scripts/check.py"
+      - ".github/workflows/cad-authority.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  cad-authority:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout read-only repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install isolated CAD gate dependencies
+        run: python -m pip install "pytest>=8,<10" "PyYAML>=6,<7"
+      - name: Run false-authority negative tests
+        run: python -m pytest scripts/tests/test_cad_baseline_gate.py -q
+      - name: Audit truthful CAD state (CAD_START must remain blocked)
+        run: python scripts/cad_baseline_gate.py --check
