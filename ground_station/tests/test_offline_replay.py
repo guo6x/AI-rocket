@@ -6,8 +6,8 @@ from types import SimpleNamespace
 from unittest.mock import Mock
 
 import pytest
-from PySide6.QtWidgets import QWidget
-from PySide6.QtCore import QObject, Signal
+from PySide6.QtWidgets import QWidget, QApplication
+from PySide6.QtCore import QObject, Signal, QThread
 
 from core.data_logger import DataLogger
 from core.offline_replay import OfflineReplay, SOURCE, load_timeline
@@ -174,6 +174,40 @@ def test_old_input_callbacks_cannot_mutate_new_session_and_no_live_value_leaks(r
     assert "OFFLINE RUNNING" in window.command_panel.link_status_label.text()
 
 
+def test_worker_callbacks_remain_on_gui_thread_without_transport_io(replay_window):
+    import time
+    window, _, _ = replay_window
+
+    class Worker(QThread):
+        text = Signal(str)
+        response = Signal(str, object)
+        notification = Signal()
+
+        def run(self):
+            self.text.emit("sample")
+            self.response.emit("ACK estop", ("192.0.2.1", 9876))
+            self.notification.emit()
+
+    worker = Worker()
+    calls = []
+
+    def record(*args):
+        calls.append((QThread.currentThread(), args))
+
+    window.bind_session_signal(worker.text, record)
+    window.bind_session_signal(worker.response, record, response=True)
+    window.bind_session_signal(worker.notification, record, notification=True)
+    worker.start()
+    assert worker.wait(2000)
+    app = QApplication.instance()
+    deadline = time.monotonic() + 2
+    while len(calls) < 3 and time.monotonic() < deadline:
+        app.processEvents()
+        time.sleep(0.001)
+    assert len(calls) == 3
+    assert all(thread == app.thread() for thread, _ in calls)
+
+
 @pytest.mark.parametrize("bad", [float("nan"), float("inf"), "bad", None, 10**400])
 def test_invalid_numeric_data_freezes_widgets_without_fabricated_zero(replay_window, bad):
     window, _, _ = replay_window
@@ -219,3 +253,16 @@ def test_partial_axis_or_comparison_data_never_generates_missing_zero_values(rep
     assert len(window.plot_panel.history_time) == 1
     assert not window.comparison_panel.time_q
     window.view3d_panel.update_attitude.assert_called_once_with(4, 3, 0.0)
+
+
+def test_claimed_valid_but_incomplete_sample_cannot_clear_prior_fault_for_legacy_data(replay_window):
+    window, _, _ = replay_window
+    window.on_data_received('{"sensor_valid":0,"sensor_fault":"imu_read"}')
+    window.on_data_received('{"sensor_valid":1}')
+    assert window.sensor_fault_active
+    window.on_data_received('{"alt":2,"pitch_flt":3,"roll_flt":4}')
+    assert window.sensor_fault_active
+    assert not window.plot_panel.history_time
+    window.on_data_received('{"sensor_valid":1,"alt":2,"pitch_flt":3,"roll_flt":4}')
+    assert not window.sensor_fault_active
+    assert len(window.plot_panel.history_time) == 1

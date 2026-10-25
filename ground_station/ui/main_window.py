@@ -4,7 +4,7 @@ from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
                                QComboBox, QPushButton, QTextEdit, QLabel,
                                QLineEdit, QTabWidget, QStackedWidget)
 from PySide6.QtGui import QFont, QColor, QTextCharFormat, QTextCursor
-from PySide6.QtCore import Qt, QTimer
+from PySide6.QtCore import Qt, QTimer, QObject, Slot
 from core.command_link import CommandTracker, parse_command_response
 from core.serial_reader import SerialReader, get_available_ports
 from core.udp_reader import UdpReader
@@ -24,6 +24,31 @@ FSTATE_COLORS = {
     "LANDED":  "#9c27b0",
 }
 
+
+class SessionReceiver(QObject):
+    """GUI-owned registered slots preserve QThread's queued delivery semantics."""
+
+    def __init__(self, owner, epoch, callback):
+        super().__init__(owner)
+        self.owner, self.epoch, self.callback = owner, epoch, callback
+
+    def deliver(self, *args):
+        if self.epoch == self.owner._input_epoch:
+            self.callback(*args)
+
+    @Slot(str)
+    def text(self, value):
+        self.deliver(value)
+
+    @Slot(str, object)
+    def response(self, value, source):
+        self.deliver(value, source)
+
+    @Slot()
+    def notification(self):
+        self.deliver()
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -38,6 +63,7 @@ class MainWindow(QMainWindow):
         self.sensor_fault_active = False
         self.replay = None
         self._input_epoch = 0
+        self._session_receivers = []
 
         import os
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -162,6 +188,8 @@ class MainWindow(QMainWindow):
         try:
             from ui.view3d_widget import Rocket3DWidget
             self.view3d_panel = Rocket3DWidget()
+            if hasattr(self.view3d_panel, "render_failed"):
+                self.view3d_panel.render_failed.connect(self.on_3d_failed)
             self.tab_widget.addTab(self.view3d_panel, "🛰️ 3D 姿态")
         except Exception as e:
             self.view3d_status_label.setText(f"3D DEGRADED / NOT_VERIFIED: {e}")
@@ -280,7 +308,7 @@ class MainWindow(QMainWindow):
         self.replay = OfflineReplay(self)
         self.bind_session_signal(self.replay.data_received, self.on_data_received)
         self.bind_session_signal(self.replay.state_changed, self.on_replay_state_changed)
-        self.bind_session_signal(self.replay.gap_started, self.on_replay_gap)
+        self.bind_session_signal(self.replay.gap_started, self.on_replay_gap, notification=True)
         self.data_logger.start_logging()
         self.data_logger.log({
             "source_mode": REPLAY_SOURCE,
@@ -384,7 +412,7 @@ class MainWindow(QMainWindow):
 
         self.bind_session_signal(self.data_thread.data_received, self.on_data_received)
         if isinstance(self.data_thread, UdpReader):
-            self.bind_session_signal(self.data_thread.command_response_received, self.on_udp_command_response)
+            self.bind_session_signal(self.data_thread.command_response_received, self.on_udp_command_response, response=True)
         self.bind_session_signal(self.data_thread.error_occurred, self.on_error)
         self.bind_session_signal(self.data_thread.link_state_changed, self.on_link_state_changed)
 
@@ -410,6 +438,9 @@ class MainWindow(QMainWindow):
         # QThread.wait()/stop do not remove signals already queued to the GUI.
         # Invalidate callbacks BEFORE stopping the old input or closing its log.
         self._input_epoch += 1
+        for receiver in self._session_receivers:
+            receiver.deleteLater()
+        self._session_receivers.clear()
         if self.replay is not None:
             self.replay.stop()
             self.replay.deleteLater()
@@ -441,14 +472,11 @@ class MainWindow(QMainWindow):
         self.command_panel.set_link_state("DISCONNECTED")
         self.command_panel.set_command_status("IDLE")
 
-    def bind_session_signal(self, signal, callback):
-        epoch = self._input_epoch
-
-        def current_session_only(*args):
-            if epoch == self._input_epoch:
-                callback(*args)
-
-        signal.connect(current_session_only)
+    def bind_session_signal(self, signal, callback, *, response=False, notification=False):
+        receiver = SessionReceiver(self, self._input_epoch, callback)
+        self._session_receivers.append(receiver)
+        slot = receiver.response if response else (receiver.notification if notification else receiver.text)
+        signal.connect(slot)
 
     # ---- 数据接收回调 ----
     def on_data_received(self, data):
@@ -479,7 +507,11 @@ class MainWindow(QMainWindow):
                 # unavailable. Sensor-fault frames must never become default
                 # altitude/attitude zeroes in dashboards, plots or the 3D view.
                 self.data_logger.log(parsed)
-                if not self.sensor_telemetry_available(parsed):
+                flag = parsed.get("sensor_valid")
+                explicit_valid = flag is True or (type(flag) is int and flag == 1)
+                # A claimed-valid but malformed sample must not clear a prior
+                # explicit fault, permitting a later legacy frame to erase it.
+                if not explicit_valid and not self.sensor_telemetry_available(parsed):
                     continue
                 numeric_keys = ("time", "alt", "pitch", "pitch_raw", "pitch_flt", "roll", "roll_raw", "roll_flt", "yaw", "batt")
                 try:
@@ -494,6 +526,8 @@ class MainWindow(QMainWindow):
                 if not numeric_valid or "alt" not in parsed or pitch_key is None or roll_key is None:
                     self.set_sensor_visual_state("SENSOR: invalid/missing numeric telemetry; last visuals frozen (not current)", False)
                     continue
+                if explicit_valid:
+                    self.sensor_telemetry_available(parsed)
                 self.dashboard.update_indicators(parsed)
 
                 # 飞行阶段变化回显 (彩色高亮)
@@ -530,7 +564,7 @@ class MainWindow(QMainWindow):
                     try:
                         self.view3d_panel.update_attitude(roll, pitch, yaw)
                     except Exception as error:
-                        self.view3d_status_label.setText(f"3D DEGRADED / NOT_VERIFIED: {error}")
+                        self.on_3d_failed(str(error))
 
         # Always log raw data
         self.data_logger.log(data)
@@ -609,6 +643,9 @@ class MainWindow(QMainWindow):
     def on_link_state_changed(self, state):
         self.command_panel.set_link_state(state)
 
+    def on_3d_failed(self, error):
+        self.view3d_status_label.setText(f"3D DEGRADED / NOT_VERIFIED: {error}")
+
     def poll_link_and_command_state(self):
         expired = self.command_tracker.expire()
         if expired is not None:
@@ -625,11 +662,13 @@ class MainWindow(QMainWindow):
 
         if self.view3d_panel is not None and self.tab_widget.currentWidget() is self.view3d_panel:
             gl_view = getattr(self.view3d_panel, "gl_view", None)
-            if gl_view is not None and gl_view.isVisible():
-                if gl_view.isValid():
-                    self.view3d_status_label.setText("3D: OpenGL context valid; simplified attitude box, yaw unavailable (not CAD)")
+            if gl_view is not None and getattr(gl_view, "render_error", None):
+                self.on_3d_failed(gl_view.render_error)
+            elif gl_view is not None and gl_view.isVisible():
+                if gl_view.isValid() and getattr(gl_view, "render_ok", False):
+                    self.view3d_status_label.setText("3D: frame rendered; simplified attitude box, yaw unavailable (not CAD)")
                 else:
-                    self.view3d_status_label.setText("3D DEGRADED / NOT_VERIFIED: OpenGL context unavailable; dashboard and curves remain usable")
+                    self.view3d_status_label.setText("3D DEGRADED / NOT_VERIFIED: no successful frame yet; dashboard and curves remain usable")
 
     # ---- 错误处理 ----
     def on_error(self, error_msg):
@@ -640,7 +679,10 @@ class MainWindow(QMainWindow):
         # Raw telemetry is data, never rich-text markup.
         cursor = self.log_display.textCursor()
         cursor.movePosition(QTextCursor.End)
-        cursor.insertText(str(msg) + "\n")
+        text = str(msg)
+        if len(text) > 16384:
+            text = text[:16384] + " [UI truncated; raw input preserved in session log]"
+        cursor.insertText(text + "\n")
         self.log_display.setTextCursor(cursor)
 
     def closeEvent(self, event):

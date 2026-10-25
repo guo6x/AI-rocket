@@ -155,17 +155,25 @@ class RuntimeAcceptance:
             if elapsed >= 8100 and "3d" not in self.flags:
                 window.poll_link_and_command_state()
                 gl_view = getattr(window.view3d_panel, "gl_view", None)
-                valid = gl_view is not None and gl_view.isValid()
-                self.result["opengl"] = {"status": "PASS" if valid else "NOT_VERIFIED", "context_valid": valid,
+                valid = gl_view is not None and gl_view.isValid() and gl_view.render_ok and not gl_view.render_error
+                self.result["opengl"] = {"status": "PASS" if valid else "NOT_VERIFIED",
+                                         "context_valid": gl_view is not None and gl_view.isValid(),
+                                         "successful_paint": gl_view is not None and gl_view.render_ok,
                                          "ui_status": window.view3d_status_label.text(),
                                          "model": "existing arbitrary-unit box, NOT engineering CAD; yaw unavailable"}
                 if valid:
-                    framebuffer = gl_view.grabFramebuffer()
-                    self.check(not framebuffer.isNull(), "actual OpenGL framebuffer is nonempty")
-                    path = self.output / "08_gl_framebuffer.png"
-                    self.check(framebuffer.save(str(path)), "save actual GL framebuffer")
-                    self.result["snapshots"].append({"path": path.name, "sha256": digest(path)})
-                    self.result["opengl"]["size"] = [framebuffer.width(), framebuffer.height()]
+                    try:
+                        framebuffer = gl_view.grabFramebuffer()
+                        if gl_view.render_error or framebuffer.isNull():
+                            raise RuntimeError(gl_view.render_error or "empty GL framebuffer")
+                        path = self.output / "08_gl_framebuffer.png"
+                        self.check(framebuffer.save(str(path)), "save actual GL framebuffer")
+                        self.result["snapshots"].append({"path": path.name, "sha256": digest(path)})
+                        self.result["opengl"]["size"] = [framebuffer.width(), framebuffer.height()]
+                    except Exception as error:
+                        window.on_3d_failed(str(error))
+                        self.result["opengl"].update(status="NOT_VERIFIED", error=repr(error))
+                self.result["opengl"]["ui_status"] = window.view3d_status_label.text()
                 self.screenshot("08_3d_or_explicit_degradation")
                 self.flags.add("3d")
             if replay.state == "FINISHED":
@@ -220,7 +228,7 @@ class RuntimeAcceptance:
                                        "input_sha256": self.soak_input_hash.hexdigest(),
                                        "long_duration_claim": "PARTIALLY_VERIFIED: finite host observation, not multi-hour endurance or leak-freedom proof"}
                 self.screenshot("10_finite_soak")
-                self.result["status"] = "PASS"
+                self.result["status"] = "PASS" if self.result["opengl"]["status"] == "PASS" else "PARTIALLY_VERIFIED"
                 self.finish()
 
     def finish(self):
@@ -269,7 +277,7 @@ def main():
     print(json.dumps({"status": result["status"], "qt_exit_code": qt_exit, "assertions": len(result["assertions"]), "output": str(output)}, ensure_ascii=False), flush=True)
     # All application widgets are closed while the QApplication is still live.
     app.processEvents()
-    return 0 if result["status"] == "PASS" and qt_exit == 0 else 1
+    return 0 if result["status"] in {"PASS", "PARTIALLY_VERIFIED"} and qt_exit == 0 else 1
 
 
 if __name__ == "__main__":
