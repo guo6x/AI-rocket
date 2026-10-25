@@ -1,0 +1,198 @@
+{
+  "status": "PARTIALLY_VERIFIED",
+  "assertions": [
+    "actual window starts with no device",
+    "save 01_no_device",
+    "save 02_udp_settings_no_connection",
+    "real parser to dashboard and curves",
+    "save 03_replay_curves",
+    "save 04_paused",
+    "pause retains cursor without receiving",
+    "sensor fault visibly freezes last sample",
+    "fault creates no zero attitude",
+    "save 05_sensor_fault",
+    "save 06_raw_filtered_recovered",
+    "data interruption visibly freezes",
+    "save 07_interruption",
+    "save actual GL framebuffer 0",
+    "save actual GL framebuffer 1",
+    "save 08_3d_or_explicit_degradation",
+    "15 valid samples, 2 faults and one gap, no fake zeros",
+    "original four comparison curves updated",
+    "natural completion closes log",
+    "raw and parsed replay log saved with provenance",
+    "save 09_finished",
+    "restart resets time axis and old session",
+    "stop terminates replay input timer",
+    "sender rejects arm",
+    "sender rejects auto_on",
+    "sender rejects set_servo:90,90",
+    "sender rejects deploy_chute",
+    "sender rejects estop",
+    "sender rejects reset",
+    "plot buffers bounded after finite soak",
+    "UI log bounded after finite soak",
+    "save 10_finite_soak"
+  ],
+  "snapshots": [
+    {
+      "path": "01_no_device.png",
+      "sha256": "29bedb92a1f0a8042044e28df99937dfbbd3af5e337197fdce26d309aefcae69"
+    },
+    {
+      "path": "02_udp_settings_no_connection.png",
+      "sha256": "761cb202e4fb23aba9e8993dbe185ead05e54c8de4194efe80e549f2683e172c"
+    },
+    {
+      "path": "03_replay_curves.png",
+      "sha256": "f0cb4895e8bf87ca6ecb7804534270ec0155d2dbf193ecd903ecc309edbd17cf"
+    },
+    {
+      "path": "04_paused.png",
+      "sha256": "0b0187f9d4da697e92b768050d2d874a47fde87ed520b449da0bd2441f2294d6"
+    },
+    {
+      "path": "05_sensor_fault.png",
+      "sha256": "88f709a216c9098e9e23427eef31f3a151e02dfe20db122af6e6e2c3a2615d06"
+    },
+    {
+      "path": "06_raw_filtered_recovered.png",
+      "sha256": "b1ad602653bd0a103ab537692dd63c2c451ba4c5c45cd4580981211dad399109"
+    },
+    {
+      "path": "07_interruption.png",
+      "sha256": "82d2d41783ca036cb52b8a76bd125ea86d1cd4ad8435942fdb83a74e3d4d3319"
+    },
+    {
+      "path": "08_gl_framebuffer_pose_0.png",
+      "sha256": "9b4258f4735de3e7a43fd97314d4c7f76ebd4394509bdc4f9926ae9d9057cd59"
+    },
+    {
+      "path": "08_gl_framebuffer_pose_1.png",
+      "sha256": "6bf589c5621bb045eeaee6947d669149c27b5421d5a8b02d26fde7afdd9a63bb"
+    },
+    {
+      "path": "08_3d_or_explicit_degradation.png",
+      "sha256": "3b98e12b07281ed6b5a2c69c528d19ad5b39a4fc9949c5f12b3a6ff63cc6e0cf"
+    },
+    {
+      "path": "09_finished.png",
+      "sha256": "8dfdd85c273e17e194373207397f915fcd76681b7b9ff374580cc157b42175c8"
+    },
+    {
+      "path": "10_finite_soak.png",
+      "sha256": "1a8d0fcb55f26f76c6cf4fad87bbec606b2b30f4a719a62a86afc358af8cbb29"
+    }
+  ],
+  "memory": [],
+  "boundary": {
+    "synthetic_only": true,
+    "hardware_verified": false,
+    "source_authenticated": false,
+    "hardware_connections": 0,
+    "radio_transmissions": 0,
+    "control_sends": 0
+  },
+  "opengl": {
+    "status": "PIXEL_CANDIDATE_REQUIRES_REVIEW",
+    "context_valid": true,
+    "successful_paint": true,
+    "ui_status": "3D: draw callbacks completed; visible pixels NOT_VERIFIED here; simplified box, yaw unavailable (not CAD)",
+    "model": "existing arbitrary-unit box, NOT engineering CAD; yaw unavailable",
+    "distinct_nonempty_frames": true,
+    "changed_pixels": 4367,
+    "blue_pixels_per_pose": [
+      1480,
+      1765
+    ],
+    "synthetic_poses_deg": [
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        32,
+        -24,
+        0
+      ]
+    ],
+    "renderer_backend": "qt-software:D:\\AI_rocket\\.venv\\Lib\\site-packages\\PySide6\\opengl32sw.dll"
+  },
+  "fallback_2d": {
+    "status": "NOT_NEEDED",
+    "3d_status": "PASS"
+  },
+  "demo_log": {
+    "path": "telemetry\\telemetry_20261025_214444_779495.csv",
+    "sha256": "3af7280186773c9221a595405f649a72654847154dc4967baa3aa05de68077d5"
+  },
+  "soak": {
+    "samples": 69,
+    "synthetic_sample_spacing_ms": 20,
+    "wall_seconds": 9.069,
+    "requested_wall_seconds": 9.0,
+    "duration_gate": "SHORT_OBSERVATION",
+    "input_sha256": "b283f572806333b7cfa0073cb2036e77c0cc40e2604cb967fe292d18dc21ccfa",
+    "long_duration_claim": "Measured host duration only, not proof of leak-freedom or physical timing"
+  },
+  "qt_exit_code": 0,
+  "source_git_sha": "71ff3c42377912b71259a5b042bb98f791c40c1f",
+  "source_git_status_at_start": [
+    "?? engineering/offline-evidence/system_v1/gl_native_baseline_20261025/",
+    "?? engineering/offline-evidence/system_v1/gl_native_core33_20261025/",
+    "?? engineering/offline-evidence/system_v1/gl_native_no_rhi_20261025/",
+    "?? engineering/offline-evidence/system_v1/gl_production_software_20261025/",
+    "?? engineering/offline-evidence/system_v1/gl_software_20261025/",
+    "?? engineering/offline-evidence/system_v1/gl_software_matched_20261025/"
+  ],
+  "source_hashes": {
+    "ground_station\\core\\__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ground_station\\core\\command_link.py": "1e34fd4dbbe419c83f1dfdc29cf64d8b378f53d9be5d780e80845b3c48d50454",
+    "ground_station\\core\\data_logger.py": "a3c44ea94397d7a3febc02893c9da015c25a773683f980d998e2543fad31dce6",
+    "ground_station\\core\\offline_replay.py": "61c5636154aab97f5c81785493aa7c67f63d61048d8ea4b92c719b9a1d6f034c",
+    "ground_station\\core\\opengl_backend.py": "78e1a4f2d26eab8aa3a3d6670d17fa814bf78521df32c76517f3391da3a64e7e",
+    "ground_station\\core\\serial_reader.py": "f52dc5bcbf5d4e7c069c11dcbc054763fadf62575dfdb61fabc82aeb20263162",
+    "ground_station\\core\\telemetry_parser.py": "16cbdb56925fab4708439ec058d9e11f23580579e6275a58b9dae5b0ecc0b1db",
+    "ground_station\\core\\udp_reader.py": "d709a498311e90d377dc4463a25948d400aeacd296205a48c413f13fee5cd785",
+    "ground_station\\main.py": "846cc31a4b689b6029dc05284b019056a4c8fafa224dfecf40d17ace48f6457d",
+    "ground_station\\tests\\__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ground_station\\tests\\conftest.py": "7b34f9cc00682dd196ed405a3e1823eb58724c3d7adf7463bcdc53a2a7deccc1",
+    "ground_station\\tests\\test_command_link.py": "a779c06bc0a84b070198053c476baeeaa9cd36f7e4884e423f2bc514b693b781",
+    "ground_station\\tests\\test_data_logger.py": "b2ca16cd4e0cab5d42f856ae367ff8e0e861d8db875ebc4002525cca5a809c2b",
+    "ground_station\\tests\\test_main_window_command_status.py": "45ace72bb044fd8e07b20857c3b9745d5afacecbc16722c98fa55b6a331830d6",
+    "ground_station\\tests\\test_offline_replay.py": "d1f2d12ead8d1ae2d090d94d8b9d4906957202e791e22de63e6e046dfab4f8a5",
+    "ground_station\\tests\\test_opengl_backend.py": "204764307b174f91473df87ff4e323127bec9478710f758c7d1dd9bfaa2d63ba",
+    "ground_station\\tests\\test_parser.py": "5be6c88915670c76a883492f6dae67c4b29708454c631fa188a92b58a00a360b",
+    "ground_station\\tests\\test_phase5_7.py": "28c2640d4dca5fc404cb496680d15175416e5b002348e70b3f42e0fd7fff0d2d",
+    "ground_station\\tests\\test_sensor_validity_ui.py": "dfecbf345ff46bf580de9d7de6322a1d7f42c56ea15487389062f636900823b0",
+    "ground_station\\tests\\test_telemetry_parser.py": "5ae70e6e8d9303a014cd7d1198e02742833aa46cfa1cd7a1c74d3e89ae8d5408",
+    "ground_station\\tests\\test_udp_lifecycle.py": "ac0634a0b7c6abd71b0e0d9489da052044e4fae3c8e8c7931e77ddc345753487",
+    "ground_station\\tests\\test_view3d_render_status.py": "b79664de16755b738ca8f1fb2808534ff36fbc87b9f35f4eb74e3e317be6b25b",
+    "ground_station\\tests\\test_wifi_link_contract.py": "1c552f7a991e78a83f12b83aff969d3a892125b7171b10918131206b2debaea7",
+    "ground_station\\ui\\attitude_fallback.py": "951f0c13a71b9f76695c7682468925ea26f5bcb0029237f19ee892bf60b0b5f2",
+    "ground_station\\ui\\command_panel.py": "abc4ae8375628b29e7a2fd26714d69dcee12da1a1eba63cad0f69ec9931348be",
+    "ground_station\\ui\\comparison_plot.py": "20d2d19711ba2e9449f68228015d024c23963ff8102a2a463e3dcd35309acc90",
+    "ground_station\\ui\\dashboard.py": "e34e69c8f3c07be694cc859013200e93a64693443d611f9edccf60ac0be0ac5a",
+    "ground_station\\ui\\main_window.py": "99e22e95d7f00d39bb379a3482a7f9261507ee97ecb346c8160ed63b806cd00d",
+    "ground_station\\ui\\plot_widget.py": "01600e91192bce9c153dd280e6ec9da1b2b0b132cb18feea0a026716c4ac7976",
+    "ground_station\\ui\\view3d_widget.py": "920c5a3d3dcda1a9b9256f862046ffacf35a6d9c8d7f584a5dbc6aa3db882210",
+    "scripts/system_v1_runtime.py": "f8a2f280d761207ed50be062da9b52d519c086262bc587020e10d3bb1cf19645"
+  },
+  "fixture_sha256": "2bbf67f3b9ffb2b4fd5fedabc21dabb25c59cd53c791d1d0ef567812a309560f",
+  "environment": {
+    "python": "3.13.1 (tags/v3.13.1:0671451, Dec  3 2024, 19:06:28) [MSC v.1942 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "qt_platform": "desktop-default",
+    "dependencies": {
+      "PySide6": "6.10.2",
+      "shiboken6": "6.10.2",
+      "pyqtgraph": "0.14.0",
+      "numpy": "2.4.2",
+      "pyserial": "3.5",
+      "PyOpenGL": "3.1.10"
+    }
+  },
+  "command": "D:\\AI_rocket\\.venv\\Scripts\\python.exe scripts/system_v1_runtime.py --output engineering/offline-evidence/system_v1/runtime_gl_software_20261025 --soak-minutes 0.15",
+  "result_sha256": "d84fc2205fce1a11ec9092be0d492503d15a3b706bf24979a9983e3375093f67"
+}

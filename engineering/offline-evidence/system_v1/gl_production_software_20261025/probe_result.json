@@ -1,0 +1,262 @@
+{
+  "status": "PIXEL_CANDIDATE_REQUIRES_REVIEW",
+  "poses": [
+    {
+      "pose_roll_pitch_yaw_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "window": "window_pose_0.png",
+      "window_sha256": "4ed474e7527ae6637689c38036ea2b62333c3b62dfd75be4502c5e0145ffcc2c",
+      "ui_status": "3D: draw callbacks completed; visible pixels NOT_VERIFIED here; simplified box, yaw unavailable (not CAD)",
+      "context_valid": true,
+      "successful_paint": true,
+      "render_error": null,
+      "visible": true,
+      "actual_format": {
+        "version": [
+          3,
+          0
+        ],
+        "profile": "NoProfile",
+        "renderable_type": "OpenGL",
+        "options": 4,
+        "depth_bits": 24,
+        "samples": 0
+      },
+      "is_gles": false,
+      "framebuffer": "gl_pose_0.png",
+      "framebuffer_sha256": "9b4258f4735de3e7a43fd97314d4c7f76ebd4394509bdc4f9926ae9d9057cd59",
+      "size": [
+        2007,
+        477
+      ],
+      "blue_pixels": 1480,
+      "nonbackground_pixels": 50455,
+      "geometry": {
+        "reference": "independent numpy Rz @ Ry @ Rx; arbitrary-unit box, not CAD",
+        "all_corners_inside": true,
+        "projected_corners_px": [
+          [
+            1003.5,
+            379.852
+          ],
+          [
+            1003.5,
+            58.995
+          ],
+          [
+            1043.113,
+            396.428
+          ],
+          [
+            1045.919,
+            69.387
+          ],
+          [
+            963.887,
+            396.428
+          ],
+          [
+            961.081,
+            69.387
+          ],
+          [
+            1003.5,
+            413.729
+          ],
+          [
+            1003.5,
+            80.266
+          ]
+        ],
+        "edge_samples": 108,
+        "blue_edge_hit_fraction": 1.0
+      }
+    },
+    {
+      "pose_roll_pitch_yaw_deg": [
+        32.0,
+        -24.0,
+        0.0
+      ],
+      "window": "window_pose_1.png",
+      "window_sha256": "15a1c616e3aff80737d27e23ebdba41d051448e8a00477fc23ade62d3ab6d407",
+      "ui_status": "3D: draw callbacks completed; visible pixels NOT_VERIFIED here; simplified box, yaw unavailable (not CAD)",
+      "context_valid": true,
+      "successful_paint": true,
+      "render_error": null,
+      "visible": true,
+      "actual_format": {
+        "version": [
+          3,
+          0
+        ],
+        "profile": "NoProfile",
+        "renderable_type": "OpenGL",
+        "options": 4,
+        "depth_bits": 24,
+        "samples": 0
+      },
+      "is_gles": false,
+      "framebuffer": "gl_pose_1.png",
+      "framebuffer_sha256": "6bf589c5621bb045eeaee6947d669149c27b5421d5a8b02d26fde7afdd9a63bb",
+      "size": [
+        2007,
+        477
+      ],
+      "blue_pixels": 1765,
+      "nonbackground_pixels": 50589,
+      "geometry": {
+        "reference": "independent numpy Rz @ Ry @ Rx; arbitrary-unit box, not CAD",
+        "all_corners_inside": true,
+        "projected_corners_px": [
+          [
+            1023.349,
+            416.912
+          ],
+          [
+            979.01,
+            96.265
+          ],
+          [
+            1068.621,
+            402.485
+          ],
+          [
+            1020.675,
+            76.666
+          ],
+          [
+            985.105,
+            411.832
+          ],
+          [
+            942.045,
+            83.746
+          ],
+          [
+            1030.777,
+            396.92
+          ],
+          [
+            984.022,
+            63.422
+          ]
+        ],
+        "edge_samples": 108,
+        "blue_edge_hit_fraction": 1.0
+      }
+    }
+  ],
+  "qt_messages": [
+    {
+      "type": "QtWarningMsg",
+      "message": "ARB::createContext: wglCreateContextAttribsARB() failed (GL error code: 0x0) for format: QSurfaceFormat(version 2.1, options QFlags<QSurfaceFormat::FormatOption>(), depthBufferSize -1, redBufferSize -1, greenBufferSize -1, blueBufferSize -1, alphaBufferSize -1, stencilBufferSize -1, samples -1, swapBehavior QSurfaceFormat::DefaultSwapBehavior, swapInterval 1, colorSpace QColorSpace(), profile  QSurfaceFormat::CompatibilityProfile), shared context: 0x1 (Unknown error 0xc007001f.)"
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "GDI::createContext: wglCreateContext failed. (系统无法在消息文件中为 %2 找到消息号为 0x%1 的消息文本。)"
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "Unable to create a GL Context."
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "QRhiGles2: Failed to create context"
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "Failed to create QRhi for QBackingStoreRhiSupport"
+    }
+  ],
+  "started_utc": "2026-10-25T13:43:50.210837+00:00",
+  "input": {
+    "path": "synthetic_poses.json",
+    "sha256": "9403a127b3b95b8b58b47ce9f7089689435b90d7a0bd417baad279ac91f33de3"
+  },
+  "boundary": {
+    "synthetic_only": true,
+    "hardware_connections": 0,
+    "control_sends": 0,
+    "radio_transmissions": 0,
+    "hardware_verified": false,
+    "source_authenticated": false
+  },
+  "source_git_sha": "71ff3c42377912b71259a5b042bb98f791c40c1f",
+  "source_git_status": [
+    "?? engineering/offline-evidence/system_v1/gl_native_baseline_20261025/",
+    "?? engineering/offline-evidence/system_v1/gl_native_core33_20261025/",
+    "?? engineering/offline-evidence/system_v1/gl_native_no_rhi_20261025/",
+    "?? engineering/offline-evidence/system_v1/gl_production_software_20261025/",
+    "?? engineering/offline-evidence/system_v1/gl_software_20261025/",
+    "?? engineering/offline-evidence/system_v1/gl_software_matched_20261025/"
+  ],
+  "source_sha256": {
+    "ground_station/main.py": "846cc31a4b689b6029dc05284b019056a4c8fafa224dfecf40d17ace48f6457d",
+    "ground_station/ui/view3d_widget.py": "920c5a3d3dcda1a9b9256f862046ffacf35a6d9c8d7f584a5dbc6aa3db882210",
+    "ground_station/ui/main_window.py": "99e22e95d7f00d39bb379a3482a7f9261507ee97ecb346c8160ed63b806cd00d",
+    "scripts/ground_station_gl_probe.py": "e3cd22f0fbd8470c0f6ae404fff4554972ca5f52307f63865e3c9747ae3e7414",
+    "ground_station/core/opengl_backend.py": "78e1a4f2d26eab8aa3a3d6670d17fa814bf78521df32c76517f3391da3a64e7e"
+  },
+  "environment": {
+    "python": "3.13.1 (tags/v3.13.1:0671451, Dec  3 2024, 19:06:28) [MSC v.1942 64 bit (AMD64)]",
+    "executable": "D:\\AI_rocket\\.venv\\Scripts\\python.exe",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "dependencies": {
+      "PySide6": "6.10.2",
+      "shiboken6": "6.10.2",
+      "pyqtgraph": "0.14.0",
+      "PyOpenGL": "3.1.10",
+      "numpy": "2.4.2"
+    },
+    "qt_env": {},
+    "qt_env_effective": {
+      "QT_OPENGL": "software",
+      "QT_QUICK_BACKEND": "software"
+    }
+  },
+  "command": "D:\\AI_rocket\\.venv\\Scripts\\python.exe scripts/ground_station_gl_probe.py --software-dispatch --output engineering/offline-evidence/system_v1/gl_production_software_20261025",
+  "format_experiment": "production",
+  "production_backend": "qt-software:D:\\AI_rocket\\.venv\\Lib\\site-packages\\PySide6\\opengl32sw.dll",
+  "backend_error": null,
+  "requested_format": {
+    "version": [
+      2,
+      1
+    ],
+    "profile": "CompatibilityProfile",
+    "renderable_type": "DefaultRenderableType",
+    "options": 0,
+    "depth_bits": -1,
+    "samples": -1
+  },
+  "qt_platform": "windows",
+  "screens": [
+    {
+      "name": "\\\\.\\DISPLAY1",
+      "size": [
+        1707,
+        1067
+      ],
+      "device_pixel_ratio": 1.5
+    }
+  ],
+  "current_context_matches_widget": true,
+  "pyopengl_current_context": 2,
+  "pyopengl_dll": "D:\\AI_rocket\\.venv\\Lib\\site-packages\\PySide6\\opengl32sw.dll",
+  "pyopengl_dll_sha256": "d05c658cfb998ba62b0b09fe1609ba8d05fc068134c65371913d729b3e691944",
+  "gl_error_before_diagnostic": 0,
+  "gl_strings": {
+    "vendor": "VMware, Inc.",
+    "renderer": "Gallium 0.4 on llvmpipe (LLVM 3.6, 256 bits)",
+    "version": "3.0 Mesa 11.2.2",
+    "glsl": "1.30"
+  },
+  "qt_exit_code": 0,
+  "changed_pixels": 4367,
+  "wall_seconds": 16.744,
+  "process_exit_code": 0
+}
