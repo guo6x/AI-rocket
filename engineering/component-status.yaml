@@ -183,7 +183,7 @@ components:
     notes: "The report is a design proposal, not validation evidence."
 
   cad:
-    status: "HISTORICAL"
+    status: "NOT_STARTED"
     implementation_source:
       - "cad_automation/**"
       - "generate_rocket*.py"
@@ -197,10 +197,10 @@ components:
       - "Mixed coordinate systems and generations."
       - "No configuration manifest links outputs to generators and inputs."
       - "Mesh checks do not prove manufacturability."
-    notes: "All existing CAD and mesh assets default to HISTORICAL or PROTOTYPE."
+    notes: "Owner explicitly rejects former AI-generated CAD. No current accepted model, assembly, dimension set or manufacturing release; all existing files are untrusted historical sources only. See engineering/cad-authority.yaml."
 
   tvc_mechanical_assembly:
-    status: "PROTOTYPE"
+    status: "NOT_STARTED"
     implementation_source:
       - "tvc_design/**"
       - "outputs/**"
@@ -211,10 +211,10 @@ components:
     known_gaps:
       - "No assembly constraints or motion-envelope verification."
       - "No interference, tolerance, load, wiring, access, or maintenance analysis."
-    notes: "No current manufacturing release exists."
+    notes: "Owner rejects previous prototype exports; no current accepted TVC mechanical CAD or manufacturing release exists."
 
   full_vehicle_structure:
-    status: "HISTORICAL"
+    status: "NOT_STARTED"
     implementation_source:
       - "3d_print_files/**"
       - "generate_rocket*.py"
@@ -224,4 +224,4 @@ components:
     known_gaps:
       - "Legacy solid-flight geometry is mixed with EDF/TVC experiments."
       - "No structural load cases, mass linkage, or assembly sequence."
-    notes: "Not accepted for manufacture or free flight."
+    notes: "Owner rejects historical AI-generated full-vehicle geometry; current full-vehicle CAD has not been started. Nothing is accepted for manufacture or free flight."
