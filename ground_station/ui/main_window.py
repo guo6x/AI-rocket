@@ -57,7 +57,12 @@ class MainWindow(QMainWindow):
 
         self.data_thread = None  # 统一名称：可以是 SerialReader 或 UdpReader
         self.connection_mode = None
+        # Raw transport activity and decoded telemetry freshness are separate:
+        # a malformed datagram can prove bytes arrived, not that the displayed
+        # sensor sample was refreshed.
         self.last_rx_monotonic = None
+        self.connection_started_monotonic = None
+        self.last_telemetry_monotonic = None
         self.command_tracker = CommandTracker(timeout_seconds=1.5)
         self.parser = TelemetryParser()
         self.sensor_fault_active = False
@@ -427,6 +432,8 @@ class MainWindow(QMainWindow):
         self.command_tracker.clear()
         self.parser = TelemetryParser()
         self.last_rx_monotonic = None
+        self.last_telemetry_monotonic = None
+        self.connection_started_monotonic = time.monotonic()
         self.sensor_fault_active = False
         self.set_sensor_visual_state("SENSOR: unavailable — waiting for telemetry", False)
 
@@ -459,6 +466,8 @@ class MainWindow(QMainWindow):
         self.command_tracker.clear()
         self.connection_mode = None
         self.last_rx_monotonic = None
+        self.connection_started_monotonic = None
+        self.last_telemetry_monotonic = None
         self.start_time = None
         self.last_fstate = None
         self.parser = TelemetryParser()
@@ -518,6 +527,10 @@ class MainWindow(QMainWindow):
                 # A claimed-valid but malformed sample must not clear a prior
                 # explicit fault, permitting a later legacy frame to erase it.
                 if not explicit_valid and not self.sensor_telemetry_available(parsed):
+                    # A recognized sensor-fault frame is fresh status, although
+                    # it must never make the numeric displays available.
+                    if flag is False or (type(flag) is int and flag == 0):
+                        self.last_telemetry_monotonic = time.monotonic()
                     continue
                 numeric_keys = ("time", "alt", "pitch", "pitch_raw", "pitch_flt", "roll", "roll_raw", "roll_flt", "yaw", "batt")
                 try:
@@ -532,6 +545,9 @@ class MainWindow(QMainWindow):
                 if not numeric_valid or "alt" not in parsed or pitch_key is None or roll_key is None:
                     self.set_sensor_visual_state("SENSOR: invalid/missing numeric telemetry; last visuals frozen (not current)", False)
                     continue
+                # Freshness means a recognized sensor status or a complete,
+                # numerically valid sample—not merely bytes or a JSON object.
+                self.last_telemetry_monotonic = time.monotonic()
                 if explicit_valid:
                     self.sensor_telemetry_available(parsed)
                 self.dashboard.update_indicators(parsed)
@@ -656,12 +672,17 @@ class MainWindow(QMainWindow):
         expired = self.command_tracker.expire()
         if expired is not None:
             self.show_command_update(expired)
+        freshness_anchor = (
+            self.last_telemetry_monotonic
+            if self.last_telemetry_monotonic is not None
+            else self.connection_started_monotonic
+        )
         if (
-            self.connection_mode == "udp"
+            self.connection_mode in {"udp", "serial"}
             and self.data_thread
             and self.data_thread.is_running
-            and self.last_rx_monotonic is not None
-            and time.monotonic() - self.last_rx_monotonic > 2.5
+            and freshness_anchor is not None
+            and time.monotonic() - freshness_anchor > 2.5
         ):
             self.command_panel.set_link_state("TELEMETRY LOST")
             self.set_sensor_visual_state("TELEMETRY LOST; last visuals frozen (not current)", False)
