@@ -8,4 +8,6 @@ rules:
   observation_requires_record: true
   datasheet_requires_model_match: true
   historical_cad_is_measurement: false
+indexed_record_requires_local_yaml_and_sha256: true
+  photo_reference_requires_location_and_sha256: true
 notes: "No physical observation or measurement evidence record exists at R2 intake creation."
