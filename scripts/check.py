@@ -78,6 +78,7 @@ def main() -> int:
                 "dynamics_sim",
                 "ground_station",
                 "flight_computer",
+                "rf_lab",
                 "scripts",
             ],
         ),
@@ -123,6 +124,10 @@ def main() -> int:
         (
             "R3 RF offline telemetry framing and replay tests",
             [sys.executable, "-m", "unittest", "discover", "-s", "rf_lab/tests"],
+        ),
+        (
+            "R3.1 deterministic RF reliability software experiment",
+            [sys.executable, "-m", "rf_lab.reliability_experiment", "--check"],
         ),
         (
             "Preserved research offline regressions",
