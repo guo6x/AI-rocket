@@ -1,0 +1,66 @@
+name: SYSTEM-V1 full software gate (no hardware)
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: system-v1-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  software-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      QT_QPA_PLATFORM: offscreen
+      QT_OPENGL: software
+      LIBGL_ALWAYS_SOFTWARE: "1"
+      PYTHONUTF8: "1"
+      PYTHONIOENCODING: utf-8
+      PIO_HOME_DIR: ${{ github.workspace }}/.pio-home
+      PIO_TELEMETRY_OFF: "1"
+    steps:
+      - name: Checkout exact PR/main source
+        uses: actions/checkout@v4
+      - name: Select Python runtime
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: |
+            requirements-dev.txt
+            ground_station/requirements.txt
+            aero_sim/requirements.txt
+      - name: Install Linux headless Qt/native-build libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libegl1 libgl1 libopengl0 libxkbcommon-x11-0 libxcb-cursor0 libxcb-xinerama0
+      - name: Install existing application, simulation, and test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt -r ground_station/requirements.txt -r aero_sim/requirements.txt
+      - name: Record exact source and software environment
+        run: |
+          git rev-parse HEAD
+          python --version
+          platformio --version
+      - name: Execute existing complete project software checks
+        shell: bash
+        run: |
+          set -o pipefail
+          python -u scripts/check.py 2>&1 | tee system-v1-software-check.log
+      - name: Save attributable log including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: system-v1-software-${{ github.sha }}-${{ github.run_id }}
+          path: system-v1-software-check.log
+          retention-days: 14
+          if-no-files-found: ignore
