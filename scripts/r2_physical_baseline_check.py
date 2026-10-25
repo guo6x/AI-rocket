@@ -135,6 +135,19 @@ def measurement_is_complete(measurement: dict[str, Any], known_evidence: set[str
 
 
 def evaluate_documents(documents: dict[str, Any]) -> tuple[list[str], GateResult]:
+    """Reject invalid contracts before exposing any evaluated readiness status."""
+    try:
+        errors, gates = _evaluate_documents(documents)
+    except (KeyError, TypeError, ValueError, AttributeError, StopIteration) as exc:
+        return [f"Invalid R2 document structure: {type(exc).__name__}: {exc}"], GateResult(
+            {gate: () for gate in GATES}, evaluated=False
+        )
+    if errors:
+        return errors, GateResult(gates.blockers, evaluated=False)
+    return errors, gates
+
+
+def _evaluate_documents(documents: dict[str, Any]) -> tuple[list[str], GateResult]:
     errors: list[str] = []
     article = documents["article"]
     inventory = documents["inventory"]
@@ -172,6 +185,17 @@ def evaluate_documents(documents: dict[str, Any]) -> tuple[list[str], GateResult
     }
     allowed_classes = set(inventory.get("allowed_evidence_classes") or [])
     allowed_ownership = set(inventory.get("ownership_status_vocabulary") or [])
+    records = evidence.get("evidence_records", [])
+    if not isinstance(records, list):
+        raise ValueError("evidence_records must be a list")
+    record_ids = [record.get("record_id") for record in records]
+    if len(record_ids) != len(set(record_ids)) or any(
+        not isinstance(record_id, str) or not record_id.strip() for record_id in record_ids
+    ):
+        errors.append("Evidence record IDs must be non-empty and unique")
+    for record in records:
+        if record.get("article_id") != article_id:
+            errors.append(f"Evidence {record.get('record_id')} article_id does not match article.yaml")
     known_evidence = evidence_ids(documents)
     for item in component_items:
         missing_fields = sorted(required_component_fields - set(item))
@@ -181,12 +205,15 @@ def evaluate_documents(documents: dict[str, Any]) -> tuple[list[str], GateResult
             errors.append(f"{item.get('component_id')} has invalid evidence_class")
         if item.get("ownership_status") not in allowed_ownership:
             errors.append(f"{item.get('component_id')} has invalid ownership_status")
-        if item.get("ownership_status") in {"CONFIRMED_PRESENT", "NOT_PRESENT"}:
+        if item.get("evidence_class") in {"OBSERVED", "MEASURED"}:
+            if not component_has_observation(item, known_evidence):
+                errors.append(f"{item.get('component_id')} evidence_class lacks valid evidence")
+        if item.get("ownership_status") in {"CONFIRMED_PRESENT", "NOT_PRESENT", "NOT_PART_OF_CURRENT_ARTICLE"}:
             if not component_has_observation(item, known_evidence):
                 errors.append(
                     f"{item.get('component_id')} {item.get('ownership_status')} lacks observation evidence"
                 )
-        if item.get("article_inclusion") == "INCLUDED" or item.get("reuse_intent") in {
+        if item.get("article_inclusion") == "INCLUDED" or item.get("installed_status") == "INSTALLED" or item.get("reuse_intent") in {
             "REUSE", "NOT_REUSE"
         }:
             if not component_has_observation(item, known_evidence):
@@ -209,7 +236,9 @@ def evaluate_documents(documents: dict[str, Any]) -> tuple[list[str], GateResult
                 if component_id not in component_set:
                     errors.append(f"{interface['interface_id']} references unknown {component_id}")
 
-    measurements = plan.get("measurements") or []
+    measurements = plan.get("measurements")
+    if not isinstance(measurements, list):
+        raise ValueError("measurements must be a list")
     measurement_ids = [item.get("measurement_id") for item in measurements]
     measurement_set = set(measurement_ids)
     if len(measurement_ids) != len(measurement_set) or None in measurement_set:
@@ -218,6 +247,11 @@ def evaluate_documents(documents: dict[str, Any]) -> tuple[list[str], GateResult
     if dependency_vocabulary != set(GATES):
         errors.append("Measurement dependency gate vocabulary is incomplete")
     for measurement in measurements:
+        if measurement.get("status") not in {"MISSING", "RECORDED", "NOT_APPLICABLE"}:
+            errors.append(f"{measurement.get('measurement_id')} has invalid status")
+        if measurement.get("status") in {"RECORDED", "NOT_APPLICABLE"}:
+            if not measurement_is_complete(measurement, known_evidence):
+                errors.append(f"{measurement.get('measurement_id')} completed status lacks valid evidence")
         required_for = set(measurement.get("required_for") or [])
         if not required_for or not required_for.issubset(set(GATES)):
             errors.append(f"{measurement.get('measurement_id')} has invalid required_for")
@@ -226,8 +260,21 @@ def evaluate_documents(documents: dict[str, Any]) -> tuple[list[str], GateResult
                 errors.append(f"{measurement['measurement_id']} references unknown {component_id}")
         try:
             condition_is_active(measurement.get("condition"), components, known_evidence)
-        except ValueError as exc:
+        except (ValueError, KeyError) as exc:
             errors.append(str(exc))
+
+    if "M-P0-STRUCT-01" not in measurement_set:
+        errors.append("Photo inventory measurement M-P0-STRUCT-01 is required")
+    expected_intake_gates = {
+        "concept_intake": {"INVENTORY_BASELINE", "CAD_START"},
+        "design_review_intake": set(GATES),
+    }
+    for name, expected in expected_intake_gates.items():
+        required = intake.get(name, {}).get("required_gates")
+        if not isinstance(required, list) or set(required) != expected or len(required) != len(expected):
+            errors.append(f"AeroForge {name} required_gates must match {sorted(expected)}")
+    if errors:
+        return errors, GateResult({gate: () for gate in GATES}, evaluated=False)
 
     # Evidence rigor remains global, independent of readiness staging.
     for key, document in documents.items():
@@ -374,17 +421,15 @@ def evaluate_repository() -> tuple[list[str], GateResult, int]:
             errors.append(f"YAML parse failed: {path.relative_to(ROOT)}: {exc}")
     if errors:
         return errors, GateResult({gate: () for gate in GATES}, evaluated=False), 0
-    documents = load_documents()
-    plan_measurements = documents.get("plan", {}).get("measurements")
-    if not isinstance(plan_measurements, list):
-        return (
-            ["Invalid R2 measurement plan: measurements must be a list"],
-            GateResult({gate: () for gate in GATES}, evaluated=False),
-            0,
-        )
+    try:
+        documents = load_documents()
+    except (OSError, UnicodeError, yaml.YAMLError) as exc:
+        return [f"Cannot load R2 documents: {exc}"], GateResult(
+            {gate: () for gate in GATES}, evaluated=False
+        ), 0
     validation_errors, gate_result = evaluate_documents(documents)
-    integrity_errors = validate_evidence_files(documents, ROOT)
-    validation_errors.extend(integrity_errors)
+    if not validation_errors:
+        validation_errors.extend(validate_evidence_files(documents, ROOT))
     if validation_errors:
         return validation_errors, GateResult({gate: () for gate in GATES}, evaluated=False), 0
     return validation_errors, gate_result, len(documents["plan"].get("measurements") or [])

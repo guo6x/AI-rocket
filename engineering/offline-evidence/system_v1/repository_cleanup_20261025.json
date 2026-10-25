@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "kind": "repository_cleanup_receipt",
+  "observed_at": "2026-10-25T19:59:01.6384229+08:00",
+  "formal_project": "D:\\AI_rocket",
+  "formal_project_preserved": true,
+  "fetched_main_sha": "60055a86e8e8a49fddb75d8faca1805219d2346b",
+  "preflight": {
+    "target": "D:\\AI_rocket_codex_gl_20261025",
+    "files": 380,
+    "logical_bytes": 21851033,
+    "head": "60055a86e8e8a49fddb75d8faca1805219d2346b",
+    "free_before": 51361345536,
+    "observed_at": "2026-10-25T19:55:34.7881805+08:00",
+    "unique_commits": 0,
+    "dirty_files": 0,
+    "ignored_files": 0,
+    "target_processes": 0
+  },
+  "worktree_cleanup": {
+    "removed": "D:\\AI_rocket_codex_gl_20261025",
+    "verify_directory_already_absent": true,
+    "stale_verify_registration_removed": true,
+    "target_absent": true,
+    "d_free_before": 51359109120,
+    "d_free_after": 51382005760,
+    "observed_at": "2026-10-25T19:59:01.6384229+08:00"
+  },
+  "d_free_delta_bytes": 22896640,
+  "d_free_delta_note": "Before/after filesystem observation around removal; concurrent applications may change free space. Not a measurement of historical cleanup or Git-history object deletion.",
+  "verify_worktree": {
+    "path": "D:\\AI_rocket_system_v1_verify",
+    "directory_absent_at_start": true,
+    "head": "96afc82d0e4564e91004a68d4f9908beaa7ae2ec",
+    "action": "pruned stale registration only; no directory bytes credited"
+  },
+  "preserved_temporary_items": {
+    "reason": "Execution policy rejected recursive deletion under C:\\Windows\\Temp; no bypass attempted; files retained",
+    "probe_directories": 104,
+    "probe_logical_bytes": 12432902,
+    "uncertain_env": {
+      "path": "C:\\Windows\\Temp\\ai-rocket-system-v1-py311-20261025",
+      "files": 14706,
+      "logical_bytes": 802562115,
+      "reason": "ownership/inaccessible python PID26300 not established; preserve"
+    }
+  },
+  "remote_branches_at_start": [
+    "main"
+  ],
+  "remote_historical_cleanup_already_completed": true,
+  "no_other_project_or_personal_files_deleted": true,
+  "no_new_clone_worktree_or_environment_created": true,
+  "evidence_ceiling": "LOCAL_FILESYSTEM_AND_GIT_STATE_ONLY; no hardware operations"
+}
