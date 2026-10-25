@@ -375,6 +375,13 @@ def evaluate_repository() -> tuple[list[str], GateResult, int]:
     if errors:
         return errors, GateResult({gate: () for gate in GATES}, evaluated=False), 0
     documents = load_documents()
+    plan_measurements = documents.get("plan", {}).get("measurements")
+    if not isinstance(plan_measurements, list):
+        return (
+            ["Invalid R2 measurement plan: measurements must be a list"],
+            GateResult({gate: () for gate in GATES}, evaluated=False),
+            0,
+        )
     validation_errors, gate_result = evaluate_documents(documents)
     integrity_errors = validate_evidence_files(documents, ROOT)
     validation_errors.extend(integrity_errors)
