@@ -2,6 +2,8 @@
 
 No assets were deleted during R0. This index prevents historical material from silently becoming current engineering authority.
 
+**Owner correction (2026-10-25): no acceptable current CAD exists. All previous AI-generated CAD/STEP/STL/GLB/NX products are rejected for current design and manufacture, regardless of prior PROTOTYPE or POTENTIAL_REUSE wording.** See `cad-authority.yaml` and `docs/CAD_GROUND_TRUTH_RESET_2026-10-25.md`. This first revision classifies and isolates them; cleanup/deletion follows only a dependency audit.
+
 | Asset or pattern | R0 classification | Why it is not current authority |
 | --- | --- | --- |
 | `project-memory.md` | `HISTORICAL` / partly `STALE` | AI-era snapshot with “completed” claims, conflicting CG/PID statements, and unsupported hardware status. |
