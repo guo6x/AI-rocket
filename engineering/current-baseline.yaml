@@ -6,7 +6,16 @@ compatibility_input_commit: "e9510e61b6de518b272ea6fdb8433bbab4c501c5"
 branch_base_commit: "f59dc2c5791ee88f3d853112930de55d0c31f4d3"
 prior_r2_merge: "66861c7c9f0d468e81a2e09c7a354ed6058dd20f"
 
-current_phase: "R2.1 real-asset registry and multi-bench development architecture"
+current_phase: "R2.1 real-asset registry and multi-bench development architecture (software through R3.2 integrated; CAD not started)"
+
+current_cad_authority:
+  record: "engineering/cad-authority.yaml"
+  status: "NOT_STARTED"
+  accepted_geometry: null
+  manufacturing_release: false
+  owner_correction_date: "2026-10-25"
+  legacy_ai_models: "REJECTED_FOR_CURRENT_DESIGN"
+  cad_start: "BLOCKED_BY_MEASUREMENT"
 current_objective: >-
   Use the project's actually purchased hardware and tools to organize independent
   GNC, avionics, RF, TVC, recovery, propulsion-science, and later system-integration
@@ -68,7 +77,7 @@ current_blockers:
   - id: "R0-007"
     summary: "Actual EDF bench geometry, mass, CG, thrust, and component envelopes are unknown."
   - id: "R0-011"
-    summary: "CAD assets are mixed historical prototypes without configuration provenance or assembly validation."
+    summary: "Owner rejects all previous AI-generated CAD as inadequate. No current CAD geometry/assembly has been accepted; all historic candidate exports are REJECTED_FOR_CURRENT_DESIGN and CAD_START awaits measured interfaces."
   - id: "R0-014"
     summary: "Hardware claims lack repeatable repository evidence."
 
