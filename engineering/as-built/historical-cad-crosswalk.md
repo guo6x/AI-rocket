@@ -1,6 +1,6 @@
 # Historical CAD crosswalk
 
-All listed assets are currently preserved for provenance only. **The owner has rejected prior AI-generated CAD as unfit for the current project (2026-10-25).** Nothing in this crosswalk is an approved design, a valid dimension source, a candidate automatically eligible for reuse, or a manufacturing release. See `engineering/cad-authority.yaml`.
+These paths describe **historical assets**; some generated binaries in `outputs/`, `pro_outputs/`, `pro_outputs_v3/` and obsolete sleeve exports were removed from the active tree in phase 1, but remain available at the pre-cleanup Git commit `03fbd826031f24055bf5de79c7aa4aa72810b451`. See `docs/CAD_REJECTED_EXPORTS_PURGE_PHASE1_2026-10-25.md` for the deletion boundary. **The owner has rejected prior AI-generated CAD as unfit for the current project (2026-10-25).** Nothing in this crosswalk is an approved design, a valid dimension source, a candidate automatically eligible for reuse, or a manufacturing release. See `engineering/cad-authority.yaml`.
 
 | Asset | Classification | Embedded assumption or conflict | R2 disposition |
 | --- | --- | --- | --- |
