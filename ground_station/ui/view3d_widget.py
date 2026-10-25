@@ -1,4 +1,5 @@
 import pyqtgraph.opengl as gl
+from OpenGL import GL
 from pyqtgraph.Qt import QtGui, QtCore
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel
 from PySide6.QtCore import Signal, QTimer
@@ -14,6 +15,20 @@ class CheckedGLViewWidget(gl.GLViewWidget):
         self.render_ok = False
         self.render_error = None
 
+    def _fail_render(self, error):
+        if self.render_error is None:
+            self.render_ok = False
+            self.render_error = repr(error)
+            self.render_failed.emit(self.render_error)
+
+    def initializeGL(self):
+        if self.render_error is not None:
+            return
+        try:
+            super().initializeGL()
+        except Exception as error:
+            self._fail_render(error)
+
     def paintGL(self):
         if self.render_error is not None:
             return
@@ -21,9 +36,30 @@ class CheckedGLViewWidget(gl.GLViewWidget):
             super().paintGL()
             self.render_ok = True
         except Exception as error:
-            self.render_ok = False
-            self.render_error = repr(error)
-            self.render_failed.emit(self.render_error)
+            self._fail_render(error)
+
+    def drawItemTree(self, item=None, useItemNames=False):
+        # pyqtgraph 0.14's traversal prints and swallows item.paint exceptions.
+        # Preserve its ordering/transforms/VAO/picking, but let paintGL report
+        # failure instead of falsely marking an empty/partial frame successful.
+        items = ([node for node in self.items if node.parentItem() is None]
+                 if item is None else [*item.childItems(), item])
+        for node in sorted(items, key=lambda entry: entry.depthValue()):
+            if not node.visible():
+                continue
+            if node is item:
+                if useItemNames:
+                    GL.glLoadName(node._id)
+                    self._itemNames[node._id] = node
+                if self.default_vao.isCreated():
+                    self.default_vao.bind()
+                node.paint()
+            else:
+                self._modelViewStack.append(self.currentModelView() * node.transform())
+                try:
+                    self.drawItemTree(node, useItemNames=useItemNames)
+                finally:
+                    self._modelViewStack.pop()
 
 class Rocket3DWidget(QWidget):
     """
@@ -48,7 +84,9 @@ class Rocket3DWidget(QWidget):
         self.error_label.setWordWrap(True)
         self.error_label.hide()
         self.gl_view.render_failed.connect(self.on_render_failure)
-        self.gl_view.opts['distance'] = 25
+        # Display-only arbitrary units: retain the whole 12-unit schematic in
+        # the application's wide, short attitude tab (not a physical dimension).
+        self.gl_view.opts['distance'] = 60
         self.gl_view.opts['elevation'] = 20
         self.gl_view.opts['azimuth'] = 45
 

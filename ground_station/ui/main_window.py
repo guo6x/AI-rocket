@@ -2,7 +2,7 @@ import math
 import time
 from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
                                QComboBox, QPushButton, QTextEdit, QLabel,
-                               QLineEdit, QTabWidget, QStackedWidget)
+                               QLineEdit, QTabWidget, QStackedWidget, QApplication)
 from PySide6.QtGui import QFont, QColor, QTextCharFormat, QTextCursor
 from PySide6.QtCore import Qt, QTimer, QObject, Slot
 from core.command_link import CommandTracker, parse_command_response
@@ -187,6 +187,9 @@ class MainWindow(QMainWindow):
         self.view3d_status_label = QLabel("3D: not yet rendered (simplified box; not CAD)")
         self.view3d_status_label.setWordWrap(True)
         try:
+            backend_error = QApplication.instance().property("opengl_backend_error")
+            if backend_error:
+                raise RuntimeError(backend_error)
             from ui.view3d_widget import Rocket3DWidget
             self.view3d_panel = Rocket3DWidget()
             if hasattr(self.view3d_panel, "render_failed"):
@@ -673,7 +676,7 @@ class MainWindow(QMainWindow):
             elif gl_view.isVisible():
                 if gl_view.isValid() and getattr(gl_view, "render_ok", False):
                     self._gl_no_frame_since = None
-                    self.view3d_status_label.setText("3D: frame rendered; simplified attitude box, yaw unavailable (not CAD)")
+                    self.view3d_status_label.setText("3D: draw callbacks completed; visible pixels NOT_VERIFIED here; simplified box, yaw unavailable (not CAD)")
                 else:
                     now = time.monotonic()
                     if self._gl_no_frame_since is None:

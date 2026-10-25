@@ -3,5 +3,5 @@
 # Keep the full tests/exit-code gate; upgrade only after that regression is fixed.
 PySide6==6.10.2
 pyserial>=3.5
-pyqtgraph>=0.13.3
+pyqtgraph>=0.14.0
 PyOpenGL>=3.1.7
