@@ -190,13 +190,10 @@ class RuntimeAcceptance:
                 if fallback is not None and fallback.isVisible():
                     before = (fallback.roll_deg, fallback.pitch_deg)
                     fallback.update_attitude(0, 0)
-                    self.app.processEvents()
                     first = fallback.grab().toImage()
                     fallback.update_attitude(32, -24)
-                    self.app.processEvents()
                     second = fallback.grab().toImage()
                     fallback.update_attitude(*before)
-                    self.app.processEvents()
                     visible_paint = (not first.isNull() and not second.isNull()
                                      and first.width() > 50 and first != second)
                     self.result["fallback_2d"] = {
