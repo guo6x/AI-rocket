@@ -192,8 +192,10 @@ class MainWindow(QMainWindow):
                 self.view3d_panel.render_failed.connect(self.on_3d_failed)
             self.tab_widget.addTab(self.view3d_panel, "🛰️ 3D 姿态")
         except Exception as e:
-            self.view3d_status_label.setText(f"3D DEGRADED / NOT_VERIFIED: {e}")
-            self.view3d_panel = None
+            from ui.attitude_fallback import AttitudeFallbackWidget
+            self.view3d_panel = AttitudeFallbackWidget()
+            self.tab_widget.addTab(self.view3d_panel, "2D 姿态 (3D unavailable)")
+            self.view3d_status_label.setText(f"3D DEGRADED / NOT_VERIFIED: {e}; 2D fallback active (not CAD)")
 
         # ========== 4. 日志 + 指令面板 (横向分割) ==========
         bottom_layout = QHBoxLayout()
@@ -644,7 +646,7 @@ class MainWindow(QMainWindow):
         self.command_panel.set_link_state(state)
 
     def on_3d_failed(self, error):
-        self.view3d_status_label.setText(f"3D DEGRADED / NOT_VERIFIED: {error}")
+        self.view3d_status_label.setText(f"3D DEGRADED / NOT_VERIFIED: {error}; 2D fallback active (not CAD)")
 
     def poll_link_and_command_state(self):
         expired = self.command_tracker.expire()
@@ -668,7 +670,9 @@ class MainWindow(QMainWindow):
                 if gl_view.isValid() and getattr(gl_view, "render_ok", False):
                     self.view3d_status_label.setText("3D: frame rendered; simplified attitude box, yaw unavailable (not CAD)")
                 else:
-                    self.view3d_status_label.setText("3D DEGRADED / NOT_VERIFIED: no successful frame yet; dashboard and curves remain usable")
+                    fallback = getattr(self.view3d_panel, "fallback", None)
+                    detail = "2D fallback active" if fallback is not None and not fallback.isHidden() else "awaiting visible frame"
+                    self.view3d_status_label.setText(f"3D DEGRADED / NOT_VERIFIED: {detail}; dashboard and curves remain usable")
 
     # ---- 错误处理 ----
     def on_error(self, error_msg):
