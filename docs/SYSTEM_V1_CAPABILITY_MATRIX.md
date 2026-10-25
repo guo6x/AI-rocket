@@ -17,7 +17,7 @@ Three evidence layers must not be merged:
 
 1. **Existing code at the inventory source:** directly inspected functionality and interfaces.
 2. **Prior software evidence:** committed traces, native/fixture tests and earlier build reports for their named source revisions. These are reusable evidence, not a new run at `50006f8...` or at the final SYSTEM-V1 source.
-3. **Current SYSTEM-V1 acceptance:** **PENDING** in this document. The root task must bind its actual gate results to the tested source, logs, commands and remaining limitations. An implemented workflow or successful Git merge is not CI PASS.
+3. **Current SYSTEM-V1 acceptance:** recorded separately in [SYSTEM_V1_ACCEPTANCE_REPORT.md](../SYSTEM_V1_ACCEPTANCE_REPORT.md). This matrix retains the pre-change inventory. The report binds actual source, logs, commands and limitations; a workflow or successful Git merge alone is not CI PASS.
 
 The [R3.2 mainline evidence note](R3_2_MAINLINE_EVIDENCE_AND_BLOCKERS.md) explicitly separates the prior `889cbfb5...` feature-head handoff from a new merge-head run. Its reported 379 executions include repeated standalone groups; they are not 379 unique tests. Older entries such as Ground Station 49 in `verification-status.yaml` also remain historical records, not current totals.
 
@@ -56,8 +56,8 @@ Where engineering authority uses `PROTOTYPE`, that classification is retained ex
 | Research: 1D/2D inverted pendulum, delayed sensor and limited actuator models | `IMPLEMENTED`; narrow cases `TESTED_SOFTWARE` | [physics_engine.py][model-1d], [physics_engine_2d.py][model-2d], [components.py][model-components] and [simulation_smoke.py][sim-smoke]. Engineering authority classifies these as `PROTOTYPE`. | Unmeasured mass, CG, inertia, thrust, damping, delay and actuator assumptions; script sign/cadence disagreements persist. Smoke explicitly expects TUNED small-angle convergence **and TESTBENCH non-ideal 5° non-convergence**. No physical stability proof. |
 | Research: Barrowman CG/CP, RocketPy, custom quaternion 6DOF, PID comparison and Monte Carlo | `HISTORICAL` | Executable source exists under [aero_sim][aero-source]; [rocket_config.py][legacy-config] explicitly labels the old 75 mm solid-flight baseline. Existing output files are preserved. | Not the current EDF bench. Motor text/constants and assumptions conflict; outputs lack full run provenance. Smoke checks only selected kernels, not full trajectory validity. Old reported flight/PID improvements do not qualify current hardware. |
 | Research: numerical reference and evidence-manifest method | `TESTED_SOFTWARE` for recorded narrow research; broader adoption `NEEDS_INTEGRATION` | [KR-2026-002](aerospace-knowledge/records/KR-2026-002-simulation-provenance.md), [KR-2026-004](aerospace-knowledge/records/KR-2026-004-authentic-model-analytic-benchmark.md), associated examples and immutable KB3 artifacts. | Historical 1D reference covers only zero thrust, 0.1°, 0.4 s and the same assumed model; hashes establish file identity, not physical truth. Other models, step convergence and independent-solver/measurement correlation remain open. |
-| CI/local gate: complete software runner | `IMPLEMENTED`; prior constituent gates `TESTED_SOFTWARE` | [scripts/check.py][full-check] contains existing GS/native/ESP, simulation, engineering/recovery audits, R2.3, RF/research tests and five source builds. Failure affects the exit code. | Current SYSTEM-V1 exact-source run is `PENDING` here. Repeated standalone groups must not inflate unique test totals. Hardware gates are deliberately outside this software exit code; advisory recovery audit does not mean recovery-qualified. |
-| CI: hosted SYSTEM-V1 workflow and attributable logs | `IMPLEMENTED`; current hosted result `UNKNOWN` | [system-v1-software.yml][ci-workflow] runs the full runner on pull requests/main or manual dispatch and retains logs, including failures, with read-only repository permission. | Workflow presence is not an executed PASS. Root must record the actual run URL, tested checkout SHA, conclusion and failed/skipped steps; local PASS must not be relabeled hosted CI PASS. |
+| CI/local gate: complete software runner (pre-change inventory) | `IMPLEMENTED`; prior constituent gates `TESTED_SOFTWARE` | [scripts/check.py][full-check] contains existing GS/native/ESP, simulation, engineering/recovery audits, R2.3, RF/research tests and five source builds. Failure affects the exit code. | At inventory time, the SYSTEM-V1 exact-source run was `PENDING`; completed results are in section 6. Repeated standalone groups must not inflate unique test totals. Hardware gates are deliberately outside this software exit code; advisory recovery audit does not mean recovery-qualified. |
+| CI: hosted SYSTEM-V1 workflow and attributable logs (pre-change inventory) | `IMPLEMENTED`; inventory-time hosted result `UNKNOWN` | [system-v1-software.yml][ci-workflow] runs the full runner on pull requests/main or manual dispatch and retains logs, including failures, with read-only repository permission. | Workflow presence is not an executed PASS. Section 6 records the subsequently executed hosted run, tested checkout SHA and conclusion; local PASS is not relabeled hosted CI PASS. |
 
 ## 4. Firmware and display meanings that must remain explicit
 
@@ -87,13 +87,13 @@ The opt-in GNC-only profile rejects deployment and omits PB0 recovery attachment
 
 ## 6. Current SYSTEM-V1 gate handoff
 
-| Evidence field | State at this inventory-writing step |
+| Evidence field | Final handoff reference (inventory above remains pre-change) |
 | --- | --- |
 | Fixed pre-change inventory | `50006f8fd6830a34f16b5e9d2f4e84269c403007` |
-| Final tested SYSTEM-V1 source / working-tree binding | `PENDING` — root task records actual source and changed-file binding |
-| Current complete local software gate | `PENDING` — this writing task did not run tests/builds |
-| Current hosted SYSTEM-V1 workflow | `UNKNOWN` — require actual run URL, checkout SHA and conclusion |
-| Offline/UI/adapter acceptance | `PENDING` — do not infer from this capability matrix |
+| Final tested SYSTEM-V1 source / working-tree binding | `16a37c3be0528f51cf152419e6907763a95b4ee4`; subsequent report/evidence commits are distinguished in the acceptance report |
+| Current complete local software gate | `PASS`, exit 0; 419 executions / 409 identities; see report and full_check_16a37c receipt |
+| Current hosted SYSTEM-V1 workflow | `PASS`, run [40168290228](https://github.com/guo6x/AI-rocket/actions/runs/40168290228), actual merge `dac49b14d6ebdc689c6495e24396a16473147a41` |
+| Offline/UI/adapter acceptance | `PARTIALLY_VERIFIED`: existing UI/parser/plots/logging replay passed; visible 3D not verified; R3 binary adapter remains NEEDS_INTEGRATION |
 | Current physical board/wiring/sensor/actuator proof | `UNKNOWN` / `NOT_EVALUATED` |
 | RF driver/link/region gate | `BLOCKED` / `UNKNOWN`; no transmissions authorized |
 | Recovery qualification | `BLOCKED_UNREACHABLE_THRESHOLD` / `NOT_EVALUATED` |

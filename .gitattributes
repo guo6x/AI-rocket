@@ -1,0 +1,3 @@
+# Captured evidence is byte-exact (including original CRLF and tool whitespace).
+# Do not normalize it on checkout or rewrite it to satisfy source formatting.
+engineering/offline-evidence/system_v1/** -text -whitespace

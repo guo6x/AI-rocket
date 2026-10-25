@@ -1,0 +1,77 @@
+a2f05c348c770da01f27415f6ede04d89b906e10
+?? system-v1-environment.txt
+event=pull_request head=70c768de915fa7bd090aa5ad59d5db7d0affd0f5 base=03fbd826031f24055bf5de79c7aa4aa72810b451
+Python 3.11.17
+PlatformIO Core, version 6.2.0
+ajsonrpc==1.2.0
+anyio==4.15.1
+bottle==0.13.4
+certifi==2026.10.23
+cftime==1.6.6.1
+charset-normalizer==3.5.2
+click==8.5.0
+colorama==0.4.6
+contourpy==1.3.3
+cycler==0.12.1
+dill==0.4.1
+fonttools==4.67.0
+h11==0.16.0
+idna==3.20
+iniconfig==2.3.1
+kiwisolver==1.5.1
+marshmallow==4.3.1
+matplotlib==3.11.2
+netCDF4==1.7.5.1.post1
+numpy==2.4.6
+packaging==26.3
+pillow==13.0.0
+platformio==6.2.0
+pluggy==1.7.0
+pyelftools==0.33
+Pygments==2.21.0
+PyOpenGL==3.1.10
+pyparsing==3.3.3
+pyqtgraph==0.14.0
+pyserial==3.5
+PySide6==6.10.2
+PySide6_Addons==6.10.2
+PySide6_Essentials==6.10.2
+pytest==9.1.1
+python-dateutil==3.0.0
+pytz==2026.5
+PyYAML==6.0.3
+requests==2.34.2
+rocketpy==1.13.0
+scipy==1.17.1
+semantic-version==2.10.0
+shiboken6==6.10.2
+simplekml==1.3.6
+six==1.17.0
+starlette==1.10.0
+tabulate==0.10.0
+typing_extensions==4.16.0
+tzdata==2026.5
+urllib3==2.8.0
+uvicorn==0.54.0
+wsproto==1.3.2
+********************************************************************************
+If you like PlatformIO, please:
+- star it on GitHub > https://github.com/platformio/platformio-core
+- follow us on LinkedIn to stay up-to-date on the latest project news > https://www.linkedin.com/company/platformio/
+- try PlatformIO IDE for embedded development > https://platformio.org/platformio-ide
+********************************************************************************
+
+--------------------------  ------------------------------------------------------
+PlatformIO Core             6.2.0
+Python                      3.11.17-final.0
+System Type                 linux_x86_64
+Platform                    Linux-6.17.0-1022-azure-x86_64-with-glibc2.39
+File System Encoding        utf-8
+Locale Encoding             utf-8
+PlatformIO Core Directory   /home/runner/.platformio
+PlatformIO Core Executable  /opt/hostedtoolcache/Python/3.11.17/x64/bin/platformio
+Python Executable           /opt/hostedtoolcache/Python/3.11.17/x64/bin/python
+Global Libraries            0
+Development Platforms       0
+Tools & Toolchains          0
+--------------------------  ------------------------------------------------------
