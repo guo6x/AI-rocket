@@ -1,5 +1,8 @@
 # Historical CAD crosswalk
 
+> **Archived asset notice (2026-10-25):** Some paths in this historical crosswalk point to rejected generated exports removed from the active tree by CAD cleanup phase 1. All removed blobs remain in Git history at `03fbd826031f24055bf5de79c7aa4aa72810b451`. See [cleanup manifest](../../docs/CAD_REJECTED_EXPORTS_PURGE_PHASE1_2026-10-25.md). None of the old shapes or dimensions is current CAD authority.
+
+
 All listed assets are currently preserved for provenance only. **The owner has rejected prior AI-generated CAD as unfit for the current project (2026-10-25).** Nothing in this crosswalk is an approved design, a valid dimension source, a candidate automatically eligible for reuse, or a manufacturing release. See `engineering/cad-authority.yaml`.
 
 | Asset | Classification | Embedded assumption or conflict | R2 disposition |
