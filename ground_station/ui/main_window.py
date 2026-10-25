@@ -1,14 +1,16 @@
+import math
 import time
 from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
                                QComboBox, QPushButton, QTextEdit, QLabel,
                                QLineEdit, QTabWidget, QStackedWidget)
 from PySide6.QtGui import QFont, QColor, QTextCharFormat, QTextCursor
-from PySide6.QtCore import Qt, QTimer
+from PySide6.QtCore import Qt, QTimer, QObject, Slot
 from core.command_link import CommandTracker, parse_command_response
 from core.serial_reader import SerialReader, get_available_ports
 from core.udp_reader import UdpReader
 from core.data_logger import DataLogger
 from core.telemetry_parser import TelemetryParser
+from core.offline_replay import OfflineReplay, SOURCE as REPLAY_SOURCE
 from ui.dashboard import DashboardWidget
 from ui.command_panel import CommandPanel
 
@@ -22,18 +24,46 @@ FSTATE_COLORS = {
     "LANDED":  "#9c27b0",
 }
 
+
+class SessionReceiver(QObject):
+    """GUI-owned registered slots preserve QThread's queued delivery semantics."""
+
+    def __init__(self, owner, epoch, callback):
+        super().__init__(owner)
+        self.owner, self.epoch, self.callback = owner, epoch, callback
+
+    def deliver(self, *args):
+        if self.epoch == self.owner._input_epoch:
+            self.callback(*args)
+
+    @Slot(str)
+    def text(self, value):
+        self.deliver(value)
+
+    @Slot(str, object)
+    def response(self, value, source):
+        self.deliver(value, source)
+
+    @Slot()
+    def notification(self):
+        self.deliver()
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("🚀 Ad Astra Ground Station - V0.4")
         self.resize(1100, 800)
-        
+
         self.data_thread = None  # 统一名称：可以是 SerialReader 或 UdpReader
         self.connection_mode = None
         self.last_rx_monotonic = None
         self.command_tracker = CommandTracker(timeout_seconds=1.5)
         self.parser = TelemetryParser()
         self.sensor_fault_active = False
+        self.replay = None
+        self._input_epoch = 0
+        self._session_receivers = []
 
         import os
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -54,7 +84,7 @@ class MainWindow(QMainWindow):
 
         # 模式切换
         self.mode_combo = QComboBox()
-        self.mode_combo.addItems(["串口 Serial", "WiFi UDP"])
+        self.mode_combo.addItems(["串口 Serial", "WiFi UDP", "离线回放 Offline Replay"])
         self.mode_combo.setFont(font)
         self.mode_combo.currentIndexChanged.connect(self.on_mode_changed)
         control_layout.addWidget(QLabel("模式:"))
@@ -112,6 +142,28 @@ class MainWindow(QMainWindow):
         control_layout.addWidget(self.connect_btn)
         control_layout.addStretch()
 
+        self.source_label = QLabel("LIVE INPUT — UNAUTHENTICATED; FC yaw=gz rate, batt=placeholder (not measured)")
+        self.source_label.setWordWrap(True)
+        self.source_label.setStyleSheet("color: #ff9800; font-weight: bold;")
+        self.replay_controls = QWidget()
+        replay_layout = QHBoxLayout(self.replay_controls)
+        replay_layout.setContentsMargins(0, 0, 0, 0)
+        self.replay_start_btn = QPushButton("▶ 开始 / 继续")
+        self.replay_pause_btn = QPushButton("⏸ 暂停")
+        self.replay_restart_btn = QPushButton("↺ 重新开始")
+        self.replay_stop_btn = QPushButton("■ 停止")
+        self.replay_status_label = QLabel("STOPPED — fixed synthetic fixture, no commands")
+        for button, callback in (
+            (self.replay_start_btn, self.start_replay),
+            (self.replay_pause_btn, self.pause_replay),
+            (self.replay_restart_btn, self.restart_replay),
+            (self.replay_stop_btn, self.stop_replay),
+        ):
+            replay_layout.addWidget(button)
+            button.clicked.connect(callback)
+        replay_layout.addWidget(self.replay_status_label, stretch=1)
+        self.replay_controls.hide()
+
         # ========== 2. 仪表盘 ==========
         self.dashboard = DashboardWidget()
         # Sensor validity is independent of transport activity / command ACKs.
@@ -131,12 +183,16 @@ class MainWindow(QMainWindow):
         self.tab_widget.addTab(self.comparison_panel, "🔬 滤波对比")
 
         # 3D 姿态显示 Tab (可选, OpenGL 不可用时降级)
+        self.view3d_status_label = QLabel("3D: not yet rendered (simplified box; not CAD)")
+        self.view3d_status_label.setWordWrap(True)
         try:
             from ui.view3d_widget import Rocket3DWidget
             self.view3d_panel = Rocket3DWidget()
+            if hasattr(self.view3d_panel, "render_failed"):
+                self.view3d_panel.render_failed.connect(self.on_3d_failed)
             self.tab_widget.addTab(self.view3d_panel, "🛰️ 3D 姿态")
         except Exception as e:
-            print(f"[WARN] 3D 姿态组件加载失败 (需 PyOpenGL): {e}")
+            self.view3d_status_label.setText(f"3D DEGRADED / NOT_VERIFIED: {e}")
             self.view3d_panel = None
 
         # ========== 4. 日志 + 指令面板 (横向分割) ==========
@@ -144,6 +200,9 @@ class MainWindow(QMainWindow):
 
         self.log_display = QTextEdit()
         self.log_display.setReadOnly(True)
+        # Both plots were already bounded. The previously unbounded text
+        # document also needs a ceiling for extended receive/replay sessions.
+        self.log_display.document().setMaximumBlockCount(2000)
         self.log_display.setFont(QFont("Consolas", 9))
         self.log_display.setStyleSheet("background-color: #1e1e1e; color: #00ff00;")
 
@@ -161,9 +220,12 @@ class MainWindow(QMainWindow):
 
         # ========== 组装主布局 ==========
         main_layout.addLayout(control_layout)
+        main_layout.addWidget(self.source_label)
+        main_layout.addWidget(self.replay_controls)
         main_layout.addWidget(self.sensor_status_label)
         main_layout.addWidget(self.dashboard)
         main_layout.addWidget(self.tab_widget, stretch=2)
+        main_layout.addWidget(self.view3d_status_label)
         main_layout.addLayout(bottom_layout, stretch=1)
         self.set_sensor_visual_state("SENSOR: unavailable — no telemetry", False)
 
@@ -214,9 +276,76 @@ class MainWindow(QMainWindow):
 
     # ---- 模式切换 ----
     def on_mode_changed(self, index):
+        if self.connection_mode is not None:
+            self.disconnect_data()
         is_serial = (index == 0)
         self.serial_stack.setVisible(is_serial)
-        self.udp_stack.setVisible(not is_serial)
+        self.udp_stack.setVisible(index == 1)
+        offline = index == 2
+        self.replay_controls.setVisible(offline)
+        self.connect_btn.setEnabled(not offline)
+        self.command_panel.setEnabled(not offline)
+        self.command_panel.arm_checkbox.setChecked(False)
+        self.source_label.setText(
+            f"{REPLAY_SOURCE} — SYNTHETIC, READ ONLY; no transport, no control authority"
+            if offline else "LIVE INPUT — UNAUTHENTICATED; FC yaw=gz rate, batt=placeholder (not measured)"
+        )
+
+    def is_offline_mode(self):
+        return self.mode_combo.currentIndex() == 2 or self.connection_mode == "offline"
+
+    def start_replay(self):
+        if self.mode_combo.currentIndex() != 2:
+            return
+        if self.replay is not None and self.replay.state == "RUNNING":
+            return
+        if self.replay is not None and self.replay.state == "PAUSED":
+            self.replay.start()
+            return
+        self.disconnect_data()
+        self.connection_mode = "offline"
+        self.parser = TelemetryParser()
+        self.replay = OfflineReplay(self)
+        self.bind_session_signal(self.replay.data_received, self.on_data_received)
+        self.bind_session_signal(self.replay.state_changed, self.on_replay_state_changed)
+        self.bind_session_signal(self.replay.gap_started, self.on_replay_gap, notification=True)
+        self.data_logger.start_logging()
+        self.data_logger.log({
+            "source_mode": REPLAY_SOURCE,
+            "fixture_sha256": self.replay.input_sha256,
+            "sample_time": "synthetic offsets in ms, not measured sensor time",
+            "source_authentication": "NONE", "control_authority": False,
+        })
+        self.command_tracker.clear()
+        self.replay.start()
+
+    def pause_replay(self):
+        if self.replay is not None:
+            self.replay.pause()
+
+    def restart_replay(self):
+        if self.mode_combo.currentIndex() == 2:
+            self.stop_replay()
+            self.start_replay()
+
+    def stop_replay(self):
+        if self.replay is not None:
+            self.replay.stop()
+
+    def on_replay_state_changed(self, state):
+        self.replay_status_label.setText(f"{state} — fixed synthetic fixture, no commands")
+        self.command_panel.set_link_state(f"OFFLINE {state}")
+        self.log_message(f"[{REPLAY_SOURCE}] {state}")
+        self.data_logger.log({"source_mode": REPLAY_SOURCE, "replay_state": state})
+        if state in {"PAUSED", "STOPPED", "FINISHED"}:
+            self.set_sensor_visual_state(f"{REPLAY_SOURCE}: {state}; last visuals frozen (not current)", False)
+        if state in {"STOPPED", "FINISHED"}:
+            self.data_logger.stop_logging()
+
+    def on_replay_gap(self):
+        self.set_sensor_visual_state(f"{REPLAY_SOURCE}: DATA INTERRUPTION; last visuals frozen (not current)", False)
+        self.log_message(f"[{REPLAY_SOURCE}] synthetic data interruption")
+        self.data_logger.log({"source_mode": REPLAY_SOURCE, "event": "synthetic data interruption"})
 
     # ---- 端口刷新 ----
     def refresh_ports(self):
@@ -242,13 +371,19 @@ class MainWindow(QMainWindow):
             self.connect_data()
 
     def connect_data(self):
+        # Guard the actual connection entry point, not just the connect button.
+        if self.is_offline_mode():
+            self.start_replay()
+            return
+        if self.data_thread is not None:
+            return
         is_serial = (self.mode_combo.currentIndex() == 0)
 
         if is_serial:
             # 如果当前是 None，尝试最后刷新一次
             if self.port_combo.currentText() == "None":
                 self.refresh_ports()
-                
+
             port = self.port_combo.currentText()
             if not port or port == "None":
                 self.log_message("[系统] 未找到可用串口")
@@ -275,17 +410,16 @@ class MainWindow(QMainWindow):
             conn_info = f"0.0.0.0:{udp_port} ← UDP; command → {target_ip}:{command_port}"
             self.connection_mode = "udp"
 
-        self.data_thread.data_received.connect(self.on_data_received)
+        self.bind_session_signal(self.data_thread.data_received, self.on_data_received)
         if isinstance(self.data_thread, UdpReader):
-            self.data_thread.command_response_received.connect(
-                self.on_udp_command_response
-            )
-        self.data_thread.error_occurred.connect(self.on_error)
-        self.data_thread.link_state_changed.connect(self.on_link_state_changed)
+            self.bind_session_signal(self.data_thread.command_response_received, self.on_udp_command_response, response=True)
+        self.bind_session_signal(self.data_thread.error_occurred, self.on_error)
+        self.bind_session_signal(self.data_thread.link_state_changed, self.on_link_state_changed)
 
         self.data_logger.start_logging()
         self.data_thread.start()
         self.command_tracker.clear()
+        self.parser = TelemetryParser()
         self.last_rx_monotonic = None
         self.sensor_fault_active = False
         self.set_sensor_visual_state("SENSOR: unavailable — waiting for telemetry", False)
@@ -301,6 +435,16 @@ class MainWindow(QMainWindow):
         self.command_panel.set_command_status("IDLE")
 
     def disconnect_data(self):
+        # QThread.wait()/stop do not remove signals already queued to the GUI.
+        # Invalidate callbacks BEFORE stopping the old input or closing its log.
+        self._input_epoch += 1
+        for receiver in self._session_receivers:
+            receiver.deleteLater()
+        self._session_receivers.clear()
+        if self.replay is not None:
+            self.replay.stop()
+            self.replay.deleteLater()
+            self.replay = None
         if self.data_thread:
             self.data_thread.stop()
             self.data_thread = None
@@ -311,8 +455,10 @@ class MainWindow(QMainWindow):
         self.last_rx_monotonic = None
         self.start_time = None
         self.last_fstate = None
+        self.parser = TelemetryParser()
         self.plot_panel.clear()
         self.comparison_panel.clear()
+        self.dashboard.reset_indicators()
         self.sensor_fault_active = False
         self.set_sensor_visual_state("SENSOR: unavailable — disconnected", False)
 
@@ -326,11 +472,17 @@ class MainWindow(QMainWindow):
         self.command_panel.set_link_state("DISCONNECTED")
         self.command_panel.set_command_status("IDLE")
 
+    def bind_session_signal(self, signal, callback, *, response=False, notification=False):
+        receiver = SessionReceiver(self, self._input_epoch, callback)
+        self._session_receivers.append(receiver)
+        slot = receiver.response if response else (receiver.notification if notification else receiver.text)
+        signal.connect(slot)
+
     # ---- 数据接收回调 ----
     def on_data_received(self, data):
         from datetime import datetime
         timestamp = datetime.now().strftime("[%H:%M:%S.%f]")[:-4] + "]"
-        self.log_display.append(f"{timestamp} {data}")
+        self.log_message(f"{timestamp} {data}")
         self.log_display.ensureCursorVisible()
 
         command_response = parse_command_response(data)
@@ -355,8 +507,27 @@ class MainWindow(QMainWindow):
                 # unavailable. Sensor-fault frames must never become default
                 # altitude/attitude zeroes in dashboards, plots or the 3D view.
                 self.data_logger.log(parsed)
-                if not self.sensor_telemetry_available(parsed):
+                flag = parsed.get("sensor_valid")
+                explicit_valid = flag is True or (type(flag) is int and flag == 1)
+                # A claimed-valid but malformed sample must not clear a prior
+                # explicit fault, permitting a later legacy frame to erase it.
+                if not explicit_valid and not self.sensor_telemetry_available(parsed):
                     continue
+                numeric_keys = ("time", "alt", "pitch", "pitch_raw", "pitch_flt", "roll", "roll_raw", "roll_flt", "yaw", "batt")
+                try:
+                    numeric_valid = all(
+                        type(parsed[key]) in (int, float) and math.isfinite(parsed[key])
+                        for key in numeric_keys if key in parsed
+                    )
+                except (OverflowError, TypeError, ValueError):
+                    numeric_valid = False
+                pitch_key = next((key for key in ("pitch_flt", "pitch", "pitch_raw") if key in parsed), None)
+                roll_key = next((key for key in ("roll_flt", "roll", "roll_raw") if key in parsed), None)
+                if not numeric_valid or "alt" not in parsed or pitch_key is None or roll_key is None:
+                    self.set_sensor_visual_state("SENSOR: invalid/missing numeric telemetry; last visuals frozen (not current)", False)
+                    continue
+                if explicit_valid:
+                    self.sensor_telemetry_available(parsed)
                 self.dashboard.update_indicators(parsed)
 
                 # 飞行阶段变化回显 (彩色高亮)
@@ -368,30 +539,32 @@ class MainWindow(QMainWindow):
                 if self.start_time is None:
                     self.start_time = time.time()
                 elapsed = time.time() - self.start_time
+                if self.connection_mode == "offline":
+                    elapsed = parsed["replay_time_ms"] / 1000.0
 
                 # 图表 1：高度 + 俯仰（优先使用滤波值）
                 alt = parsed.get("alt", 0.0)
-                pitch = parsed.get("pitch_flt", parsed.get("pitch", 0.0))
+                pitch = parsed[pitch_key]
                 self.plot_panel.update_plot(elapsed, alt, pitch)
 
                 # 图表 2：滤波对比（如果数据里包含 _raw/_flt 字段）
-                if "pitch_raw" in parsed:
+                if all(key in parsed for key in ("pitch_raw", "pitch_flt", "roll_raw", "roll_flt")):
                     self.comparison_panel.update_plot(
                         elapsed,
-                        parsed.get("pitch_raw", 0.0),
-                        parsed.get("pitch_flt", 0.0),
-                        parsed.get("roll_raw", 0.0),
-                        parsed.get("roll_flt", 0.0)
+                        parsed["pitch_raw"], parsed["pitch_flt"],
+                        parsed["roll_raw"], parsed["roll_flt"]
                     )
 
                 # 3D 姿态更新
                 if self.view3d_panel is not None:
-                    roll = parsed.get("roll_flt", parsed.get("roll_raw", 0.0))
-                    yaw = parsed.get("yaw", 0.0)
+                    roll = parsed[roll_key]
+                    # Current FC's `yaw` is gz (deg/s), not a heading angle.
+                    # No integrated yaw/installation transform has been verified.
+                    yaw = 0.0
                     try:
                         self.view3d_panel.update_attitude(roll, pitch, yaw)
-                    except Exception:
-                        pass
+                    except Exception as error:
+                        self.on_3d_failed(str(error))
 
         # Always log raw data
         self.data_logger.log(data)
@@ -423,6 +596,13 @@ class MainWindow(QMainWindow):
 
     # ---- 指令下发回调 ----
     def on_send_command(self, command_text):
+        # Fail closed even if invoked directly, via a shortcut, or with a
+        # stale/injected transport. Includes ESTOP/RESET: replay has NO sender.
+        if self.is_offline_mode():
+            self.show_command_update(self.command_tracker.reject_local(
+                command_text, "read-only offline replay: all real commands prohibited"
+            ))
+            return
         if self.data_thread and self.data_thread.is_running:
             if self.command_tracker.pending:
                 if command_text != "estop":
@@ -463,6 +643,9 @@ class MainWindow(QMainWindow):
     def on_link_state_changed(self, state):
         self.command_panel.set_link_state(state)
 
+    def on_3d_failed(self, error):
+        self.view3d_status_label.setText(f"3D DEGRADED / NOT_VERIFIED: {error}")
+
     def poll_link_and_command_state(self):
         expired = self.command_tracker.expire()
         if expired is not None:
@@ -475,6 +658,17 @@ class MainWindow(QMainWindow):
             and time.monotonic() - self.last_rx_monotonic > 2.5
         ):
             self.command_panel.set_link_state("TELEMETRY LOST")
+            self.set_sensor_visual_state("TELEMETRY LOST; last visuals frozen (not current)", False)
+
+        if self.view3d_panel is not None and self.tab_widget.currentWidget() is self.view3d_panel:
+            gl_view = getattr(self.view3d_panel, "gl_view", None)
+            if gl_view is not None and getattr(gl_view, "render_error", None):
+                self.on_3d_failed(gl_view.render_error)
+            elif gl_view is not None and gl_view.isVisible():
+                if gl_view.isValid() and getattr(gl_view, "render_ok", False):
+                    self.view3d_status_label.setText("3D: frame rendered; simplified attitude box, yaw unavailable (not CAD)")
+                else:
+                    self.view3d_status_label.setText("3D DEGRADED / NOT_VERIFIED: no successful frame yet; dashboard and curves remain usable")
 
     # ---- 错误处理 ----
     def on_error(self, error_msg):
@@ -482,8 +676,16 @@ class MainWindow(QMainWindow):
         self.disconnect_data()
 
     def log_message(self, msg):
-        self.log_display.append(msg)
+        # Raw telemetry is data, never rich-text markup.
+        cursor = self.log_display.textCursor()
+        cursor.movePosition(QTextCursor.End)
+        text = str(msg)
+        if len(text) > 16384:
+            text = text[:16384] + " [UI truncated; raw input preserved in session log]"
+        cursor.insertText(text + "\n")
+        self.log_display.setTextCursor(cursor)
 
     def closeEvent(self, event):
+        self.command_timer.stop()
         self.disconnect_data()
         event.accept()

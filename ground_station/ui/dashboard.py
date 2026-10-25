@@ -14,19 +14,19 @@ class DashboardWidget(QWidget):
     def setup_ui(self):
         layout = QHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
-        
+
         # 定义需要展示的字段（使用滤波后的数据作为主显示）
         self.indicators = {
             "time": self.create_indicator_card("Mission Time (ms)", "0"),
             "alt": self.create_indicator_card("Altitude (m)", "0.00"),
             "pitch_flt": self.create_indicator_card("Pitch Flt (°)", "0.00"),
             "roll_flt": self.create_indicator_card("Roll Flt (°)", "0.00"),
-            "yaw": self.create_indicator_card("Yaw (°)", "0.00"),
-            "batt": self.create_indicator_card("BAT (V)", "0.0"),
+            "yaw": self.create_indicator_card("FC gz (°/s)*", "0.00"),
+            "batt": self.create_indicator_card("BAT source (V)*", "unavailable"),
             "auto": self.create_indicator_card("Mode", "MANUAL"),
             "fstate": self.create_indicator_card("F-STATE", "IDLE")
         }
-        
+
         for key, widget in self.indicators.items():
             layout.addWidget(widget)
 
@@ -34,26 +34,31 @@ class DashboardWidget(QWidget):
         card = QFrame()
         card.setFrameShape(QFrame.StyledPanel)
         card.setStyleSheet("background-color: #2b2b2b; color: white; border-radius: 5px;")
-        
+
         v_layout = QVBoxLayout(card)
         v_layout.setAlignment(Qt.AlignCenter)
-        
+
         title_label = QLabel(title)
         title_label.setFont(QFont("Arial", 10, QFont.Bold))
         title_label.setAlignment(Qt.AlignCenter)
         title_label.setStyleSheet("color: #aaaaaa;")
-        
+
         value_label = QLabel(initial_value)
         # 用数字字体来显示数据更好看
         value_label.setFont(QFont("Consolas", 16, QFont.Bold))
         value_label.setAlignment(Qt.AlignCenter)
-        
+
         v_layout.addWidget(title_label)
         v_layout.addWidget(value_label)
-        
+
         # 把用来更新的 Label 挂在 card 上方便后续调用
         card.value_label = value_label
         return card
+
+    def reset_indicators(self):
+        """Never carry measurements from a previous live/synthetic session."""
+        for card in self.indicators.values():
+            card.value_label.setText("unavailable")
 
     def update_indicators(self, parsed_data):
         """
@@ -86,5 +91,5 @@ class DashboardWidget(QWidget):
                     display_text = f"{value:.2f}"
                 else:
                     display_text = str(value)
-                    
+
                 self.indicators[key].value_label.setText(display_text)

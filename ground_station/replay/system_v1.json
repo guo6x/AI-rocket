@@ -1,0 +1,24 @@
+{
+  "source": "SIMULATION / OFFLINE REPLAY",
+  "description": "Fixed display stimulus only. Angles/altitude are synthetic, not a physical plant or stability experiment. yaw is intentionally zero: production yaw is gz rate, not heading. No commands.",
+  "events": [
+    {"at_ms": 0, "kind": "sample", "telemetry": {"time": 0, "sensor_valid": 1, "alt": 0.0, "pitch_raw": 0.0, "pitch_flt": 0.0, "roll_raw": 0.0, "roll_flt": 0.0, "yaw": 0.0, "auto": 0, "fstate": "IDLE"}},
+    {"at_ms": 500, "kind": "sample", "telemetry": {"time": 500, "sensor_valid": 1, "alt": 1.0, "pitch_raw": 3.5, "pitch_flt": 3.0, "roll_raw": -2.5, "roll_flt": -2.0, "yaw": 0.0, "auto": 0, "fstate": "IDLE"}},
+    {"at_ms": 1000, "kind": "sample", "telemetry": {"time": 1000, "sensor_valid": 1, "alt": 2.0, "pitch_raw": 7.0, "pitch_flt": 6.0, "roll_raw": -5.0, "roll_flt": -4.0, "yaw": 0.0, "auto": 0, "fstate": "IDLE"}},
+    {"at_ms": 1500, "kind": "sample", "telemetry": {"time": 1500, "sensor_valid": 1, "alt": 3.0, "pitch_raw": 10.0, "pitch_flt": 9.0, "roll_raw": -7.0, "roll_flt": -6.0, "yaw": 0.0, "auto": 0, "fstate": "IDLE"}},
+    {"at_ms": 2000, "kind": "sample", "telemetry": {"time": 2000, "sensor_valid": 0, "sensor_fault": "synthetic_imu_read"}},
+    {"at_ms": 2500, "kind": "sample", "telemetry": {"time": 2500, "sensor_valid": 0, "sensor_fault": "synthetic_imu_read"}},
+    {"at_ms": 3000, "kind": "sample", "telemetry": {"time": 3000, "sensor_valid": 1, "alt": 4.0, "pitch_raw": 6.0, "pitch_flt": 5.0, "roll_raw": -3.0, "roll_flt": -2.0, "yaw": 0.0, "auto": 0, "fstate": "IDLE"}},
+    {"at_ms": 3500, "kind": "sample", "telemetry": {"time": 3500, "sensor_valid": 1, "alt": 4.0, "pitch_raw": 1.0, "pitch_flt": 0.5, "roll_raw": 0.5, "roll_flt": 0.0, "yaw": 0.0, "auto": 0, "fstate": "IDLE"}},
+    {"at_ms": 4000, "kind": "gap"},
+    {"at_ms": 7000, "kind": "sample", "telemetry": {"time": 7000, "sensor_valid": 1, "alt": 3.0, "pitch_raw": -13.0, "pitch_flt": -12.0, "roll_raw": 9.0, "roll_flt": 8.0, "yaw": 0.0, "auto": 0, "fstate": "IDLE"}},
+    {"at_ms": 7500, "kind": "sample", "telemetry": {"time": 7500, "sensor_valid": 1, "alt": 2.5, "pitch_raw": -12.5, "pitch_flt": -12.0, "roll_raw": 8.5, "roll_flt": 8.0, "yaw": 0.0, "auto": 0, "fstate": "IDLE"}},
+    {"at_ms": 8000, "kind": "sample", "telemetry": {"time": 8000, "sensor_valid": 1, "alt": 2.0, "pitch_raw": -12.0, "pitch_flt": -12.0, "roll_raw": 8.0, "roll_flt": 8.0, "yaw": 0.0, "auto": 0, "fstate": "IDLE"}},
+    {"at_ms": 8500, "kind": "sample", "telemetry": {"time": 8500, "sensor_valid": 1, "alt": 1.5, "pitch_raw": -8.0, "pitch_flt": -7.0, "roll_raw": 5.0, "roll_flt": 4.0, "yaw": 0.0, "auto": 0, "fstate": "IDLE"}},
+    {"at_ms": 9000, "kind": "sample", "telemetry": {"time": 9000, "sensor_valid": 1, "alt": 1.0, "pitch_raw": -4.0, "pitch_flt": -3.0, "roll_raw": 2.0, "roll_flt": 1.0, "yaw": 0.0, "auto": 0, "fstate": "IDLE"}},
+    {"at_ms": 9500, "kind": "sample", "telemetry": {"time": 9500, "sensor_valid": 1, "alt": 0.5, "pitch_raw": -1.0, "pitch_flt": -0.5, "roll_raw": 0.5, "roll_flt": 0.0, "yaw": 0.0, "auto": 0, "fstate": "IDLE"}},
+    {"at_ms": 10000, "kind": "sample", "telemetry": {"time": 10000, "sensor_valid": 1, "alt": 0.0, "pitch_raw": 0.0, "pitch_flt": 0.0, "roll_raw": 0.0, "roll_flt": 0.0, "yaw": 0.0, "auto": 0, "fstate": "IDLE"}},
+    {"at_ms": 10500, "kind": "sample", "telemetry": {"time": 10500, "sensor_valid": 1, "alt": 0.0, "pitch_raw": 0.0, "pitch_flt": 0.0, "roll_raw": 0.0, "roll_flt": 0.0, "yaw": 0.0, "auto": 0, "fstate": "IDLE"}},
+    {"at_ms": 11000, "kind": "sample", "telemetry": {"time": 11000, "sensor_valid": 1, "alt": 0.0, "pitch_raw": 0.0, "pitch_flt": 0.0, "roll_raw": 0.0, "roll_flt": 0.0, "yaw": 0.0, "auto": 0, "fstate": "IDLE"}}
+  ]
+}

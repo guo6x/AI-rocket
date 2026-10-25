@@ -1,0 +1,255 @@
+{
+  "status": "PARTIALLY_VERIFIED",
+  "assertions": [
+    "actual window starts with no device",
+    "save 01_no_device",
+    "save 02_udp_settings_no_connection",
+    "real parser to dashboard and curves",
+    "save 03_replay_curves",
+    "save 04_paused",
+    "pause retains cursor without receiving",
+    "sensor fault visibly freezes last sample",
+    "fault creates no zero attitude",
+    "save 05_sensor_fault",
+    "save 06_raw_filtered_recovered",
+    "data interruption visibly freezes",
+    "save 07_interruption",
+    "save 08_3d_or_explicit_degradation",
+    "15 valid samples, 2 faults and one gap, no fake zeros",
+    "original four comparison curves updated",
+    "natural completion closes log",
+    "raw and parsed replay log saved with provenance",
+    "save 09_finished",
+    "restart resets time axis and old session",
+    "stop terminates replay input timer",
+    "sender rejects arm",
+    "sender rejects auto_on",
+    "sender rejects set_servo:90,90",
+    "sender rejects deploy_chute",
+    "sender rejects estop",
+    "sender rejects reset",
+    "plot buffers bounded after finite soak",
+    "UI log bounded after finite soak",
+    "save 10_finite_soak"
+  ],
+  "snapshots": [
+    {
+      "path": "01_no_device.png",
+      "sha256": "29bedb92a1f0a8042044e28df99937dfbbd3af5e337197fdce26d309aefcae69"
+    },
+    {
+      "path": "02_udp_settings_no_connection.png",
+      "sha256": "761cb202e4fb23aba9e8993dbe185ead05e54c8de4194efe80e549f2683e172c"
+    },
+    {
+      "path": "03_replay_curves.png",
+      "sha256": "b175cc9e60edc1d02c87ee2bac17f0a044c045d41c503a189a6c4d410918fe37"
+    },
+    {
+      "path": "04_paused.png",
+      "sha256": "770767e5627359607bf531a273970ee3c43214cc1f759718f19bc20dd8f00de0"
+    },
+    {
+      "path": "05_sensor_fault.png",
+      "sha256": "ed1d40a887c12e5bf2440b22b80f9ddb4daee160ac21f5849ee68735db9975fa"
+    },
+    {
+      "path": "06_raw_filtered_recovered.png",
+      "sha256": "f1d32a60592aa57c2b5e79e844ae6bf83c44751b7654c3e4e3aad836ce74ebb2"
+    },
+    {
+      "path": "07_interruption.png",
+      "sha256": "4603aafbee4fb9b1b34637c0c64a7282a020a10f9406b43e3598e45b6a0fa5eb"
+    },
+    {
+      "path": "08_3d_or_explicit_degradation.png",
+      "sha256": "bbdb1292ebc4e491006c44c794c4fdfc169505716552d3a70c500abadb093059"
+    },
+    {
+      "path": "09_finished.png",
+      "sha256": "dfd1a2529673029369b20e1f757a49dc236e7c64a5c1d02a03b3ed60d54eef06"
+    },
+    {
+      "path": "10_finite_soak.png",
+      "sha256": "0f1c3642aff961f6c76635412605c3e2c3e4a35fe99b999c16fbeef147830517"
+    }
+  ],
+  "memory": [
+    {
+      "samples": 500,
+      "wall_seconds": 24.094,
+      "python_current_bytes": 416410,
+      "python_peak_bytes": 442447,
+      "rss_bytes": 319782912,
+      "plot_points": 500,
+      "comparison_points": 500,
+      "text_blocks": 542,
+      "parser_chars": 0
+    },
+    {
+      "samples": 1000,
+      "wall_seconds": 52.066,
+      "python_current_bytes": 601176,
+      "python_peak_bytes": 657695,
+      "rss_bytes": 321859584,
+      "plot_points": 1000,
+      "comparison_points": 1000,
+      "text_blocks": 1042,
+      "parser_chars": 0
+    },
+    {
+      "samples": 1500,
+      "wall_seconds": 80.819,
+      "python_current_bytes": 616030,
+      "python_peak_bytes": 676238,
+      "rss_bytes": 322695168,
+      "plot_points": 1000,
+      "comparison_points": 1000,
+      "text_blocks": 1542,
+      "parser_chars": 0
+    },
+    {
+      "samples": 2000,
+      "wall_seconds": 107.724,
+      "python_current_bytes": 628555,
+      "python_peak_bytes": 688749,
+      "rss_bytes": 53514240,
+      "plot_points": 1000,
+      "comparison_points": 1000,
+      "text_blocks": 2000,
+      "parser_chars": 0
+    },
+    {
+      "samples": 2500,
+      "wall_seconds": 137.546,
+      "python_current_bytes": 641005,
+      "python_peak_bytes": 701431,
+      "rss_bytes": 54190080,
+      "plot_points": 1000,
+      "comparison_points": 1000,
+      "text_blocks": 2000,
+      "parser_chars": 0
+    },
+    {
+      "samples": 3000,
+      "wall_seconds": 170.202,
+      "python_current_bytes": 654199,
+      "python_peak_bytes": 714510,
+      "rss_bytes": 54304768,
+      "plot_points": 1000,
+      "comparison_points": 1000,
+      "text_blocks": 2000,
+      "parser_chars": 0
+    },
+    {
+      "samples": 3500,
+      "wall_seconds": 200.226,
+      "python_current_bytes": 667218,
+      "python_peak_bytes": 727519,
+      "rss_bytes": 54407168,
+      "plot_points": 1000,
+      "comparison_points": 1000,
+      "text_blocks": 2000,
+      "parser_chars": 0
+    },
+    {
+      "samples": 4000,
+      "wall_seconds": 229.993,
+      "python_current_bytes": 680160,
+      "python_peak_bytes": 740454,
+      "rss_bytes": 54448128,
+      "plot_points": 1000,
+      "comparison_points": 1000,
+      "text_blocks": 2000,
+      "parser_chars": 0
+    },
+    {
+      "samples": 4500,
+      "wall_seconds": 260.163,
+      "python_current_bytes": 693074,
+      "python_peak_bytes": 753229,
+      "rss_bytes": 54841344,
+      "plot_points": 1000,
+      "comparison_points": 1000,
+      "text_blocks": 2000,
+      "parser_chars": 0
+    }
+  ],
+  "boundary": {
+    "synthetic_only": true,
+    "hardware_verified": false,
+    "source_authenticated": false,
+    "hardware_connections": 0,
+    "radio_transmissions": 0,
+    "control_sends": 0
+  },
+  "opengl": {
+    "status": "NOT_VERIFIED",
+    "context_valid": false,
+    "successful_paint": false,
+    "ui_status": "3D DEGRADED / NOT_VERIFIED: no successful frame yet; dashboard and curves remain usable",
+    "model": "existing arbitrary-unit box, NOT engineering CAD; yaw unavailable"
+  },
+  "demo_log": {
+    "path": "telemetry\\telemetry_20261025_141250_510770.csv",
+    "sha256": "64c9a00889ae3f5b202045384a2d580dae7b190a3be148e1e32c4104d5c69c9a"
+  },
+  "soak": {
+    "samples": 4500,
+    "synthetic_sample_spacing_ms": 20,
+    "wall_seconds": 260.164,
+    "input_sha256": "2bf249d433533830a4039f06fb12f30ca96638cfa738faf329e92d021fb880ea",
+    "long_duration_claim": "PARTIALLY_VERIFIED: finite host observation, not multi-hour endurance or leak-freedom proof"
+  },
+  "qt_exit_code": 0,
+  "source_git_sha": "16a37c3be0528f51cf152419e6907763a95b4ee4",
+  "source_git_status_at_start": [
+    "?? engineering/offline-evidence/system_v1/"
+  ],
+  "source_hashes": {
+    "ground_station\\core\\__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ground_station\\core\\command_link.py": "1e34fd4dbbe419c83f1dfdc29cf64d8b378f53d9be5d780e80845b3c48d50454",
+    "ground_station\\core\\data_logger.py": "a3c44ea94397d7a3febc02893c9da015c25a773683f980d998e2543fad31dce6",
+    "ground_station\\core\\offline_replay.py": "61c5636154aab97f5c81785493aa7c67f63d61048d8ea4b92c719b9a1d6f034c",
+    "ground_station\\core\\serial_reader.py": "f52dc5bcbf5d4e7c069c11dcbc054763fadf62575dfdb61fabc82aeb20263162",
+    "ground_station\\core\\telemetry_parser.py": "16cbdb56925fab4708439ec058d9e11f23580579e6275a58b9dae5b0ecc0b1db",
+    "ground_station\\core\\udp_reader.py": "d709a498311e90d377dc4463a25948d400aeacd296205a48c413f13fee5cd785",
+    "ground_station\\main.py": "4577876ffd17ef319d68273c6d3a7d4f51d491e3c1676ee33da50d4453b13317",
+    "ground_station\\tests\\__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ground_station\\tests\\conftest.py": "7b34f9cc00682dd196ed405a3e1823eb58724c3d7adf7463bcdc53a2a7deccc1",
+    "ground_station\\tests\\test_command_link.py": "a779c06bc0a84b070198053c476baeeaa9cd36f7e4884e423f2bc514b693b781",
+    "ground_station\\tests\\test_data_logger.py": "b2ca16cd4e0cab5d42f856ae367ff8e0e861d8db875ebc4002525cca5a809c2b",
+    "ground_station\\tests\\test_main_window_command_status.py": "45ace72bb044fd8e07b20857c3b9745d5afacecbc16722c98fa55b6a331830d6",
+    "ground_station\\tests\\test_offline_replay.py": "d1f2d12ead8d1ae2d090d94d8b9d4906957202e791e22de63e6e046dfab4f8a5",
+    "ground_station\\tests\\test_parser.py": "5be6c88915670c76a883492f6dae67c4b29708454c631fa188a92b58a00a360b",
+    "ground_station\\tests\\test_phase5_7.py": "28c2640d4dca5fc404cb496680d15175416e5b002348e70b3f42e0fd7fff0d2d",
+    "ground_station\\tests\\test_sensor_validity_ui.py": "dfecbf345ff46bf580de9d7de6322a1d7f42c56ea15487389062f636900823b0",
+    "ground_station\\tests\\test_telemetry_parser.py": "5ae70e6e8d9303a014cd7d1198e02742833aa46cfa1cd7a1c74d3e89ae8d5408",
+    "ground_station\\tests\\test_udp_lifecycle.py": "ac0634a0b7c6abd71b0e0d9489da052044e4fae3c8e8c7931e77ddc345753487",
+    "ground_station\\tests\\test_view3d_render_status.py": "2dfcfebf43ed6a472c3378190f39a1fd93b343b68f23b58842a5503d43a0e7ed",
+    "ground_station\\tests\\test_wifi_link_contract.py": "1c552f7a991e78a83f12b83aff969d3a892125b7171b10918131206b2debaea7",
+    "ground_station\\ui\\command_panel.py": "abc4ae8375628b29e7a2fd26714d69dcee12da1a1eba63cad0f69ec9931348be",
+    "ground_station\\ui\\comparison_plot.py": "20d2d19711ba2e9449f68228015d024c23963ff8102a2a463e3dcd35309acc90",
+    "ground_station\\ui\\dashboard.py": "e34e69c8f3c07be694cc859013200e93a64693443d611f9edccf60ac0be0ac5a",
+    "ground_station\\ui\\main_window.py": "970178a930d33d90432b8b89c736da178c404e8516113c50752c346566e309c3",
+    "ground_station\\ui\\plot_widget.py": "01600e91192bce9c153dd280e6ec9da1b2b0b132cb18feea0a026716c4ac7976",
+    "ground_station\\ui\\view3d_widget.py": "b16f69a19029a842859a4ecea1fce967b56b12725dfa3f87dcc6649d9090c61b",
+    "scripts/system_v1_runtime.py": "50c181df8871b46dc88bdce62de42c458d8a2895e435fed55e2a404b3b544458"
+  },
+  "fixture_sha256": "2bbf67f3b9ffb2b4fd5fedabc21dabb25c59cd53c791d1d0ef567812a309560f",
+  "environment": {
+    "python": "3.13.1 (tags/v3.13.1:0671451, Dec  3 2024, 19:06:28) [MSC v.1942 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "qt_platform": "desktop-default",
+    "dependencies": {
+      "PySide6": "6.10.2",
+      "shiboken6": "6.10.2",
+      "pyqtgraph": "0.14.0",
+      "numpy": "2.4.2",
+      "pyserial": "3.5",
+      "PyOpenGL": "3.1.10"
+    }
+  },
+  "command": "D:\\AI_rocket\\.venv\\Scripts\\python.exe scripts/system_v1_runtime.py --output engineering/offline-evidence/system_v1/runtime_v2 --soak-samples 4500",
+  "result_sha256": "11583aae43a3620873f2ce446e784640377ed8f61540c5927af2049429197275"
+}

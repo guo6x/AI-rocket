@@ -23,11 +23,15 @@ class UdpReader(QThread):
 
     def run(self):
         self.is_running = True
+        udp_socket = None
         try:
-            self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            self.sock.bind((self.host, self.port))
-            self.sock.settimeout(1.0)  # 1秒超时，方便检测 stop 信号
+            udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            udp_socket.bind((self.host, self.port))
+            udp_socket.settimeout(1.0)  # 1秒超时，方便检测 stop 信号
+            # Do not publish a sendable socket before bind completes: an early
+            # sendto() would autobind an ephemeral port and make bind() fail.
+            self.sock = udp_socket
             self.link_state_changed.emit("UDP LISTENING")
 
             while self.is_running:
@@ -49,9 +53,10 @@ class UdpReader(QThread):
             self.error_occurred.emit(f"UDP bind error on {self.host}:{self.port}: {e}")
         finally:
             self.is_running = False
+            self.sock = None
             self.link_state_changed.emit("DISCONNECTED")
-            if self.sock:
-                self.sock.close()
+            if udp_socket:
+                udp_socket.close()
 
     @staticmethod
     def validate_target(target_addr):

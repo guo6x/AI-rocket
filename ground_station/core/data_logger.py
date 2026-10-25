@@ -7,14 +7,15 @@ class DataLogger:
         self.log_dir = log_dir
         self.current_log_file = None
         self.file_handle = None
-        
+
         # 确保日志目录存在
         os.makedirs(self.log_dir, exist_ok=True)
 
     def start_logging(self):
-        timestamp = time.strftime("%Y%m%d_%H%M%S")
+        self.stop_logging()
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
         self.current_log_file = os.path.join(self.log_dir, f"telemetry_{timestamp}.csv")
-        self.file_handle = open(self.current_log_file, "a", encoding="utf-8")
+        self.file_handle = open(self.current_log_file, "x", encoding="utf-8")
         # Optional: Write CSV header if we decide on a fixed format
         # self.file_handle.write("timestamp,source_type,data...\n")
 
@@ -29,7 +30,7 @@ class DataLogger:
 
         try:
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
-            
+
             if isinstance(data, dict):
                 # If data is a dictionary, log it as a comma-separated line
                 # We prioritize some common fields but allow any data
@@ -40,7 +41,7 @@ class DataLogger:
             else:
                 # Fallback for strings or other types
                 self.file_handle.write(f"{timestamp},RAW,{data}\n")
-                
+
             self.file_handle.flush()
         except Exception as e:
             # Graceful failure: don't crash the ground station if logging fails
