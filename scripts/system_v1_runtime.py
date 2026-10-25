@@ -21,6 +21,8 @@ import time
 import tracemalloc
 from unittest.mock import patch
 
+import numpy as np
+
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "ground_station"))
@@ -66,6 +68,27 @@ def soak_finished(*, target_seconds, elapsed_seconds, sample_count, sample_targe
     """Time mode is based on actual elapsed wall time; sample mode is legacy."""
     return (elapsed_seconds >= target_seconds if target_seconds > 0
             else sample_count >= sample_target)
+
+
+def gl_pixel_evidence(images):
+    """Reject blank or unchanged framebuffer pairs; never qualify hardware."""
+    from PySide6.QtGui import QImage
+    if len(images) != 2 or any(image.isNull() for image in images):
+        return {"distinct_nonempty_frames": False}
+    arrays, blue_counts = [], []
+    for image in images:
+        rgba = image.convertToFormat(QImage.Format.Format_RGBA8888)
+        pixels = np.frombuffer(rgba.constBits(), np.uint8).reshape(
+            rgba.height(), rgba.bytesPerLine() // 4, 4)[:, :rgba.width()].copy()
+        arrays.append(pixels)
+        rgb = pixels[:, :, :3].astype(int)
+        blue_counts.append(int(((rgb[:, :, 2] > rgb[:, :, 0] + 45)
+                                & (rgb[:, :, 2] > rgb[:, :, 1] + 20)).sum()))
+    # Alpha-only changes are not evidence of a changed visible pose.
+    changed = (int(np.any(arrays[0][:, :, :3] != arrays[1][:, :, :3], axis=2).sum())
+               if arrays[0].shape == arrays[1].shape else 0)
+    return {"distinct_nonempty_frames": changed > 50 and min(blue_counts) > 50,
+            "changed_pixels": changed, "blue_pixels_per_pose": blue_counts}
 
 
 class RuntimeAcceptance:
@@ -166,22 +189,37 @@ class RuntimeAcceptance:
                 window.poll_link_and_command_state()
                 gl_view = getattr(window.view3d_panel, "gl_view", None)
                 valid = gl_view is not None and gl_view.isValid() and gl_view.render_ok and not gl_view.render_error
-                self.result["opengl"] = {"status": "PASS" if valid else "NOT_VERIFIED",
+                self.result["opengl"] = {"status": "NOT_VERIFIED",
                                          "context_valid": gl_view is not None and gl_view.isValid(),
                                          "successful_paint": gl_view is not None and gl_view.render_ok,
                                          "ui_status": window.view3d_status_label.text(),
                                          "model": "existing arbitrary-unit box, NOT engineering CAD; yaw unavailable"}
                 if valid:
                     try:
-                        framebuffer = gl_view.grabFramebuffer()
-                        if gl_view.render_error or framebuffer.isNull():
-                            raise RuntimeError(gl_view.render_error or "empty GL framebuffer")
-                        path = self.output / "08_gl_framebuffer.png"
-                        self.check(framebuffer.save(str(path)), "save actual GL framebuffer")
-                        self.result["snapshots"].append({"path": path.name, "sha256": digest(path)})
-                        self.result["opengl"]["size"] = [framebuffer.width(), framebuffer.height()]
+                        frames = []
+                        poses = [(0, 0, 0), (32, -24, 0)]
+                        for index, pose in enumerate(poses):
+                            window.view3d_panel.update_attitude(*pose)
+                            framebuffer = gl_view.grabFramebuffer()
+                            if gl_view.render_error or framebuffer.isNull():
+                                raise RuntimeError(gl_view.render_error or "empty GL framebuffer")
+                            path = self.output / f"08_gl_framebuffer_pose_{index}.png"
+                            self.check(framebuffer.save(str(path)), "save actual GL framebuffer " + str(index))
+                            self.result["snapshots"].append({"path": path.name, "sha256": digest(path)})
+                            frames.append(framebuffer)
+                        pixels = gl_pixel_evidence(frames)
+                        self.result["opengl"].update(pixels, synthetic_poses_deg=poses)
+                        if not pixels["distinct_nonempty_frames"]:
+                            raise RuntimeError("blank or unchanged GL framebuffer pair; visible 3D NOT_VERIFIED")
+                        # This smoke proves changed pixels, not correct axes or
+                        # independent visible-geometry acceptance. The dedicated
+                        # GL probe + screenshot review supplies that evidence.
+                        self.result["opengl"].update(status="PIXEL_CANDIDATE_REQUIRES_REVIEW",
+                            renderer_backend=self.app.property("opengl_backend"))
+                        valid = True
                     except Exception as error:
-                        window.on_3d_failed(str(error))
+                        valid = False
+                        window.view3d_panel.on_render_failure(str(error))
                         self.result["opengl"].update(status="NOT_VERIFIED", error=repr(error))
                 self.result["opengl"]["ui_status"] = window.view3d_status_label.text()
                 fallback = getattr(window.view3d_panel, "fallback", None)
@@ -280,7 +318,7 @@ class RuntimeAcceptance:
                                 (last["rss_bytes"] - first["rss_bytes"]) / seconds * 3600
                             )
                 self.screenshot("10_finite_soak")
-                self.result["status"] = "PASS" if self.result["opengl"]["status"] == "PASS" else "PARTIALLY_VERIFIED"
+                self.result["status"] = "PARTIALLY_VERIFIED"
                 self.finish()
 
     def finish(self):

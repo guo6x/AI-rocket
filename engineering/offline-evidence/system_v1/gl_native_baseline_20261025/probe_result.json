@@ -1,0 +1,216 @@
+{
+  "status": "NOT_VERIFIED",
+  "poses": [
+    {
+      "pose_roll_pitch_yaw_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "window": "window_pose_0.png",
+      "window_sha256": "0787fa692011864a031ba571eeb4778bd56ccf943978e123a832956d5c55f007",
+      "ui_status": "3D DEGRADED / NOT_VERIFIED: awaiting visible frame; 2D fallback available",
+      "context_valid": false,
+      "successful_paint": false,
+      "render_error": null,
+      "visible": true,
+      "actual_format": {
+        "version": [
+          2,
+          0
+        ],
+        "profile": "NoProfile",
+        "renderable_type": "OpenGL",
+        "options": 0,
+        "depth_bits": 24,
+        "samples": 0
+      },
+      "is_gles": false
+    },
+    {
+      "pose_roll_pitch_yaw_deg": [
+        32.0,
+        -24.0,
+        0.0
+      ],
+      "window": "window_pose_1.png",
+      "window_sha256": "94ab6c15ece1a47737a1dc9ccdf09e0c24360e672fe22133a5342dcadab60cfd",
+      "ui_status": "3D DEGRADED / NOT_VERIFIED: no successful OpenGL frame after 1.5 seconds; 2D fallback active (not CAD)",
+      "context_valid": false,
+      "successful_paint": false,
+      "render_error": "no successful OpenGL frame after 1.5 seconds",
+      "visible": false,
+      "actual_format": {
+        "version": [
+          2,
+          0
+        ],
+        "profile": "NoProfile",
+        "renderable_type": "OpenGL",
+        "options": 0,
+        "depth_bits": 24,
+        "samples": 0
+      },
+      "is_gles": false
+    }
+  ],
+  "qt_messages": [
+    {
+      "type": "QtWarningMsg",
+      "message": "Failed to make context current."
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "Failed to make context current."
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "Failed to make context current."
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "QWindowsGLContext::makeCurrent: wglMakeCurrent() failed (句柄无效。)"
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "QRhiGles2: Failed to make context current. Expect bad things to happen."
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "Failed to create QRhi for QBackingStoreRhiSupport"
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "Failed to make context current."
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "QWindowsGLContext::makeCurrent: wglMakeCurrent() failed (句柄无效。)"
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "QOpenGLWidget: Failed to make context current"
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "Failed to make context current."
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "QWindowsGLContext::makeCurrent: wglMakeCurrent() failed (句柄无效。)"
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "QOpenGLWidget: Failed to make context current"
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "Failed to make context current."
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "QWindowsGLContext::makeCurrent: wglMakeCurrent() failed (句柄无效。)"
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "QOpenGLWidget: Failed to make context current"
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "Failed to make context current."
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "QWindowsGLContext::makeCurrent: wglMakeCurrent() failed (句柄无效。)"
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "QOpenGLWidget: Failed to make context current"
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "Failed to make context current."
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "QWindowsGLContext::makeCurrent: wglMakeCurrent() failed (句柄无效。)"
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "QOpenGLWidget: Failed to make context current"
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "Failed to make context current."
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "QWindowsGLContext::makeCurrent: wglMakeCurrent() failed (句柄无效。)"
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "QOpenGLWidget: Failed to make context current"
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "Failed to make context current."
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "QWindowsGLContext::makeCurrent: wglMakeCurrent() failed (句柄无效。)"
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "QOpenGLWidget: Failed to make context current"
+    }
+  ],
+  "boundary": {
+    "synthetic_only": true,
+    "hardware_connections": 0,
+    "control_sends": 0,
+    "radio_transmissions": 0,
+    "hardware_verified": false,
+    "source_authenticated": false
+  },
+  "source_git_sha": "26eeca3b6ed61334250c1427f07a4ef286a271c1",
+  "source_git_status": [
+    "?? scripts/ground_station_gl_probe.py"
+  ],
+  "source_sha256": {
+    "ground_station/main.py": "4577876ffd17ef319d68273c6d3a7d4f51d491e3c1676ee33da50d4453b13317",
+    "ground_station/ui/view3d_widget.py": "51b89f6e4634951166cdbf8e3832c7af7be74fe5841b4f4c73ec76e3063d213e",
+    "ground_station/ui/main_window.py": "749475d7092ee169bb8ecf7ff471141fb6b3aa3869d5dfcc677f1f9bff875f5e",
+    "scripts/ground_station_gl_probe.py": "6c6fe4fa033acd70e73d26f1e39196853045f0133bb999bfff23aebd7184c167"
+  },
+  "environment": {
+    "python": "3.13.1 (tags/v3.13.1:0671451, Dec  3 2024, 19:06:28) [MSC v.1942 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "dependencies": {
+      "PySide6": "6.10.2",
+      "shiboken6": "6.10.2",
+      "pyqtgraph": "0.14.0",
+      "PyOpenGL": "3.1.10",
+      "numpy": "2.4.2"
+    },
+    "qt_env": {}
+  },
+  "command": "D:\\AI_rocket\\.venv\\Scripts\\python.exe scripts/ground_station_gl_probe.py --output engineering/offline-evidence/system_v1/gl_native_baseline_20261025",
+  "format_experiment": "production",
+  "requested_format": {
+    "version": [
+      2,
+      1
+    ],
+    "profile": "CompatibilityProfile",
+    "renderable_type": "DefaultRenderableType",
+    "options": 0,
+    "depth_bits": -1,
+    "samples": -1
+  },
+  "qt_platform": "windows",
+  "errors": [
+    "RuntimeError('no valid OpenGL widget context')",
+    "RuntimeError('no successful OpenGL frame after 1.5 seconds')"
+  ],
+  "qt_exit_code": 0
+}

@@ -1,0 +1,188 @@
+{
+  "status": "PIXEL_CANDIDATE_REQUIRES_REVIEW",
+  "poses": [
+    {
+      "pose_roll_pitch_yaw_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "window": "window_pose_0.png",
+      "window_sha256": "b71c815151f4c5ed61a9dfaa15e8db43e3253156eae2053d2f7f0ccdc485e623",
+      "ui_status": "3D: draw callbacks completed; visible pixels NOT_VERIFIED here; simplified box, yaw unavailable (not CAD)",
+      "context_valid": true,
+      "successful_paint": true,
+      "render_error": null,
+      "visible": true,
+      "actual_format": {
+        "version": [
+          3,
+          0
+        ],
+        "profile": "NoProfile",
+        "renderable_type": "OpenGL",
+        "options": 4,
+        "depth_bits": 24,
+        "samples": 0
+      },
+      "is_gles": false,
+      "framebuffer": "gl_pose_0.png",
+      "framebuffer_sha256": "3fb715066536fc4275ed7935c9b5296ffa22845657ee72f69fc2c5e7d049f864",
+      "size": [
+        2007,
+        477
+      ],
+      "blue_pixels": 1860,
+      "nonbackground_pixels": 47071
+    },
+    {
+      "pose_roll_pitch_yaw_deg": [
+        32.0,
+        -24.0,
+        0.0
+      ],
+      "window": "window_pose_1.png",
+      "window_sha256": "77ae37ee96cbecd960c7ac1566367a691cd78e12b8512e32c718f0428dd84be8",
+      "ui_status": "3D: draw callbacks completed; visible pixels NOT_VERIFIED here; simplified box, yaw unavailable (not CAD)",
+      "context_valid": true,
+      "successful_paint": true,
+      "render_error": null,
+      "visible": true,
+      "actual_format": {
+        "version": [
+          3,
+          0
+        ],
+        "profile": "NoProfile",
+        "renderable_type": "OpenGL",
+        "options": 4,
+        "depth_bits": 24,
+        "samples": 0
+      },
+      "is_gles": false,
+      "framebuffer": "gl_pose_1.png",
+      "framebuffer_sha256": "d43e49bca82eb251d2835bb44bba80a0f1cd7be1e66b3f1a48d1de681aa76a84",
+      "size": [
+        2007,
+        477
+      ],
+      "blue_pixels": 2293,
+      "nonbackground_pixels": 47393
+    }
+  ],
+  "qt_messages": [
+    {
+      "type": "QtWarningMsg",
+      "message": "ARB::createContext: wglCreateContextAttribsARB() failed (GL error code: 0x0) for format: QSurfaceFormat(version 2.1, options QFlags<QSurfaceFormat::FormatOption>(), depthBufferSize -1, redBufferSize -1, greenBufferSize -1, blueBufferSize -1, alphaBufferSize -1, stencilBufferSize -1, samples -1, swapBehavior QSurfaceFormat::DefaultSwapBehavior, swapInterval 1, colorSpace QColorSpace(), profile  QSurfaceFormat::CompatibilityProfile), shared context: 0x0 (Unknown error 0xc007001f.)"
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "GDI::createContext: wglCreateContext failed. (系统无法在消息文件中为 %2 找到消息号为 0x%1 的消息文本。)"
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "Unable to create a GL Context."
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "QRhiGles2: Failed to create temporary context"
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "ARB::createContext: wglCreateContextAttribsARB() failed (GL error code: 0x0) for format: QSurfaceFormat(version 2.1, options QFlags<QSurfaceFormat::FormatOption>(), depthBufferSize -1, redBufferSize -1, greenBufferSize -1, blueBufferSize -1, alphaBufferSize -1, stencilBufferSize -1, samples -1, swapBehavior QSurfaceFormat::DefaultSwapBehavior, swapInterval 1, colorSpace QColorSpace(), profile  QSurfaceFormat::CompatibilityProfile), shared context: 0x1 (Unknown error 0xc007001f.)"
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "GDI::createContext: wglCreateContext failed. (系统无法在消息文件中为 %2 找到消息号为 0x%1 的消息文本。)"
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "Unable to create a GL Context."
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "QRhiGles2: Failed to create context"
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "Failed to create QRhi for QBackingStoreRhiSupport"
+    }
+  ],
+  "boundary": {
+    "synthetic_only": true,
+    "hardware_connections": 0,
+    "control_sends": 0,
+    "radio_transmissions": 0,
+    "hardware_verified": false,
+    "source_authenticated": false
+  },
+  "source_git_sha": "26eeca3b6ed61334250c1427f07a4ef286a271c1",
+  "source_git_status": [
+    " M ground_station/tests/test_view3d_render_status.py",
+    " M ground_station/ui/main_window.py",
+    " M ground_station/ui/view3d_widget.py",
+    "?? engineering/offline-evidence/system_v1/gl_native_baseline_20261025/",
+    "?? engineering/offline-evidence/system_v1/gl_native_core33_20261025/",
+    "?? engineering/offline-evidence/system_v1/gl_native_no_rhi_20261025/",
+    "?? engineering/offline-evidence/system_v1/gl_software_20261025/",
+    "?? scripts/ground_station_gl_probe.py"
+  ],
+  "source_sha256": {
+    "ground_station/main.py": "4577876ffd17ef319d68273c6d3a7d4f51d491e3c1676ee33da50d4453b13317",
+    "ground_station/ui/view3d_widget.py": "7aaf7d1d24894ed4ad86a6d4483d018a480e0c069e0d7de60f5dcad295688ef0",
+    "ground_station/ui/main_window.py": "b760c8fd822511dab3023e0f1843f677f5c404bdc64451d76198e8e5e92b135c",
+    "scripts/ground_station_gl_probe.py": "a99b635f25372f24607df87f335fc9fed17aba740c0027eb059c5009558c81dd"
+  },
+  "environment": {
+    "python": "3.13.1 (tags/v3.13.1:0671451, Dec  3 2024, 19:06:28) [MSC v.1942 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "dependencies": {
+      "PySide6": "6.10.2",
+      "shiboken6": "6.10.2",
+      "pyqtgraph": "0.14.0",
+      "PyOpenGL": "3.1.10",
+      "numpy": "2.4.2"
+    },
+    "qt_env": {}
+  },
+  "command": "D:\\AI_rocket\\.venv\\Scripts\\python.exe scripts/ground_station_gl_probe.py --software-dispatch --output engineering/offline-evidence/system_v1/gl_software_matched_20261025",
+  "format_experiment": "production",
+  "dispatcher_override": {
+    "dll": "D:\\AI_rocket\\.venv\\Lib\\site-packages\\PySide6\\opengl32sw.dll",
+    "sha256": "d05c658cfb998ba62b0b09fe1609ba8d05fc068134c65371913d729b3e691944"
+  },
+  "requested_format": {
+    "version": [
+      2,
+      1
+    ],
+    "profile": "CompatibilityProfile",
+    "renderable_type": "DefaultRenderableType",
+    "options": 0,
+    "depth_bits": -1,
+    "samples": -1
+  },
+  "qt_platform": "windows",
+  "screens": [
+    {
+      "name": "\\\\.\\DISPLAY1",
+      "size": [
+        1707,
+        1067
+      ],
+      "device_pixel_ratio": 1.5
+    }
+  ],
+  "current_context_matches_widget": true,
+  "pyopengl_current_context": 2,
+  "pyopengl_dll": "D:\\AI_rocket\\.venv\\Lib\\site-packages\\PySide6\\opengl32sw.dll",
+  "gl_error_before_diagnostic": 0,
+  "gl_strings": {
+    "vendor": "VMware, Inc.",
+    "renderer": "Gallium 0.4 on llvmpipe (LLVM 3.6, 256 bits)",
+    "version": "3.0 Mesa 11.2.2",
+    "glsl": "1.30"
+  },
+  "qt_exit_code": 0,
+  "changed_pixels": 6840
+}

@@ -1,0 +1,146 @@
+{
+  "status": "NOT_VERIFIED",
+  "poses": [
+    {
+      "pose_roll_pitch_yaw_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "window": "window_pose_0.png",
+      "window_sha256": "a6dc28a0a87a32ae36ed368f9644d26d24aaf9aa5dcb7340aa85a02e6b01ff8a",
+      "ui_status": "3D DEGRADED / NOT_VERIFIED: GLError( err=1282, description = b'\\xce\\xde\\xd0\\xa7\\xb2\\xd9\\xd7\\xf7', baseOperation = glClearColor ); 2D fallback active (not CAD)",
+      "context_valid": true,
+      "successful_paint": false,
+      "render_error": "GLError( err=1282, description = b'\\xce\\xde\\xd0\\xa7\\xb2\\xd9\\xd7\\xf7', baseOperation = glClearColor )",
+      "visible": false,
+      "actual_format": {
+        "version": [
+          3,
+          0
+        ],
+        "profile": "NoProfile",
+        "renderable_type": "OpenGL",
+        "options": 4,
+        "depth_bits": 24,
+        "samples": 0
+      },
+      "is_gles": false
+    },
+    {
+      "pose_roll_pitch_yaw_deg": [
+        32.0,
+        -24.0,
+        0.0
+      ],
+      "window": "window_pose_1.png",
+      "window_sha256": "7e7de0a5311a8894e3994079dd5b08ab48d66fcc43a5c50994bcb4e690a5d394",
+      "ui_status": "3D DEGRADED / NOT_VERIFIED: GLError( err=1282, description = b'\\xce\\xde\\xd0\\xa7\\xb2\\xd9\\xd7\\xf7', baseOperation = glClearColor ); 2D fallback active (not CAD)",
+      "context_valid": true,
+      "successful_paint": false,
+      "render_error": "GLError( err=1282, description = b'\\xce\\xde\\xd0\\xa7\\xb2\\xd9\\xd7\\xf7', baseOperation = glClearColor )",
+      "visible": false,
+      "actual_format": {
+        "version": [
+          3,
+          0
+        ],
+        "profile": "NoProfile",
+        "renderable_type": "OpenGL",
+        "options": 4,
+        "depth_bits": 24,
+        "samples": 0
+      },
+      "is_gles": false
+    }
+  ],
+  "qt_messages": [
+    {
+      "type": "QtWarningMsg",
+      "message": "ARB::createContext: wglCreateContextAttribsARB() failed (GL error code: 0x0) for format: QSurfaceFormat(version 2.1, options QFlags<QSurfaceFormat::FormatOption>(), depthBufferSize -1, redBufferSize -1, greenBufferSize -1, blueBufferSize -1, alphaBufferSize -1, stencilBufferSize -1, samples -1, swapBehavior QSurfaceFormat::DefaultSwapBehavior, swapInterval 1, colorSpace QColorSpace(), profile  QSurfaceFormat::CompatibilityProfile), shared context: 0x1 (Unknown error 0xc007001f.)"
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "GDI::createContext: wglCreateContext failed. (系统无法在消息文件中为 %2 找到消息号为 0x%1 的消息文本。)"
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "Unable to create a GL Context."
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "QRhiGles2: Failed to create context"
+    },
+    {
+      "type": "QtWarningMsg",
+      "message": "Failed to create QRhi for QBackingStoreRhiSupport"
+    }
+  ],
+  "boundary": {
+    "synthetic_only": true,
+    "hardware_connections": 0,
+    "control_sends": 0,
+    "radio_transmissions": 0,
+    "hardware_verified": false,
+    "source_authenticated": false
+  },
+  "source_git_sha": "26eeca3b6ed61334250c1427f07a4ef286a271c1",
+  "source_git_status": [
+    " M ground_station/tests/test_view3d_render_status.py",
+    " M ground_station/ui/main_window.py",
+    " M ground_station/ui/view3d_widget.py",
+    "?? engineering/offline-evidence/system_v1/gl_native_baseline_20261025/",
+    "?? engineering/offline-evidence/system_v1/gl_native_core33_20261025/",
+    "?? engineering/offline-evidence/system_v1/gl_native_no_rhi_20261025/",
+    "?? scripts/ground_station_gl_probe.py"
+  ],
+  "source_sha256": {
+    "ground_station/main.py": "4577876ffd17ef319d68273c6d3a7d4f51d491e3c1676ee33da50d4453b13317",
+    "ground_station/ui/view3d_widget.py": "7aaf7d1d24894ed4ad86a6d4483d018a480e0c069e0d7de60f5dcad295688ef0",
+    "ground_station/ui/main_window.py": "b760c8fd822511dab3023e0f1843f677f5c404bdc64451d76198e8e5e92b135c",
+    "scripts/ground_station_gl_probe.py": "03302a07933eca2569d51dbaa862003526365550f2d45d6195bca2e8ff7049a0"
+  },
+  "environment": {
+    "python": "3.13.1 (tags/v3.13.1:0671451, Dec  3 2024, 19:06:28) [MSC v.1942 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "dependencies": {
+      "PySide6": "6.10.2",
+      "shiboken6": "6.10.2",
+      "pyqtgraph": "0.14.0",
+      "PyOpenGL": "3.1.10",
+      "numpy": "2.4.2"
+    },
+    "qt_env": {
+      "QT_OPENGL": "software"
+    }
+  },
+  "command": "D:\\AI_rocket\\.venv\\Scripts\\python.exe scripts/ground_station_gl_probe.py --output engineering/offline-evidence/system_v1/gl_software_20261025",
+  "format_experiment": "production",
+  "requested_format": {
+    "version": [
+      2,
+      1
+    ],
+    "profile": "CompatibilityProfile",
+    "renderable_type": "DefaultRenderableType",
+    "options": 0,
+    "depth_bits": -1,
+    "samples": -1
+  },
+  "qt_platform": "windows",
+  "screens": [
+    {
+      "name": "\\\\.\\DISPLAY1",
+      "size": [
+        1707,
+        1067
+      ],
+      "device_pixel_ratio": 1.5
+    }
+  ],
+  "errors": [
+    "RuntimeError(\"GLError( err=1282, description = b'\\\\xce\\\\xde\\\\xd0\\\\xa7\\\\xb2\\\\xd9\\\\xd7\\\\xf7', baseOperation = glClearColor )\")",
+    "RuntimeError(\"GLError( err=1282, description = b'\\\\xce\\\\xde\\\\xd0\\\\xa7\\\\xb2\\\\xd9\\\\xd7\\\\xf7', baseOperation = glClearColor )\")"
+  ],
+  "qt_exit_code": 0
+}

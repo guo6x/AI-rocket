@@ -1,0 +1,32 @@
+Ground Station Issue #26 targeted regression receipt, 2026-10-25
+Source implementation commit: 71ff3c42377912b71259a5b042bb98f791c40c1f
+Test execution used those test/production bytes; the requirements lower-bound and
+probe Qt-exit gate were finalized before committing and running the real probe.
+
+Command (original environment; no install/clone/worktree):
+$env:QT_QPA_PLATFORM='offscreen'
+.\.venv\Scripts\python.exe -m pytest ground_station/tests/test_opengl_backend.py ground_station/tests/test_view3d_render_status.py scripts/tests/test_system_v1_soak_contract.py -x -vv --tb=short -o faulthandler_timeout=30
+
+Console excerpt, not a byte-for-byte full log:
+platform win32 -- Python 3.13.1, pytest-9.1.1, pluggy-1.6.0
+executable: D:\AI_rocket\.venv\Scripts\python.exe
+collected 29 items
+ground_station/tests/test_opengl_backend.py: 18 passed
+ground_station/tests/test_view3d_render_status.py: 8 passed
+scripts/tests/test_system_v1_soak_contract.py: 3 passed
+======================== 29 passed in 65.69s (0:01:05) ========================
+Actual process exit: 0
+
+Negative evidence preserved:
+- Before the render fix, two actual traversal/initialization negative cases failed.
+- Old 2D test assumed DPR=1; on the real 150% desktop the exact-size assertion
+  failed. Corrected to verify logical size and the corresponding physical size.
+- A prior system-Python aggregate pytest attempt emitted one failure marker and
+  then stopped making progress. No completed failure traceback was available.
+  Its verified process PID57304 was stopped, exit -1; it is NOT a passing suite.
+- A mistaken temporary test-code placement was corrected before the final run.
+  The interrupted aggregate result must not be assumed explained by that alone.
+
+These 29 collected cases are not added to repeated red/green executions to claim
+extra distinct coverage. Windows native-driver qualification is not implied.
+Hosted CI retains the full aggregate log and five unchanged-target builds.
