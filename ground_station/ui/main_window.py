@@ -64,6 +64,7 @@ class MainWindow(QMainWindow):
         self.replay = None
         self._input_epoch = 0
         self._session_receivers = []
+        self._gl_no_frame_since = None
 
         import os
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -192,8 +193,10 @@ class MainWindow(QMainWindow):
                 self.view3d_panel.render_failed.connect(self.on_3d_failed)
             self.tab_widget.addTab(self.view3d_panel, "🛰️ 3D 姿态")
         except Exception as e:
-            self.view3d_status_label.setText(f"3D DEGRADED / NOT_VERIFIED: {e}")
-            self.view3d_panel = None
+            from ui.attitude_fallback import AttitudeFallbackWidget
+            self.view3d_panel = AttitudeFallbackWidget()
+            self.tab_widget.addTab(self.view3d_panel, "2D 姿态 (3D unavailable)")
+            self.view3d_status_label.setText(f"3D DEGRADED / NOT_VERIFIED: {e}; 2D fallback active (not CAD)")
 
         # ========== 4. 日志 + 指令面板 (横向分割) ==========
         bottom_layout = QHBoxLayout()
@@ -644,7 +647,7 @@ class MainWindow(QMainWindow):
         self.command_panel.set_link_state(state)
 
     def on_3d_failed(self, error):
-        self.view3d_status_label.setText(f"3D DEGRADED / NOT_VERIFIED: {error}")
+        self.view3d_status_label.setText(f"3D DEGRADED / NOT_VERIFIED: {error}; 2D fallback active (not CAD)")
 
     def poll_link_and_command_state(self):
         expired = self.command_tracker.expire()
@@ -662,13 +665,27 @@ class MainWindow(QMainWindow):
 
         if self.view3d_panel is not None and self.tab_widget.currentWidget() is self.view3d_panel:
             gl_view = getattr(self.view3d_panel, "gl_view", None)
-            if gl_view is not None and getattr(gl_view, "render_error", None):
+            if gl_view is None:
+                # Constructing pyqtgraph/GL failed; pure-Qt fallback is the tab.
+                self.view3d_status_label.setText("3D DEGRADED / NOT_VERIFIED: 2D fallback active (not CAD)")
+            elif getattr(gl_view, "render_error", None):
                 self.on_3d_failed(gl_view.render_error)
-            elif gl_view is not None and gl_view.isVisible():
+            elif gl_view.isVisible():
                 if gl_view.isValid() and getattr(gl_view, "render_ok", False):
+                    self._gl_no_frame_since = None
                     self.view3d_status_label.setText("3D: frame rendered; simplified attitude box, yaw unavailable (not CAD)")
                 else:
-                    self.view3d_status_label.setText("3D DEGRADED / NOT_VERIFIED: no successful frame yet; dashboard and curves remain usable")
+                    now = time.monotonic()
+                    if self._gl_no_frame_since is None:
+                        self._gl_no_frame_since = now
+                    if now - self._gl_no_frame_since >= 1.5:
+                        reason = "no successful OpenGL frame after 1.5 seconds"
+                        self.view3d_panel.on_render_failure(reason)
+                        self.on_3d_failed(reason)
+                    else:
+                        self.view3d_status_label.setText("3D DEGRADED / NOT_VERIFIED: awaiting visible frame; 2D fallback available")
+        else:
+            self._gl_no_frame_since = None
 
     # ---- 错误处理 ----
     def on_error(self, error_msg):

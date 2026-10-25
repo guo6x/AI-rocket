@@ -2,6 +2,7 @@ import pyqtgraph.opengl as gl
 from pyqtgraph.Qt import QtGui, QtCore
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel
 from PySide6.QtCore import Signal, QTimer
+from ui.attitude_fallback import AttitudeFallbackWidget
 
 
 class CheckedGLViewWidget(gl.GLViewWidget):
@@ -41,6 +42,8 @@ class Rocket3DWidget(QWidget):
 
         # 创建 OpenGL 视图
         self.gl_view = CheckedGLViewWidget()
+        self.fallback = AttitudeFallbackWidget(self)
+        self.fallback.hide()
         self.error_label = QLabel()
         self.error_label.setWordWrap(True)
         self.error_label.hide()
@@ -70,16 +73,24 @@ class Rocket3DWidget(QWidget):
         self.gl_view.addItem(self.rocket)
 
         layout.addWidget(self.gl_view)
+        layout.addWidget(self.fallback)
         layout.addWidget(self.error_label)
 
         self.reset_pose()
 
     def on_render_failure(self, error):
-        self.error_label.setText(f"3D DEGRADED / NOT_VERIFIED — {error}\nDashboard and curves remain available. Simplified model only; not CAD.")
+        if not self.fallback.isHidden():
+            return
+        # Absence of a paint callback on a headless/broken Qt OpenGL backend is
+        # also a failure, not an infinite blank 3D tab.
+        if self.gl_view.render_error is None:
+            self.gl_view.render_error = str(error)
+        self.error_label.setText(f"3D DEGRADED / NOT_VERIFIED — {error}\n2D fallback active; reported roll/pitch only, not CAD or hardware qualification.")
         self.error_label.show()
+        self.fallback.show()
         # Defer GL widget hiding until paintGL has returned.
         QTimer.singleShot(0, self.gl_view, self.gl_view.hide)
-        self.render_failed.emit(error)
+        self.render_failed.emit(str(error))
 
     def reset_pose(self):
         self.update_attitude(0, 0, 0)
@@ -88,6 +99,7 @@ class Rocket3DWidget(QWidget):
         """
         根据 Roll, Pitch, Yaw (以度为单位) 更新 3D 模型的旋转。
         """
+        self.fallback.update_attitude(roll, pitch, yaw)
         transform = QtGui.QMatrix4x4()
 
         # 旋转顺序：航向(Yaw) -> 俯仰(Pitch) -> 横滚(Roll)
