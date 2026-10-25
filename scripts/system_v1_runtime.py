@@ -11,6 +11,7 @@ import argparse
 import hashlib
 import importlib.metadata
 import json
+import math
 import os
 from pathlib import Path
 import platform
@@ -61,9 +62,16 @@ def current_rss():
     return counters.WorkingSetSize
 
 
+def soak_finished(*, target_seconds, elapsed_seconds, sample_count, sample_target):
+    """Time mode is based on actual elapsed wall time; sample mode is legacy."""
+    return (elapsed_seconds >= target_seconds if target_seconds > 0
+            else sample_count >= sample_target)
+
+
 class RuntimeAcceptance:
-    def __init__(self, app, output, soak_samples):
+    def __init__(self, app, output, soak_samples, soak_minutes=0.0):
         self.app, self.output, self.soak_samples = app, output, soak_samples
+        self.soak_target_seconds = soak_minutes * 60.0
         self.window = MainWindow()
         self.window.data_logger = DataLogger(str(output / "telemetry"))
         self.window.resize(1360, 980)
@@ -107,7 +115,9 @@ class RuntimeAcceptance:
 
     def _tick(self):
         window = self.window
-        if time.monotonic() - self.started > max(60, self.soak_samples * 0.1 + 60):
+        if time.monotonic() - self.started > max(
+            60, self.soak_target_seconds + 120 if self.soak_target_seconds else self.soak_samples * 0.1 + 60
+        ):
             raise TimeoutError("runtime acceptance watchdog")
         if self.stage == "BOOT":
             if time.monotonic() - self.started < 0.6:
@@ -152,7 +162,7 @@ class RuntimeAcceptance:
                 if window.view3d_panel is not None:
                     window.tab_widget.setCurrentWidget(window.view3d_panel)
                 self.flags.add("3d_selected")
-            if elapsed >= 8100 and "3d" not in self.flags:
+            if elapsed >= 9700 and "3d" not in self.flags:
                 window.poll_link_and_command_state()
                 gl_view = getattr(window.view3d_panel, "gl_view", None)
                 valid = gl_view is not None and gl_view.isValid() and gl_view.render_ok and not gl_view.render_error
@@ -174,6 +184,31 @@ class RuntimeAcceptance:
                         window.on_3d_failed(str(error))
                         self.result["opengl"].update(status="NOT_VERIFIED", error=repr(error))
                 self.result["opengl"]["ui_status"] = window.view3d_status_label.text()
+                fallback = getattr(window.view3d_panel, "fallback", None)
+                if fallback is None and gl_view is None:
+                    fallback = window.view3d_panel
+                if fallback is not None and fallback.isVisible():
+                    before = (fallback.roll_deg, fallback.pitch_deg)
+                    fallback.update_attitude(0, 0)
+                    self.app.processEvents()
+                    first = fallback.grab().toImage()
+                    fallback.update_attitude(32, -24)
+                    self.app.processEvents()
+                    second = fallback.grab().toImage()
+                    fallback.update_attitude(*before)
+                    self.app.processEvents()
+                    visible_paint = (not first.isNull() and not second.isNull()
+                                     and first.width() > 50 and first != second)
+                    self.result["fallback_2d"] = {
+                        "status": "PASS" if visible_paint else "FAIL",
+                        "distinct_pose_frames": visible_paint,
+                        "label": "2D QT PAINTER ONLY - NOT 3D OR CAD",
+                        "3d_status": "NOT_VERIFIED",
+                    }
+                    self.check(visible_paint, "actual fallback paints distinct synthetic poses")
+                else:
+                    self.result["fallback_2d"] = {"status": "NOT_NEEDED" if valid else "NOT_VERIFIED",
+                                                   "3d_status": "PASS" if valid else "NOT_VERIFIED"}
                 self.screenshot("08_3d_or_explicit_degradation")
                 self.flags.add("3d")
             if replay.state == "FINISHED":
@@ -220,13 +255,33 @@ class RuntimeAcceptance:
                                "text_blocks": window.log_display.document().blockCount(), "parser_chars": len(window.parser.buffer)}
                 self.result["memory"].append(observation)
                 print(json.dumps(observation), flush=True)
-            if self.soak_index >= self.soak_samples:
+            elapsed_soak = time.monotonic() - self.soak_started
+            if soak_finished(target_seconds=self.soak_target_seconds,
+                             elapsed_seconds=elapsed_soak, sample_count=self.soak_index,
+                             sample_target=self.soak_samples):
                 self.check(len(window.plot_panel.history_time) <= 1000 and len(window.comparison_panel.time_q) <= 1000, "plot buffers bounded after finite soak")
                 self.check(window.log_display.document().blockCount() <= 2000, "UI log bounded after finite soak")
-                self.result["soak"] = {"samples": self.soak_index, "synthetic_sample_spacing_ms": 20,
-                                       "wall_seconds": round(time.monotonic() - self.soak_started, 3),
-                                       "input_sha256": self.soak_input_hash.hexdigest(),
-                                       "long_duration_claim": "PARTIALLY_VERIFIED: finite host observation, not multi-hour endurance or leak-freedom proof"}
+                self.result["soak"] = {
+                    "samples": self.soak_index, "synthetic_sample_spacing_ms": 20,
+                    "wall_seconds": round(elapsed_soak, 3),
+                    "requested_wall_seconds": self.soak_target_seconds or None,
+                    "duration_gate": ("OBSERVED_2H" if elapsed_soak >= 7200
+                                      else "SHORT_OBSERVATION"),
+                    "input_sha256": self.soak_input_hash.hexdigest(),
+                    "long_duration_claim": "Measured host duration only, not proof of leak-freedom or physical timing",
+                }
+                readings = self.result["memory"]
+                if len(readings) >= 2:
+                    first, last = readings[0], readings[-1]
+                    seconds = last["wall_seconds"] - first["wall_seconds"]
+                    if seconds > 0:
+                        self.result["soak"]["traced_python_bytes_per_hour"] = round(
+                            (last["python_current_bytes"] - first["python_current_bytes"]) / seconds * 3600
+                        )
+                        if first["rss_bytes"] is not None and last["rss_bytes"] is not None:
+                            self.result["soak"]["rss_bytes_per_hour"] = round(
+                                (last["rss_bytes"] - first["rss_bytes"]) / seconds * 3600
+                            )
                 self.screenshot("10_finite_soak")
                 self.result["status"] = "PASS" if self.result["opengl"]["status"] == "PASS" else "PARTIALLY_VERIFIED"
                 self.finish()
@@ -241,9 +296,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--soak-samples", type=int, default=4500)
+    parser.add_argument("--soak-minutes", type=float, default=0.0,
+                        help="when positive, stop after actual wall-clock minutes instead of a sample count (120 = 2h)")
     args = parser.parse_args()
     if args.soak_samples < 1500:
         parser.error("soak must exceed the existing plot/text buffer ceilings")
+    if not (0 <= args.soak_minutes <= 720) or not math.isfinite(args.soak_minutes):
+        parser.error("soak-minutes must be finite and from 0 to 720")
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)  # preserve historical runs
     source_sha = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
@@ -256,7 +315,7 @@ def main():
     # screenshot. Only external I/O boundaries are replaced with deny-all stubs.
     with patch("serial.Serial", deny_io), patch("socket.socket", deny_io), patch("ui.main_window.get_available_ports", lambda: []):
         app = launcher.create_application(["SYSTEM-V1 runtime acceptance"])
-        acceptance = RuntimeAcceptance(app, output, args.soak_samples)
+        acceptance = RuntimeAcceptance(app, output, args.soak_samples, args.soak_minutes)
         qt_exit = app.exec()
     result = acceptance.result
     result["qt_exit_code"] = qt_exit
