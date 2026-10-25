@@ -10,22 +10,27 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from ui.main_window import MainWindow
 
-def main():
+def create_application(argv=None):
     # 终极修复 PyQtGraph/PyOpenGL 在 PySide6 Windows 下的黑屏/上下文崩溃
     # 强制使用旧版 Desktop OpenGL，关闭可能导致冲突的新版 Rhi 或 GLES2
-    os.environ["QT_OPENGL"] = "desktop"
-    os.environ["QT_QUICK_BACKEND"] = "software"
-    
+    os.environ.setdefault("QT_OPENGL", "desktop")
+    os.environ.setdefault("QT_QUICK_BACKEND", "software")
+
     QCoreApplication.setAttribute(Qt.AA_ShareOpenGLContexts)
-    
+
     # 强制降低 OpenGL 版本要求，提升硬件兼容性 (虚拟机/老显卡/核显)
     fmt = QSurfaceFormat()
     fmt.setVersion(2, 1)
     fmt.setProfile(QSurfaceFormat.CompatibilityProfile)
     QSurfaceFormat.setDefaultFormat(fmt)
-    
-    app = QApplication(sys.argv)
+
+    app = QApplication(sys.argv if argv is None else argv)
     app.setStyle("Fusion") # 现代样式的跨平台基础
+    return app
+
+
+def main():
+    app = create_application()
     window = MainWindow()
     window.show()
     sys.exit(app.exec())

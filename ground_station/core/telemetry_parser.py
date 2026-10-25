@@ -5,8 +5,11 @@ class TelemetryParser:
     Highly robust parser for telemetry data.
     Can extract multiple JSON objects from a messy or fragmented string buffer.
     """
+    MAX_BUFFER_CHARS = 16384
+
     def __init__(self):
         self.buffer = ""
+        self.overlong_buffers_rejected = 0
 
     def parse(self, raw_string):
         """
@@ -16,10 +19,16 @@ class TelemetryParser:
         """
         if not raw_string:
             return []
-            
+
         self.buffer += raw_string
+        if len(self.buffer) > self.MAX_BUFFER_CHARS:
+            # Production JSON is a few hundred characters. Never retain an
+            # unbounded incomplete object across a long receive session.
+            self.buffer = ""
+            self.overlong_buffers_rejected += 1
+            return []
         parsed_objects = []
-        
+
         decoder = json.JSONDecoder()
         pos = 0
         while pos < len(self.buffer):
@@ -29,10 +38,10 @@ class TelemetryParser:
                 # No more possible JSON objects, clear junk from buffer
                 self.buffer = ""
                 break
-            
+
             # Move pos to start_idx for potential re-parsing or skipping
             pos = start_idx
-            
+
             try:
                 # Try to decode from this position
                 # raw_decode reads one JSON object and returns it + end position
@@ -41,7 +50,7 @@ class TelemetryParser:
                 # end_idx_relative is relative to buffer[start_idx:]
                 pos = start_idx + end_idx_relative
                 # Continue searching after this object
-            except json.JSONDecodeError:
+            except (json.JSONDecodeError, ValueError, RecursionError):
                 # Not a valid JSON starting at this '{'
                 # Check if there's another '{' further down
                 next_start = self.buffer.find('{', start_idx + 1)
@@ -53,11 +62,11 @@ class TelemetryParser:
                     # Keep it in buffer and wait for more data.
                     self.buffer = self.buffer[start_idx:]
                     return parsed_objects
-        
+
         # If we finished the loop successfully
         if pos >= len(self.buffer):
             self.buffer = ""
         else:
             self.buffer = self.buffer[pos:]
-            
+
         return parsed_objects
