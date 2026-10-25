@@ -1,0 +1,46 @@
+R2 intake guard closure: captured console excerpts, not a full traceback log
+Date: 2026-10-25 (Asia/Shanghai)
+Work directory: D:\AI_rocket
+Branch: fix/r2-intake-guard-closure-20261025
+Base Git SHA: 60055a86e8e8a49fddb75d8faca1805219d2346b
+Environment: Python 3.13.1; pytest 8.0.0; existing py -3 environment
+Evidence ceiling: TESTED_SOFTWARE only. No device, CAD, measurement or hardware qualification.
+
+RED 1: first 22 specialized cases against unchanged base production source
+Command: py -3 -m pytest scripts/tests/test_r2_intake_guards.py -q
+Observed examples: empty required_gates plus claimed READY returned errors=[];
+UNKNOWN_GATE raised KeyError; malformed documents raised AttributeError/StopIteration;
+load errors escaped; existing errors left gate results evaluated=True.
+Console summary:
+21 failed, 1 passed in 4.23s
+Process exit code: 1
+
+GREEN 1: first minimal guard fix, existing checker and hash-validator regressions
+Command: py -3 -m pytest scripts/tests/test_r2_intake_guards.py scripts/tests/test_r2_physical_baseline_check.py scripts/tests/test_r2_evidence.py -q
+Console summary:
+54 passed in 9.93s
+Process exit code: 0
+
+RED 2: remaining old R2 semantic-schema guards, added before their restoration
+Command: py -3 -m pytest scripts/tests/test_r2_intake_guards.py -k 'measurement_status or observation_claims' -q --tb=short
+Failing inputs: RECORDED/NOT_APPLICABLE without evidence references;
+UNKNOWN_STATUS; INSTALLED/NOT_PART_OF_CURRENT_ARTICLE/OBSERVED without observation references.
+Console summary:
+6 failed, 22 deselected in 2.62s
+Process exit code: 1
+
+FINAL GREEN: all affected R2 checker/evidence tests, sequential single pytest process
+Command: py -3 -m pytest scripts/tests/test_r2_intake_guards.py scripts/tests/test_r2_physical_baseline_check.py scripts/tests/test_r2_evidence.py -q
+Console summary:
+60 passed in 45.07s
+Process exit code: 0
+Distinct cases: 28 specialized guard cases + 9 existing checker cases + 23 existing evidence cases.
+These are separate executions from GREEN 1, not 114 distinct tests.
+
+Final tested file SHA256 values (working-tree bytes):
+9da5e0d062260388431500b5c2fccb2c419b56a3dff4d2fdd5a19827510079fc  scripts/r2_physical_baseline_check.py
+41d41cad556aa6d68309905434b3b75a0a2944da1bcc0d275224455479ea6583  scripts/tests/test_r2_intake_guards.py
+
+No full software gate was rerun by the implementing subagent: root owns independent review and existing GitHub CI.
+Existing main R2 data remains unchanged: 40 measurements; physical blockers 1/19/5/3/10.
+No nonessential JSON/detail CLI, physical evidence, measurements, firmware or control logic was added.
