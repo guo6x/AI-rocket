@@ -198,7 +198,7 @@ E-STOP/RESET/默认回收语义未修改：RESET 不能清除传感器 reboot la
 - `engineering/offline-evidence/system_v1/full_check_16a37c/`：本地完整回归、环境、身份清单和 exit 0 receipt。
 - `engineering/offline-evidence/system_v1/SHA256SUMS.txt`：本报告、能力矩阵、固定输入、证据属性及交付证据逐文件 SHA256（不自包含；路径相对仓库根目录）。
 
-原始 Windows 日志保留 CRLF，PlatformIO 日志保留工具输出的行尾空格；不为格式检查改写已哈希的证据。`.gitattributes` 仅对本次证据目录禁止换行归一化和源码空白告警，生产源码、测试和报告仍接受通常的 `git diff --check`，不放宽测试断言。
+原始 Windows 日志保留 CRLF，PlatformIO 日志保留工具输出的行尾空格；不为格式检查改写已哈希的证据。`.gitattributes` 仅对本次证据目录禁止换行归一化和源码空白告警，并为清单中另外列出的固定输入、报告、矩阵及属性文件固定 LF，避免跨平台 checkout 改变哈希。生产源码、测试和报告仍接受通常的 `git diff --check`，不放宽测试断言。
 
 源码变更范围：PR #24 的 workflow、GS 依赖约束 / Qt 测试生命周期、飞控串口声明；PR #25 的 GS 输入与数据显示边界、回放与边界测试、真实运行/证据包装脚本和文档。ESP、RF 协议、PID/Kalman、command processor、FSM、安全权限、历史模型和 CAD 没有生产逻辑改动。
 

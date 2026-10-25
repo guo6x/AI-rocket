@@ -1,3 +1,9 @@
 # Captured evidence is byte-exact (including original CRLF and tool whitespace).
 # Do not normalize it on checkout or rewrite it to satisfy source formatting.
 engineering/offline-evidence/system_v1/** -text -whitespace
+
+# These LF source/doc inputs are also in the evidence hash manifest.
+.gitattributes text eol=lf
+SYSTEM_V1_ACCEPTANCE_REPORT.md text eol=lf
+docs/SYSTEM_V1_CAPABILITY_MATRIX.md text eol=lf
+ground_station/replay/system_v1.json text eol=lf
