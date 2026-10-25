@@ -1,5 +1,5 @@
 schema_version: 1
-audit_date: "2026-10-24"
+audit_date: "2026-10-26"
 software_baseline_command: "python scripts/check.py"
 hardware_policy: "Hardware-gated checks are reported separately and do not fail the software-only check."
 verification_items:
@@ -186,3 +186,27 @@ verification_items:
     command: "Complete the active records in engineering/as-built/measurement-plan.yaml by required_for dependency."
     evidence: "Initial state: inventory 1 blocker; CAD_START 19; motion verification 5; article integration 10; concept and design-review intakes BLOCKED."
     limitations: "Each BLOCKED state is expected until its real dependencies are evidenced; concept READY would authorize exploration only."
+
+  - id: "system_v1_exact_main_ci_2026_10_25"
+    verification_type: "hosted_software_regression"
+    classification: "TESTED_SOFTWARE"
+    result: "PASS"
+    command: "GitHub Actions run 40201519272: SYSTEM-V1 full software gate (no hardware)"
+    evidence: "Fetched main SHA 10a47d5e1e95b1b1b261e4c2eb7790f0601f713a; 497 test executions / 487 distinct identities (10 repeat executions); all five software-source targets built successfully. https://github.com/guo6x/AI-rocket/actions/runs/40201519272"
+    limitations: "This is exact-main evidence at the stated SHA, not CI for the later freshness-fix branch. No firmware was uploaded and no physical hardware was exercised."
+
+  - id: "system_v1_full_local_gate_2026_10_26"
+    verification_type: "software_system_regression"
+    classification: "TESTED_SOFTWARE"
+    result: "PASS"
+    command: '.venv/Scripts/python.exe -u scripts/check.py'
+    evidence: "Tested source SHA 233b147adc7a20eff1d9a85a7401820331ea2271; exit 0; Ground Station 123, flight native 47, GNC-only native 4, ESP native 3, scripts 211, standalone GNC oracle 5 and dual-period 5 (10 repeated executions), RF 85, research 22; total 505 executions / 495 distinct identities. Five source builds passed. Log SHA-256 d50c7e758ca614061ef1c8e19b64be1f0131962b8012b11f915a2270513c22e0."
+    limitations: "Software tests and source builds only. The standalone oracle/dual-period groups repeat cases within scripts/tests and are not additional distinct test identities."
+
+  - id: "system_v1_ground_station_runtime_2026_10_26"
+    verification_type: "desktop_software_runtime"
+    classification: "TESTED_SOFTWARE"
+    result: "PARTIALLY_VERIFIED"
+    command: '.venv/Scripts/python.exe scripts/system_v1_runtime.py --output engineering/offline-evidence/system_v1/runtime_freshness_20261026 --soak-minutes 0.15'
+    evidence: "Source SHA 233b147adc7a20eff1d9a85a7401820331ea2271; 32 runtime assertions, Qt exit code 0, 136 fixed synthetic samples, short host observation 9.038 s. Reused Ground Station parser, dashboard, curves, and logger; sender-level offline guard rejected command attempts. Two actual bundled-software-OpenGL framebuffer screenshots were visually reviewed and show different synthetic poses; run result SHA-256 72b5388ed20b3ca9a6cac15a413da8533475361d2f15215e57bc5db1e51ac9cf."
+    limitations: "No physical device, radio, or control send was used. Native GPU/WGL remains BLOCKED/NOT_VERIFIED. Receipt time is not sensor sample time or source authentication; queued/replayed valid old frames are not identified by this freshness check. The short observation is not endurance evidence."

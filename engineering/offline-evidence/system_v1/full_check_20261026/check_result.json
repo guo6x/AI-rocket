@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "exit_code": 0,
+  "source_git_sha": "233b147adc7a20eff1d9a85a7401820331ea2271",
+  "command": "D:\\AI_rocket\\.venv\\Scripts\\python.exe -u scripts/check.py",
+  "collection_is_not_execution": true,
+  "repeated_groups": [
+    "scripts/tests/test_gnc_offline_oracle.py",
+    "scripts/tests/test_gnc_dual_period.py"
+  ],
+  "evidence_ceiling": "TESTED_SOFTWARE only; no hardware qualification",
+  "files_sha256": {
+    "environment.json": "bf8ca1eeeb2b6ffdbf1a9c704d4a612d24139658e4a872256ff4d883fa4951c2",
+    "full_check.log": "d50c7e758ca614061ef1c8e19b64be1f0131962b8012b11f915a2270513c22e0",
+    "test_inventory.json": "b3ddb9b0e223d545b644ad7abc12f06f9084c2efeef2a046609486d61ad7c617"
+  }
+}

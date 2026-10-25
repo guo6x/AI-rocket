@@ -2,6 +2,10 @@
 
 This directory is the current engineering-status entry point for Project Ad Astra. It records what the repository proves, what the project owns, what is assigned to a specific experimental article, and what remains unknown. It does not certify a flight vehicle or any physical assembly.
 
+## Latest SYSTEM-V1 software status — 2026-10-26
+
+See the date-bound [SYSTEM-V1 acceptance report](../SYSTEM_V1_ACCEPTANCE_REPORT.md) for the fetched main SHA, exact-main CI, current local full-gate receipt, actual Ground Station replay run, software-OpenGL scope, and unresolved interface/safety/physical gates. Its overall status is `PARTIALLY_VERIFIED`; Issue #23 remains OPEN. The local gate is `TESTED_SOFTWARE`, not hardware qualification. A separate [capability matrix](../docs/SYSTEM_V1_CAPABILITY_MATRIX.md) preserves the earlier fixed-source inventory and supplies the current handoff.
+
 ## Read this first
 
 1. `current-baseline.yaml` — current objective, blockers, authority order, and R2.1 direction.
