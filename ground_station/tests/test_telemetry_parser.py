@@ -1,4 +1,5 @@
 import pytest
+from core.serial_reader import SerialReader
 from core.telemetry_parser import TelemetryParser
 
 def test_basic_parsing():
@@ -51,6 +52,34 @@ def test_empty_and_invalid():
 def test_non_object_json_is_ignored_at_telemetry_boundary():
     parser = TelemetryParser()
     assert parser.parse('[1, 2, 3]"text"true') == []
+
+
+def test_flight_serial_prefix_yields_top_level_telemetry_object():
+    parser = TelemetryParser()
+    result = parser.parse('[FLIGHT] {"time":1000,"alt":12.3}')
+    assert result == [{"time": 1000, "alt": 12.3}]
+
+
+def test_sensor_log_and_startup_banner_do_not_poison_following_telemetry():
+    parser = TelemetryParser()
+    assert parser.parse('[SENSOR] imu_identity=MPU6500') == []
+    assert parser.parse('--- Ad Astra v5: booting ---') == []
+    assert parser.parse('{"time":1001,"alt":12.4}') == [{"time": 1001, "alt": 12.4}]
+
+
+def test_complete_malformed_serial_line_does_not_poison_next_telemetry():
+    parser = TelemetryParser()
+    assert parser.parse('{invalid}') == []
+    assert parser.parse('{"time":1002,"alt":12.5}') == [{"time": 1002, "alt": 12.5}]
+
+
+def test_serial_reader_normalizes_only_known_framing_and_preserves_commands():
+    assert SerialReader.normalize_line('[FLIGHT] {"time":1003}') == '{"time":1003}'
+    assert SerialReader.normalize_line('[SENSOR] imu_identity=MPU6500') is None
+    assert SerialReader.normalize_line('--- Ad Astra boot ---') is None
+    assert SerialReader.normalize_line('{invalid}') is None
+    assert SerialReader.normalize_line('[{"time":1003}]') is None
+    assert SerialReader.normalize_line('ACK arm') == 'ACK arm'
 
 
 def test_top_level_array_objects_are_not_extracted_as_telemetry():

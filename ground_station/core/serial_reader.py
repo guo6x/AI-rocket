@@ -1,8 +1,20 @@
+import json
+
 import serial
 import serial.tools.list_ports
 from PySide6.QtCore import QThread, Signal
 
 class SerialReader(QThread):
+    _LOG_PREFIXES = (
+        "[SENSOR]",
+        "[SERVO]",
+        "[RECOV]",
+        "[ESP]",
+        "---",
+        "===",
+        "Ad Astra",
+    )
+
     data_received = Signal(str)
     error_occurred = Signal(str)
     link_state_changed = Signal(str)
@@ -14,6 +26,38 @@ class SerialReader(QThread):
         self.is_running = False
         self.serial_port = None
 
+    @classmethod
+    def normalize_line(cls, line):
+        """Normalize one complete serial line without scanning inside JSON.
+
+        The flight computer emits human-readable startup/log lines alongside
+        newline-delimited JSON.  Only the explicit ``[FLIGHT]`` envelope is
+        removed; other known logs are dropped.  A complete JSON-looking line
+        must decode to a top-level object before it reaches the GUI parser.
+        Command responses such as ACK/NACK remain ordinary text lines.
+        """
+        text = str(line).strip()
+        if not text:
+            return None
+
+        if text.startswith("[FLIGHT]"):
+            text = text[len("[FLIGHT]"):].lstrip()
+            if not text:
+                return None
+        elif text.startswith(cls._LOG_PREFIXES):
+            return None
+
+        if text[0] in '{["-0123456789tfn':
+            try:
+                value = json.loads(text)
+            except (json.JSONDecodeError, RecursionError):
+                # SerialReader has a complete readline boundary.  Do not
+                # forward a malformed JSON-looking line into a persistent
+                # fragment buffer.
+                return None
+            return text if isinstance(value, dict) else None
+        return text
+
     def run(self):
         self.is_running = True
         try:
@@ -24,9 +68,10 @@ class SerialReader(QThread):
                 line = self.serial_port.readline()
                 if line:
                     try:
-                        decoded_line = line.decode('utf-8', errors='replace').strip()
-                        if decoded_line:
-                            self.data_received.emit(decoded_line)
+                        decoded_line = line.decode('utf-8', errors='replace')
+                        normalized = self.normalize_line(decoded_line)
+                        if normalized is not None:
+                            self.data_received.emit(normalized)
                     except Exception as e:
                         print(f"Decode error: {e}")
         except Exception as e:
