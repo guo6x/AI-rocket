@@ -6,7 +6,7 @@
 
 修复前在未改动的 main SHA `4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3` 上先加入负例并运行 `py -3 -m pytest ground_station/tests/test_telemetry_parser.py -q`：14 项中 11 通过、3 项失败（`[FLIGHT]` 前缀、启动日志污染、完整畸形行污染）。原始记录和 SHA 绑定见 [serial_compat_pre_fix_20261026.json](engineering/offline-evidence/system_v1/serial_compat_pre_fix_20261026.json)，证据文件 SHA-256 为 `70d141b3f593c344bd1f9c0ddd4b47cbb9b40d8d8968f4cda604151d14abea97`，不可变历史标记为 `true`。
 
-根因是飞控同时在串口输出 `[FLIGHT] ` 包装、启动/传感器日志和 JSON，而旧解析器把失败的 `[` 或完整畸形 `{...}` 留在跨行缓冲中。当前修复在明确的 `readline()` 边界移除 `[FLIGHT]`、丢弃已知日志和完整的非对象/畸形 JSON，再将命令响应（ACK/NACK）原样保留；解析器仍只接受顶层 JSON 对象，不扫描数组或字符串内部对象。修复后定向套件为 **15/15 通过**，完整 `ground_station/tests` 为 **132/132 通过**。没有修改 ESP/R3 协议、飞控算法、命令权限、E-STOP、回收阈值或执行器逻辑，也没有进行硬件、烧录、射频或通电操作。
+根因是飞控同时在串口输出 `[FLIGHT] ` 包装、启动/传感器日志和 JSON，而旧解析器把失败的 `[` 或完整畸形 `{...}` 留在跨行缓冲中。当前修复在明确的 `readline()` 边界移除 `[FLIGHT]`、丢弃已知日志和完整的非对象/畸形 JSON，再将命令响应（ACK/NACK）原样保留；解析器仍只接受顶层 JSON 对象，不扫描数组或字符串内部对象。修复后定向套件为 **15/15 通过**，完整 `ground_station/tests` 为 **132/132 通过**。完整单进程 `py -3 scripts/check.py` 在源 SHA `c08118abce47b63058c4b22c339e2c39b080375e` 上退出 0：526 次执行、516 个不同测试身份、10 次重复执行；五个源码构建全部通过。可复现收据见 [serial_compat_post_fix_20261026.json](engineering/offline-evidence/system_v1/serial_compat_20261026/serial_compat_post_fix_20261026.json)，SHA-256 为 `28a13bdc49b054e11fd571b8b6d1d66af6afd624b06e858e5b8a44054cf5c2f0`。没有修改 ESP/R3 协议、飞控算法、命令权限、E-STOP、回收阈值或执行器逻辑，也没有进行硬件、烧录、射频或通电操作。
 
 JSON↔R3 契约状态为 `COMPLETED_OFFLINE_ONLY`：字段/单位/时间与缺失值映射已有离线证据，但生产适配、来源认证、真实采样年龄和真实通信仍未验证。回收判据继续为 `BLOCKED_UNREACHABLE_THRESHOLD`（配置 ±2 g 与严格 `>2.5 g` 条件的冲突），CAD 继续为 `NOT_STARTED / BLOCKED_BY_MEASUREMENT`。
 
