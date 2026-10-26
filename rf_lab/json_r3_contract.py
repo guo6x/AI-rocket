@@ -28,6 +28,7 @@ from rf_lab.telemetry_frame import (
 SCHEMA = "AA-JSON-R3-TELEMETRY"
 SCHEMA_VERSION = 1
 SOURCE_MODES = {"PHYSICAL", "SIMULATION", "OFFLINE_REPLAY"}
+SOURCE_MODE_ALIASES = {"SIMULATION / OFFLINE REPLAY": "OFFLINE_REPLAY"}
 
 # Compact keys keep the application payload below the existing R3.0 160-byte
 # software budget for ordinary flight JSON while the mapping remains explicit
@@ -127,6 +128,9 @@ def _validate_input(record: Mapping[str, Any]) -> dict[str, Any]:
     result["time"] = _nonnegative_int(record["time"], "time")
     result["sensor_valid"] = _flag(record["sensor_valid"], "sensor_valid")
     result["source_mode"] = _text(record["source_mode"], "source_mode")
+    result["source_mode"] = SOURCE_MODE_ALIASES.get(
+        result["source_mode"], result["source_mode"]
+    )
     if result["source_mode"] not in SOURCE_MODES:
         raise ContractError("unsupported_source_mode")
 

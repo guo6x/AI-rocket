@@ -29,6 +29,8 @@ timing_policy:
   wall_clock: "never substituted for a source timestamp"
 source_policy:
   declared_source_mode: ["PHYSICAL", "SIMULATION", "OFFLINE_REPLAY"]
+  accepted_input_aliases:
+    "SIMULATION / OFFLINE REPLAY": "OFFLINE_REPLAY"
   source_identity: "always UNAUTHENTICATED"
   physical_claim: "source_mode=PHYSICAL is a declaration, not proof of a device"
   command_fields: "forbidden; converter has no command or actuator API"

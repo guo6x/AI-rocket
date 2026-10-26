@@ -48,6 +48,15 @@ class JsonR3ContractTests(unittest.TestCase):
         self.assertEqual(result["source_identity"], "UNAUTHENTICATED")
         self.assertFalse(result["flight_control_authority"])
 
+    def test_ground_station_replay_label_is_explicitly_normalized(self):
+        datagram = encode_json_telemetry(
+            valid_sample(source_mode="SIMULATION / OFFLINE REPLAY"),
+            session_id=7,
+            sequence=4,
+        )
+        result = decode_json_telemetry(datagram)
+        self.assertEqual(result["source_mode"], "OFFLINE_REPLAY")
+
     def test_invalid_sensor_frame_has_no_fabricated_zeroes(self):
         source = valid_sample(
             sensor_valid=0,

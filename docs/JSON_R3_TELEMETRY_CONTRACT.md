@@ -44,7 +44,7 @@ optional fields are reported by the decoder and never filled with zeroes.
 | `time` | `t` | sender/emission `millis`, ms | integer, no quantization | required non-negative integer |
 | `sample_time_ms` | `s` | sensor read-start `millis`, ms | integer, no quantization | required when `sensor_valid=1`; may be null for an invalid frame |
 | `sensor_valid` | `ok` | 0/1 health flag | integer flag | required; invalid is not converted to a fake sample |
-| `source_mode` | `m` | `PHYSICAL`, `SIMULATION`, or `OFFLINE_REPLAY` declaration | enum text | required; declaration is not identity |
+| `source_mode` | `m` | `PHYSICAL`, `SIMULATION`, or `OFFLINE_REPLAY` declaration | enum text; Ground Station's `SIMULATION / OFFLINE REPLAY` is normalized to `OFFLINE_REPLAY` | required; declaration is not identity |
 | `pitch_raw`, `pitch_flt` | `p`, `pf` | raw and Kalman-filtered pitch, degrees | `atan2(-ax,sqrt(ay²+az²))`; producer text has 2 decimals | both required for a valid sample |
 | `roll_raw`, `roll_flt` | `r`, `rf` | raw and Kalman-filtered roll, degrees | `atan2(ay,az)`; producer text has 2 decimals | both required for a valid sample |
 | `yaw` | `y` | `gz` gyro rate, degrees/second; not heading | producer text has 2 decimals; axis/mount transform unverified | required for a valid sample |
