@@ -44,6 +44,42 @@ pip install -r ground_station\requirements.txt
 python ground_station\main.py
 ```
 
+### SYSTEM-V1 确定性离线回放
+
+不连接串口、UDP、无线电或飞控时，可直接运行仓库内现有的真实 PySide6
+Ground Station 和固定回放夹具。完整步骤、证据字段和边界见
+[SYSTEM-V1 离线回放运行手册](docs/SYSTEM_V1_OFFLINE_REPLAY_RUNBOOK.md)。
+
+启动窗口后选择 **Offline Replay / 离线回放**，再使用开始、暂停、继续、重新开始
+和停止。夹具 `ground_station/replay/system_v1.json` 的 SHA-256 为
+`2bbf67f3b9ffb2b4fd5fedabc21dabb25c59cd53c791d1d0ef567812a309560f`，包含 18 个
+固定事件：15 个有效样本、2 个传感器故障样本、1 个数据中断以及之后的恢复和回零。
+这些值是显示/解析刺激，不是物理飞行或稳定性试验。
+
+要保存一次可追溯的真实应用运行（输出目录必须是新的，以免覆盖历史证据）：
+
+```powershell
+$run = "engineering/offline-evidence/system_v1/demo_{0}" -f (Get-Date -Format yyyyMMdd_HHmmss)
+$env:QT_QPA_PLATFORM = "offscreen"
+$env:QT_OPENGL = "software"
+.\.venv\Scripts\python.exe -u scripts/system_v1_runtime.py `
+  --output $run --soak-minutes 0.05
+```
+
+运行器复用原解析器、仪表、曲线、日志和 2D/3D 视图，并在发送路径拒绝所有真实
+命令；输出 `runtime_result.json`、截图和带 RAW/DICT 的遥测日志，记录源码/夹具/依赖
+哈希及 `hardware_connections=0`、`radio_transmissions=0`、`control_sends=0`。
+`--soak-minutes 0.05` 只是一段约 3 秒的短观察，不是长期稳定性证明；如需完整软件
+回归，使用单进程 gate：
+
+```powershell
+$check = "engineering/offline-evidence/system_v1/check_{0}" -f (Get-Date -Format yyyyMMdd_HHmmss)
+py -3 -u scripts/system_v1_check.py --output $check
+```
+
+该 gate 最终只给出 `TESTED_SOFTWARE` 证据等级。硬件、真实 RF、来源认证、传感器
+采样年龄、原生 GPU/WGL 和飞行/执行器资格不会因回放或绿色测试而升级。
+
 ### 固件
 
 STM32 与 ESP8266 工程均使用 PlatformIO。ESP8266 编译前，可将

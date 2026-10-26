@@ -12,14 +12,14 @@ current_phase: "SYSTEM-V1 software integration acceptance (R0-R3.2 software gate
 system_v1_current_software_acceptance:
   audit_date: "2026-10-26"
   status: "PARTIALLY_VERIFIED"
-  main_head_after_fetch: "61b5c9a4dc7d4712a3d1fba6f6a3f02ef1da1e87"
-  tested_source_head: "dc5e770cb3b7058884da1914e1280a593c7a153b"
-  tested_source_branch: "fix/system-v1-serial-framing-20261026"
+  main_head_after_fetch: "00c68cd84c485cfcd86103f5dd2f2c8b65b4c294"
+  tested_source_head: "00c68cd84c485cfcd86103f5dd2f2c8b65b4c294"
+  tested_source_branch: "main (current-main revalidation; docs-only descendants of PR #35)"
   github:
     exact_main_ci:
-      run_id: 40273886220
+      run_id: 40276581594
       result: "PASS"
-      tested_sha: "61b5c9a4dc7d4712a3d1fba6f6a3f02ef1da1e87"
+      tested_sha: "00c68cd84c485cfcd86103f5dd2f2c8b65b4c294"
     latest_merged_renderer_pr: 31
     merged_prs_since_previous_snapshot:
       - {number: 32, merge_sha: "782ee25bf51c08d1532c6920ddf0e49a9580b7c7"}
@@ -36,23 +36,23 @@ system_v1_current_software_acceptance:
     result: "PASS"
     exit_code: 0
     command: "py -3 scripts/check.py"
-    source_sha: "c08118abce47b63058c4b22c339e2c39b080375e"
+    source_sha: "00c68cd84c485cfcd86103f5dd2f2c8b65b4c294"
     test_executions: 526
     distinct_test_identities: 516
     repeated_executions: 10
     all_five_source_build_targets: "PASS"
-    evidence_directory: "engineering/offline-evidence/system_v1/serial_compat_20261026"
+    evidence_directory: "engineering/offline-evidence/system_v1/full_check_main_00c68_20261026"
   ground_station_runtime:
     status: "PARTIALLY_VERIFIED"
-    assertions: 32
+    assertions: 31
     qt_exit_code: 0
-    short_observation_seconds: 9.038
+    short_observation_seconds: 3.004
     hardware_connections: 0
     radio_transmissions: 0
     control_sends: 0
-    software_opengl_two_synthetic_poses: "3D_RENDER_PASS; explicit bundled software backend only"
+    software_opengl_two_synthetic_poses: "NOT_VERIFIED in this offscreen run; 2D fallback PASS"
     native_gpu_wgl: "BLOCKED_NOT_VERIFIED"
-    evidence_directory: "engineering/offline-evidence/system_v1/runtime_freshness_20261026"
+    evidence_directory: "engineering/offline-evidence/system_v1/runtime_main_00c68_20261026"
   remaining_boundaries:
     telemetry_freshness: "GUI receipt time of parsed status/sample, not trusted sensor sample age or source identity"
     r3_adapter: "NEEDS_INTEGRATION; binary offline R3 frames and production text JSON are not directly compatible"
@@ -77,6 +77,36 @@ system_v1_current_software_acceptance:
     scope: "SerialReader newline normalization plus defensive TelemetryParser framing; no ESP, R3, flight-control, command, E-STOP, recovery, or threshold changes"
     hardware_operation: "NONE"
     evidence_ceiling: "TESTED_SOFTWARE"
+
+  current_main_revalidation:
+    source_sha: "00c68cd84c485cfcd86103f5dd2f2c8b65b4c294"
+    full_check:
+      command: "py -3 -u scripts/system_v1_check.py --output engineering/offline-evidence/system_v1/full_check_main_00c68_20261026"
+      result: "PASS"
+      exit_code: 0
+      test_executions: 526
+      distinct_test_identities: 516
+      repeated_executions: 10
+      five_source_build_targets: "PASS"
+      evidence_directory: "engineering/offline-evidence/system_v1/full_check_main_00c68_20261026"
+      full_check_log_sha256: "d9c592f26916b1c9c7fabdabe8d8e808a9644c14416294957b35b18cb52a968b"
+      environment_sha256: "fde8500cf2a8fbe570998a13c61d32c9a297a00985e2040e17b972bf57962285"
+      check_result_sha256: "94bc534399506f78cfd94ee42f78a880b1d771d6acaecca414701ec79eeac9e6"
+    ground_station_runtime:
+      command: '.\.venv\Scripts\python.exe -u scripts/system_v1_runtime.py --output engineering/offline-evidence/system_v1/runtime_main_00c68_20261026 --soak-minutes 0.05'
+      environment: "QT_QPA_PLATFORM=offscreen; QT_OPENGL=software; Windows 11 build 26300; Python 3.13.1; PySide6 6.10.2"
+      result: "PARTIALLY_VERIFIED"
+      qt_exit_code: 0
+      assertions: 31
+      observation_seconds: 3.004
+      fixture_sha256: "2bbf67f3b9ffb2b4fd5fedabc21dabb25c59cd53c791d1d0ef567812a309560f"
+      runtime_result_sha256: "a4fcb49b0eba8fb56dedb9f4f55c4d15946781dea146871410ad9dce8b13c060"
+      hardware_connections: 0
+      radio_transmissions: 0
+      control_sends: 0
+      native_gpu_wgl: "BLOCKED_NOT_VERIFIED"
+      fallback_2d: "PASS"
+    evidence_ceiling: "TESTED_SOFTWARE; no hardware, RF, source authentication, sensor-age or flight qualification"
 
   historical_snapshot_before_serial_fix:
     main_head: "10a47d5e1e95b1b1b261e4c2eb7790f0601f713a"

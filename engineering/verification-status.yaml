@@ -210,3 +210,27 @@ verification_items:
     command: '.venv/Scripts/python.exe scripts/system_v1_runtime.py --output engineering/offline-evidence/system_v1/runtime_freshness_20261026 --soak-minutes 0.15'
     evidence: "Source SHA 233b147adc7a20eff1d9a85a7401820331ea2271; 32 runtime assertions, Qt exit code 0, 136 fixed synthetic samples, short host observation 9.038 s. Reused Ground Station parser, dashboard, curves, and logger; sender-level offline guard rejected command attempts. Two actual bundled-software-OpenGL framebuffer screenshots were visually reviewed and show different synthetic poses; run result SHA-256 72b5388ed20b3ca9a6cac15a413da8533475361d2f15215e57bc5db1e51ac9cf."
     limitations: "No physical device, radio, or control send was used. Native GPU/WGL remains BLOCKED/NOT_VERIFIED. Receipt time is not sensor sample time or source authentication; queued/replayed valid old frames are not identified by this freshness check. The short observation is not endurance evidence."
+
+  - id: "system_v1_exact_main_ci_2026_10_26_current"
+    verification_type: "hosted_software_regression"
+    classification: "TESTED_SOFTWARE"
+    result: "PASS"
+    command: "GitHub Actions run 40276581594: SYSTEM-V1 full software gate (no hardware)"
+    evidence: "Current main SHA 00c68cd84c485cfcd86103f5dd2f2c8b65b4c294; 526 test executions / 516 distinct identities (10 repeated executions); Ground Station 132, flight native 47, GNC-only 4, ESP 3, scripts 211, standalone GNC oracle 5 and dual-period 5, RF 97, research 22; all five software-source targets built successfully. https://github.com/guo6x/AI-rocket/actions/runs/40276581594"
+    limitations: "Hosted software and source-build evidence only. No firmware was uploaded, no physical hardware or radio was exercised, and no command/actuator qualification follows from this run."
+
+  - id: "system_v1_full_local_gate_2026_10_26_current_main"
+    verification_type: "software_system_regression"
+    classification: "TESTED_SOFTWARE"
+    result: "PASS"
+    command: 'py -3 -u scripts/system_v1_check.py --output engineering/offline-evidence/system_v1/full_check_main_00c68_20261026'
+    evidence: "Current source SHA 00c68cd84c485cfcd86103f5dd2f2c8b65b4c294; exit 0; 526 executions / 516 distinct identities / 10 repeats; five source builds passed. full_check.log SHA-256 d9c592f26916b1c9c7fabdabe8d8e808a9644c14416294957b35b18cb52a968b; environment SHA-256 fde8500cf2a8fbe570998a13c61d32c9a297a00985e2040e17b972bf57962285; check_result SHA-256 94bc534399506f78cfd94ee42f78a880b1d771d6acaecca414701ec79eeac9e6."
+    limitations: "Software tests and source builds only; the evidence ceiling remains TESTED_SOFTWARE and the recovery/CAD/hardware gates remain separate."
+
+  - id: "system_v1_ground_station_runtime_2026_10_26_current_main"
+    verification_type: "desktop_software_runtime"
+    classification: "TESTED_SOFTWARE"
+    result: "PARTIALLY_VERIFIED"
+    command: '$env:QT_QPA_PLATFORM="offscreen"; $env:QT_OPENGL="software"; .\.venv\Scripts\python.exe -u scripts/system_v1_runtime.py --output engineering/offline-evidence/system_v1/runtime_main_00c68_20261026 --soak-minutes 0.05'
+    evidence: "Current source SHA 00c68cd84c485cfcd86103f5dd2f2c8b65b4c294; 31 runtime assertions, Qt exit 0, 3.004 s short synthetic observation, fixture SHA-256 2bbf67f3b9ffb2b4fd5fedabc21dabb25c59cd53c791d1d0ef567812a309560f, runtime_result SHA-256 a4fcb49b0eba8fb56dedb9f4f55c4d15946781dea146871410ad9dce8b13c060; 2D fallback painted distinct poses."
+    limitations: "This Windows offscreen run records native OpenGL/WGL NOT_VERIFIED and is not a 3D, hardware, RF, sensor-age, command-authority or endurance result. No physical device, radio or control send was used."

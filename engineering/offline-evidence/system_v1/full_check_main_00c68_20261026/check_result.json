@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "exit_code": 0,
+  "source_git_sha": "00c68cd84c485cfcd86103f5dd2f2c8b65b4c294",
+  "command": "D:\\\u6211\u7684\u5f00\u6302\u7cfb\u7edf\\Documents\\EasyShare\\python\\python.exe -u scripts/check.py",
+  "collection_is_not_execution": true,
+  "repeated_groups": [
+    "scripts/tests/test_gnc_offline_oracle.py",
+    "scripts/tests/test_gnc_dual_period.py"
+  ],
+  "evidence_ceiling": "TESTED_SOFTWARE only; no hardware qualification",
+  "files_sha256": {
+    "environment.json": "fde8500cf2a8fbe570998a13c61d32c9a297a00985e2040e17b972bf57962285",
+    "full_check.log": "d9c592f26916b1c9c7fabdabe8d8e808a9644c14416294957b35b18cb52a968b",
+    "test_inventory.json": "abbe194218635b8dd5517a33f57a9a734c82f0e2a39e5a07e0ad24db7e016fde"
+  }
+}
