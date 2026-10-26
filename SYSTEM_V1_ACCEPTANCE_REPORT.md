@@ -2,7 +2,7 @@
 
 ## 2026-10-26 串口兼容性定点修复（当前交付更新）
 
-本次更新基于重新 fetch 后的 `origin/main` `4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3`，并在独立分支 `fix/system-v1-serial-framing-20261026` 的提交 `dc5e770` 上完成。PR #32、#33、#34 已合并；main 的最新软件 CI 是 [run 40265138984](https://github.com/guo6x/AI-rocket/actions/runs/40265138984)，执行 SHA 为 `4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3`，结果成功。Issue #22、#23 仍保持 OPEN。
+本次更新基于重新 fetch 后的 `origin/main` `4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3`，并在独立分支 `fix/system-v1-serial-framing-20261026` 的提交 `dc5e770cb3b7058884da1914e1280a593c7a153b` 上完成。PR #32、#33、#34 已合并；main 的最新软件 CI 是 [run 40265138984](https://github.com/guo6x/AI-rocket/actions/runs/40265138984)，执行 SHA 为 `4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3`，结果成功。Issue #22、#23 仍保持 OPEN。
 
 修复前在未改动的 main SHA `4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3` 上先加入负例并运行 `py -3 -m pytest ground_station/tests/test_telemetry_parser.py -q`：14 项中 11 通过、3 项失败（`[FLIGHT]` 前缀、启动日志污染、完整畸形行污染）。原始记录和 SHA 绑定见 [serial_compat_pre_fix_20261026.json](engineering/offline-evidence/system_v1/serial_compat_pre_fix_20261026.json)，证据文件 SHA-256 为 `70d141b3f593c344bd1f9c0ddd4b47cbb9b40d8d8968f4cda604151d14abea97`，不可变历史标记为 `true`。
 
@@ -12,7 +12,7 @@ JSON↔R3 契约状态为 `COMPLETED_OFFLINE_ONLY`：字段/单位/时间与缺�
 
 > **历史状态快照：2026-10-26（已由上方串口修复更新 supersede）。** 本节保留此前 `10a47d5…` / `233b147…` 的状态与证据，供审计追溯；上方串口兼容性更新才是当前交付状态。后文的原 S0–S3 验收记录冻结在 2026-10-25，同样不得把其中当时的 main/PR/测试/3D 状态当作当前状态。
 
-## 2026-10-26 当前状态
+## 2026-10-26 历史状态快照（superseded）
 
 整体：`PARTIALLY_VERIFIED`。Ground Station 的只读离线回放及软件 OpenGL 两个合成姿态已通过限定范围的软件验收；默认原生 GPU/WGL 仍 `BLOCKED / NOT_VERIFIED`。飞控硬件、实际传感器/执行器、真实射频和 CAD 几何均未验证。
 

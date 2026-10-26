@@ -31,12 +31,13 @@ system_v1_current_software_acceptance:
   local_full_check:
     result: "PASS"
     exit_code: 0
-    command: ".venv/Scripts/python.exe -u scripts/check.py"
-    test_executions: 505
-    distinct_test_identities: 495
+    command: "py -3 scripts/check.py"
+    source_sha: "c08118abce47b63058c4b22c339e2c39b080375e"
+    test_executions: 526
+    distinct_test_identities: 516
     repeated_executions: 10
     all_five_source_build_targets: "PASS"
-    evidence_directory: "engineering/offline-evidence/system_v1/full_check_20261026"
+    evidence_directory: "engineering/offline-evidence/system_v1/serial_compat_20261026"
   ground_station_runtime:
     status: "PARTIALLY_VERIFIED"
     assertions: 32
