@@ -1,6 +1,16 @@
 # AI-rocket SYSTEM-V1 软件系统验收
 
-> **当前状态审计：2026-10-26。** 本节为最新状态，后文的原 S0–S3 验收记录冻结在 2026-10-25，保留为历史记录，不得把其中当时的 main/PR/测试/3D 状态当作当前状态。
+## 2026-10-26 串口兼容性定点修复（当前交付更新）
+
+本次更新基于重新 fetch 后的 `origin/main` `4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3`，并在独立分支 `fix/system-v1-serial-framing-20261026` 的提交 `dc5e770` 上完成。PR #32、#33、#34 已合并；main 的最新软件 CI 是 [run 40265138984](https://github.com/guo6x/AI-rocket/actions/runs/40265138984)，执行 SHA 为 `4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3`，结果成功。Issue #22、#23 仍保持 OPEN。
+
+修复前在未改动的 main SHA `4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3` 上先加入负例并运行 `py -3 -m pytest ground_station/tests/test_telemetry_parser.py -q`：14 项中 11 通过、3 项失败（`[FLIGHT]` 前缀、启动日志污染、完整畸形行污染）。原始记录和 SHA 绑定见 [serial_compat_pre_fix_20261026.json](engineering/offline-evidence/system_v1/serial_compat_pre_fix_20261026.json)，证据文件 SHA-256 为 `70d141b3f593c344bd1f9c0ddd4b47cbb9b40d8d8968f4cda604151d14abea97`，不可变历史标记为 `true`。
+
+根因是飞控同时在串口输出 `[FLIGHT] ` 包装、启动/传感器日志和 JSON，而旧解析器把失败的 `[` 或完整畸形 `{...}` 留在跨行缓冲中。当前修复在明确的 `readline()` 边界移除 `[FLIGHT]`、丢弃已知日志和完整的非对象/畸形 JSON，再将命令响应（ACK/NACK）原样保留；解析器仍只接受顶层 JSON 对象，不扫描数组或字符串内部对象。修复后定向套件为 **15/15 通过**，完整 `ground_station/tests` 为 **132/132 通过**。没有修改 ESP/R3 协议、飞控算法、命令权限、E-STOP、回收阈值或执行器逻辑，也没有进行硬件、烧录、射频或通电操作。
+
+JSON↔R3 契约状态为 `COMPLETED_OFFLINE_ONLY`：字段/单位/时间与缺失值映射已有离线证据，但生产适配、来源认证、真实采样年龄和真实通信仍未验证。回收判据继续为 `BLOCKED_UNREACHABLE_THRESHOLD`（配置 ±2 g 与严格 `>2.5 g` 条件的冲突），CAD 继续为 `NOT_STARTED / BLOCKED_BY_MEASUREMENT`。
+
+> **历史状态快照：2026-10-26（已由上方串口修复更新 supersede）。** 本节保留此前 `10a47d5…` / `233b147…` 的状态与证据，供审计追溯；上方串口兼容性更新才是当前交付状态。后文的原 S0–S3 验收记录冻结在 2026-10-25，同样不得把其中当时的 main/PR/测试/3D 状态当作当前状态。
 
 ## 2026-10-26 当前状态
 
