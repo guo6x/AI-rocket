@@ -12,19 +12,23 @@ current_phase: "SYSTEM-V1 software integration acceptance (R0-R3.2 software gate
 system_v1_current_software_acceptance:
   audit_date: "2026-10-26"
   status: "PARTIALLY_VERIFIED"
-  main_head_after_fetch: "4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3"
+  main_head_after_fetch: "61b5c9a4dc7d4712a3d1fba6f6a3f02ef1da1e87"
   tested_source_head: "dc5e770cb3b7058884da1914e1280a593c7a153b"
   tested_source_branch: "fix/system-v1-serial-framing-20261026"
   github:
     exact_main_ci:
-      run_id: 40265138984
+      run_id: 40273886220
       result: "PASS"
-      tested_sha: "4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3"
+      tested_sha: "61b5c9a4dc7d4712a3d1fba6f6a3f02ef1da1e87"
     latest_merged_renderer_pr: 31
     merged_prs_since_previous_snapshot:
       - {number: 32, merge_sha: "782ee25bf51c08d1532c6920ddf0e49a9580b7c7"}
       - {number: 33, merge_sha: "579936e597d79626a84e2c3cec5a6bbf1ce9c43b"}
       - {number: 34, merge_sha: "4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3"}
+      - {number: 35, merge_sha: "61b5c9a4dc7d4712a3d1fba6f6a3f02ef1da1e87"}
+    pre_serial_fix_main_sha: "4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3"
+    pre_serial_fix_main_ci_run_id: 40265138984
+    serial_fix_pr: 35
     issue_23: "OPEN; owner-directed interface/physical gates remain"
     issue_22: "OPEN; measurement-gated CAD-V1"
     issue_26: "CLOSED; native GPU/WGL diagnosis remains a blocker in Issue #23"
@@ -69,6 +73,7 @@ system_v1_current_software_acceptance:
     post_fix_evidence_sha256: "28a13bdc49b054e11fd571b8b6d1d66af6afd624b06e858e5b8a44054cf5c2f0"
     full_check_source_sha: "c08118abce47b63058c4b22c339e2c39b080375e"
     evidence_artifact_commit: "823f7b2"
+    merge_sha: "61b5c9a4dc7d4712a3d1fba6f6a3f02ef1da1e87"
     scope: "SerialReader newline normalization plus defensive TelemetryParser framing; no ESP, R3, flight-control, command, E-STOP, recovery, or threshold changes"
     hardware_operation: "NONE"
     evidence_ceiling: "TESTED_SOFTWARE"

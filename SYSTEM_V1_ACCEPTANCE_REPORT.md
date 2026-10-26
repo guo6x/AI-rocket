@@ -2,7 +2,7 @@
 
 ## 2026-10-26 串口兼容性定点修复（当前交付更新）
 
-本次更新基于重新 fetch 后的 `origin/main` `4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3`，并在独立分支 `fix/system-v1-serial-framing-20261026` 的提交 `dc5e770cb3b7058884da1914e1280a593c7a153b` 上完成。PR #32、#33、#34 已合并；main 的最新软件 CI 是 [run 40265138984](https://github.com/guo6x/AI-rocket/actions/runs/40265138984)，执行 SHA 为 `4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3`，结果成功。Issue #22、#23 仍保持 OPEN。
+本次更新基于重新 fetch 后的合并前 `origin/main` `4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3`，并在独立分支 `fix/system-v1-serial-framing-20261026` 的提交 `dc5e770cb3b7058884da1914e1280a593c7a153b` 上完成。PR #32、#33、#34、#35 已合并；合并后的 main 为 `61b5c9a4dc7d4712a3d1fba6f6a3f02ef1da1e87`，其软件 CI 为 [run 40273886220](https://github.com/guo6x/AI-rocket/actions/runs/40273886220)，结果成功。Issue #22、#23 仍保持 OPEN。
 
 修复前在未改动的 main SHA `4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3` 上先加入负例并运行 `py -3 -m pytest ground_station/tests/test_telemetry_parser.py -q`：14 项中 11 通过、3 项失败（`[FLIGHT]` 前缀、启动日志污染、完整畸形行污染）。原始记录和 SHA 绑定见 [serial_compat_pre_fix_20261026.json](engineering/offline-evidence/system_v1/serial_compat_pre_fix_20261026.json)，证据文件 SHA-256 为 `70d141b3f593c344bd1f9c0ddd4b47cbb9b40d8d8968f4cda604151d14abea97`，不可变历史标记为 `true`。
 

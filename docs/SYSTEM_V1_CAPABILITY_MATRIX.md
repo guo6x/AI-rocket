@@ -94,8 +94,8 @@ Completed software evidence remains reusable: the production C++/Python GNC orac
 | Evidence field | 2026-10-26 current handoff |
 | --- | --- |
 | Fixed pre-change inventory | `50006f8fd6830a34f16b5e9d2f4e84269c403007` |
-| Current `main` exact SHA after fetch/prune | `4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3` |
-| Latest exact-main hosted CI | `PASS`: [run 40265138984](https://github.com/guo6x/AI-rocket/actions/runs/40265138984), exact `main@4bf30b33…`; five source builds |
+| Current `main` exact SHA after merge/fetch | `61b5c9a4dc7d4712a3d1fba6f6a3f02ef1da1e87` |
+| Latest exact-main hosted CI | `PASS`: [run 40273886220](https://github.com/guo6x/AI-rocket/actions/runs/40273886220), exact `main@61b5c9a…`; five source builds |
 | This serial compatibility fix source | `dc5e770` (branch `fix/system-v1-serial-framing-20261026`; PR pending at this snapshot) |
 | Full local software gate at tested source | `PASS`, exit 0; 505 executions / 495 distinct identities / 10 repeat executions; five source builds; evidence in `full_check_20261026/` |
 | Ground Station actual run | `PARTIALLY_VERIFIED`; 32 runtime assertions, Qt exit 0, no hardware/radio/control sends; evidence in `runtime_freshness_20261026/` |
@@ -104,7 +104,7 @@ Completed software evidence remains reusable: the production C++/Python GNC orac
 | RF driver/link/region gate | `BLOCKED` / `UNKNOWN`; no transmissions authorized |
 | Recovery qualification | `BLOCKED_UNREACHABLE_THRESHOLD` / `NOT_EVALUATED` |
 | Physical TVC stability / free-flight qualification | `UNKNOWN` / not authorized |
-| GitHub lifecycle | PR #32/#33/#34 merged; serial compatibility PR from `dc5e770` pending; Issue #23 and Issue #22 remain OPEN; keep #23 open per owner instruction |
+| GitHub lifecycle | PR #32/#33/#34/#35 merged; Issue #23 and Issue #22 remain OPEN; keep #23 open per owner instruction |
 
 This matrix update adds no new hardware measurement, hardware procedure, manufacturing release, transmitter authorization or operational control authority. Test totals distinguish actual executions from distinct identities and repeated standalone GNC runs.
 
