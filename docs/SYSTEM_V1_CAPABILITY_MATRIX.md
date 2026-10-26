@@ -7,7 +7,7 @@
 **Fixed inventory source:** `50006f8fd6830a34f16b5e9d2f4e84269c403007` (PR #24 source).
 **Purpose:** identify reusable software, missing integration and evidence ceilings before claiming a whole-product loop. This is not a test report, hardware acceptance or release authorization.
 
-> **Current handoff updated 2026-10-26:** the inventory rows below remain a fixed 2026-10-25 pre-change snapshot. Use section 6, [engineering/current-baseline.yaml](../engineering/current-baseline.yaml) and [the current acceptance report](../SYSTEM_V1_ACCEPTANCE_REPORT.md) for the latest main SHA, exact-source tests, serial-framing fix, replay run, limited software-OpenGL result and remaining blockers. Historical inventory statuses are not current-system status claims.
+> **Current handoff updated 2026-10-27:** the inventory rows below remain a fixed 2026-10-25 pre-change snapshot. Use section 6, [engineering/current-baseline.yaml](../engineering/current-baseline.yaml) and [the current acceptance report](../SYSTEM_V1_ACCEPTANCE_REPORT.md) for the latest main SHA, exact-source tests, serial-framing fix, replay run, limited software-OpenGL result and remaining blockers. Historical inventory statuses are not current-system status claims.
 
 ## 1. Baseline and evidence rules
 
@@ -91,11 +91,11 @@ Completed software evidence remains reusable: the production C++/Python GNC orac
 
 ## 6. Current SYSTEM-V1 gate handoff
 
-| Evidence field | 2026-10-26 current handoff |
+| Evidence field | 2026-10-27 post-merge handoff |
 | --- | --- |
 | Fixed pre-change inventory | `50006f8fd6830a34f16b5e9d2f4e84269c403007` |
-| Current `main` exact SHA after merge/fetch | `00c68cd84c485cfcd86103f5dd2f2c8b65b4c294` (docs-only descendants after merge `61b5c9a…`) |
-| Latest exact-main hosted CI | `PASS`: [run 40276581594](https://github.com/guo6x/AI-rocket/actions/runs/40276581594), exact `main@00c68cd…`; five source builds |
+| Current `main` exact SHA after merge/fetch | `9f202c5f279676c02cd6d0f1ef3e4f71e573b647` (PR #36 docs/evidence merge; base `00c68cd…`) |
+| Latest exact-main hosted CI | `PASS`: [run 40355328266](https://github.com/guo6x/AI-rocket/actions/runs/40355328266), exact `main@9f202c5…`; five source builds |
 | This serial compatibility fix source | `dc5e770cb3b7058884da1914e1280a593c7a153b`; merged by PR #35 (`61b5c9a…`); final docs-only status snapshots are recorded in the acceptance report |
 | Full local software gate at tested source | `PASS`, exit 0; 526 executions / 516 distinct identities / 10 repeat executions; five source builds; current-main evidence in `full_check_main_00c68_20261026/` |
 | Ground Station actual run | `PARTIALLY_VERIFIED`; 31 runtime assertions, Qt exit 0, no hardware/radio/control sends; current-main evidence in `runtime_main_00c68_20261026/` |
@@ -104,7 +104,7 @@ Completed software evidence remains reusable: the production C++/Python GNC orac
 | RF driver/link/region gate | `BLOCKED` / `UNKNOWN`; no transmissions authorized |
 | Recovery qualification | `BLOCKED_UNREACHABLE_THRESHOLD` / `NOT_EVALUATED` |
 | Physical TVC stability / free-flight qualification | `UNKNOWN` / not authorized |
-| GitHub lifecycle | PR #32/#33/#34/#35 merged; Issue #23 and Issue #22 remain OPEN; keep #23 open per owner instruction |
+| GitHub lifecycle | PR #32/#33/#34/#35/#36 merged; Issue #23 and Issue #22 remain OPEN; keep #23 open per owner instruction |
 
 This matrix update adds no new hardware measurement, hardware procedure, manufacturing release, transmitter authorization or operational control authority. Test totals distinguish actual executions from distinct identities and repeated standalone GNC runs.
 

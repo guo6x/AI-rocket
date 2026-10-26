@@ -1,7 +1,7 @@
 schema_version: 2
 project: "Project Ad Astra / AI-rocket"
 baseline_name: "SYSTEM-V1 software and R2.1 real-asset evidence baseline"
-audit_date: "2026-10-26"
+audit_date: "2026-10-27"
 baseline_origin_audit_date: "2026-10-23"
 compatibility_input_commit: "e9510e61b6de518b272ea6fdb8433bbab4c501c5"
 branch_base_commit: "f59dc2c5791ee88f3d853112930de55d0c31f4d3"
@@ -10,25 +10,28 @@ prior_r2_merge: "66861c7c9f0d468e81a2e09c7a354ed6058dd20f"
 current_phase: "SYSTEM-V1 software integration acceptance (R0-R3.2 software gate, JSON-R3 offline contract, and serial-framed Ground Station input); physical qualification and CAD remain evidence-gated"
 
 system_v1_current_software_acceptance:
-  audit_date: "2026-10-26"
+  audit_date: "2026-10-27"
   status: "PARTIALLY_VERIFIED"
-  main_head_after_fetch: "00c68cd84c485cfcd86103f5dd2f2c8b65b4c294"
+  main_head_after_fetch: "9f202c5f279676c02cd6d0f1ef3e4f71e573b647"
   tested_source_head: "00c68cd84c485cfcd86103f5dd2f2c8b65b4c294"
-  tested_source_branch: "main (current-main revalidation; docs-only descendants of PR #35)"
+  tested_source_branch: "main (local revalidation at 00c68cd; latest main is docs-only merge 9f202c5)"
   github:
     exact_main_ci:
-      run_id: 40276581594
+      run_id: 40355328266
       result: "PASS"
-      tested_sha: "00c68cd84c485cfcd86103f5dd2f2c8b65b4c294"
+      tested_sha: "9f202c5f279676c02cd6d0f1ef3e4f71e573b647"
     latest_merged_renderer_pr: 31
     merged_prs_since_previous_snapshot:
       - {number: 32, merge_sha: "782ee25bf51c08d1532c6920ddf0e49a9580b7c7"}
       - {number: 33, merge_sha: "579936e597d79626a84e2c3cec5a6bbf1ce9c43b"}
       - {number: 34, merge_sha: "4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3"}
       - {number: 35, merge_sha: "61b5c9a4dc7d4712a3d1fba6f6a3f02ef1da1e87"}
+      - {number: 36, merge_sha: "9f202c5f279676c02cd6d0f1ef3e4f71e573b647"}
     pre_serial_fix_main_sha: "4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3"
     pre_serial_fix_main_ci_run_id: 40265138984
     serial_fix_pr: 35
+    offline_demo_pr: 36
+    offline_demo_merge_sha: "9f202c5f279676c02cd6d0f1ef3e4f71e573b647"
     issue_23: "OPEN; owner-directed interface/physical gates remain"
     issue_22: "OPEN; measurement-gated CAD-V1"
     issue_26: "CLOSED; native GPU/WGL diagnosis remains a blocker in Issue #23"
@@ -125,6 +128,17 @@ post_merge_status_snapshot:
   merge_anchor_sha: "61b5c9a4dc7d4712a3d1fba6f6a3f02ef1da1e87"
   merge_pr: 35
   notes: "The snapshot commit only records post-merge status and does not change production behavior; the merge anchor and this docs-only snapshot both passed the hosted software gate."
+
+latest_main_post_merge_status:
+  captured_at: "2026-10-27"
+  main_sha: "9f202c5f279676c02cd6d0f1ef3e4f71e573b647"
+  merged_pr: 36
+  merge_base_sha: "00c68cd84c485cfcd86103f5dd2f2c8b65b4c294"
+  exact_main_ci:
+    run_id: 40355328266
+    result: "PASS"
+    tested_sha: "9f202c5f279676c02cd6d0f1ef3e4f71e573b647"
+  notes: "PR #36 contains only the deterministic offline replay runbook, current-main evidence and status ledgers; no production control, transport, safety or hardware behavior changed."
 
 current_cad_authority:
   record: "engineering/cad-authority.yaml"

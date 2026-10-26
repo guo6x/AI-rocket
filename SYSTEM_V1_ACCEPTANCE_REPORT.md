@@ -22,6 +22,14 @@ JSON↔R3 契约状态为 `COMPLETED_OFFLINE_ONLY`：字段/单位/时间与缺�
 
 第三方可复现的启动、回放、故障/中断/恢复场景、输出文件和证据边界见 [SYSTEM-V1 离线回放运行手册](docs/SYSTEM_V1_OFFLINE_REPLAY_RUNBOOK.md)。
 
+## 2026-10-27 post-merge 状态
+
+PR #36 已合并，合并提交为 `9f202c5f279676c02cd6d0f1ef3e4f71e573b647`，父提交为 `00c68cd84c485cfcd86103f5dd2f2c8b65b4c294`。合并内容仅为离线回放 runbook、README 入口、当前 main 证据和状态台账；没有生产控制、通信协议、安全状态或硬件行为变化。
+
+合并后的 `main` exact SHA 为 `9f202c5f279676c02cd6d0f1ef3e4f71e573b647`。合并后完整软件 CI 为 [run 40355328266](https://github.com/guo6x/AI-rocket/actions/runs/40355328266)，`SUCCESS`；它复用了同一完整 gate 和五个源码构建。此前 `00c68cd…` 的本地 526 次 gate 与当前 runbook/回放收据仍作为实际软件证据保留，并明确标注为合并前 docs-only 锚点。
+
+Issue #22、Issue #23 均保持 OPEN；回收判据仍为 `BLOCKED_UNREACHABLE_THRESHOLD`，CAD 仍为 `NOT_STARTED / BLOCKED_BY_MEASUREMENT`，原生 GPU/WGL、真实传感器/执行器、ESP/LoRa 通信和飞行资格仍未验证。
+
 > **历史状态快照：2026-10-26（已由上方串口修复更新 supersede）。** 本节保留此前 `10a47d5…` / `233b147…` 的状态与证据，供审计追溯；上方串口兼容性更新才是当前交付状态。后文的原 S0–S3 验收记录冻结在 2026-10-25，同样不得把其中当时的 main/PR/测试/3D 状态当作当前状态。
 
 ## 2026-10-26 历史状态快照（superseded）

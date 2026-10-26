@@ -234,3 +234,11 @@ verification_items:
     command: '$env:QT_QPA_PLATFORM="offscreen"; $env:QT_OPENGL="software"; .\.venv\Scripts\python.exe -u scripts/system_v1_runtime.py --output engineering/offline-evidence/system_v1/runtime_main_00c68_20261026 --soak-minutes 0.05'
     evidence: "Current source SHA 00c68cd84c485cfcd86103f5dd2f2c8b65b4c294; 31 runtime assertions, Qt exit 0, 3.004 s short synthetic observation, fixture SHA-256 2bbf67f3b9ffb2b4fd5fedabc21dabb25c59cd53c791d1d0ef567812a309560f, runtime_result SHA-256 a4fcb49b0eba8fb56dedb9f4f55c4d15946781dea146871410ad9dce8b13c060; 2D fallback painted distinct poses."
     limitations: "This Windows offscreen run records native OpenGL/WGL NOT_VERIFIED and is not a 3D, hardware, RF, sensor-age, command-authority or endurance result. No physical device, radio or control send was used."
+
+  - id: "system_v1_exact_main_ci_2026_10_27_post_merge"
+    verification_type: "hosted_software_regression"
+    classification: "TESTED_SOFTWARE"
+    result: "PASS"
+    command: "GitHub Actions run 40355328266: SYSTEM-V1 full software gate (no hardware)"
+    evidence: "Post-merge main SHA 9f202c5f279676c02cd6d0f1ef3e4f71e573b647; PR #36 merge base 00c68cd84c485cfcd86103f5dd2f2c8b65b4c294; complete gate and five source builds succeeded. https://github.com/guo6x/AI-rocket/actions/runs/40355328266"
+    limitations: "Docs/evidence merge only; this hosted software result does not add hardware, RF, source-authentication, sensor-age, actuator or flight evidence."
