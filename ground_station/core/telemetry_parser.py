@@ -46,7 +46,13 @@ class TelemetryParser:
                 # Try to decode from this position
                 # raw_decode reads one JSON object and returns it + end position
                 obj, end_idx_relative = decoder.raw_decode(self.buffer[start_idx:])
-                parsed_objects.append(obj)
+                # The Ground Station data path consumes telemetry objects and
+                # calls mapping methods on them.  Ignore valid JSON scalars or
+                # arrays at this boundary instead of returning a value that
+                # would later crash the dashboard; malformed JSON remains
+                # handled by the existing buffering logic below.
+                if isinstance(obj, dict):
+                    parsed_objects.append(obj)
                 # end_idx_relative is relative to buffer[start_idx:]
                 pos = start_idx + end_idx_relative
                 # Continue searching after this object

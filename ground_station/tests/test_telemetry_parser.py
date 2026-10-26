@@ -46,3 +46,8 @@ def test_empty_and_invalid():
     assert parser.parse("") == []
     assert parser.parse("invalid") == []
     assert parser.parse("{invalid}") == []
+
+
+def test_non_object_json_is_ignored_at_telemetry_boundary():
+    parser = TelemetryParser()
+    assert parser.parse('[1, 2, 3]"text"true') == []
