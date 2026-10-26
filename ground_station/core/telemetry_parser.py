@@ -32,42 +32,34 @@ class TelemetryParser:
         decoder = json.JSONDecoder()
         pos = 0
         while pos < len(self.buffer):
-            # Find the first occurrence of '{'
-            start_idx = self.buffer.find('{', pos)
-            if start_idx == -1:
-                # No more possible JSON objects, clear junk from buffer
-                self.buffer = ""
-                break
+            char = self.buffer[pos]
+            if char.isspace():
+                pos += 1
+                continue
 
-            # Move pos to start_idx for potential re-parsing or skipping
-            pos = start_idx
+            # Decode complete top-level JSON values, rather than searching for
+            # every '{'.  Searching inside an array or quoted string would
+            # incorrectly promote nested objects to telemetry frames.
+            if char not in '{["-0123456789tfn':
+                pos += 1
+                continue
 
             try:
-                # Try to decode from this position
-                # raw_decode reads one JSON object and returns it + end position
-                obj, end_idx_relative = decoder.raw_decode(self.buffer[start_idx:])
-                # The Ground Station data path consumes telemetry objects and
-                # calls mapping methods on them.  Ignore valid JSON scalars or
-                # arrays at this boundary instead of returning a value that
-                # would later crash the dashboard; malformed JSON remains
-                # handled by the existing buffering logic below.
-                if isinstance(obj, dict):
-                    parsed_objects.append(obj)
-                # end_idx_relative is relative to buffer[start_idx:]
-                pos = start_idx + end_idx_relative
-                # Continue searching after this object
+                obj, end_idx = decoder.raw_decode(self.buffer, pos)
             except (json.JSONDecodeError, ValueError, RecursionError):
-                # Not a valid JSON starting at this '{'
-                # Check if there's another '{' further down
-                next_start = self.buffer.find('{', start_idx + 1)
-                if next_start != -1:
-                    # Yes, there is another brace, so the current start_idx was junk
-                    pos = next_start
-                else:
-                    # No more braces. The current buffer from start_idx might be a partial JSON.
-                    # Keep it in buffer and wait for more data.
-                    self.buffer = self.buffer[start_idx:]
+                # A structural value that cannot be decoded may simply be a
+                # fragmented value.  Preserve it from its true top-level
+                # boundary and wait for the next receive chunk.  In
+                # particular, do not scan into an incomplete array/string.
+                if char in '{["':
+                    self.buffer = self.buffer[pos:]
                     return parsed_objects
+                pos += 1
+                continue
+
+            if isinstance(obj, dict):
+                parsed_objects.append(obj)
+            pos = end_idx
 
         # If we finished the loop successfully
         if pos >= len(self.buffer):

@@ -51,3 +51,27 @@ def test_empty_and_invalid():
 def test_non_object_json_is_ignored_at_telemetry_boundary():
     parser = TelemetryParser()
     assert parser.parse('[1, 2, 3]"text"true') == []
+
+
+def test_top_level_array_objects_are_not_extracted_as_telemetry():
+    parser = TelemetryParser()
+    assert parser.parse('[{"time": 100, "alt": 10.5}]') == []
+
+
+def test_split_top_level_array_is_buffered_as_one_non_telemetry_value():
+    parser = TelemetryParser()
+    assert parser.parse('[{"time":') == []
+    assert parser.parse('100}]') == []
+    assert parser.buffer == ''
+
+
+def test_braces_inside_top_level_string_are_not_object_starts():
+    parser = TelemetryParser()
+    assert parser.parse('"not telemetry {still a string}"') == []
+    assert parser.buffer == ''
+
+
+def test_contiguous_json_objects_still_parse_after_non_object_values():
+    parser = TelemetryParser()
+    data = '[{"ignored": true}]"{also ignored}"{"a": 1}{"b": 2}'
+    assert parser.parse(data) == [{"a": 1}, {"b": 2}]

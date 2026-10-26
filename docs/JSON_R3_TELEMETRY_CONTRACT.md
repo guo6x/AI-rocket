@@ -78,6 +78,12 @@ caller must choose the contract's optional fields deliberately.
 | `source_mode` | producer declaration | sender identity, hardware presence, authorization |
 | `source_identity` / `authentication` | converter policy | always `UNAUTHENTICATED` / `NONE` |
 
+Sequence order and source-sample age are deliberately separate. An increasing
+R3 sequence can carry an older `sample_time_ms`; the offline receiver preserves
+that timestamp and accepts the frame only as `UNAUTHENTICATED`. This is a known
+source-age limitation, not anti-replay protection or a claim of trusted timing.
+It never grants flight-control authority.
+
 CRC-32 detects accidental corruption only. A valid CRC, session label, sequence
 number, recent receipt or declared `PHYSICAL` mode never authenticates a sender
 and never grants flight-control authority.

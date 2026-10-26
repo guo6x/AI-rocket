@@ -10,8 +10,9 @@ authentication: "NONE; CRC and session labels are not identity"
 production_paths_unchanged:
   flight_json: "flight_computer/src/main.cpp"
   esp_relay: "esp8266_firmware/src/main.cpp"
-  ground_station_parser: "ground_station/core/telemetry_parser.py"
   r3_codec: "rf_lab/telemetry_frame.py"
+production_paths_modified:
+  ground_station_parser: "ground_station/core/telemetry_parser.py (top-level JSON framing guard only; no control/authentication change)"
 offline_converter: "rf_lab/json_r3_contract.py"
 offline_tests: "rf_lab/tests/test_json_r3_contract.py"
 wire_boundary:
@@ -27,6 +28,7 @@ timing_policy:
   receive_time_ms: "optional local observer timestamp supplied only by offline caller"
   replay_time_ms: "optional offline playback timestamp; never a sensor measurement"
   wall_clock: "never substituted for a source timestamp"
+  sample_time_ordering: "not enforced against sequence or receive time; an older source sample timestamp is a known age limitation"
 source_policy:
   declared_source_mode: ["PHYSICAL", "SIMULATION", "OFFLINE_REPLAY"]
   accepted_input_aliases:
@@ -109,6 +111,7 @@ validation_rules:
   missing_required_field: "reject; no fabricated zero or timestamp"
   duplicate: "reject; no freshness refresh"
   stale_or_out_of_order: "reject; no freshness refresh"
+  increasing_sequence_with_old_sample_time: "accept as UNAUTHENTICATED while preserving source age; not anti-replay or trust"
   old_or_new_session: "reject_session_changed_untrusted; retain bound session"
   syntactically_valid_source: "degrade to UNAUTHENTICATED; never grant control"
   oversized_payload: "reject explicitly; never truncate silently"

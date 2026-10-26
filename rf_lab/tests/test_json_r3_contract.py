@@ -126,6 +126,33 @@ class JsonR3ContractTests(unittest.TestCase):
         self.assertEqual(session["status"], "REJECT_SESSION_CHANGED_UNTRUSTED")
         self.assertEqual((receiver.window.session_id, receiver.window.last_sequence), (4, 10))
 
+    def test_new_sequence_with_old_sample_time_exposes_source_age_limit(self):
+        receiver = OfflineJsonR3Receiver()
+        first = receiver.ingest(
+            encode_json_telemetry(
+                valid_sample(time=2000, sample_time_ms=1990),
+                session_id=6,
+                sequence=10,
+            ),
+            receive_time_ms=3000,
+        )
+        second = receiver.ingest(
+            encode_json_telemetry(
+                valid_sample(time=2010, sample_time_ms=900),
+                session_id=6,
+                sequence=11,
+            ),
+            receive_time_ms=3010,
+        )
+
+        self.assertEqual(first["status"], "ACCEPT_UNAUTHENTICATED")
+        self.assertEqual(second["status"], "ACCEPT_UNAUTHENTICATED")
+        self.assertEqual(second["record"]["timing"]["sample_time_ms"], 900)
+        self.assertEqual(second["record"]["timing"]["receive_time_ms"], 3010)
+        self.assertEqual(second["record"]["source_identity"], "UNAUTHENTICATED")
+        self.assertFalse(second["record"]["flight_control_authority"])
+        self.assertEqual(receiver.window.last_sequence, 11)
+
     def test_receiver_rejects_corruption_and_missing_payload_before_window_change(self):
         receiver = OfflineJsonR3Receiver()
         valid = encode_json_telemetry(valid_sample(), session_id=3, sequence=1)
