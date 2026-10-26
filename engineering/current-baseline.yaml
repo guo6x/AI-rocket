@@ -1,37 +1,43 @@
 schema_version: 2
 project: "Project Ad Astra / AI-rocket"
-baseline_name: "R2.1 Real Asset Registry & Multi-Bench Architecture"
-audit_date: "2026-10-23"
+baseline_name: "SYSTEM-V1 software and R2.1 real-asset evidence baseline"
+audit_date: "2026-10-26"
+baseline_origin_audit_date: "2026-10-23"
 compatibility_input_commit: "e9510e61b6de518b272ea6fdb8433bbab4c501c5"
 branch_base_commit: "f59dc2c5791ee88f3d853112930de55d0c31f4d3"
 prior_r2_merge: "66861c7c9f0d468e81a2e09c7a354ed6058dd20f"
 
-current_phase: "SYSTEM-V1 software integration acceptance (R0-R3.2 software gate and offline Ground Station replay); physical qualification and CAD remain evidence-gated"
+current_phase: "SYSTEM-V1 software integration acceptance (R0-R3.2 software gate, JSON-R3 offline contract, and serial-framed Ground Station input); physical qualification and CAD remain evidence-gated"
 
 system_v1_current_software_acceptance:
   audit_date: "2026-10-26"
   status: "PARTIALLY_VERIFIED"
-  main_head_after_fetch: "10a47d5e1e95b1b1b261e4c2eb7790f0601f713a"
-  tested_source_head: "233b147adc7a20eff1d9a85a7401820331ea2271"
-  tested_source_branch: "fix/system-v1-telemetry-freshness-20261026"
+  main_head_after_fetch: "4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3"
+  tested_source_head: "dc5e770cb3b7058884da1914e1280a593c7a153b"
+  tested_source_branch: "fix/system-v1-serial-framing-20261026"
   github:
     exact_main_ci:
-      run_id: 40201519272
+      run_id: 40265138984
       result: "PASS"
-      tested_sha: "10a47d5e1e95b1b1b261e4c2eb7790f0601f713a"
+      tested_sha: "4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3"
     latest_merged_renderer_pr: 31
+    merged_prs_since_previous_snapshot:
+      - {number: 32, merge_sha: "782ee25bf51c08d1532c6920ddf0e49a9580b7c7"}
+      - {number: 33, merge_sha: "579936e597d79626a84e2c3cec5a6bbf1ce9c43b"}
+      - {number: 34, merge_sha: "4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3"}
     issue_23: "OPEN; owner-directed interface/physical gates remain"
     issue_22: "OPEN; measurement-gated CAD-V1"
     issue_26: "CLOSED; native GPU/WGL diagnosis remains a blocker in Issue #23"
   local_full_check:
     result: "PASS"
     exit_code: 0
-    command: ".venv/Scripts/python.exe -u scripts/check.py"
-    test_executions: 505
-    distinct_test_identities: 495
+    command: "py -3 scripts/check.py"
+    source_sha: "c08118abce47b63058c4b22c339e2c39b080375e"
+    test_executions: 526
+    distinct_test_identities: 516
     repeated_executions: 10
     all_five_source_build_targets: "PASS"
-    evidence_directory: "engineering/offline-evidence/system_v1/full_check_20261026"
+    evidence_directory: "engineering/offline-evidence/system_v1/serial_compat_20261026"
   ground_station_runtime:
     status: "PARTIALLY_VERIFIED"
     assertions: 32
@@ -49,6 +55,30 @@ system_v1_current_software_acceptance:
     recovery: "BLOCKED_UNREACHABLE_THRESHOLD; configured +/-2g versus strict >2.5g"
     cad: "NOT_STARTED / BLOCKED_BY_MEASUREMENT"
     hardware_flight_rf: "NOT_EVALUATED; no hardware, RF, actuation, or flight procedure was run"
+
+  serial_input_compatibility:
+    audit_date: "2026-10-26"
+    status: "TESTED_SOFTWARE"
+    pre_fix_source_sha: "4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3"
+    post_fix_source_sha: "dc5e770cb3b7058884da1914e1280a593c7a153b"
+    pre_fix_evidence: "engineering/offline-evidence/system_v1/serial_compat_pre_fix_20261026.json"
+    pre_fix_evidence_sha256: "70d141b3f593c344bd1f9c0ddd4b47cbb9b40d8d8968f4cda604151d14abea97"
+    pre_fix_result: "11 passed / 3 failed; exit 1"
+    post_fix_result: "15 passed / 0 failed; focused parser suite"
+    post_fix_evidence: "engineering/offline-evidence/system_v1/serial_compat_20261026/serial_compat_post_fix_20261026.json"
+    post_fix_evidence_sha256: "28a13bdc49b054e11fd571b8b6d1d66af6afd624b06e858e5b8a44054cf5c2f0"
+    full_check_source_sha: "c08118abce47b63058c4b22c339e2c39b080375e"
+    evidence_artifact_commit: "823f7b2"
+    scope: "SerialReader newline normalization plus defensive TelemetryParser framing; no ESP, R3, flight-control, command, E-STOP, recovery, or threshold changes"
+    hardware_operation: "NONE"
+    evidence_ceiling: "TESTED_SOFTWARE"
+
+  historical_snapshot_before_serial_fix:
+    main_head: "10a47d5e1e95b1b1b261e4c2eb7790f0601f713a"
+    tested_source_head: "233b147adc7a20eff1d9a85a7401820331ea2271"
+    tested_source_branch: "fix/system-v1-telemetry-freshness-20261026"
+    exact_main_ci_run_id: 40201519272
+    exact_main_ci_sha: "10a47d5e1e95b1b1b261e4c2eb7790f0601f713a"
 
 current_cad_authority:
   record: "engineering/cad-authority.yaml"
@@ -96,11 +126,11 @@ owned_asset_summary:
     - "LoRa 150 mm cable order shown as transaction closed"
 
 current_near_term_priority:
-  first: "SYSTEM-V1 remaining software interface contract: define a versioned, receive-only JSON-to-R3 mapping offline"
+  first: "JSON-R3 mapping contract COMPLETED_OFFLINE_ONLY; production adapter and identity/clock integration remain NEEDS_INTEGRATION"
   second: "Independent safety engineering review of the unreachable recovery threshold without production retuning"
   reason:
     - "The current Ground Station replay and software-only R0-R3.2 checks have exact-source local evidence; no hardware capability is implied."
-    - "The production ESP/Ground Station text contract and R3 binary research frames still lack a common field, unit, sample-time, and source-identity contract."
+    - "The JSON-R3 field/clock/source mapping is now documented and tested offline only; it does not adapt production traffic, authenticate a source, or establish true sample age."
     - "TVC CAD remains blocked by missing actual EDF/frame/interface measurements; rejected AI-generated geometry is not authoritative."
 
 current_blockers:

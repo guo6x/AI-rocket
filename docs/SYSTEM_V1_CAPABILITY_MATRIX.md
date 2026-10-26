@@ -7,7 +7,7 @@
 **Fixed inventory source:** `50006f8fd6830a34f16b5e9d2f4e84269c403007` (PR #24 source).
 **Purpose:** identify reusable software, missing integration and evidence ceilings before claiming a whole-product loop. This is not a test report, hardware acceptance or release authorization.
 
-> **Current handoff updated 2026-10-26:** the inventory rows below remain a fixed 2026-10-25 pre-change snapshot. Use section 6 and [the current acceptance report](../SYSTEM_V1_ACCEPTANCE_REPORT.md) for the latest main SHA, exact-source tests, replay run, limited software-OpenGL result and remaining blockers. Historical inventory statuses are not current-system status claims.
+> **Current handoff updated 2026-10-26:** the inventory rows below remain a fixed 2026-10-25 pre-change snapshot. Use section 6, [engineering/current-baseline.yaml](../engineering/current-baseline.yaml) and [the current acceptance report](../SYSTEM_V1_ACCEPTANCE_REPORT.md) for the latest main SHA, exact-source tests, serial-framing fix, replay run, limited software-OpenGL result and remaining blockers. Historical inventory statuses are not current-system status claims.
 
 ## 1. Baseline and evidence rules
 
@@ -83,7 +83,7 @@ The opt-in GNC-only profile rejects deployment and omits PB0 recovery attachment
 
 ## 5. Highest-value software integration checkpoints
 
-1. **Close the remaining read-only telemetry contract gap offline.** Define a versioned mapping from current FC/ESP text JSON to any R3 payload. Keep source declaration/authentication, sensor validity, source sample time, receive age, replay clock and per-field availability distinct; test malformed, stale, duplicate and old-session data. Do not connect the incompatible formats or infer identity from CRC/session/UDP origin.
+1. **Maintain the completed read-only telemetry contract as offline-only.** The versioned mapping from current FC/ESP text JSON to any R3 payload is documented and tested offline. Keep source declaration/authentication, sensor validity, source sample time, receive age, replay clock and per-field availability distinct; production adaptation, authentication and true sample age remain unverified. Do not connect the incompatible formats or infer identity from CRC/session/UDP origin.
 2. **Keep the production recovery threshold conflict under independent safety review.** The ±2 g configured range cannot satisfy strict `>2.5 g`; prepare an engineering change proposal and evidence requirements without tuning production values or claiming qualification.
 3. **Start CAD-V1 only from measured interfaces.** Close Issue #22's real-measurement prerequisites first; do not reuse rejected AI-generated geometry as a dimension source or authority.
 
@@ -94,9 +94,9 @@ Completed software evidence remains reusable: the production C++/Python GNC orac
 | Evidence field | 2026-10-26 current handoff |
 | --- | --- |
 | Fixed pre-change inventory | `50006f8fd6830a34f16b5e9d2f4e84269c403007` |
-| Current `main` exact SHA after fetch/prune | `10a47d5e1e95b1b1b261e4c2eb7790f0601f713a` |
-| Latest exact-main hosted CI | `PASS`: [run 40201519272](https://github.com/guo6x/AI-rocket/actions/runs/40201519272), exact `main@10a47d5…`; 497 executions / 487 distinct identities, five source builds |
-| This revalidation's tested source | `233b147adc7a20eff1d9a85a7401820331ea2271`, branch `fix/system-v1-telemetry-freshness-20261026` |
+| Current `main` exact SHA after fetch/prune | `4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3` |
+| Latest exact-main hosted CI | `PASS`: [run 40265138984](https://github.com/guo6x/AI-rocket/actions/runs/40265138984), exact `main@4bf30b33…`; five source builds |
+| This serial compatibility fix source | `dc5e770` (branch `fix/system-v1-serial-framing-20261026`; PR pending at this snapshot) |
 | Full local software gate at tested source | `PASS`, exit 0; 505 executions / 495 distinct identities / 10 repeat executions; five source builds; evidence in `full_check_20261026/` |
 | Ground Station actual run | `PARTIALLY_VERIFIED`; 32 runtime assertions, Qt exit 0, no hardware/radio/control sends; evidence in `runtime_freshness_20261026/` |
 | Offline/UI/render acceptance | Replay/parser/dashboard/curves/log/fault/recovery `TESTED_SOFTWARE`; software OpenGL two synthetic poses `3D_RENDER_PASS` after frame review; default native GPU/WGL `BLOCKED / NOT_VERIFIED`; R3 binary adapter remains `NEEDS_INTEGRATION` |
@@ -104,7 +104,7 @@ Completed software evidence remains reusable: the production C++/Python GNC orac
 | RF driver/link/region gate | `BLOCKED` / `UNKNOWN`; no transmissions authorized |
 | Recovery qualification | `BLOCKED_UNREACHABLE_THRESHOLD` / `NOT_EVALUATED` |
 | Physical TVC stability / free-flight qualification | `UNKNOWN` / not authorized |
-| GitHub lifecycle | PR #31 merged; no open PR at audit start; Issue #23 and Issue #22 remain OPEN; keep #23 open per owner instruction |
+| GitHub lifecycle | PR #32/#33/#34 merged; serial compatibility PR from `dc5e770` pending; Issue #23 and Issue #22 remain OPEN; keep #23 open per owner instruction |
 
 This matrix update adds no new hardware measurement, hardware procedure, manufacturing release, transmitter authorization or operational control authority. Test totals distinguish actual executions from distinct identities and repeated standalone GNC runs.
 

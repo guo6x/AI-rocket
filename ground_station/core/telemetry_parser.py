@@ -6,6 +6,15 @@ class TelemetryParser:
     Can extract multiple JSON objects from a messy or fragmented string buffer.
     """
     MAX_BUFFER_CHARS = 16384
+    SERIAL_LOG_PREFIXES = (
+        "[SENSOR]",
+        "[SERVO]",
+        "[RECOV]",
+        "[ESP]",
+        "---",
+        "===",
+        "Ad Astra",
+    )
 
     def __init__(self):
         self.buffer = ""
@@ -19,6 +28,28 @@ class TelemetryParser:
         """
         if not raw_string:
             return []
+
+        # SerialReader normally removes these at the line boundary.  Keep the
+        # parser defensive for direct callers and replayed serial captures.
+        line = str(raw_string).lstrip()
+        if line.startswith("[FLIGHT]"):
+            self.buffer = ""
+            raw_string = line[len("[FLIGHT]"):].lstrip()
+            if not raw_string:
+                return []
+        elif line.startswith(self.SERIAL_LOG_PREFIXES):
+            self.buffer = ""
+            return []
+
+        # A complete, brace-terminated malformed serial line must not become a
+        # permanent fragment prefix for the next line.  Legitimate fragments
+        # such as '{"a":' remain buffered because they have no closing brace.
+        if (
+            self.buffer
+            and raw_string.lstrip().startswith("{")
+            and self.buffer.rstrip().endswith("}")
+        ):
+            self.buffer = ""
 
         self.buffer += raw_string
         if len(self.buffer) > self.MAX_BUFFER_CHARS:
@@ -52,6 +83,9 @@ class TelemetryParser:
                 # boundary and wait for the next receive chunk.  In
                 # particular, do not scan into an incomplete array/string.
                 if char in '{["':
+                    if char == "{" and self.buffer.rstrip().endswith("}"):
+                        self.buffer = ""
+                        return parsed_objects
                     self.buffer = self.buffer[pos:]
                     return parsed_objects
                 pos += 1

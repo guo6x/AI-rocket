@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "evidence": "system_v1_serial_input_compatibility_post_fix",
+  "evidence_status": "PASS",
+  "evidence_ceiling": "TESTED_SOFTWARE",
+  "evidence_generation_tree_sha": "5370a84b256825eadeb167cb1939b5d86582f4c6",
+  "test_source_sha": "c08118abce47b63058c4b22c339e2c39b080375e",
+  "delivery_source_sha": "5370a84b256825eadeb167cb1939b5d86582f4c6",
+  "base_main_sha": "4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3",
+  "pre_fix_source_sha": "4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3",
+  "pre_fix_evidence": {
+    "path": "engineering/offline-evidence/system_v1/serial_compat_pre_fix_20261026.json",
+    "sha256": "70d141b3f593c344bd1f9c0ddd4b47cbb9b40d8d8968f4cda604151d14abea97",
+    "result": "11 passed / 3 failed / exit 1"
+  },
+  "post_fix_tests": [
+    {
+      "command": "py -3 -m pytest ground_station/tests/test_telemetry_parser.py -q",
+      "exit_code": 0,
+      "passed": 15,
+      "failed": 0
+    },
+    {
+      "command": "py -3 -m pytest ground_station/tests -q",
+      "exit_code": 0,
+      "passed": 132,
+      "failed": 0
+    },
+    {
+      "command": "py -3 scripts/check.py",
+      "exit_code": 0,
+      "source_sha": "c08118abce47b63058c4b22c339e2c39b080375e",
+      "test_executions": 526,
+      "distinct_test_identities": 516,
+      "repeated_executions": 10,
+      "groups": {
+        "ground_station": "132/0",
+        "flight_native": "47/0",
+        "gnc_only_native": "4/0",
+        "esp_relay_native": "3/0",
+        "scripts_tests": "211/0",
+        "gnc_oracle": "5/0",
+        "gnc_dual_period": "5/0",
+        "rf_r3_0_to_r3_2": "97/0",
+        "preserved_research": "22/0"
+      },
+      "builds": {
+        "bluepill_f103c8": {"result": "PASS", "ram": "3060/20480", "flash": "55160/65536"},
+        "apm32f103c8_compat": {"result": "PASS", "ram": "3060/20480", "flash": "55160/65536"},
+        "gnc_only_bench": {"result": "PASS", "ram": "3060/20480", "flash": "54592/65536"},
+        "nodemcuv2": {"result": "PASS", "ram": "28296/81920", "flash": "273147/1044464"},
+        "esp01_1m": {"result": "PASS", "ram": "28296/81920", "flash": "273147/761840"}
+      }
+    }
+  ],
+  "modified_source_sha256": {
+    "ground_station/core/serial_reader.py": "fc3c61e61443ed6224d0273716772a7ae35664fcf6dface1e5a762626b8fe8fb",
+    "ground_station/core/telemetry_parser.py": "11dbb8271077d0aa8ed11ea3f2baad9beff6d23849c9f2a50b34052950774eca",
+    "ground_station/tests/test_telemetry_parser.py": "689056d93186167c3244b786352f524c0f7a01442996758f0af9f6cffb671742"
+  },
+  "scope": "Known serial line framing and parser recovery only; no ESP/R3 protocol, flight-control, command, E-STOP, recovery threshold, or actuator changes",
+  "hardware_operation": "NONE",
+  "source_identity_or_authentication": "UNCHANGED; not provided by this fix",
+  "notes": [
+    "Serial is newline-delimited in the production firmware; complete JSON-looking lines are validated before forwarding.",
+    "The parser still supports fragmented and contiguous valid top-level objects for replay or non-serial callers.",
+    "Passing software tests does not verify a physical serial link, ESP hardware, sensor timing, or authenticated telemetry."
+  ]
+}

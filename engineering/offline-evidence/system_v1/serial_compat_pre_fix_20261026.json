@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "evidence": "serial_input_compatibility_pre_fix",
+  "source_git_sha": "4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3",
+  "command": "py -3 -m pytest ground_station/tests/test_telemetry_parser.py -q",
+  "exit_code": 1,
+  "tests_collected": 14,
+  "passed": 11,
+  "failed": 3,
+  "failed_cases": [
+    "test_flight_serial_prefix_yields_top_level_telemetry_object",
+    "test_sensor_log_and_startup_banner_do_not_poison_following_telemetry",
+    "test_complete_malformed_serial_line_does_not_poison_next_telemetry"
+  ],
+  "root_cause_observed": "TelemetryParser retained a leading '[' or malformed complete '{...}' as an incomplete structural JSON value, so later valid serial telemetry could not reach a top-level object boundary.",
+  "hardware_operation": "NONE",
+  "evidence_ceiling": "TESTED_SOFTWARE",
+  "immutable_history": true
+}
