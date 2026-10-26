@@ -1,0 +1,5 @@
+2026-10-26 01:54:12.097,DICT,{"source_mode": "SIMULATION / OFFLINE REPLAY", "fixture_sha256": "2bbf67f3b9ffb2b4fd5fedabc21dabb25c59cd53c791d1d0ef567812a309560f", "sample_time": "synthetic offsets in ms, not measured sensor time", "source_authentication": "NONE", "control_authority": false}
+2026-10-26 01:54:12.099,DICT,{"source_mode": "SIMULATION / OFFLINE REPLAY", "replay_state": "RUNNING"}
+2026-10-26 01:54:12.100,DICT,{"alt": 0.0, "auto": 0, "fstate": "IDLE", "pitch_flt": 0.0, "pitch_raw": 0.0, "replay_time_ms": 0, "roll_flt": 0.0, "roll_raw": 0.0, "sensor_valid": 1, "source_mode": "SIMULATION / OFFLINE REPLAY", "time": 0, "yaw": 0.0}
+2026-10-26 01:54:12.106,RAW,{"alt": 0.0, "auto": 0, "fstate": "IDLE", "pitch_flt": 0.0, "pitch_raw": 0.0, "replay_time_ms": 0, "roll_flt": 0.0, "roll_raw": 0.0, "sensor_valid": 1, "source_mode": "SIMULATION / OFFLINE REPLAY", "time": 0, "yaw": 0.0}
+2026-10-26 01:54:12.108,DICT,{"source_mode": "SIMULATION / OFFLINE REPLAY", "replay_state": "STOPPED"}

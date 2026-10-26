@@ -156,6 +156,118 @@ def test_udp_activity_cannot_overwrite_independent_sensor_fault_indicator(window
     assert "UDP ACTIVE" in window.command_panel.link_status_label.text()
 
 
+@pytest.mark.parametrize("connection_mode", ["udp", "serial"])
+def test_malformed_receive_activity_does_not_refresh_telemetry_freshness(
+    window, monkeypatch, connection_mode
+):
+    now = [100.0]
+    monkeypatch.setattr(main_window.time, "monotonic", lambda: now[0])
+    window.connection_mode = connection_mode
+    window.data_thread = SimpleNamespace(is_running=True)
+
+    window.on_data_received(json.dumps(valid_frame()))
+    assert window.dashboard.isEnabled()
+
+    # Raw activity may prove that bytes arrived, but malformed content is not
+    # a parsed telemetry sample and must not keep the old visual state fresh.
+    now[0] = 102.0
+    window.on_data_received("not a telemetry frame")
+    assert window.last_rx_monotonic == 102.0
+    assert window.last_telemetry_monotonic == 100.0
+
+    now[0] = 102.6
+    window.poll_link_and_command_state()
+    assert "TELEMETRY LOST" in window.sensor_status_label.text()
+    assert not window.dashboard.isEnabled()
+    assert not window.tab_widget.isEnabled()
+
+
+def test_new_parsed_sample_recovers_visual_freshness_after_loss(window, monkeypatch):
+    now = [100.0]
+    monkeypatch.setattr(main_window.time, "monotonic", lambda: now[0])
+    window.connection_mode = "udp"
+    window.data_thread = SimpleNamespace(is_running=True)
+
+    window.on_data_received(json.dumps(valid_frame()))
+    now[0] = 102.6
+    window.poll_link_and_command_state()
+    assert "TELEMETRY LOST" in window.sensor_status_label.text()
+
+    now[0] = 103.0
+    recovered = valid_frame(time=3000, pitch_flt=4.0)
+    window.on_data_received(json.dumps(recovered))
+
+    assert window.last_telemetry_monotonic == 103.0
+    assert "SENSOR: valid sample reported" in window.sensor_status_label.text()
+    assert window.dashboard.isEnabled()
+    assert window.tab_widget.isEnabled()
+
+
+@pytest.mark.parametrize("connection_mode", ["udp", "serial"])
+def test_live_connection_without_any_parsed_sample_becomes_stale(
+    window, monkeypatch, connection_mode
+):
+    now = [100.0]
+    monkeypatch.setattr(main_window.time, "monotonic", lambda: now[0])
+    window.connection_mode = connection_mode
+    window.data_thread = SimpleNamespace(is_running=True)
+    window.connection_started_monotonic = now[0]
+
+    now[0] = 102.6
+    window.poll_link_and_command_state()
+
+    assert "TELEMETRY LOST" in window.sensor_status_label.text()
+    assert not window.dashboard.isEnabled()
+
+
+def test_explicit_sensor_fault_is_a_fresh_status_frame_but_not_a_valid_visual_sample(
+    window, monkeypatch
+):
+    now = [100.0]
+    monkeypatch.setattr(main_window.time, "monotonic", lambda: now[0])
+    window.connection_mode = "serial"
+    window.data_thread = SimpleNamespace(is_running=True)
+
+    window.on_data_received(json.dumps({"sensor_valid": 0, "sensor_fault": "imu_read"}))
+
+    assert window.last_telemetry_monotonic == 100.0
+    assert "SENSOR FAULT" in window.sensor_status_label.text()
+    assert not window.dashboard.isEnabled()
+
+
+def test_incomplete_json_fragment_does_not_refresh_until_the_frame_is_complete(
+    window, monkeypatch
+):
+    now = [100.0]
+    monkeypatch.setattr(main_window.time, "monotonic", lambda: now[0])
+    window.connection_mode = "serial"
+    window.data_thread = SimpleNamespace(is_running=True)
+    window.on_data_received(json.dumps(valid_frame()))
+
+    second_frame = json.dumps(valid_frame(time=2000))
+    split_at = second_frame.index('"roll_raw"')
+    now[0] = 101.0
+    window.on_data_received(second_frame[:split_at])
+    assert window.last_telemetry_monotonic == 100.0
+
+    now[0] = 102.0
+    window.on_data_received(second_frame[split_at:])
+    assert window.last_telemetry_monotonic == 102.0
+
+
+def test_offline_replay_does_not_use_live_telemetry_loss_timer(window, monkeypatch):
+    now = [100.0]
+    monkeypatch.setattr(main_window.time, "monotonic", lambda: now[0])
+    window.connection_mode = "offline"
+    window.data_thread = SimpleNamespace(is_running=True)
+    window.connection_started_monotonic = 100.0
+
+    now[0] = 102.6
+    window.poll_link_and_command_state()
+
+    assert "TELEMETRY LOST" not in window.sensor_status_label.text()
+
+
 def test_fault_status_is_plain_text_not_html_and_preserves_original_log(window):
     reason = "<b>imu_read</b>"
     raw = json.dumps({"sensor_valid": 0, "sensor_fault": reason})

@@ -7,6 +7,8 @@
 **Fixed inventory source:** `50006f8fd6830a34f16b5e9d2f4e84269c403007` (PR #24 source).
 **Purpose:** identify reusable software, missing integration and evidence ceilings before claiming a whole-product loop. This is not a test report, hardware acceptance or release authorization.
 
+> **Current handoff updated 2026-10-26:** the inventory rows below remain a fixed 2026-10-25 pre-change snapshot. Use section 6 and [the current acceptance report](../SYSTEM_V1_ACCEPTANCE_REPORT.md) for the latest main SHA, exact-source tests, replay run, limited software-OpenGL result and remaining blockers. Historical inventory statuses are not current-system status claims.
+
 ## 1. Baseline and evidence rules
 
 This matrix inventories the fixed source above. Concurrent SYSTEM-V1 work may add code after that source; its completion must be established by a separate exact-source report, not inferred from this inventory. Source links below are pinned to the inventory commit so later line movement does not change the inspected behavior.
@@ -81,25 +83,30 @@ The opt-in GNC-only profile rejects deployment and omits PB0 recovery attachment
 
 ## 5. Highest-value software integration checkpoints
 
-1. **A transport-independent, receive-only telemetry contract and demonstrable first-use loop.** Explicitly map existing FC/ESP text to any offline/R3 adapter; keep source declaration, authentication, sample validity, sample time, arrival age, replay clock and per-field availability separate. Include old-session callbacks, missing axes/battery, stale/duplicate/corrupt input and offline command rejection in acceptance. No command authority follows from CRC or a recent status.
-2. **One signed model/cadence contract anchored to production algorithms.** Reuse the existing PID/Kalman oracle and dual-period work, document axes/units/signs/call timing, preserve the non-ideal failure and test positive/negative disturbances. Do not optimize a “best PID” or infer physical polarity before the plant/configuration is known.
-3. **Versioned software evidence for one declared model and the completed product loop.** Reuse manifest/hash practices, retain failure cases and historical artifacts, and add step-convergence/independent-reference checks. The exact-source full gate and actual hosted run must be attributable; software evidence must not promote hardware, RF, CAD, recovery or physical-stability status.
+1. **Close the remaining read-only telemetry contract gap offline.** Define a versioned mapping from current FC/ESP text JSON to any R3 payload. Keep source declaration/authentication, sensor validity, source sample time, receive age, replay clock and per-field availability distinct; test malformed, stale, duplicate and old-session data. Do not connect the incompatible formats or infer identity from CRC/session/UDP origin.
+2. **Keep the production recovery threshold conflict under independent safety review.** The ±2 g configured range cannot satisfy strict `>2.5 g`; prepare an engineering change proposal and evidence requirements without tuning production values or claiming qualification.
+3. **Start CAD-V1 only from measured interfaces.** Close Issue #22's real-measurement prerequisites first; do not reuse rejected AI-generated geometry as a dimension source or authority.
+
+Completed software evidence remains reusable: the production C++/Python GNC oracle and 10/50 ms synthetic cadence comparison exist, and the latest exact-source software regression is recorded in section 6. Neither proves physical polarity, timing, stability or recovery readiness.
 
 ## 6. Current SYSTEM-V1 gate handoff
 
-| Evidence field | Final handoff reference (inventory above remains pre-change) |
+| Evidence field | 2026-10-26 current handoff |
 | --- | --- |
 | Fixed pre-change inventory | `50006f8fd6830a34f16b5e9d2f4e84269c403007` |
-| Final tested SYSTEM-V1 source / working-tree binding | `16a37c3be0528f51cf152419e6907763a95b4ee4`; subsequent report/evidence commits are distinguished in the acceptance report |
-| Current complete local software gate | `PASS`, exit 0; 419 executions / 409 identities; see report and full_check_16a37c receipt |
-| Current hosted SYSTEM-V1 workflow | `PASS`, run [40168290228](https://github.com/guo6x/AI-rocket/actions/runs/40168290228), actual merge `dac49b14d6ebdc689c6495e24396a16473147a41` |
-| Offline/UI/adapter acceptance | `PARTIALLY_VERIFIED`: existing UI/parser/plots/logging replay passed; visible 3D not verified; R3 binary adapter remains NEEDS_INTEGRATION |
+| Current `main` exact SHA after fetch/prune | `10a47d5e1e95b1b1b261e4c2eb7790f0601f713a` |
+| Latest exact-main hosted CI | `PASS`: [run 40201519272](https://github.com/guo6x/AI-rocket/actions/runs/40201519272), exact `main@10a47d5…`; 497 executions / 487 distinct identities, five source builds |
+| This revalidation's tested source | `233b147adc7a20eff1d9a85a7401820331ea2271`, branch `fix/system-v1-telemetry-freshness-20261026` |
+| Full local software gate at tested source | `PASS`, exit 0; 505 executions / 495 distinct identities / 10 repeat executions; five source builds; evidence in `full_check_20261026/` |
+| Ground Station actual run | `PARTIALLY_VERIFIED`; 32 runtime assertions, Qt exit 0, no hardware/radio/control sends; evidence in `runtime_freshness_20261026/` |
+| Offline/UI/render acceptance | Replay/parser/dashboard/curves/log/fault/recovery `TESTED_SOFTWARE`; software OpenGL two synthetic poses `3D_RENDER_PASS` after frame review; default native GPU/WGL `BLOCKED / NOT_VERIFIED`; R3 binary adapter remains `NEEDS_INTEGRATION` |
 | Current physical board/wiring/sensor/actuator proof | `UNKNOWN` / `NOT_EVALUATED` |
 | RF driver/link/region gate | `BLOCKED` / `UNKNOWN`; no transmissions authorized |
 | Recovery qualification | `BLOCKED_UNREACHABLE_THRESHOLD` / `NOT_EVALUATED` |
 | Physical TVC stability / free-flight qualification | `UNKNOWN` / not authorized |
+| GitHub lifecycle | PR #31 merged; no open PR at audit start; Issue #23 and Issue #22 remain OPEN; keep #23 open per owner instruction |
 
-This document adds no new test execution, measured value, hardware procedure, manufacturing release, transmitter authorization or operational control authority.
+This matrix update adds no new hardware measurement, hardware procedure, manufacturing release, transmitter authorization or operational control authority. Test totals distinguish actual executions from distinct identities and repeated standalone GNC runs.
 
 [gs-serial]: https://github.com/guo6x/AI-rocket/blob/50006f8fd6830a34f16b5e9d2f4e84269c403007/ground_station/core/serial_reader.py
 [gs-udp]: https://github.com/guo6x/AI-rocket/blob/50006f8fd6830a34f16b5e9d2f4e84269c403007/ground_station/core/udp_reader.py

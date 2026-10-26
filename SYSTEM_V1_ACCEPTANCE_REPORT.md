@@ -1,24 +1,81 @@
 # AI-rocket SYSTEM-V1 软件系统验收
 
-日期：2026-10-25。交付为待独立复核的功能分支，**不是已经进入 main 的发布版本，也不是硬件验收**。
+> **当前状态审计：2026-10-26。** 本节为最新状态，后文的原 S0–S3 验收记录冻结在 2026-10-25，保留为历史记录，不得把其中当时的 main/PR/测试/3D 状态当作当前状态。
 
-## 结论与版本
+## 2026-10-26 当前状态
 
-当前总状态：`PARTIALLY_VERIFIED`。已有地面站已复用并接入确定性、只读离线回放；CI 和实际应用运行的证据分别记录，不以单元测试替代运行验收。可运行的仪表、曲线、日志与只读回放已取得实际应用证据；可见 3D 尚未验证。
+整体：`PARTIALLY_VERIFIED`。Ground Station 的只读离线回放及软件 OpenGL 两个合成姿态已通过限定范围的软件验收；默认原生 GPU/WGL 仍 `BLOCKED / NOT_VERIFIED`。飞控硬件、实际传感器/执行器、真实射频和 CAD 几何均未验证。
 
-| 项目 | 版本 / 状态 |
+| 项目 | 当前核实值 |
 | --- | --- |
-| 重新 fetch 后确认的 main | `03fbd826031f24055bf5de79c7aa4aa72810b451` |
-| 已有功能盘点锚点 | `50006f8fd6830a34f16b5e9d2f4e84269c403007` |
-| PR #24 修复后 head | `70c768de915fa7bd090aa5ad59d5db7d0affd0f5` |
-| 运行 / 回归源码提交 | `16a37c3be0528f51cf152419e6907763a95b4ee4` |
-| 交付分支 | `feat/system-v1-offline-integration-20261025` |
-| Draft PR | [#25](https://github.com/guo6x/AI-rocket/pull/25)，叠在 PR #24 分支上，不直接替代 main |
-| PR #24 | [完整软件 CI](https://github.com/guo6x/AI-rocket/pull/24)，保持 Draft / 等待独立复核 |
-| 本地完整回归 | `PASS` / exit 0：23/23 检查组，419 次执行 / 409 个不同测试身份，五构建通过 |
-| 实际 Windows UI | `PARTIALLY_VERIFIED` / Qt 退出 0：30 个运行检查点（含 10 次截图保存检查），3D 明确降级；`runtime_v2/runtime_result.json` |
+| 最新 `origin/main`（fetch/prune 后） | `10a47d5e1e95b1b1b261e4c2eb7790f0601f713a` |
+| 本轮已测试代码 SHA | `233b147adc7a20eff1d9a85a7401820331ea2271`，分支 `fix/system-v1-telemetry-freshness-20261026`；本轮增加遥测到达新鲜度修复 |
+| GitHub 状态 | PR #31 已合并；旧 CAD 删除 PR #21 已关闭、其清理通过 PR #29 合并；Issue #23、#22 OPEN；Issue #26 CLOSED |
+| 最新 exact-main CI | [Run #40201519272](https://github.com/guo6x/AI-rocket/actions/runs/40201519272) 在 main exact SHA `10a47d5…` 成功：497 次执行 / 487 个不同测试身份、五个源码构建通过。此记录不冒充本轮 feature SHA 的 CI |
+| 本轮完整软件 gate | `PASS`, exit 0；源 SHA `233b147…`；505 次测试执行 / 495 个不同身份 / 10 次重复执行；五个目标源码构建通过 |
+| 本轮真实应用运行 | `PARTIALLY_VERIFIED`；真实 Qt 应用 32 个运行断言，Qt exit 0；无硬件连接、射频发送或控制发送；`runtime_freshness_20261026/runtime_result.json` |
+| 遥测新鲜度代码审查 | 独立只读复核未发现阻断缺陷；结论仅是解析帧的近期接收，不是可信传感器采样年龄 |
 
-本报告所在的最终 evidence commit 可以晚于上述源码提交。最终提交号由 `git rev-parse HEAD` 与 PR head 提供；不在文件中伪造自引用 SHA。源码、输入和输出各自的 SHA256 在证据清单中绑定。
+本轮证据使用 Windows 11 build 26300、Python 3.13.1、PySide6/shiboken6 6.10.2、pyqtgraph 0.14.0、PyOpenGL 3.1.10、NumPy 2.4.2、PlatformIO 6.1.19、pytest 9.1.1。回归日志 SHA-256 `d50c7e758ca614061ef1c8e19b64be1f0131962b8012b11f915a2270513c22e0`；环境 SHA `bf8ca1eeeb2b6ffdbf1a9c704d4a612d24139658e4a872256ff4d883fa4951c2`；测试身份清单 SHA `b3ddb9b0e223d545b644ad7abc12f06f9084c2efeef2a046609486d61ad7c617`。逐文件证据哈希见 `engineering/offline-evidence/system_v1/SHA256SUMS_20261026.txt`。
+
+### 本轮最小修复
+
+`ground_station/ui/main_window.py` 将原始接收活动与已解析遥测新鲜度分开记录：UDP 与串口在有效状态帧缺失 2.5 秒后都会显示数据过期；畸形 JSON、未完整分片和错误数据不能刷新有效采样时间；显式传感器故障只刷新故障状态时效，不让数值仪表恢复；收到新的完整有效帧后可恢复显示。离线回放不受 live 超时影响，发送路径和命令权限未变。新增回归覆盖上述边界，并由独立只读代码审查复核。
+
+这是接收时间，不是来源样本时间；重复或排队的旧而格式正确的帧仍可能刷新接收时效。修复不添加认证、反重放或 stale-link command interlock，相关语义需经单独合同/安全审查后处理。
+
+### 本轮回归明细
+
+命令：`D:\AI_rocket\.venv\Scripts\python.exe -u scripts/check.py`。执行结果记录在 [check_result.json](engineering/offline-evidence/system_v1/full_check_20261026/check_result.json)，完整日志在 [full_check.log](engineering/offline-evidence/system_v1/full_check_20261026/full_check.log)。计数按实际执行而非 collection-only 计；独立运行的 GNC oracle 与双周期文件各 5 项已包含在 `scripts/tests`，因此另执行 10 次但不增加不同身份数。
+
+| 测试组 | 通过 / 失败 | 说明 |
+| --- | ---: | --- |
+| Ground Station | 123 / 0 | 包含遥测过期、无效/分片数据、恢复、离线指令拒绝 |
+| Flight native | 47 / 0 | 生产 C++ native suite |
+| GNC-only native | 4 / 0 | 回收执行输出隔离的软件测试 |
+| ESP relay native | 3 / 0 | 无设备中继行为 |
+| `scripts/tests` | 211 / 0 | 包含下两行所列 R2.3 测试身份 |
+| R2.3 C++/Python oracle | 5 / 0 | 重复执行，不重复计身份 |
+| R2.3 双周期轨迹 | 5 / 0 | 重复执行，不重复计身份 |
+| RF R3.0–R3.2 | 85 / 0 | 纯软件帧/可靠性/质量回归 |
+| 保留研究回归 | 22 / 0 | 离线文档研究测试 |
+| **合计** | **505 / 0** | **495 个不同身份，10 次重复执行** |
+
+五个固件目标均为源码构建，不包含上传、烧录或设备操作：
+
+| 目标 | RAM | Flash | 结果 |
+| --- | ---: | ---: | --- |
+| `bluepill_f103c8` | 3060 / 20480 B | 55160 / 65536 B | PASS |
+| `apm32f103c8_compat` | 3060 / 20480 B | 55160 / 65536 B | PASS |
+| `gnc_only_bench` | 3060 / 20480 B | 54592 / 65536 B | PASS |
+| `nodemcuv2` | 28296 / 81920 B | 273147 / 1044464 B | PASS |
+| `esp01_1m` | 28296 / 81920 B | 273147 / 761840 B | PASS |
+
+APM32 结果仍只是 STM32-core compatibility target 编译；ESP-01S 结果不证明实际板卡 Flash、供电、启动脚、UART 或 Wi-Fi。
+
+### Ground Station 实际运行与 3D 范围
+
+运行命令和环境见 [runtime_result.json](engineering/offline-evidence/system_v1/runtime_freshness_20261026/runtime_result.json)。原 PySide6 主窗口在无设备环境启动，经过真实解析器、仪表/曲线、回放暂停/恢复/重启/停止、传感器故障、数据中断恢复和日志保存。记录含 32 个运行断言、Qt exit 0、136 个合成样本和 9.038 秒短时观察；这不是长期耐久测试，也不是 32 个单元测试。回放边界为 0 个硬件连接、0 次 RF 发送、0 次控制发送。
+
+最新两个软件 OpenGL framebuffer 是 Qt 运行产物：[pose 0](engineering/offline-evidence/system_v1/runtime_freshness_20261026/08_gl_framebuffer_pose_0.png)、[pose 1](engineering/offline-evidence/system_v1/runtime_freshness_20261026/08_gl_framebuffer_pose_1.png)。本轮只读复核确认两图均显示非空的原有示意方盒/网格/坐标轴，且 `(0°, 0°)` 与 `(roll 32°, pitch -24°)` 姿态有可见差异；运行器记录 4,367 个 changed RGB pixels。该有限结果支持 **显式 `opengl32sw.dll` 软件 OpenGL、两组合成姿态的 `3D_RENDER_PASS`**，不代表 native GPU/WGL 已修复。运行 JSON 的自动标签仍为 `PIXEL_CANDIDATE_REQUIRES_REVIEW`，UI 截图也保留 `visible pixels NOT_VERIFIED here` 文案；本报告记录的是其后的截图复核，不篡改该自动记录。它不是正式 CAD，不证明数学变换与真实火箭坐标/安装方向一致。
+
+### 当前阻断、接口边界和 Issue #23 处置
+
+- **P0 — 回收安全判据不可达：** 当前配置量程 ±2 g，而严格 `>2.5 g` 启动条件不可达。保留为 `BLOCKED_UNREACHABLE_THRESHOLD`；不静默改量程、阈值或 E-STOP / 回收逻辑。关闭需独立安全评审、兼容性证据和受控硬件验证。
+- **P1 — 来源身份与样本时钟：** 文本 JSON、UDP 来源地址、CRC、R3 session ID 都不是身份认证。Ground Station 新鲜度表示“最近收到并解析的完整帧”，不等于传感器采样年龄；重复或缓存的旧而格式正确的帧仍可能刷新接收时效。没有重放/会话证明。
+- **P1 — R3 与生产链路尚无适配：** R3.0–R3.2 是二进制、telemetry-only 离线研究帧；当前 ESP/Ground Station 是换行文本命令与 JSON 遥测。字段、单位、采样时钟、身份和版本化映射尚无共同合同，不得直接连接或赋予控制权限。
+- **P1 — 原生 GPU/WGL：** Issue #26 已关闭，软件 OpenGL 有限渲染通过；默认原生 GPU/WGL `BLOCKED / NOT_VERIFIED`，仍依赖失败的 Windows WGL/context 条件，保留 2D fallback。不重新打开 Issue #26，不外推到所有显卡。
+- **P2 — CAD / 实物集成：** Issue #22 仍等待真实测量；19 项 CAD-start 前置缺口未由旧 AI CAD 或软件模型补齐。硬件启动、传感器实测、Wi-Fi/LoRa 链路、舵机方向、GNC plant 与飞行资格均不在本轮软件证据范围。
+
+Issue #23 **保持 OPEN**。负责人最新评论要求接口/物理门槛继续开放；本轮的软件回归和应用证据不能替代这些退出条件。完整的软件能力矩阵见 [SYSTEM_V1_CAPABILITY_MATRIX.md](docs/SYSTEM_V1_CAPABILITY_MATRIX.md)。
+
+### 下一阶段最有价值的三项
+
+1. 先完成只读、离线、版本化的现有 JSON ↔ R3 遥测适配契约及负例测试；字段/单位/时间/身份语义未统一前不接入生产链路。
+2. 对不可达回收阈值形成独立安全工程变更建议，包含影响与备选方案；在审查批准前保持生产阈值和安全逻辑不变。
+3. 仅在取得真实 EDF/机架/安装界面测量后启动 CAD-V1；按 Issue #22 的 19 项前置证据逐项建立受测量约束的 as-built 基线，不采用已拒绝的 AI 旧模型。
+
+> **以下为 2026-10-25 历史验收正文。** 其中旧 main/PR/运行器/测试总数/3D 状态保留原样供审计，不再表示当前交付状态；上方 2026-10-26 当前审计优先。
 
 ## S0：真实 CI，不沿用历史的 379 次执行
 
