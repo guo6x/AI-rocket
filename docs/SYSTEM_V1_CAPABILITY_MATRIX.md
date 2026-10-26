@@ -96,7 +96,7 @@ Completed software evidence remains reusable: the production C++/Python GNC orac
 | Fixed pre-change inventory | `50006f8fd6830a34f16b5e9d2f4e84269c403007` |
 | Current `main` exact SHA after merge/fetch | `61b5c9a4dc7d4712a3d1fba6f6a3f02ef1da1e87` |
 | Latest exact-main hosted CI | `PASS`: [run 40273886220](https://github.com/guo6x/AI-rocket/actions/runs/40273886220), exact `main@61b5c9a…`; five source builds |
-| This serial compatibility fix source | `dc5e770` (branch `fix/system-v1-serial-framing-20261026`; PR pending at this snapshot) |
+| This serial compatibility fix source | `dc5e770cb3b7058884da1914e1280a593c7a153b`; merged by PR #35 (`61b5c9a…`); final docs-only status snapshots are recorded in the acceptance report |
 | Full local software gate at tested source | `PASS`, exit 0; 505 executions / 495 distinct identities / 10 repeat executions; five source builds; evidence in `full_check_20261026/` |
 | Ground Station actual run | `PARTIALLY_VERIFIED`; 32 runtime assertions, Qt exit 0, no hardware/radio/control sends; evidence in `runtime_freshness_20261026/` |
 | Offline/UI/render acceptance | Replay/parser/dashboard/curves/log/fault/recovery `TESTED_SOFTWARE`; software OpenGL two synthetic poses `3D_RENDER_PASS` after frame review; default native GPU/WGL `BLOCKED / NOT_VERIFIED`; R3 binary adapter remains `NEEDS_INTEGRATION` |
