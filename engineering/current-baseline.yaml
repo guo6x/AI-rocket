@@ -85,6 +85,17 @@ system_v1_current_software_acceptance:
     exact_main_ci_run_id: 40201519272
     exact_main_ci_sha: "10a47d5e1e95b1b1b261e4c2eb7790f0601f713a"
 
+post_merge_status_snapshot:
+  captured_at: "2026-10-26"
+  main_sha: "6ed3ba17a0909a2d4a0347189f783519e868f5c0"
+  exact_main_ci:
+    run_id: 40275417356
+    result: "PASS"
+    tested_sha: "6ed3ba17a0909a2d4a0347189f783519e868f5c0"
+  merge_anchor_sha: "61b5c9a4dc7d4712a3d1fba6f6a3f02ef1da1e87"
+  merge_pr: 35
+  notes: "The snapshot commit only records post-merge status and does not change production behavior; the merge anchor and this docs-only snapshot both passed the hosted software gate."
+
 current_cad_authority:
   record: "engineering/cad-authority.yaml"
   status: "NOT_STARTED"
