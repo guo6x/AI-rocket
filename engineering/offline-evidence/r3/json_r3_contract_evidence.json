@@ -1,0 +1,75 @@
+{
+  "artifact_path": "engineering/offline-evidence/r3/json_r3_contract_evidence.json",
+  "command": "py -3 -m rf_lab.contract_evidence --write-evidence 'engineering/offline-evidence/r3/json_r3_contract_evidence.json'",
+  "contract": "AA-JSON-R3-TELEMETRY-001",
+  "crc_is_authentication": false,
+  "dependencies": "Python standard library only",
+  "evidence_ceiling": "TESTED_SOFTWARE",
+  "flight_commands": 0,
+  "input_sha256": "866e0dbaa5615065552dc5814836ad8340eb147750d7ccfb64fb2ff0cb6c2b1d",
+  "physical_hardware": false,
+  "python": "3.13.1",
+  "radio_transmissions": 0,
+  "reproduction_command": "py -3 -m rf_lab.contract_evidence --write-evidence 'engineering/offline-evidence/r3/json_r3_contract_evidence.json'",
+  "result": {
+    "all_results_have_no_control_authority": true,
+    "bound_session_id": 7,
+    "last_sequence": 12,
+    "offered_count": 6,
+    "results": [
+      {
+        "authority": false,
+        "label": "first",
+        "status": "ACCEPT_UNAUTHENTICATED",
+        "unobserved_sequence_count": 0
+      },
+      {
+        "authority": false,
+        "label": "duplicate",
+        "status": "REJECT_DUPLICATE",
+        "unobserved_sequence_count": 0
+      },
+      {
+        "authority": false,
+        "label": "forward_gap",
+        "status": "ACCEPT_UNAUTHENTICATED",
+        "unobserved_sequence_count": 1
+      },
+      {
+        "authority": false,
+        "label": "stale",
+        "status": "REJECT_STALE_OR_OUT_OF_ORDER",
+        "unobserved_sequence_count": 0
+      },
+      {
+        "authority": false,
+        "label": "crc_corruption",
+        "status": "REJECT_crc_mismatch",
+        "unobserved_sequence_count": 0
+      },
+      {
+        "authority": false,
+        "label": "session_change",
+        "status": "REJECT_SESSION_CHANGED_UNTRUSTED",
+        "unobserved_sequence_count": 0
+      }
+    ]
+  },
+  "result_sha256": "5d1e2ecc63a4b7d18c4316f1aa4518a0e2bd2e16e5a50f11f3ce2f7bfae90a8e",
+  "schema_version": 1,
+  "source_git_sha": "5c8e54eeff3897a19b702d19bab8626f32e6c266",
+  "source_sha256": {
+    "docs/JSON_R3_TELEMETRY_CONTRACT.md": "1ebef5494fe18710348c2884da479fdaa4f6dcf13553b13eedc825e0205f09dd",
+    "docs/RECOVERY_LOGIC_SAFETY_CHANGE_PROPOSAL.md": "9efc9b1c5ce7f33b053fea81f6397e2434d21ce416b66d7c62f0bbd02721324a",
+    "engineering/json-r3-telemetry-contract.yaml": "c345502364922d2ca3e29f98bf2b09ff2f0107195b7cd245209b64ed7d49f962",
+    "ground_station/core/telemetry_parser.py": "e8977e65c871ab2f8a124e637288ac81def0f07cf8dd0a996ee1d51406961f65",
+    "ground_station/tests/test_telemetry_parser.py": "ade8428be5d520fa68d333934b0a868f5815442568d6ef8288762a6eeda5e590",
+    "rf_lab/contract_evidence.py": "e32888dda24de11fb9a0b6204865c76b1fd2d8578896d83483125c9c6a393ac3",
+    "rf_lab/json_r3_contract.py": "0c6cf03d1bb913dc005af3d13482aa9b443cbb04e73cda4b61b75f76ba6f5a2e",
+    "rf_lab/telemetry_frame.py": "61e9189240062ae9b43ed0e9867037f675060f74ab40c952bc220ac6fb945baa",
+    "rf_lab/tests/test_json_r3_contract.py": "0288487122e13bfd9345460a99c45d1aae5d6a9a5a640b15cd9edcaa3364b6bb"
+  },
+  "source_worktree_changes": [],
+  "source_worktree_clean": true,
+  "synthetic_only": true
+}
