@@ -12,6 +12,16 @@
 
 JSON↔R3 契约状态为 `COMPLETED_OFFLINE_ONLY`：字段/单位/时间与缺失值映射已有离线证据，但生产适配、来源认证、真实采样年龄和真实通信仍未验证。回收判据继续为 `BLOCKED_UNREACHABLE_THRESHOLD`（配置 ±2 g 与严格 `>2.5 g` 条件的冲突），CAD 继续为 `NOT_STARTED / BLOCKED_BY_MEASUREMENT`。
 
+## 2026-10-26 current-main 复核（串口修复合并后的最新状态）
+
+重新 fetch 后，当前本地与 `origin/main` 均为 `00c68cd84c485cfcd86103f5dd2f2c8b65b4c294`。该 SHA 是 PR #35 合并提交 `61b5c9a4…` 之后的文档状态快照；没有新增生产控制逻辑。最新 exact-main 软件 CI 为 [run 40276581594](https://github.com/guo6x/AI-rocket/actions/runs/40276581594)，结论 `SUCCESS`，执行完整 gate 和五个源码构建。
+
+在同一 current-main SHA 上重新运行了单进程本地 gate：`py -3 -u scripts/system_v1_check.py --output engineering/offline-evidence/system_v1/full_check_main_00c68_20261026`，exit 0，526 次执行、516 个不同测试身份、10 次重复执行，Ground Station 132、flight native 47、GNC-only 4、ESP 3、scripts 211、GNC oracle 5、dual-period 5、RF 97、research 22，五个源码构建全部通过。收据目录为 `engineering/offline-evidence/system_v1/full_check_main_00c68_20261026/`，`full_check.log` SHA-256 为 `d9c592f26916b1c9c7fabdabe8d8e808a9644c14416294957b35b18cb52a968b`。
+
+同一 SHA 的真实 Qt 应用短时回放命令为 `$env:QT_QPA_PLATFORM="offscreen"; $env:QT_OPENGL="software"; .\.venv\Scripts\python.exe -u scripts/system_v1_runtime.py --output engineering/offline-evidence/system_v1/runtime_main_00c68_20261026 --soak-minutes 0.05`。结果 `PARTIALLY_VERIFIED`、Qt exit 0、31 个运行断言、约 3.004 秒短观察，0 个硬件连接/射频发送/控制发送；固定夹具 SHA-256 为 `2bbf67f3b9ffb2b4fd5fedabc21dabb25c59cd53c791d1d0ef567812a309560f`。本次 offscreen 运行原生 OpenGL/WGL 为 `NOT_VERIFIED`，2D fallback 为 `PASS`；不得把它升级为 3D 或硬件验证。运行收据为 `engineering/offline-evidence/system_v1/runtime_main_00c68_20261026/runtime_result.json`，SHA-256 为 `a4fcb49b0eba8fb56dedb9f4f55c4d15946781dea146871410ad9dce8b13c060`。
+
+第三方可复现的启动、回放、故障/中断/恢复场景、输出文件和证据边界见 [SYSTEM-V1 离线回放运行手册](docs/SYSTEM_V1_OFFLINE_REPLAY_RUNBOOK.md)。
+
 > **历史状态快照：2026-10-26（已由上方串口修复更新 supersede）。** 本节保留此前 `10a47d5…` / `233b147…` 的状态与证据，供审计追溯；上方串口兼容性更新才是当前交付状态。后文的原 S0–S3 验收记录冻结在 2026-10-25，同样不得把其中当时的 main/PR/测试/3D 状态当作当前状态。
 
 ## 2026-10-26 历史状态快照（superseded）
