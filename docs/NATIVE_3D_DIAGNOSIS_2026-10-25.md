@@ -4,6 +4,14 @@
 
 **SOFTWARE_OPENGL: `3D_RENDER_PASS` for the two recorded synthetic poses. Native GPU/WGL: `BLOCKED`, not repaired or qualified.** The existing Ground Station, GLViewWidget, schematic box, grid, axes and 2D QPainter fallback were retained. No CAD, firmware, control permissions, hardware connections or radio operation changed.
 
+## 2026-10-26 supplemental runtime review
+
+This dated addendum supplements the 2026-10-25 renderer diagnosis; it does not change the driver/root-cause analysis below. At tested source `233b147adc7a20eff1d9a85a7401820331ea2271`, the actual Windows app run in `engineering/offline-evidence/system_v1/runtime_freshness_20261026/` saved two GL widget framebuffer images through the explicit bundled software backend `opengl32sw.dll`. The JSON's automatic status remains the conservative `PIXEL_CANDIDATE_REQUIRES_REVIEW`; its UI capture also says `visible pixels NOT_VERIFIED here`. A separate visual review of the saved original pixels confirmed a nonempty wireframe box/grid/axes in both frames, with visible change between `(roll, pitch)=(0°, 0°)` and `(32°, -24°)`; the recorded RGB difference is 4,367 pixels.
+
+The latest run therefore supports a **bounded `SOFTWARE_OPENGL: 3D_RENDER_PASS` for those two synthetic poses only**. The images are actual Qt/software-OpenGL framebuffer and app screenshots, not a generated mockup or CAD model: [pose 0](../engineering/offline-evidence/system_v1/runtime_freshness_20261026/08_gl_framebuffer_pose_0.png), [pose 1](../engineering/offline-evidence/system_v1/runtime_freshness_20261026/08_gl_framebuffer_pose_1.png), [application view](../engineering/offline-evidence/system_v1/runtime_freshness_20261026/08_3d_or_explicit_degradation.png). This does not establish default GPU/WGL rendering, compatibility across hosts, correct rocket/sensor axes, or physical attitude. **Native GPU/WGL remains `BLOCKED / NOT_VERIFIED`.**
+
+The same app run records 32 runtime assertions, Qt exit code 0, 0 hardware connections, 0 radio transmissions and 0 control sends. Its 9.038-second / 136-sample short observation is not a durability or leak-freedom claim. The full gate and source/environment hashes are summarized in [SYSTEM_V1_ACCEPTANCE_REPORT.md](../SYSTEM_V1_ACCEPTANCE_REPORT.md).
+
 The source tested on Windows is `71ff3c42377912b71259a5b042bb98f791c40c1f`, based on main `26eeca3b6ed61334250c1427f07a4ef286a271c1`. Subsequent evidence/documentation commits must not be mistaken for the source SHA recorded at execution. Git status in each result includes only new evidence directories, not uncommitted production changes.
 
 Repository cleanup and historical-branch dispositions are recorded separately in [REPOSITORY_CLOSURE_2026-10-25.md](REPOSITORY_CLOSURE_2026-10-25.md). Main's existing full gate [40193386161](https://github.com/guo6x/AI-rocket/actions/runs/40193386161) is SUCCESS; it is not the new 3D branch's CI. The final PR check is required in addition to these targeted Windows results; its exact run is retained by GitHub and the delivery receipt.
@@ -87,10 +95,10 @@ Do not reuse populated output directories or interpret selecting software GL as 
 
 | Item | Status / next bounded action |
 | --- | --- |
-| Original 3D through explicit Windows software GL | `PASS` for recorded geometry/poses; reviewable branch evidence, not main until merged |
+| Original 3D through explicit Windows software GL | `PASS` for the bounded recorded geometry/poses; PR #31 is now merged in `main@10a47d5e1e95b1b1b261e4c2eb7790f0601f713a` |
 | Native GPU/WGL and Qt backing-store warnings | `BLOCKED`; retain issue #26 and 2D fallback, do not call the native driver repaired |
 | General desktop endurance / leak freedom | `NOT_EVALUATED`; no requirement for another two-hour run; investigate longer only after a concrete symptom |
 | Renderer compatibility beyond tested versions/host | `NOT_EVALUATED`; run exact-source regression before upgrading private pyqtgraph APIs |
 | CAD / physical coordinates, real telemetry identity, LoRa or WiFi hardware, actuation and flight qualification | Unchanged `BLOCKED` / `NOT_EVALUATED`; software rendering cannot supply physical evidence |
 
-Keep the renderer PR Draft for independent final review rather than silently merging the unresolved native-driver issue. Issue #23 and #26 stay open. CAD #22 remains separate; obsolete #21 was already closed and replaced by merged #29, not reopened here.
+Historical disposition note (superseded): PR #31 was merged after its independent review and successful exact-main CI; Issue #26 is closed. This does **not** close the native GPU/WGL blocker documented above. Issue #23 remains OPEN per the owner because interface/physical gates remain; CAD #22 stays separate, and obsolete PR #21 is closed/replaced by merged PR #29.

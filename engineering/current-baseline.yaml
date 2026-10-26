@@ -6,7 +6,49 @@ compatibility_input_commit: "e9510e61b6de518b272ea6fdb8433bbab4c501c5"
 branch_base_commit: "f59dc2c5791ee88f3d853112930de55d0c31f4d3"
 prior_r2_merge: "66861c7c9f0d468e81a2e09c7a354ed6058dd20f"
 
-current_phase: "R2.1 real-asset registry and multi-bench development architecture (software through R3.2 integrated; CAD not started)"
+current_phase: "SYSTEM-V1 software integration acceptance (R0-R3.2 software gate and offline Ground Station replay); physical qualification and CAD remain evidence-gated"
+
+system_v1_current_software_acceptance:
+  audit_date: "2026-10-26"
+  status: "PARTIALLY_VERIFIED"
+  main_head_after_fetch: "10a47d5e1e95b1b1b261e4c2eb7790f0601f713a"
+  tested_source_head: "233b147adc7a20eff1d9a85a7401820331ea2271"
+  tested_source_branch: "fix/system-v1-telemetry-freshness-20261026"
+  github:
+    exact_main_ci:
+      run_id: 40201519272
+      result: "PASS"
+      tested_sha: "10a47d5e1e95b1b1b261e4c2eb7790f0601f713a"
+    latest_merged_renderer_pr: 31
+    issue_23: "OPEN; owner-directed interface/physical gates remain"
+    issue_22: "OPEN; measurement-gated CAD-V1"
+    issue_26: "CLOSED; native GPU/WGL diagnosis remains a blocker in Issue #23"
+  local_full_check:
+    result: "PASS"
+    exit_code: 0
+    command: ".venv/Scripts/python.exe -u scripts/check.py"
+    test_executions: 505
+    distinct_test_identities: 495
+    repeated_executions: 10
+    all_five_source_build_targets: "PASS"
+    evidence_directory: "engineering/offline-evidence/system_v1/full_check_20261026"
+  ground_station_runtime:
+    status: "PARTIALLY_VERIFIED"
+    assertions: 32
+    qt_exit_code: 0
+    short_observation_seconds: 9.038
+    hardware_connections: 0
+    radio_transmissions: 0
+    control_sends: 0
+    software_opengl_two_synthetic_poses: "3D_RENDER_PASS; explicit bundled software backend only"
+    native_gpu_wgl: "BLOCKED_NOT_VERIFIED"
+    evidence_directory: "engineering/offline-evidence/system_v1/runtime_freshness_20261026"
+  remaining_boundaries:
+    telemetry_freshness: "GUI receipt time of parsed status/sample, not trusted sensor sample age or source identity"
+    r3_adapter: "NEEDS_INTEGRATION; binary offline R3 frames and production text JSON are not directly compatible"
+    recovery: "BLOCKED_UNREACHABLE_THRESHOLD; configured +/-2g versus strict >2.5g"
+    cad: "NOT_STARTED / BLOCKED_BY_MEASUREMENT"
+    hardware_flight_rf: "NOT_EVALUATED; no hardware, RF, actuation, or flight procedure was run"
 
 current_cad_authority:
   record: "engineering/cad-authority.yaml"
@@ -54,12 +96,12 @@ owned_asset_summary:
     - "LoRa 150 mm cable order shown as transaction closed"
 
 current_near_term_priority:
-  first: "GNC historical-hardware recovery and current re-baseline"
-  second: "Avionics historical-configuration recovery and current target reconciliation"
+  first: "SYSTEM-V1 remaining software interface contract: define a versioned, receive-only JSON-to-R3 mapping offline"
+  second: "Independent safety engineering review of the unreachable recovery threshold without production retuning"
   reason:
-    - "The project already owns the necessary low-cost controller, sensor, servo, debug, and prototyping assets."
-    - "Historical cloud records already report successful real-hardware stabilization, sensor reads, servo actuation, and ESP8266 command/telemetry behavior; the task is to recover and re-baseline that capability against current code."
-    - "TVC CAD remains blocked by missing actual EDF/frame geometry."
+    - "The current Ground Station replay and software-only R0-R3.2 checks have exact-source local evidence; no hardware capability is implied."
+    - "The production ESP/Ground Station text contract and R3 binary research frames still lack a common field, unit, sample-time, and source-identity contract."
+    - "TVC CAD remains blocked by missing actual EDF/frame/interface measurements; rejected AI-generated geometry is not authoritative."
 
 current_blockers:
   - id: "R2_1-001"
