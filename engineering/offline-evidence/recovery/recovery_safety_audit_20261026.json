@@ -26,7 +26,7 @@
   },
   "result_sha256": "0c49f4dad4cbca690c7ee8bef8dd8cffb1d7943b2f33945a0e789b5e12508808",
   "schema_version": 1,
-  "source_git_sha": "048d84c3bc6a9b404ed2aee7dd0b18496146f998",
+  "source_git_sha": "5c8e54eeff3897a19b702d19bab8626f32e6c266",
   "source_sha256": {
     "docs/RECOVERY_LOGIC_SAFETY_CHANGE_PROPOSAL.md": "9efc9b1c5ce7f33b053fea81f6397e2434d21ce416b66d7c62f0bbd02721324a",
     "flight_computer/src/flight_fsm.cpp": "bb5052b723a9131482f1c2261266d83322a228bdd116fbbd6b731583af3374d4",
