@@ -1,0 +1,42 @@
+{
+  "artifact_path": "engineering/offline-evidence/recovery/recovery_safety_audit_20261026.json",
+  "audit": "recovery_launch_detection_static_feasibility",
+  "command": "py -3 scripts/recovery_safety_evidence.py --write-evidence 'engineering/offline-evidence/recovery/recovery_safety_audit_20261026.json'",
+  "dependencies": "Python standard library only",
+  "evidence_ceiling": "TESTED_SOFTWARE",
+  "hardware_operation": "NONE",
+  "input_sha256": "69a9752d3a79fd6bd04b5060fbe3f76f5e9cfa1e12de37ecc1f38a8cfc12b1ed",
+  "physical_hardware": false,
+  "python": "3.13.1",
+  "reproduction_command": "py -3 scripts/recovery_safety_evidence.py --write-evidence 'engineering/offline-evidence/recovery/recovery_safety_audit_20261026.json'",
+  "result": {
+    "audit": "recovery_launch_detection_static_feasibility",
+    "caveat": "A numerically reachable threshold is only necessary, not sufficient: axis mounting, dynamics, sample timing, filtering, calibration and physical tests remain unproven.",
+    "configured_expected_counts_per_g": 16384,
+    "configured_full_scale_g": 2,
+    "imu_accel_config_hex": "0x00",
+    "max_abs_numeric_az_g": 2.0,
+    "production_az_counts_per_g": 16384.0,
+    "recovery_qualified": false,
+    "scale_matches_configuration": true,
+    "scope": "single-axis az; configuration and numeric representability only",
+    "status": "BLOCKED_UNREACHABLE_THRESHOLD",
+    "strict_launch_threshold_g": 2.5,
+    "threshold_numerically_reachable": false
+  },
+  "result_sha256": "0c49f4dad4cbca690c7ee8bef8dd8cffb1d7943b2f33945a0e789b5e12508808",
+  "schema_version": 1,
+  "source_git_sha": "048d84c3bc6a9b404ed2aee7dd0b18496146f998",
+  "source_sha256": {
+    "docs/RECOVERY_LOGIC_SAFETY_CHANGE_PROPOSAL.md": "9efc9b1c5ce7f33b053fea81f6397e2434d21ce416b66d7c62f0bbd02721324a",
+    "flight_computer/src/flight_fsm.cpp": "bb5052b723a9131482f1c2261266d83322a228bdd116fbbd6b731583af3374d4",
+    "flight_computer/src/main.cpp": "99645b66062f4776b0010887813d5549d15d309282eab40b8518fee89c05b8c5",
+    "flight_computer/src/sensor_validity.cpp": "b4a1650e08f9ec9b15b571f6472908d69596d6c6edec3db722add0510ab011c6",
+    "scripts/recovery_configuration_audit.py": "12cdf30d5deb3a5c7a15fb0e6ecfb38e5ce82b561799f306dfb28ff77da6cefd",
+    "scripts/recovery_safety_evidence.py": "9600fd341a3e6b4e088ba56f533bf7fd6ac8d18dd2d2237af359f861657d79a4",
+    "scripts/tests/test_recovery_configuration_audit.py": "b8f8891f0691c98fc9ac0954c7d5e59ff3a229d429996dc54d62c850621dce38"
+  },
+  "source_worktree_changes": [],
+  "source_worktree_clean": true,
+  "thresholds_or_actuators_modified": false
+}
