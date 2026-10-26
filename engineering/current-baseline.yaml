@@ -140,6 +140,22 @@ latest_main_post_merge_status:
     tested_sha: "9f202c5f279676c02cd6d0f1ef3e4f71e573b647"
   notes: "PR #36 contains only the deterministic offline replay runbook, current-main evidence and status ledgers; no production control, transport, safety or hardware behavior changed."
 
+system_v1_software_goal_closure:
+  captured_at: "2026-10-27"
+  audit_source_main_sha: "b5001381fe03b334dd21a7bb9cfdff2c0f42b10e"
+  audit_source_main_ci:
+    run_id: 40362346948
+    result: "PASS"
+    tested_sha: "b5001381fe03b334dd21a7bb9cfdff2c0f42b10e"
+  status: "SYSTEM_V1_SOFTWARE_GOAL_COMPLETE"
+  scope: "Goal A-D declared software and offline evidence only; no hardware qualification"
+  remaining_external_gates:
+    - "BLOCKED_UNREACHABLE_THRESHOLD recovery configuration"
+    - "native GPU/WGL rendering"
+    - "physical sensor/ESP/RF/actuator integration and source authentication"
+    - "CAD measurement and manufacturing authority"
+  notes: "This is a dated closure snapshot. Later documentation-only descendant commits do not change production behavior or raise the evidence ceiling. Issue #22 and Issue #23 remain OPEN."
+
 current_cad_authority:
   record: "engineering/cad-authority.yaml"
   status: "NOT_STARTED"

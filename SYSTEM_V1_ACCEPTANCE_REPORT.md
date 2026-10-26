@@ -30,6 +30,20 @@ PR #36 已合并，合并提交为 `9f202c5f279676c02cd6d0f1ef3e4f71e573b647`，
 
 Issue #22、Issue #23 均保持 OPEN；回收判据仍为 `BLOCKED_UNREACHABLE_THRESHOLD`，CAD 仍为 `NOT_STARTED / BLOCKED_BY_MEASUREMENT`，原生 GPU/WGL、真实传感器/执行器、ESP/LoRa 通信和飞行资格仍未验证。
 
+## 2026-10-27 SYSTEM-V1 软件闭环审计
+
+本次闭环审计绑定 `main@b5001381fe03b334dd21a7bb9cfdff2c0f42b10e` 和 main CI
+[40362346948](https://github.com/guo6x/AI-rocket/actions/runs/40362346948)，结果为
+`SUCCESS`。PR #37 的合并内容仍是文档/状态台账，不改变生产行为。
+
+在声明范围内，Goal A–D 已达到 `SYSTEM_V1_SOFTWARE_GOAL_COMPLETE`：串口前缀与
+畸形输入恢复、只读离线回放、故障/中断/恢复、命令发送隔离、JSON↔R3 离线契约、
+R3.0–R3.2 负例、完整软件 gate、五个源码构建及可追溯证据均已存在。该结论不等于
+`VERIFIED_HARDWARE`、来源认证、真实样本年龄、真实 RF/ESP、执行器、回收或飞行资格。
+
+后续仅文档合并产生的 descendant SHA 不应被误读为新的生产行为测试；行为证据仍按
+各自 exact source、CI run 和收据路径引用。Issue #22、Issue #23 继续保持 OPEN。
+
 > **历史状态快照：2026-10-26（已由上方串口修复更新 supersede）。** 本节保留此前 `10a47d5…` / `233b147…` 的状态与证据，供审计追溯；上方串口兼容性更新才是当前交付状态。后文的原 S0–S3 验收记录冻结在 2026-10-25，同样不得把其中当时的 main/PR/测试/3D 状态当作当前状态。
 
 ## 2026-10-26 历史状态快照（superseded）
