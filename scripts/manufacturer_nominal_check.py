@@ -117,6 +117,42 @@ CONFLICT_GROUPS = {
     "ESP32S3-MEMORY-SUFFIX",
 }
 
+# These are the source-bound parameter IDs that make up each known conflict.
+# Keeping the binding in the checker prevents a row from escaping the guard by
+# simply clearing its mutable ``conflict`` and ``conflict_group`` fields.  A
+# future resolution must be explicit and reviewable in the registry's
+# ``conflict_resolutions`` section; it cannot be created by editing a row only.
+KNOWN_CONFLICT_PARAMETER_IDS = {
+    "SG92R-GEAR-MATERIAL-AND-WEIGHT": frozenset(
+        {
+            "MN-SG92R-LENGTH",
+            "MN-SG92R-WIDTH",
+            "MN-SG92R-HEIGHT",
+            "MN-SG92R-SUPPLY",
+            "MN-SG92R-STALL-TORQUE",
+            "MN-SG92R-GEAR-MATERIAL-PAGE",
+        }
+    ),
+    "ESP32S3-MEMORY-SUFFIX": frozenset(
+        {
+            "MN-ESP32S3-N16R8V-FLASH",
+            "MN-ESP32S3-N16R8V-PSRAM",
+        }
+    ),
+}
+CONFLICT_BINDING_STATES = {"ACTIVE", "RESOLVED"}
+RESOLUTION_REQUIRED_FIELDS = {
+    "conflict_group",
+    "parameter_ids",
+    "status",
+    "resolution_id",
+    "review_reference",
+    "source_url",
+    "source_revision",
+    "resolved_on",
+    "decision",
+}
+
 
 def load_yaml(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as handle:
@@ -174,6 +210,7 @@ def validate_documents(
         errors.append("manufacturer_nominal.parameters must be a nonempty list")
         parameters = []
     seen_ids: set[str] = set()
+    rows_by_id: dict[str, dict[str, Any]] = {}
     nominal_assets: set[str] = set()
     groups: dict[str, list[dict[str, Any]]] = {}
     for index, row in enumerate(parameters):
@@ -190,6 +227,7 @@ def validate_documents(
             errors.append(f"duplicate manufacturer nominal id {parameter_id}")
         else:
             seen_ids.add(parameter_id)
+            rows_by_id[parameter_id] = row
 
         asset_id = row.get("asset_id")
         if not _is_nonempty_string(asset_id) or asset_id not in asset_ids:
@@ -248,6 +286,8 @@ def validate_documents(
         group = row.get("conflict_group")
         if group is not None and not _is_nonempty_string(group):
             errors.append(f"{prefix}.conflict_group must be null or a nonempty string")
+        elif _is_nonempty_string(group) and group not in CONFLICT_GROUPS:
+            errors.append(f"{prefix}.conflict_group is not a declared conflict group")
         note = row.get("conflict_note")
         if note is not None and not isinstance(note, str):
             errors.append(f"{prefix}.conflict_note must be null or a string")
@@ -259,10 +299,145 @@ def validate_documents(
             errors.append(f"{prefix} known conflict group cannot be silently confirmed")
         if group in CONFLICT_GROUPS:
             groups.setdefault(group, []).append(row)
+            expected_ids = KNOWN_CONFLICT_PARAMETER_IDS.get(group, frozenset())
+            if parameter_id not in expected_ids:
+                errors.append(f"{prefix}.id is not part of immutable conflict binding {group}")
 
     for group, rows in sorted(groups.items()):
         if len(rows) < 2:
             errors.append(f"conflict group {group} must retain at least two source-bound rows")
+
+    # Validate immutable parameter-to-conflict bindings before accepting the
+    # mutable row flags.  A row that clears ``conflict`` and ``conflict_group``
+    # is still rejected while its known binding is ACTIVE.  The only supported
+    # escape hatch is a complete, source-bound resolution record reviewed in a
+    # separate registry section.
+    bindings = layer.get("conflict_bindings")
+    binding_by_group: dict[str, dict[str, Any]] = {}
+    if not isinstance(bindings, list) or not bindings:
+        errors.append("manufacturer_nominal.conflict_bindings must be a nonempty list")
+        bindings = []
+    for index, binding in enumerate(bindings):
+        prefix = f"manufacturer_nominal.conflict_bindings[{index}]"
+        if not isinstance(binding, dict):
+            errors.append(f"{prefix} must be a mapping")
+            continue
+        for field in ("conflict_group", "parameter_ids", "status", "note"):
+            if field not in binding:
+                errors.append(f"{prefix} missing {field}")
+        group = binding.get("conflict_group")
+        if not _is_nonempty_string(group) or group not in CONFLICT_GROUPS:
+            errors.append(f"{prefix}.conflict_group must identify a known conflict group")
+            continue
+        if group in binding_by_group:
+            errors.append(f"duplicate conflict binding {group}")
+        else:
+            binding_by_group[group] = binding
+        parameter_ids = binding.get("parameter_ids")
+        if not isinstance(parameter_ids, list) or not parameter_ids or not all(
+            _is_nonempty_string(parameter_id) for parameter_id in parameter_ids
+        ):
+            errors.append(f"{prefix}.parameter_ids must be a nonempty string list")
+        else:
+            if len(set(parameter_ids)) != len(parameter_ids):
+                errors.append(f"{prefix}.parameter_ids must not contain duplicates")
+            expected_ids = KNOWN_CONFLICT_PARAMETER_IDS.get(group, frozenset())
+            if set(parameter_ids) != expected_ids:
+                errors.append(f"{prefix}.parameter_ids must match the immutable known binding for {group}")
+            unknown_ids = sorted(set(parameter_ids) - seen_ids)
+            errors.extend(f"{prefix}.parameter_ids references unknown parameter {parameter_id}" for parameter_id in unknown_ids)
+        status = binding.get("status")
+        if status not in CONFLICT_BINDING_STATES:
+            errors.append(f"{prefix}.status must be ACTIVE or RESOLVED")
+        if not _is_nonempty_string(binding.get("note")):
+            errors.append(f"{prefix}.note must be a nonempty string")
+
+    resolutions = layer.get("conflict_resolutions")
+    resolution_by_group: dict[str, dict[str, Any]] = {}
+    if resolutions is None:
+        resolutions = []
+    if not isinstance(resolutions, list):
+        errors.append("manufacturer_nominal.conflict_resolutions must be a list")
+        resolutions = []
+    for index, resolution in enumerate(resolutions):
+        prefix = f"manufacturer_nominal.conflict_resolutions[{index}]"
+        if not isinstance(resolution, dict):
+            errors.append(f"{prefix} must be a mapping")
+            continue
+        missing = sorted(RESOLUTION_REQUIRED_FIELDS - resolution.keys())
+        errors.extend(f"{prefix} missing {field}" for field in missing)
+        group = resolution.get("conflict_group")
+        if not _is_nonempty_string(group) or group not in CONFLICT_GROUPS:
+            errors.append(f"{prefix}.conflict_group must identify a known conflict group")
+            continue
+        if group in resolution_by_group:
+            errors.append(f"duplicate conflict resolution {group}")
+        else:
+            resolution_by_group[group] = resolution
+        if resolution.get("status") != "RESOLVED":
+            errors.append(f"{prefix}.status must be RESOLVED")
+        parameter_ids = resolution.get("parameter_ids")
+        expected_ids = KNOWN_CONFLICT_PARAMETER_IDS.get(group, frozenset())
+        if (
+            not isinstance(parameter_ids, list)
+            or not all(_is_nonempty_string(parameter_id) for parameter_id in parameter_ids)
+            or set(parameter_ids) != expected_ids
+        ):
+            errors.append(f"{prefix}.parameter_ids must match the immutable known binding for {group}")
+        if not _is_nonempty_string(resolution.get("resolution_id")):
+            errors.append(f"{prefix}.resolution_id must be a nonempty string")
+        if not _is_nonempty_string(resolution.get("review_reference")):
+            errors.append(f"{prefix}.review_reference must be a nonempty string")
+        source_url = resolution.get("source_url")
+        if not _is_nonempty_string(source_url) or not source_url.startswith("https://"):
+            errors.append(f"{prefix}.source_url must be a nonempty https URL")
+        source_revision = resolution.get("source_revision")
+        if not _is_nonempty_string(source_revision) or source_revision.strip().upper() in {"UNKNOWN", "N/A"}:
+            errors.append(f"{prefix}.source_revision must be a nonempty string")
+        if not _is_nonempty_string(resolution.get("resolved_on")):
+            errors.append(f"{prefix}.resolved_on must be a nonempty string")
+        if not _is_nonempty_string(resolution.get("decision")):
+            errors.append(f"{prefix}.decision must be a nonempty string")
+
+    for group, expected_ids in sorted(KNOWN_CONFLICT_PARAMETER_IDS.items()):
+        binding = binding_by_group.get(group)
+        if binding is None:
+            errors.append(f"known conflict group {group} is missing its binding record")
+            continue
+        status = binding.get("status")
+        resolution = resolution_by_group.get(group)
+        if status == "ACTIVE":
+            if resolution is not None:
+                errors.append(f"active conflict group {group} cannot carry a resolution record")
+            for parameter_id in sorted(expected_ids):
+                row = rows_by_id.get(parameter_id)
+                if row is None:
+                    errors.append(f"known conflict parameter {parameter_id} is missing from the registry")
+                    continue
+                if (
+                    row.get("conflict_group") != group
+                    or row.get("conflict") is not True
+                    or row.get("model_status") != "VERSION_CONFLICT"
+                ):
+                    errors.append(
+                        f"known conflict parameter {parameter_id} must retain conflict=true, "
+                        f"model_status VERSION_CONFLICT and conflict_group {group}"
+                    )
+        elif status == "RESOLVED":
+            if resolution is None:
+                errors.append(f"resolved conflict group {group} requires an auditable resolution record")
+            for parameter_id in sorted(expected_ids):
+                row = rows_by_id.get(parameter_id)
+                if row is None:
+                    errors.append(f"resolved conflict parameter {parameter_id} is missing from the registry")
+                    continue
+                if row.get("conflict") is True or row.get("conflict_group") is not None or row.get("model_status") == "VERSION_CONFLICT":
+                    errors.append(f"resolved conflict parameter {parameter_id} still carries conflict metadata")
+
+    for group in sorted(resolution_by_group):
+        binding = binding_by_group.get(group)
+        if binding is None or binding.get("status") != "RESOLVED":
+            errors.append(f"conflict resolution {group} requires binding status RESOLVED")
 
     unresolved = layer.get("unresolved_assets")
     unresolved_ids: set[str] = set()

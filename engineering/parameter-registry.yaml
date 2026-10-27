@@ -251,6 +251,27 @@ manufacturer_nominal:
   recorded_on: "2026-10-27"
   evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
   source_index: "engineering/references/purchased-component-nominal-specs-20261027.md"
+  # Immutable parameter-to-conflict bindings are checked by
+  # scripts/manufacturer_nominal_check.py.  Clearing a row's conflict fields
+  # requires a separately reviewed entry under conflict_resolutions.
+  conflict_bindings:
+    - conflict_group: "SG92R-GEAR-MATERIAL-AND-WEIGHT"
+      status: "ACTIVE"
+      parameter_ids:
+        - "MN-SG92R-LENGTH"
+        - "MN-SG92R-WIDTH"
+        - "MN-SG92R-HEIGHT"
+        - "MN-SG92R-SUPPLY"
+        - "MN-SG92R-STALL-TORQUE"
+        - "MN-SG92R-GEAR-MATERIAL-PAGE"
+      note: "Order description says metal gear while the cited TowerPro page describes carbon-reinforced POM gear and conflicting weight text."
+    - conflict_group: "ESP32S3-MEMORY-SUFFIX"
+      status: "ACTIVE"
+      parameter_ids:
+        - "MN-ESP32S3-N16R8V-FLASH"
+        - "MN-ESP32S3-N16R8V-PSRAM"
+      note: "The source describes N16R8V while the purchased registry label is N16R8; the suffix distinction remains unresolved."
+  conflict_resolutions: []
   parameters:
     - id: "MN-APM32F103-CORE-ARCH"
       asset_id: "AST-MCU-APM32-001"
