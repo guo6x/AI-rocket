@@ -240,3 +240,850 @@ parameters:
     confidence: "none"
     supersedes: null
     conflicts_with: []
+
+# Machine-readable manufacturer nominal references.  These rows are deliberately
+# separate from the historical/prototype parameters above and from the
+# OBSERVED/MEASURED records under engineering/as-built/.  A nominal value is a
+# source-bound design reference only; it never establishes the identity or
+# geometry of the purchased item.
+manufacturer_nominal:
+  schema_version: 1
+  recorded_on: "2026-10-27"
+  evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+  source_index: "engineering/references/purchased-component-nominal-specs-20261027.md"
+  parameters:
+    - id: "MN-APM32F103-CORE-ARCH"
+      asset_id: "AST-MCU-APM32-001"
+      model_claim: "APM32F103 series (ordered APM32F103C8T6 core board)"
+      manufacturer: "Geehy"
+      property: "core_architecture"
+      value: "Arm Cortex-M3"
+      unit: "text"
+      applicability: "APM32F103 family reference; not proof of the board layout, package, clock or pin routing."
+      source_url: "https://www.gee-hy.com/product/fifth/APM32F103.html"
+      source_revision: "Geehy APM32F103 series product page; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "UNRESOLVED_VARIANT"
+      conflict: false
+      conflict_group: null
+      conflict_note: "Series material does not identify the purchased core-board variant."
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "electrical_and_software_reference_only"
+
+    - id: "MN-APM32F103-MAX-CLOCK"
+      asset_id: "AST-MCU-APM32-001"
+      model_claim: "APM32F103 series (ordered APM32F103C8T6 core board)"
+      manufacturer: "Geehy"
+      property: "maximum_clock_frequency"
+      value: 96
+      unit: "MHz"
+      applicability: "APM32F103 family maximum stated by the manufacturer; not a measured or board-specific clock."
+      source_url: "https://www.gee-hy.com/product/fifth/APM32F103.html"
+      source_revision: "Geehy APM32F103 series product page; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "UNRESOLVED_VARIANT"
+      conflict: false
+      conflict_group: null
+      conflict_note: "Exact C8T6 sub-family and clock configuration remain unconfirmed."
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "electrical_and_software_reference_only"
+
+    - id: "MN-APM32F103-SUPPLY-MIN"
+      asset_id: "AST-MCU-APM32-001"
+      model_claim: "APM32F103 series (ordered APM32F103C8T6 core board)"
+      manufacturer: "Geehy"
+      property: "supply_voltage_min"
+      value: 2.0
+      unit: "V"
+      applicability: "APM32F103 family IC supply range; not the core-board regulator or wiring limit."
+      source_url: "https://www.gee-hy.com/product/fifth/APM32F103.html"
+      source_revision: "Geehy APM32F103 series product page; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "UNRESOLVED_VARIANT"
+      conflict: false
+      conflict_group: null
+      conflict_note: "Board-level supply path is unknown."
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "chip_electrical_only"
+
+    - id: "MN-APM32F103-SUPPLY-MAX"
+      asset_id: "AST-MCU-APM32-001"
+      model_claim: "APM32F103 series (ordered APM32F103C8T6 core board)"
+      manufacturer: "Geehy"
+      property: "supply_voltage_max"
+      value: 3.6
+      unit: "V"
+      applicability: "APM32F103 family IC supply range; not the core-board regulator or wiring limit."
+      source_url: "https://www.gee-hy.com/product/fifth/APM32F103.html"
+      source_revision: "Geehy APM32F103 series product page; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "UNRESOLVED_VARIANT"
+      conflict: false
+      conflict_group: null
+      conflict_note: "Board-level supply path is unknown."
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "chip_electrical_only"
+
+    - id: "MN-ESP32S3-N16R8V-FLASH"
+      asset_id: "AST-MCU-ESP32S3-001"
+      model_claim: "ESP32-S3-DevKitC-1 v1.0 N16R8V"
+      manufacturer: "Espressif"
+      property: "flash_capacity"
+      value: 16
+      unit: "MB"
+      applicability: "Historical v1.0 N16R8V ordering entry only; the registry says N16R8 without the V suffix."
+      source_url: "https://docs.espressif.com/projects/esp-idf/en/v5.1/esp32s3/hw-reference/esp32s3/user-guide-devkitc-1-v1.0.html"
+      source_revision: "ESP32-S3-DevKitC-1 v1.0 user guide; N16R8V entry; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "VERSION_CONFLICT"
+      conflict: true
+      conflict_group: "ESP32S3-MEMORY-SUFFIX"
+      conflict_note: "N16R8V in the v1.0 guide is not interchangeable with the ordered N16R8 label; exact board revision is unresolved."
+      design_use: "REFERENCE_ONLY_NO_FIT"
+      design_scope: "memory_reference_only"
+
+    - id: "MN-ESP32S3-N16R8V-PSRAM"
+      asset_id: "AST-MCU-ESP32S3-001"
+      model_claim: "ESP32-S3-DevKitC-1 v1.0 N16R8V"
+      manufacturer: "Espressif"
+      property: "psram_capacity"
+      value: 8
+      unit: "MB"
+      applicability: "Historical v1.0 N16R8V ordering entry only; the registry says N16R8 without the V suffix."
+      source_url: "https://docs.espressif.com/projects/esp-idf/en/v5.1/esp32s3/hw-reference/esp32s3/user-guide-devkitc-1-v1.0.html"
+      source_revision: "ESP32-S3-DevKitC-1 v1.0 user guide; N16R8V entry; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "VERSION_CONFLICT"
+      conflict: true
+      conflict_group: "ESP32S3-MEMORY-SUFFIX"
+      conflict_note: "N16R8V in the v1.0 guide is not interchangeable with the ordered N16R8 label; exact board revision is unresolved."
+      design_use: "REFERENCE_ONLY_NO_FIT"
+      design_scope: "memory_reference_only"
+
+    - id: "MN-ESP01S-LENGTH"
+      asset_id: "AST-WIFI-ESP01S-001"
+      model_claim: "Ai-Thinker ESP-01/ESP-01S module"
+      manufacturer: "Ai-Thinker"
+      property: "module_length"
+      value: 24.7
+      unit: "mm"
+      applicability: "ESP-01/01S module envelope including the pin header; excludes any adapter board or wiring."
+      source_url: "https://docs.ai-thinker.com/_media/esp8266/esp8266_series_modules_user_manual_en.pdf"
+      source_revision: "Ai-Thinker ESP8266 series modules user manual; revision not stated; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "CONFIRMED_SERIES"
+      conflict: false
+      conflict_group: null
+      conflict_note: null
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "module_reference_envelope_only"
+
+    - id: "MN-ESP01S-WIDTH"
+      asset_id: "AST-WIFI-ESP01S-001"
+      model_claim: "Ai-Thinker ESP-01/ESP-01S module"
+      manufacturer: "Ai-Thinker"
+      property: "module_width"
+      value: 14.4
+      unit: "mm"
+      applicability: "ESP-01/01S module envelope including the pin header; excludes any adapter board or wiring."
+      source_url: "https://docs.ai-thinker.com/_media/esp8266/esp8266_series_modules_user_manual_en.pdf"
+      source_revision: "Ai-Thinker ESP8266 series modules user manual; revision not stated; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "CONFIRMED_SERIES"
+      conflict: false
+      conflict_group: null
+      conflict_note: null
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "module_reference_envelope_only"
+
+    - id: "MN-ESP01S-HEIGHT"
+      asset_id: "AST-WIFI-ESP01S-001"
+      model_claim: "Ai-Thinker ESP-01/ESP-01S module"
+      manufacturer: "Ai-Thinker"
+      property: "module_height"
+      value: 11.0
+      unit: "mm"
+      applicability: "ESP-01/01S module envelope including the pin header; excludes any adapter board or wiring."
+      source_url: "https://docs.ai-thinker.com/_media/esp8266/esp8266_series_modules_user_manual_en.pdf"
+      source_revision: "Ai-Thinker ESP8266 series modules user manual; revision not stated; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "CONFIRMED_SERIES"
+      conflict: false
+      conflict_group: null
+      conflict_note: null
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "module_reference_envelope_only"
+
+    - id: "MN-ESP01S-PITCH"
+      asset_id: "AST-WIFI-ESP01S-001"
+      model_claim: "Ai-Thinker ESP-01/ESP-01S module"
+      manufacturer: "Ai-Thinker"
+      property: "header_pitch"
+      value: 2.54
+      unit: "mm"
+      applicability: "ESP-01/01S nominal header pitch; does not establish the mating connector or adapter geometry."
+      source_url: "https://docs.ai-thinker.com/_media/esp8266/esp8266_series_modules_user_manual_en.pdf"
+      source_revision: "Ai-Thinker ESP8266 series modules user manual; revision not stated; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "CONFIRMED_SERIES"
+      conflict: false
+      conflict_group: null
+      conflict_note: null
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "module_interface_reference_only"
+
+    - id: "MN-ESP01S-WIFI-BAND"
+      asset_id: "AST-WIFI-ESP01S-001"
+      model_claim: "ESP8266 family / ESP-01S module"
+      manufacturer: "Ai-Thinker"
+      property: "wifi_frequency"
+      value: 2.4
+      unit: "GHz"
+      applicability: "ESP8266 family 2.4 GHz Wi-Fi reference; not a proof of current radio operation or antenna performance."
+      source_url: "https://docs.ai-thinker.com/en/esp8266/index.html"
+      source_revision: "Ai-Thinker ESP8266 series product index; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "CONFIRMED_SERIES"
+      conflict: false
+      conflict_group: null
+      conflict_note: null
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "radio_interface_reference_only"
+
+    - id: "MN-MPU9250-AXIS-COUNT"
+      asset_id: "AST-SENSOR-GY91-001"
+      model_claim: "MPU-9250 die/package on ordered GY-91 variant"
+      manufacturer: "TDK InvenSense"
+      property: "axis_count"
+      value: 9
+      unit: "count"
+      applicability: "MPU-9250 chip reference only; does not identify the populated GY-91 board or its axis orientation."
+      source_url: "https://www.invensense.tdk.com/en-us/news-media/press/invensense-sets-new-industry-standard-worlds-smallest-lowest-power-integrated-9-axis"
+      source_revision: "TDK InvenSense MPU-9250 product announcement; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "UNRESOLVED_VARIANT"
+      conflict: false
+      conflict_group: null
+      conflict_note: "The order names MPU9250, while current firmware historically used MPU6500-style handling; identity remains unverified."
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "chip_function_reference_only"
+
+    - id: "MN-MPU9250-PACKAGE-LENGTH"
+      asset_id: "AST-SENSOR-GY91-001"
+      model_claim: "MPU-9250 chip/package on ordered GY-91 variant"
+      manufacturer: "TDK InvenSense"
+      property: "package_length"
+      value: 3.0
+      unit: "mm"
+      applicability: "MPU-9250 package only; not the GY-91 module PCB or mounting envelope."
+      source_url: "https://www.invensense.tdk.com/en-us/news-media/press/invensense-sets-new-industry-standard-worlds-smallest-lowest-power-integrated-9-axis"
+      source_revision: "TDK InvenSense MPU-9250 product announcement; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "UNRESOLVED_VARIANT"
+      conflict: false
+      conflict_group: null
+      conflict_note: "Package dimensions must not be substituted for a module dimension."
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "chip_package_reference_only"
+
+    - id: "MN-MPU9250-PACKAGE-WIDTH"
+      asset_id: "AST-SENSOR-GY91-001"
+      model_claim: "MPU-9250 chip/package on ordered GY-91 variant"
+      manufacturer: "TDK InvenSense"
+      property: "package_width"
+      value: 3.0
+      unit: "mm"
+      applicability: "MPU-9250 package only; not the GY-91 module PCB or mounting envelope."
+      source_url: "https://www.invensense.tdk.com/en-us/news-media/press/invensense-sets-new-industry-standard-worlds-smallest-lowest-power-integrated-9-axis"
+      source_revision: "TDK InvenSense MPU-9250 product announcement; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "UNRESOLVED_VARIANT"
+      conflict: false
+      conflict_group: null
+      conflict_note: "Package dimensions must not be substituted for a module dimension."
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "chip_package_reference_only"
+
+    - id: "MN-MPU9250-PACKAGE-HEIGHT"
+      asset_id: "AST-SENSOR-GY91-001"
+      model_claim: "MPU-9250 chip/package on ordered GY-91 variant"
+      manufacturer: "TDK InvenSense"
+      property: "package_height"
+      value: 1.0
+      unit: "mm"
+      applicability: "MPU-9250 package only; not the GY-91 module PCB or mounting envelope."
+      source_url: "https://www.invensense.tdk.com/en-us/news-media/press/invensense-sets-new-industry-standard-worlds-smallest-lowest-power-integrated-9-axis"
+      source_revision: "TDK InvenSense MPU-9250 product announcement; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "UNRESOLVED_VARIANT"
+      conflict: false
+      conflict_group: null
+      conflict_note: "Package dimensions must not be substituted for a module dimension."
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "chip_package_reference_only"
+
+    - id: "MN-BMP280-PACKAGE-LENGTH"
+      asset_id: "AST-SENSOR-GY91-001"
+      model_claim: "BMP280 chip/package on ordered GY-91 variant"
+      manufacturer: "Bosch Sensortec"
+      property: "package_length"
+      value: 2.0
+      unit: "mm"
+      applicability: "BMP280 package only; not the GY-91 module PCB or mounting envelope."
+      source_url: "https://www.bosch-sensortec.com/products/environmental-sensors/pressure-sensors/bmp280/"
+      source_revision: "Bosch BMP280 product page; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "UNRESOLVED_VARIANT"
+      conflict: false
+      conflict_group: null
+      conflict_note: "Package dimensions must not be substituted for a module dimension."
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "chip_package_reference_only"
+
+    - id: "MN-BMP280-PACKAGE-WIDTH"
+      asset_id: "AST-SENSOR-GY91-001"
+      model_claim: "BMP280 chip/package on ordered GY-91 variant"
+      manufacturer: "Bosch Sensortec"
+      property: "package_width"
+      value: 2.5
+      unit: "mm"
+      applicability: "BMP280 package only; not the GY-91 module PCB or mounting envelope."
+      source_url: "https://www.bosch-sensortec.com/products/environmental-sensors/pressure-sensors/bmp280/"
+      source_revision: "Bosch BMP280 product page; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "UNRESOLVED_VARIANT"
+      conflict: false
+      conflict_group: null
+      conflict_note: "Package dimensions must not be substituted for a module dimension."
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "chip_package_reference_only"
+
+    - id: "MN-BMP280-PACKAGE-HEIGHT"
+      asset_id: "AST-SENSOR-GY91-001"
+      model_claim: "BMP280 chip/package on ordered GY-91 variant"
+      manufacturer: "Bosch Sensortec"
+      property: "package_height"
+      value: 0.95
+      unit: "mm"
+      applicability: "BMP280 package only; not the GY-91 module PCB or mounting envelope."
+      source_url: "https://www.bosch-sensortec.com/products/environmental-sensors/pressure-sensors/bmp280/"
+      source_revision: "Bosch BMP280 product page; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "UNRESOLVED_VARIANT"
+      conflict: false
+      conflict_group: null
+      conflict_note: "Package dimensions must not be substituted for a module dimension."
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "chip_package_reference_only"
+
+    - id: "MN-BMP280-INTERFACE-I2C-SPI"
+      asset_id: "AST-SENSOR-GY91-001"
+      model_claim: "BMP280 chip on ordered GY-91 variant"
+      manufacturer: "Bosch Sensortec"
+      property: "digital_interfaces"
+      value: "I2C/SPI"
+      unit: "text"
+      applicability: "BMP280 chip interface options; does not establish the GY-91 board wiring or address strap."
+      source_url: "https://www.bosch-sensortec.com/products/environmental-sensors/pressure-sensors/bmp280/"
+      source_revision: "Bosch BMP280 product page; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "UNRESOLVED_VARIANT"
+      conflict: false
+      conflict_group: null
+      conflict_note: null
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "chip_interface_reference_only"
+
+    - id: "MN-BMP280-PRESSURE-MIN"
+      asset_id: "AST-SENSOR-GY91-001"
+      model_claim: "BMP280 chip on ordered GY-91 variant"
+      manufacturer: "Bosch Sensortec"
+      property: "pressure_range_min"
+      value: 300
+      unit: "hPa"
+      applicability: "BMP280 chip nominal pressure range; not a calibrated module or flight-environment qualification."
+      source_url: "https://www.bosch-sensortec.com/products/environmental-sensors/pressure-sensors/bmp280/"
+      source_revision: "Bosch BMP280 product page; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "UNRESOLVED_VARIANT"
+      conflict: false
+      conflict_group: null
+      conflict_note: null
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "chip_sensor_reference_only"
+
+    - id: "MN-BMP280-PRESSURE-MAX"
+      asset_id: "AST-SENSOR-GY91-001"
+      model_claim: "BMP280 chip on ordered GY-91 variant"
+      manufacturer: "Bosch Sensortec"
+      property: "pressure_range_max"
+      value: 1100
+      unit: "hPa"
+      applicability: "BMP280 chip nominal pressure range; not a calibrated module or flight-environment qualification."
+      source_url: "https://www.bosch-sensortec.com/products/environmental-sensors/pressure-sensors/bmp280/"
+      source_revision: "Bosch BMP280 product page; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "UNRESOLVED_VARIANT"
+      conflict: false
+      conflict_group: null
+      conflict_note: null
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "chip_sensor_reference_only"
+
+    - id: "MN-SG92R-LENGTH"
+      asset_id: "AST-SERVO-SG92R-001"
+      model_claim: "TowerPro SG92R product-page reference"
+      manufacturer: "TowerPro"
+      property: "body_length"
+      value: 23.0
+      unit: "mm"
+      applicability: "Manufacturer SG92R page only; order description says metal gear while the page describes carbon-reinforced POM gear."
+      source_url: "https://torqpro.com/product/sg92r/"
+      source_revision: "TowerPro SG92R product page; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "VERSION_CONFLICT"
+      conflict: true
+      conflict_group: "SG92R-GEAR-MATERIAL-AND-WEIGHT"
+      conflict_note: "Nominal body dimensions are not accepted as either servo unit's measured envelope."
+      design_use: "REFERENCE_ONLY_NO_FIT"
+      design_scope: "nominal_product_reference_only"
+
+    - id: "MN-SG92R-WIDTH"
+      asset_id: "AST-SERVO-SG92R-001"
+      model_claim: "TowerPro SG92R product-page reference"
+      manufacturer: "TowerPro"
+      property: "body_width"
+      value: 12.2
+      unit: "mm"
+      applicability: "Manufacturer SG92R page only; order description says metal gear while the page describes carbon-reinforced POM gear."
+      source_url: "https://torqpro.com/product/sg92r/"
+      source_revision: "TowerPro SG92R product page; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "VERSION_CONFLICT"
+      conflict: true
+      conflict_group: "SG92R-GEAR-MATERIAL-AND-WEIGHT"
+      conflict_note: "Nominal body dimensions are not accepted as either servo unit's measured envelope."
+      design_use: "REFERENCE_ONLY_NO_FIT"
+      design_scope: "nominal_product_reference_only"
+
+    - id: "MN-SG92R-HEIGHT"
+      asset_id: "AST-SERVO-SG92R-001"
+      model_claim: "TowerPro SG92R product-page reference"
+      manufacturer: "TowerPro"
+      property: "body_height"
+      value: 27.0
+      unit: "mm"
+      applicability: "Manufacturer SG92R page only; order description says metal gear while the page describes carbon-reinforced POM gear."
+      source_url: "https://torqpro.com/product/sg92r/"
+      source_revision: "TowerPro SG92R product page; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "VERSION_CONFLICT"
+      conflict: true
+      conflict_group: "SG92R-GEAR-MATERIAL-AND-WEIGHT"
+      conflict_note: "Nominal body dimensions are not accepted as either servo unit's measured envelope."
+      design_use: "REFERENCE_ONLY_NO_FIT"
+      design_scope: "nominal_product_reference_only"
+
+    - id: "MN-SG92R-SUPPLY"
+      asset_id: "AST-SERVO-SG92R-001"
+      model_claim: "TowerPro SG92R product-page reference"
+      manufacturer: "TowerPro"
+      property: "nominal_supply_voltage"
+      value: 4.8
+      unit: "V"
+      applicability: "Manufacturer page nominal value; not a safe installed power limit for the purchased units."
+      source_url: "https://torqpro.com/product/sg92r/"
+      source_revision: "TowerPro SG92R product page; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "VERSION_CONFLICT"
+      conflict: true
+      conflict_group: "SG92R-GEAR-MATERIAL-AND-WEIGHT"
+      conflict_note: "Order/model conflict remains unresolved."
+      design_use: "REFERENCE_ONLY_NO_FIT"
+      design_scope: "nominal_electrical_reference_only"
+
+    - id: "MN-SG92R-STALL-TORQUE"
+      asset_id: "AST-SERVO-SG92R-001"
+      model_claim: "TowerPro SG92R product-page reference"
+      manufacturer: "TowerPro"
+      property: "stall_torque"
+      value: 2.5
+      unit: "kgf·cm"
+      applicability: "Manufacturer page nominal stall torque; not a measured response, thermal limit or mechanism qualification."
+      source_url: "https://torqpro.com/product/sg92r/"
+      source_revision: "TowerPro SG92R product page; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "VERSION_CONFLICT"
+      conflict: true
+      conflict_group: "SG92R-GEAR-MATERIAL-AND-WEIGHT"
+      conflict_note: "Order/model conflict remains unresolved; page also contains 9 g / 12 g text variation."
+      design_use: "REFERENCE_ONLY_NO_FIT"
+      design_scope: "nominal_product_reference_only"
+
+    - id: "MN-SG92R-GEAR-MATERIAL-PAGE"
+      asset_id: "AST-SERVO-SG92R-001"
+      model_claim: "TowerPro SG92R product-page reference"
+      manufacturer: "TowerPro"
+      property: "gear_material"
+      value: "carbon-reinforced POM"
+      unit: "text"
+      applicability: "Manufacturer product-page claim; conflicts with the purchase description 'metal gear'."
+      source_url: "https://torqpro.com/product/sg92r/"
+      source_revision: "TowerPro SG92R product page; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "VERSION_CONFLICT"
+      conflict: true
+      conflict_group: "SG92R-GEAR-MATERIAL-AND-WEIGHT"
+      conflict_note: "Both claims are preserved; neither is promoted to the identity of servo unit U1/U2."
+      design_use: "REFERENCE_ONLY_NO_FIT"
+      design_scope: "variant_resolution_required"
+
+    - id: "MN-LM2596-INPUT-MIN"
+      asset_id: "AST-POWER-LM2596-001"
+      model_claim: "TI LM2596 switching-regulator IC"
+      manufacturer: "Texas Instruments"
+      property: "ic_input_voltage_min"
+      value: 4.5
+      unit: "V"
+      applicability: "LM2596 IC rating only; not the assembled seller module input range, thermal path or protection."
+      source_url: "https://www.ti.com/product/LM2596"
+      source_revision: "TI LM2596 product page; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "CONFIRMED_SERIES"
+      conflict: false
+      conflict_group: null
+      conflict_note: "The purchased adjustable buck board remains a separate unresolved product."
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "chip_electrical_only"
+
+    - id: "MN-LM2596-INPUT-MAX"
+      asset_id: "AST-POWER-LM2596-001"
+      model_claim: "TI LM2596 switching-regulator IC"
+      manufacturer: "Texas Instruments"
+      property: "ic_input_voltage_max"
+      value: 40
+      unit: "V"
+      applicability: "LM2596 IC rating only; not the assembled seller module input range, thermal path or protection."
+      source_url: "https://www.ti.com/product/LM2596"
+      source_revision: "TI LM2596 product page; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "CONFIRMED_SERIES"
+      conflict: false
+      conflict_group: null
+      conflict_note: "The purchased adjustable buck board remains a separate unresolved product."
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "chip_electrical_only"
+
+    - id: "MN-LM2596-NOMINAL-CURRENT"
+      asset_id: "AST-POWER-LM2596-001"
+      model_claim: "TI LM2596 switching-regulator IC"
+      manufacturer: "Texas Instruments"
+      property: "ic_nominal_output_current_max"
+      value: 3
+      unit: "A"
+      applicability: "LM2596 IC nominal maximum; not an approval of the assembled module's continuous current or cooling."
+      source_url: "https://www.ti.com/product/LM2596"
+      source_revision: "TI LM2596 product page; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "CONFIRMED_SERIES"
+      conflict: false
+      conflict_group: null
+      conflict_note: "The purchased adjustable buck board remains a separate unresolved product."
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "chip_electrical_only"
+
+    - id: "MN-LM2596-SWITCHING-FREQUENCY"
+      asset_id: "AST-POWER-LM2596-001"
+      model_claim: "TI LM2596 switching-regulator IC"
+      manufacturer: "Texas Instruments"
+      property: "switching_frequency"
+      value: 150
+      unit: "kHz"
+      applicability: "LM2596 IC nominal switching frequency; not a measurement of the purchased module."
+      source_url: "https://www.ti.com/product/LM2596"
+      source_revision: "TI LM2596 product page; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "CONFIRMED_SERIES"
+      conflict: false
+      conflict_group: null
+      conflict_note: null
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "chip_electrical_only"
+
+    - id: "MN-RA02-LENGTH"
+      asset_id: "AST-RF-RA02-001"
+      model_claim: "Ai-Thinker Ra-02 V1.1 SX1278 module"
+      manufacturer: "Ai-Thinker"
+      property: "module_length"
+      value: 17.0
+      unit: "mm"
+      applicability: "Ra-02 V1.1 nominal module envelope; not proof of purchased module revision, antenna match or RF performance."
+      source_url: "https://aithinker-static.oss-cn-shenzhen.aliyuncs.com/docs/Public%20Document%20Center/LoRa/lora/Specification/Ra-02_V1.1%20Specification-20171219.pdf"
+      source_revision: "Ra-02 V1.1 Specification, 2017-12-19"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "UNRESOLVED_VARIANT"
+      conflict: false
+      conflict_group: null
+      conflict_note: "Purchased module label and connector revision remain unverified."
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "module_reference_envelope_only"
+
+    - id: "MN-RA02-WIDTH"
+      asset_id: "AST-RF-RA02-001"
+      model_claim: "Ai-Thinker Ra-02 V1.1 SX1278 module"
+      manufacturer: "Ai-Thinker"
+      property: "module_width"
+      value: 16.0
+      unit: "mm"
+      applicability: "Ra-02 V1.1 nominal module envelope; not proof of purchased module revision, antenna match or RF performance."
+      source_url: "https://aithinker-static.oss-cn-shenzhen.aliyuncs.com/docs/Public%20Document%20Center/LoRa/lora/Specification/Ra-02_V1.1%20Specification-20171219.pdf"
+      source_revision: "Ra-02 V1.1 Specification, 2017-12-19"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "UNRESOLVED_VARIANT"
+      conflict: false
+      conflict_group: null
+      conflict_note: "Purchased module label and connector revision remain unverified."
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "module_reference_envelope_only"
+
+    - id: "MN-RA02-HEIGHT"
+      asset_id: "AST-RF-RA02-001"
+      model_claim: "Ai-Thinker Ra-02 V1.1 SX1278 module"
+      manufacturer: "Ai-Thinker"
+      property: "module_height"
+      value: 3.2
+      unit: "mm"
+      tolerance: 0.1
+      tolerance_unit: "mm"
+      applicability: "Ra-02 V1.1 nominal module envelope; not proof of purchased module revision, antenna match or RF performance."
+      source_url: "https://aithinker-static.oss-cn-shenzhen.aliyuncs.com/docs/Public%20Document%20Center/LoRa/lora/Specification/Ra-02_V1.1%20Specification-20171219.pdf"
+      source_revision: "Ra-02 V1.1 Specification, 2017-12-19"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "UNRESOLVED_VARIANT"
+      conflict: false
+      conflict_group: null
+      conflict_note: "Purchased module label and connector revision remain unverified."
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "module_reference_envelope_only"
+
+    - id: "MN-RA02-FREQUENCY-MIN"
+      asset_id: "AST-RF-RA02-001"
+      model_claim: "Ai-Thinker Ra-02 V1.1 SX1278 module"
+      manufacturer: "Ai-Thinker"
+      property: "radio_frequency_min"
+      value: 410
+      unit: "MHz"
+      applicability: "Ra-02 V1.1 nominal RF band; not a regional approval, antenna result or real-link verification."
+      source_url: "https://aithinker-static.oss-cn-shenzhen.aliyuncs.com/docs/Public%20Document%20Center/LoRa/lora/Specification/Ra-02_V1.1%20Specification-20171219.pdf"
+      source_revision: "Ra-02 V1.1 Specification, 2017-12-19"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "UNRESOLVED_VARIANT"
+      conflict: false
+      conflict_group: null
+      conflict_note: "RF operation remains software-only and hardware-gated."
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "radio_interface_reference_only"
+
+    - id: "MN-RA02-FREQUENCY-MAX"
+      asset_id: "AST-RF-RA02-001"
+      model_claim: "Ai-Thinker Ra-02 V1.1 SX1278 module"
+      manufacturer: "Ai-Thinker"
+      property: "radio_frequency_max"
+      value: 525
+      unit: "MHz"
+      applicability: "Ra-02 V1.1 nominal RF band; not a regional approval, antenna result or real-link verification."
+      source_url: "https://aithinker-static.oss-cn-shenzhen.aliyuncs.com/docs/Public%20Document%20Center/LoRa/lora/Specification/Ra-02_V1.1%20Specification-20171219.pdf"
+      source_revision: "Ra-02 V1.1 Specification, 2017-12-19"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "UNRESOLVED_VARIANT"
+      conflict: false
+      conflict_group: null
+      conflict_note: "RF operation remains software-only and hardware-gated."
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "radio_interface_reference_only"
+
+    - id: "MN-RA02-SUPPLY-MIN"
+      asset_id: "AST-RF-RA02-001"
+      model_claim: "Ai-Thinker Ra-02 V1.1 SX1278 module"
+      manufacturer: "Ai-Thinker"
+      property: "supply_voltage_min"
+      value: 2.5
+      unit: "V"
+      applicability: "Ra-02 V1.1 nominal module supply range; not a wiring or regulator qualification."
+      source_url: "https://aithinker-static.oss-cn-shenzhen.aliyuncs.com/docs/Public%20Document%20Center/LoRa/lora/Specification/Ra-02_V1.1%20Specification-20171219.pdf"
+      source_revision: "Ra-02 V1.1 Specification, 2017-12-19"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "UNRESOLVED_VARIANT"
+      conflict: false
+      conflict_group: null
+      conflict_note: null
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "module_electrical_reference_only"
+
+    - id: "MN-RA02-SUPPLY-MAX"
+      asset_id: "AST-RF-RA02-001"
+      model_claim: "Ai-Thinker Ra-02 V1.1 SX1278 module"
+      manufacturer: "Ai-Thinker"
+      property: "supply_voltage_max"
+      value: 3.7
+      unit: "V"
+      applicability: "Ra-02 V1.1 nominal module supply range; not a wiring or regulator qualification."
+      source_url: "https://aithinker-static.oss-cn-shenzhen.aliyuncs.com/docs/Public%20Document%20Center/LoRa/lora/Specification/Ra-02_V1.1%20Specification-20171219.pdf"
+      source_revision: "Ra-02 V1.1 Specification, 2017-12-19"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "UNRESOLVED_VARIANT"
+      conflict: false
+      conflict_group: null
+      conflict_note: null
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "module_electrical_reference_only"
+
+    - id: "MN-RA02-INTERFACE"
+      asset_id: "AST-RF-RA02-001"
+      model_claim: "Ai-Thinker Ra-02 V1.1 SX1278 module"
+      manufacturer: "Ai-Thinker"
+      property: "host_interface"
+      value: "SPI"
+      unit: "text"
+      applicability: "Ra-02 V1.1 host interface reference; no production RF driver or wiring is implied."
+      source_url: "https://aithinker-static.oss-cn-shenzhen.aliyuncs.com/docs/Public%20Document%20Center/LoRa/lora/Specification/Ra-02_V1.1%20Specification-20171219.pdf"
+      source_revision: "Ra-02 V1.1 Specification, 2017-12-19"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "UNRESOLVED_VARIANT"
+      conflict: false
+      conflict_group: null
+      conflict_note: null
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "module_interface_reference_only"
+
+    - id: "MN-RA02-ANTENNA-CONNECTOR"
+      asset_id: "AST-RF-RA02-001"
+      model_claim: "Ai-Thinker Ra-02 V1.1 SX1278 module"
+      manufacturer: "Ai-Thinker"
+      property: "antenna_connector"
+      value: "IPEX"
+      unit: "text"
+      applicability: "Ra-02 V1.1 reference connector; actual purchased connector and cable mating remain unverified."
+      source_url: "https://aithinker-static.oss-cn-shenzhen.aliyuncs.com/docs/Public%20Document%20Center/LoRa/lora/Specification/Ra-02_V1.1%20Specification-20171219.pdf"
+      source_revision: "Ra-02 V1.1 Specification, 2017-12-19"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "UNRESOLVED_VARIANT"
+      conflict: false
+      conflict_group: null
+      conflict_note: null
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "module_interface_reference_only"
+
+    - id: "MN-RA02-REFERENCE-MASS"
+      asset_id: "AST-RF-RA02-001"
+      model_claim: "Ai-Thinker Ra-02 V1.1 SX1278 module"
+      manufacturer: "Ai-Thinker"
+      property: "reference_mass"
+      value: 0.45
+      unit: "g"
+      applicability: "Ra-02 V1.1 reference mass; not a measured mass of either purchased unit."
+      source_url: "https://aithinker-static.oss-cn-shenzhen.aliyuncs.com/docs/Public%20Document%20Center/LoRa/lora/Specification/Ra-02_V1.1%20Specification-20171219.pdf"
+      source_revision: "Ra-02 V1.1 Specification, 2017-12-19"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "UNRESOLVED_VARIANT"
+      conflict: false
+      conflict_group: null
+      conflict_note: "No physical scale record exists for the purchased units."
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "mass_reference_only"
+
+    - id: "MN-CH340G-SUPPLY-MIN"
+      asset_id: "AST-TOOL-CH340-001"
+      model_claim: "WCH CH340G USB-UART IC"
+      manufacturer: "WCH"
+      property: "chip_supply_voltage_min"
+      value: 3.3
+      unit: "V"
+      applicability: "CH340G IC supply reference; not the seller adapter's TX/RX logic level or board supply path."
+      source_url: "https://www.wch.cn/products/CH340.html"
+      source_revision: "WCH CH340 product page; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "UNRESOLVED_VARIANT"
+      conflict: false
+      conflict_group: null
+      conflict_note: "The purchased USB-TTL board variant is not identified."
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "chip_electrical_reference_only"
+
+    - id: "MN-CH340G-SUPPLY-MAX"
+      asset_id: "AST-TOOL-CH340-001"
+      model_claim: "WCH CH340G USB-UART IC"
+      manufacturer: "WCH"
+      property: "chip_supply_voltage_max"
+      value: 5.0
+      unit: "V"
+      applicability: "CH340G IC supply reference; not the seller adapter's TX/RX logic level or board supply path."
+      source_url: "https://www.wch.cn/products/CH340.html"
+      source_revision: "WCH CH340 product page; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "UNRESOLVED_VARIANT"
+      conflict: false
+      conflict_group: null
+      conflict_note: "The purchased USB-TTL board variant is not identified."
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "chip_electrical_reference_only"
+
+    - id: "MN-CH340G-INTERFACE"
+      asset_id: "AST-TOOL-CH340-001"
+      model_claim: "WCH CH340G USB-UART IC"
+      manufacturer: "WCH"
+      property: "host_interface"
+      value: "USB-UART"
+      unit: "text"
+      applicability: "CH340G chip function reference; not a proof of board pinout, logic-level translation or cable wiring."
+      source_url: "https://www.wch.cn/products/CH340.html"
+      source_revision: "WCH CH340 product page; revision not published; retrieved 2026-10-27"
+      evidence_level: "MANUFACTURER_NOMINAL_REFERENCE"
+      model_status: "UNRESOLVED_VARIANT"
+      conflict: false
+      conflict_group: null
+      conflict_note: "The purchased USB-TTL board variant is not identified."
+      design_use: "OFFLINE_CONCEPT_REFERENCE"
+      design_scope: "chip_interface_reference_only"
+
+  unresolved_assets:
+    - {asset_id: "AST-RF-SMA-IPEX1-001", status: "UNKNOWN", reason: "No unambiguous manufacturer/SKU source for the purchased adapter."}
+    - {asset_id: "AST-RF-ANT-WHIP-001", status: "UNKNOWN", reason: "Seller frequency/length text does not establish manufacturer model or RF performance."}
+    - {asset_id: "AST-RF-ANT-35DBI-001", status: "UNKNOWN", reason: "Seller description does not establish manufacturer model, gain, feedline loss or VSWR."}
+    - {asset_id: "AST-TOOL-STLINK-001", status: "UNKNOWN", reason: "ST-LINK V2 seller variant and connector geometry are not identified."}
+    - {asset_id: "AST-TOOL-LOGIC-001", status: "UNKNOWN", reason: "Generic analyzer seller model and electrical limits are unknown."}
+    - {asset_id: "AST-TOOL-DMM-001", status: "UNKNOWN", reason: "9205A-class is a type description, not a traceable manufacturer model or calibration record."}
+    - {asset_id: "AST-TOOL-SCALE-001", status: "UNKNOWN", reason: "Seller resolution is not an accuracy or manufacturer specification."}
+    - {asset_id: "AST-PROTOTYPE-BREADBOARD-001", status: "UNKNOWN", reason: "Generic breadboard and jumper kit has no traceable manufacturer specification."}
+    - {asset_id: "AST-PROTOTYPE-DUPONT-MM-001", status: "UNKNOWN", reason: "Generic wire listing does not establish conductor gauge or rating."}
+    - {asset_id: "AST-PROTOTYPE-DUPONT-FF-001", status: "UNKNOWN", reason: "Generic wire listing does not establish conductor gauge or rating."}
+    - {asset_id: "AST-TOOL-USB-AA-001", status: "UNKNOWN", reason: "Cable listing does not establish a manufacturer data/power specification."}
+    - {asset_id: "AST-TRAINING-STC89-001", status: "UNKNOWN", reason: "Training-kit manufacturer and board variant are not identified."}
+    - {asset_id: "AST-TOOL-HOTGLUE-001", status: "UNKNOWN", reason: "Generic tool is not a traceable structural material or component specification."}
+    - {asset_id: "AST-CHEM-PH-001", status: "UNKNOWN", reason: "Consumable brand and engineering parameter need are not established."}
+    - {asset_id: "AST-TOOL-TORCH-001", status: "UNKNOWN", reason: "Generic workshop tool has no project-relevant manufacturer parameter baseline."}
+
+  offline_concept_design:
+    - asset_id: "AST-MCU-APM32-001"
+      allowed_scopes: ["chip_electrical_reference", "software_resource_reference"]
+      limitation: "No board-level footprint, pinout, crystal or manufacturing geometry."
+    - asset_id: "AST-WIFI-ESP01S-001"
+      allowed_scopes: ["module_nominal_envelope", "header_interface_reference"]
+      limitation: "No adapter-board, mounting-hole, wiring or received-unit measurement."
+    - asset_id: "AST-SENSOR-GY91-001"
+      allowed_scopes: ["MPU9250_chip_package_reference", "BMP280_chip_package_reference", "chip_interface_reference"]
+      limitation: "GY-91 board size, populated identity and axis orientation remain unknown."
+    - asset_id: "AST-POWER-LM2596-001"
+      allowed_scopes: ["LM2596_chip_electrical_reference"]
+      limitation: "No assembled buck-board current, thermal, protection or PCB geometry assumption."
+    - asset_id: "AST-RF-RA02-001"
+      allowed_scopes: ["module_nominal_envelope", "SPI_and_frequency_reference"]
+      limitation: "No physical RF link, antenna match, regional authorization or identity/authentication claim."
+    - asset_id: "AST-TOOL-CH340-001"
+      allowed_scopes: ["chip_USB_UART_reference"]
+      limitation: "No seller-board logic level, pinout or connector geometry."
+
+  explicit_non_authority:
+    - "Manufacturer nominal rows are not OBSERVED, MEASURED, CONFIRMED_PRESENT or VERIFIED_HARDWARE evidence."
+    - "No row supplies current EDF, ESC, battery, BEC, frame, GY-91 PCB or servo installation geometry."
+    - "CAD_START remains BLOCKED_BY_MEASUREMENT and the existing 19-item gate is unchanged."

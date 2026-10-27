@@ -87,6 +87,10 @@ def main() -> int:
             "[yaml.safe_load(p.read_text(encoding='utf-8')) "
             "for p in sorted(pathlib.Path('engineering').rglob('*.yaml'))]"
         )]),
+        (
+            "Manufacturer nominal parameter authority",
+            [sys.executable, "scripts/manufacturer_nominal_check.py", "--json"],
+        ),
         ("CAD current-authority bookkeeping (design still blocked)", [sys.executable, "scripts/cad_baseline_gate.py", "--check"]),
         ("Ground station tests", [sys.executable, "-m", "pytest", "ground_station/tests", "-q"]),
         ("Simulation smoke", [sys.executable, "scripts/simulation_smoke.py"]),

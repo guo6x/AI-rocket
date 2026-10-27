@@ -13,7 +13,7 @@ See the date-bound [SYSTEM-V1 acceptance report](../SYSTEM_V1_ACCEPTANCE_REPORT.
 3. `assets/project-asset-registry.yaml` — project-level owned hardware/tools; ownership is separate from article assignment and hardware verification.
 4. `experimental-lines.yaml` — GNC, avionics, RF, TVC, recovery, propulsion-science, and system-integration benches.
 5. `component-status.yaml` — implementation, software-test, and hardware-evidence status by subsystem.
-6. `parameter-registry.yaml` — parameter values with provenance and conflicts; `UNKNOWN` is intentional.
+6. `parameter-registry.yaml` — parameter values with provenance and conflicts; `UNKNOWN` is intentional. Its `manufacturer_nominal` section is the source-bound, machine-readable manufacturer reference layer, validated by `scripts/manufacturer_nominal_check.py`; it is never an OBSERVED/MEASURED or hardware-verification record.
 7. `verification-status.yaml` — repeatable software checks separated from hardware-gated work.
 8. `known-issues.md` — open engineering and safety-relevant gaps.
 9. `legacy-assets.md` — historical sources and generated assets that remain preserved but are not authoritative.
@@ -44,6 +44,13 @@ Project ownership is tracked separately in the asset registry. A purchase record
 ## Authority order
 
 For current project status, use this directory first. For implementation behavior, production code is authoritative over reports. A passing source build proves only that the source compiles. A software test proves only its tested contract. Historical Markdown, filenames such as `final` or `v11`, mesh quality, and generated reports do not prove hardware validation or manufacturability.
+
+The manufacturer nominal layer records only parameters with an identified
+manufacturer source. It keeps the SG92R metal-gear/POM and ESP32-S3 N16R8 /
+N16R8V variant conflicts explicit, separates MPU9250/BMP280 chip references
+from the GY-91 PCB, and separates the LM2596 IC rating from an assembled buck
+board. Seller-only items remain `UNKNOWN`; nominal values can support offline
+concept references but cannot clear the 19 CAD_START measurement blockers.
 
 ## Current answer in one paragraph
 
