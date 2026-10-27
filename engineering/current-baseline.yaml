@@ -229,6 +229,8 @@ manufacturer_nominal_baseline:
   registry: "engineering/parameter-registry.yaml#manufacturer_nominal"
   validator: "scripts/manufacturer_nominal_check.py"
   source_index: "engineering/references/purchased-component-nominal-specs-20261027.md"
+  evidence: "engineering/offline-evidence/physical_baseline_readiness_v1/manufacturer_nominal_baseline_20261027.json"
+  evidence_sha256: "0556050525c08b3dfa5be9974839a59646b1a222025d7b3af7779c8e4afaf00f"
   recorded_on: "2026-10-27"
   source_main_sha: "ef09137b5db3b6ea3ebd0a752cd61767410c67b2"
   manufacturer_nominal_parameters: 44
