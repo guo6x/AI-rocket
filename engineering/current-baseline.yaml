@@ -11,24 +11,24 @@ current_phase: "Physical-baseline readiness after SYSTEM-V1 software closure; ha
 
 latest_main_status:
   captured_at: "2026-10-27"
-  exact_main_sha: "244a5b07122e0ebbf7153baa74b2d9b6c003d3ce"
-  origin_main_sha: "244a5b07122e0ebbf7153baa74b2d9b6c003d3ce"
-  working_tree: "CLEAN_AT_BASELINE_CHECKOUT; feature changes are isolated on fix/r2-measurement-unit-coverage-20261027"
+  exact_main_sha: "24071089d99c49a07ee96cae780ac23b15bc8a2a"
+  origin_main_sha: "24071089d99c49a07ee96cae780ac23b15bc8a2a"
+  working_tree: "CLEAN_AT_BASELINE_CHECKOUT; post-merge docs update is isolated on docs/physical-baseline-postmerge-20261027"
   github:
     open_issues:
       - {number: 22, status: "OPEN", scope: "CAD-V1 measurement-gated mechanical baseline"}
       - {number: 23, status: "OPEN", scope: "SYSTEM-V1 software/physical integration gates"}
     open_pull_requests: 0
     latest_ci:
-      run_id: 40437666955
+      run_id: 40443557635
       result: "PASS"
-      tested_sha: "244a5b07122e0ebbf7153baa74b2d9b6c003d3ce"
-      url: "https://github.com/guo6x/AI-rocket/actions/runs/40437666955"
+      tested_sha: "24071089d99c49a07ee96cae780ac23b15bc8a2a"
+      url: "https://github.com/guo6x/AI-rocket/actions/runs/40443557635"
   local_full_check:
     command: "py -3 scripts/check.py"
     result: "PASS"
     exit_code: 0
-    source_sha: "244a5b07122e0ebbf7153baa74b2d9b6c003d3ce"
+    source_sha: "26e997044250bfd78d1ff979cf381a2f30ef67ff"
     ground_station_tests: "132 passed"
     flight_native_tests: "47 passed"
     gnc_only_native_tests: "4 passed"
@@ -318,7 +318,8 @@ physical_baseline_readiness_v1:
   goal_status: "GOAL_BLOCKED_BY_PHYSICAL_EVIDENCE"
   report: "docs/AD_ASTRA_PHYSICAL_BASELINE_READINESS_V1.md"
   manifest: "engineering/offline-evidence/physical_baseline_readiness_v1/manifest.json"
-  source_git_sha: "244a5b07122e0ebbf7153baa74b2d9b6c003d3ce"
+  source_git_sha: "26e997044250bfd78d1ff979cf381a2f30ef67ff"
+  base_main_sha_at_generation: "244a5b07122e0ebbf7153baa74b2d9b6c003d3ce"
   asset_registry:
     registered_assets: 23
     ownership_basis: "SRC-PURCHASE-2026-10-22 owner-supplied purchase record"

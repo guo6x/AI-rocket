@@ -3,7 +3,7 @@
 **状态：`GOAL_BLOCKED_BY_PHYSICAL_EVIDENCE`**
 审计日期：2026-10-27
 仓库：`guo6x/AI-rocket`
-审计基线：`main` `244a5b07122e0ebbf7153baa74b2d9b6c003d3ce`
+审计基线：`main` `24071089d99c49a07ee96cae780ac23b15bc8a2a`
 
 ## 结论先行
 
@@ -15,13 +15,13 @@
 
 | 项目 | 实际状态 |
 |---|---|
-| `main` | `244a5b07122e0ebbf7153baa74b2d9b6c003d3ce`，本地与 `origin/main` 一致（本轮分支从此点开始） |
-| 最新主线 CI | run `40437666955`，`PASS`，测试 SHA 与 `main` 一致：[Actions](https://github.com/guo6x/AI-rocket/actions/runs/40437666955) |
+| `main` | `24071089d99c49a07ee96cae780ac23b15bc8a2a`，本地与 `origin/main` 一致（PR #40 已合并） |
+| 最新主线 CI | run `40443557635`，`PASS`，测试 SHA 与 `main` 一致：[Actions](https://github.com/guo6x/AI-rocket/actions/runs/40443557635) |
 | Issue #22 | `OPEN`，CAD-V1 仍等待实测接口 |
 | Issue #23 | `OPEN`，软件完成不等同于实体集成完成 |
 | 硬件行为 | `NOT_EVALUATED`；本轮未接线、通电、烧录、发射射频或驱动执行器 |
 
-本轮本地执行 `py -3 scripts/check.py`，退出码 `0`。实际结果为：Ground Station `132`、飞控 native `47`、GNC-only `4`、ESP relay `3`、脚本门 `214`、R2.3 oracle `5`、双周期 `5`、RF Lab `97`、研究回归 `22` 全部通过；`bluepill_f103c8`、`apm32f103c8_compat`、`gnc_only_bench`、`nodemcuv2`、`esp01_1m` 五个源码构建全部 `PASS`。这些是软件证据，不提升硬件证据等级。
+本轮本地执行 `py -3 scripts/check.py`，退出码 `0`。该日志由 PR #40 HEAD `26e997044250bfd78d1ff979cf381a2f30ef67ff`（基于 main `244a5b0`）生成；合并后的 main 又由 run `40443557635` 复核。实际结果为：Ground Station `132`、飞控 native `47`、GNC-only `4`、ESP relay `3`、脚本门 `214`、R2.3 oracle `5`、双周期 `5`、RF Lab `97`、研究回归 `22` 全部通过；`bluepill_f103c8`、`apm32f103c8_compat`、`gnc_only_bench`、`nodemcuv2`、`esp01_1m` 五个源码构建全部 `PASS`。这些是软件证据，不提升硬件证据等级。
 
 本轮新增的测量准入规则也通过定向负例验证：标记为 `each_component_and_unit` 的多组件测量必须覆盖每个列出的组件、记录 `physical_unit_id`，且同一物理 unit 不能跨组件复用；同一组件的重复读数可以复用同一 unit ID。该规则只收紧未来证据记录校验，不制造任何实体记录，也没有释放任何 gate。
 
