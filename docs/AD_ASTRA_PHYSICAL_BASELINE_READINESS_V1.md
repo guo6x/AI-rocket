@@ -1,8 +1,8 @@
 # Project Ad Astra｜真实工程基线与系统集成准备 V1
 
-**状态：`GOAL_BLOCKED_BY_PHYSICAL_EVIDENCE`**  
-审计日期：2026-10-27  
-仓库：`guo6x/AI-rocket`  
+**状态：`GOAL_BLOCKED_BY_PHYSICAL_EVIDENCE`**
+审计日期：2026-10-27
+仓库：`guo6x/AI-rocket`
 审计基线：`main` `32d2c20658c1d5f83cb1ec720a9b6bf327dffb0b`
 
 ## 结论先行
@@ -44,8 +44,8 @@
 
 当前 19 项 CAD_START 输入全部缺失或无证据：
 
-`M-P0-EDF-01..04, M-P0-EDF-06..11`；  
-`M-P0-SERVO-01..06, M-P0-SERVO-08`；  
+`M-P0-EDF-01..04, M-P0-EDF-06..11`；
+`M-P0-SERVO-01..06, M-P0-SERVO-08`；
 `M-P0-STRUCT-01`；`M-P0-DATUM-01`。
 
 测量计划总计 `40` 项，当前 `40/40 MISSING`。未取得这些记录前，不生成声称可制造的装配体，不引用历史 70/74/90 mm EDF 或历史 SG92R 几何填空。
