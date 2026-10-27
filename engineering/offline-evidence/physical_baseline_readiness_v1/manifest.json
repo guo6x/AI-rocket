@@ -1,0 +1,84 @@
+{
+  "evidence_id": "AD_ASTRA_PHYSICAL_BASELINE_READINESS_V1_2026-10-27",
+  "status": "GOAL_BLOCKED_BY_PHYSICAL_EVIDENCE",
+  "scope": "read-only software, documentation, asset-register and static safety audit; no hardware operation",
+  "source_git_sha": "32d2c20658c1d5f83cb1ec720a9b6bf327dffb0b",
+  "origin_main_sha_at_audit": "32d2c20658c1d5f83cb1ec720a9b6bf327dffb0b",
+  "github_ci": {
+    "run_id": 40372916700,
+    "result": "PASS",
+    "tested_sha": "32d2c20658c1d5f83cb1ec720a9b6bf327dffb0b",
+    "url": "https://github.com/guo6x/AI-rocket/actions/runs/40372916700"
+  },
+  "commands": [
+    {
+      "command": "py -3 scripts/r2_physical_baseline_check.py",
+      "exit_code": 0,
+      "result": "PASS_WITH_BLOCKED_GATES",
+      "stdout_sha256": "504fb7b4e8fe32951c587c33e0addd0ad3ac9dedfa7967753b02f5857a52141a",
+      "observed": "40 planned measurements; inventory 1 blocker; CAD_START 19; motion 5; detail 3; article integration 10"
+    },
+    {
+      "command": "py -3 scripts/cad_baseline_gate.py --check",
+      "exit_code": 0,
+      "result": "PASS_WITH_CAD_BLOCKED",
+      "stdout_sha256": "af025a668d1ccf9a51d0c05a1047213c131ec76d33ec3334a366aa6f4249c580",
+      "observed": "NOT_STARTED / CAD_START BLOCKED / 19 missing or unevidenced inputs / manufacturing not authorized"
+    },
+    {
+      "command": "py -3 scripts/recovery_configuration_audit.py --json",
+      "exit_code": 0,
+      "result": "BLOCKED_UNREACHABLE_THRESHOLD",
+      "stdout_sha256": "d279e0f18f519871e6b783540caacf1b57090c835b4c10a61311681f04063670",
+      "observed": "IMU +/-2 g, strict >2.5 g, max encoded absolute az 2.0 g, recovery qualification false"
+    },
+    {
+      "command": "py -3 scripts/check.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed": "Ground Station 132; flight native 47; GNC-only 4; ESP relay 3; scripts 211; R2.3 oracle 5; dual-period 5; RF 97; research 22; five source builds PASS"
+    }
+  ],
+  "source_sha256": {
+    "engineering/assets/project-asset-registry.yaml": "72b51313c6ce7b881fb0fd1d1cbe64927b20f95c6ba8f6ac3fd4cf77505481be",
+    "engineering/as-built/article.yaml": "320bd974bb47415435aa6196bf2e9b47fea680cfccc32c82409e6995c01b5dfc",
+    "engineering/as-built/component-inventory.yaml": "f733fb90e2bf3c91d520a79bbf398a95d36660ec062c63227f38019ad3034e71",
+    "engineering/as-built/evidence-index.yaml": "95d57198ef8bba362fde17402bf31038b9481a28fec512e1f65c7cc51605561e",
+    "engineering/as-built/measurement-plan.yaml": "71bf17142ff3bb2c6fe99f2b14f5e4b2e926eb88e0394ea58b4f4a6c7335f949",
+    "engineering/as-built/datum-definition.yaml": "16047c36f24b26412c24c25196b4ecdc846893697cf8e9c71c743548d9160a47",
+    "engineering/as-built/interface-register.yaml": "047effc5fc9f5ce120f54c81dc016236e519079d7a9e32a7668510d95cfdf1fe",
+    "engineering/as-built/mass-properties.yaml": "03d6d839c8d8e2863524a1dc62d007847115948d42a5068a5f969b4c3a0577e9",
+    "engineering/cad-authority.yaml": "576ee87435257781393fd8b5e7fbdf03dffc71f736daa055aae3101176093ba7",
+    "engineering/tvc-mechanical-requirements.yaml": "5c6aea75b83bccee62e54eacf36d44f04c91d30b036d77a152e5ac4e250bbf9d",
+    "scripts/r2_physical_baseline_check.py": "9da5e0d062260388431500b5c2fccb2c419b56a3dff4d2fdd5a19827510079fc",
+    "scripts/cad_baseline_gate.py": "1ea75f276b0b48c0bb0311d2da3aa516cb94fdd100bb65bbefd74660b83df634",
+    "scripts/recovery_configuration_audit.py": "12cdf30d5deb3a5c7a15fb0e6ecfb38e5ce82b561799f306dfb28ff77da6cefd",
+    "docs/RECOVERY_LOGIC_SAFETY_CHANGE_PROPOSAL.md": "9efc9b1c5ce7f33b053fea81f6397e2434d21ce416b66d7c62f0bbd02721324a9",
+    "docs/R2_USER_MEASUREMENT_CHECKLIST.md": "c679e263ce30d9e3be5fcc34afb211247fa05eab9e218e14b156b34b028c16a9"
+  },
+  "document_sha256_at_generation": {
+    "docs/AD_ASTRA_PHYSICAL_BASELINE_READINESS_V1.md": "26d53edf25374ed7f0f136ed8491e9310de625dd9e4935d1be6bdff1a2363046",
+    "engineering/current-baseline.yaml": "8d7a06b44eb5f24854867c8effe4d407a527493ebfa332ad0ee713f5b4245f79"
+  },
+  "counts": {
+    "registered_assets": 23,
+    "as_built_components": 19,
+    "measured_components": 0,
+    "planned_measurements": 40,
+    "missing_measurements": 40,
+    "cad_start_missing_or_unevidenced": 19,
+    "physical_evidence_records": 0
+  },
+  "boundaries": {
+    "hardware_operation": false,
+    "rf_transmission": false,
+    "firmware_flash": false,
+    "actuator_operation": false,
+    "recovery_qualification": false,
+    "cad_manufacturing_release": false,
+    "purchase_record_is_hardware_verification": false
+  },
+  "evidence_ceiling": "TESTED_SOFTWARE_AND_DOCUMENTED_READINESS_ONLY",
+  "known_tooling_risk": "Dual-servo measurement rows are component-scoped; per-unit coverage is not yet enforced. No record exists, so no gate has been released. Add a unit-coverage rule before first servo evidence is indexed.",
+  "warning": "Purchase records, source builds, static audits and historical reports do not establish present hardware identity, interface fit, calibration, wireless link, actuator behavior, recovery safety or flight readiness."
+}
