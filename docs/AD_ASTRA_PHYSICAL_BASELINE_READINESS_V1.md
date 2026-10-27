@@ -3,7 +3,7 @@
 **状态：`GOAL_BLOCKED_BY_PHYSICAL_EVIDENCE`**
 审计日期：2026-10-27
 仓库：`guo6x/AI-rocket`
-审计基线：`main` `32d2c20658c1d5f83cb1ec720a9b6bf327dffb0b`
+审计基线：`main` `244a5b07122e0ebbf7153baa74b2d9b6c003d3ce`
 
 ## 结论先行
 
@@ -15,13 +15,15 @@
 
 | 项目 | 实际状态 |
 |---|---|
-| `main` | `32d2c20658c1d5f83cb1ec720a9b6bf327dffb0b`，本地与 `origin/main` 一致，工作树干净（审计开始时） |
-| 最新主线 CI | run `40372916700`，`PASS`，测试 SHA 与 `main` 一致：[Actions](https://github.com/guo6x/AI-rocket/actions/runs/40372916700) |
+| `main` | `244a5b07122e0ebbf7153baa74b2d9b6c003d3ce`，本地与 `origin/main` 一致（本轮分支从此点开始） |
+| 最新主线 CI | run `40437666955`，`PASS`，测试 SHA 与 `main` 一致：[Actions](https://github.com/guo6x/AI-rocket/actions/runs/40437666955) |
 | Issue #22 | `OPEN`，CAD-V1 仍等待实测接口 |
 | Issue #23 | `OPEN`，软件完成不等同于实体集成完成 |
 | 硬件行为 | `NOT_EVALUATED`；本轮未接线、通电、烧录、发射射频或驱动执行器 |
 
-本轮本地执行 `py -3 scripts/check.py`，退出码 `0`。实际结果为：Ground Station `132`、飞控 native `47`、GNC-only `4`、ESP relay `3`、脚本门 `211`、R2.3 oracle `5`、双周期 `5`、RF Lab `97`、研究回归 `22` 全部通过；`bluepill_f103c8`、`apm32f103c8_compat`、`gnc_only_bench`、`nodemcuv2`、`esp01_1m` 五个源码构建全部 `PASS`。这些是软件证据，不提升硬件证据等级。
+本轮本地执行 `py -3 scripts/check.py`，退出码 `0`。实际结果为：Ground Station `132`、飞控 native `47`、GNC-only `4`、ESP relay `3`、脚本门 `214`、R2.3 oracle `5`、双周期 `5`、RF Lab `97`、研究回归 `22` 全部通过；`bluepill_f103c8`、`apm32f103c8_compat`、`gnc_only_bench`、`nodemcuv2`、`esp01_1m` 五个源码构建全部 `PASS`。这些是软件证据，不提升硬件证据等级。
+
+本轮新增的测量准入规则也通过定向负例验证：标记为 `each_component_and_unit` 的多组件测量必须覆盖每个列出的组件、记录 `physical_unit_id`，且同一物理 unit 不能跨组件复用；同一组件的重复读数可以复用同一 unit ID。该规则只收紧未来证据记录校验，不制造任何实体记录，也没有释放任何 gate。
 
 ## 资产与实物证据差异
 
@@ -50,7 +52,7 @@
 
 测量计划总计 `40` 项，当前 `40/40 MISSING`。未取得这些记录前，不生成声称可制造的装配体，不引用历史 70/74/90 mm EDF 或历史 SG92R 几何填空。
 
-审计还发现一个尚未关闭的工具契约风险：双舵机测量行目前按组件级证据关联，校验器没有强制每个实际 `unit_id` 都被覆盖。当前没有任何记录，因此它没有造成错误放行；在录入第一批实物记录前，应单独补充逐 unit 覆盖规则和负例测试。
+此前发现的双舵机测量行按组件级证据关联、未强制逐 unit 覆盖的问题，已由本轮软件规则和负例测试关闭。当前仍没有任何实体记录，因此该修复只表示未来记录会 fail-closed，不表示两只舵机已经存在、身份已确认或尺寸已测量。
 
 ## 回收安全独立审查
 
@@ -96,6 +98,7 @@
 - CAD 准入：`engineering/cad-authority.yaml`、`engineering/as-built/measurement-plan.yaml`、`scripts/cad_baseline_gate.py`、`scripts/r2_physical_baseline_check.py`。
 - 回收审查：`scripts/recovery_configuration_audit.py`、`docs/RECOVERY_LOGIC_SAFETY_CHANGE_PROPOSAL.md`、`engineering/known-issues.md`。
 - 软件门与历史证据：`engineering/current-baseline.yaml`、`engineering/offline-evidence/system_v1/**`、`engineering/offline-evidence/r2_3/**`、`engineering/offline-evidence/r3/**`。
-- 本轮静态审计输出哈希见 `engineering/offline-evidence/physical_baseline_readiness_v1/manifest.json`。
+- 本轮完整软件 gate 原始输出：`engineering/offline-evidence/physical_baseline_readiness_v1/full_check_20261027.log`；命令、退出码和 SHA-256 见 `engineering/offline-evidence/physical_baseline_readiness_v1/manifest.json`。
+- 本轮静态审计、源文件和规则测试输出哈希见 `engineering/offline-evidence/physical_baseline_readiness_v1/manifest.json`。
 
 因此本 Goal 的最终状态为：`GOAL_BLOCKED_BY_PHYSICAL_EVIDENCE`。这表示准入准备资料已整理、软件基线可复核，并不表示任何实体硬件、无线链路、执行器、回收机构或飞行资格已验证。

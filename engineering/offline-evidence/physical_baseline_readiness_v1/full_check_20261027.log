@@ -1,0 +1,581 @@
+
+=== Python syntax ===
+$ D:\�ҵĿ���ϵͳ\Documents\EasyShare\python\python.exe -m compileall -q aero_sim dynamics_sim ground_station flight_computer rf_lab scripts
+Python syntax: PASS
+
+=== Engineering YAML ===
+$ D:\�ҵĿ���ϵͳ\Documents\EasyShare\python\python.exe -c "import pathlib,yaml; [yaml.safe_load(p.read_text(encoding='utf-8')) for p in sorted(pathlib.Path('engineering').rglob('*.yaml'))]"
+Engineering YAML: PASS
+
+=== CAD current-authority bookkeeping (design still blocked) ===
+$ D:\�ҵĿ���ϵͳ\Documents\EasyShare\python\python.exe scripts/cad_baseline_gate.py --check
+{
+  "audit": "PASS",
+  "cad_status": "NOT_STARTED",
+  "cad_start": "BLOCKED",
+  "manufacturing_release": "NOT_AUTHORIZED",
+  "legacy_ai_geometry": "REJECTED_FOR_CURRENT_DESIGN",
+  "accepted_current_models": 0,
+  "required_start_measurements": 19,
+  "missing_or_unevidenced_start_measurements": [
+    "M-P0-EDF-01",
+    "M-P0-EDF-02",
+    "M-P0-EDF-03",
+    "M-P0-EDF-04",
+    "M-P0-EDF-06",
+    "M-P0-EDF-07",
+    "M-P0-EDF-08",
+    "M-P0-EDF-09",
+    "M-P0-EDF-10",
+    "M-P0-EDF-11",
+    "M-P0-SERVO-01",
+    "M-P0-SERVO-02",
+    "M-P0-SERVO-03",
+    "M-P0-SERVO-04",
+    "M-P0-SERVO-05",
+    "M-P0-SERVO-06",
+    "M-P0-SERVO-08",
+    "M-P0-STRUCT-01",
+    "M-P0-DATUM-01"
+  ],
+  "missing_count": 19,
+  "meaning": "PASS verifies truthful baseline bookkeeping only; no geometry or hardware verified"
+}
+CAD current-authority bookkeeping (design still blocked): PASS
+
+=== Ground station tests ===
+$ D:\�ҵĿ���ϵͳ\Documents\EasyShare\python\python.exe -m pytest ground_station/tests -q
+........................................................................ [ 54%]
+............................................................             [100%]
+132 passed in 16.79s
+Ground station tests: PASS
+
+=== Simulation smoke ===
+$ D:\�ҵĿ���ϵͳ\Documents\EasyShare\python\python.exe scripts/simulation_smoke.py
+Simulation baseline: TUNED small-angle case converges; firmware TESTBENCH profile does not converge in the non-ideal 5-degree case.
+Simulation smoke: PASS
+Simulation smoke: PASS
+
+=== Flight core native tests ===
+$ D:\�ҵĿ���ϵͳ\Documents\EasyShare\python\Scripts\platformio.EXE test -d flight_computer -e native
+Verbosity level can be increased via `-v, -vv, or -vvv` option
+Collected 1 tests
+
+Processing * in native environment
+--------------------------------------------------------------------------------
+Building...
+Testing...
+test\test_kalman.cpp:348: test_kalman_initial_state	[PASSED]
+test\test_kalman.cpp:349: test_kalman_update	[PASSED]
+test\test_kalman.cpp:350: test_kalman_convergence	[PASSED]
+test\test_kalman.cpp:351: test_fsm_requires_three_launch_samples	[PASSED]
+test\test_kalman.cpp:352: test_fsm_launch_counter_resets_after_low_sample	[PASSED]
+test\test_kalman.cpp:353: test_fsm_burnout_and_rolling_apogee_window	[PASSED]
+test\test_kalman.cpp:354: test_fsm_timer_is_measured_from_detected_launch	[PASSED]
+test\test_kalman.cpp:355: test_fsm_manual_deploy_and_reset	[PASSED]
+test\test_kalman.cpp:356: test_fsm_disarm_does_not_reload_recovery	[PASSED]
+test\test_kalman.cpp:357: test_command_valid_state_sequence_and_actions	[PASSED]
+test\test_kalman.cpp:358: test_estop_reset_never_restores_auto	[PASSED]
+test\test_kalman.cpp:359: test_estop_is_idempotent_and_gates_unsafe_commands	[PASSED]
+test\test_kalman.cpp:360: test_malformed_unknown_and_extra_arguments_are_atomic	[PASSED]
+test\test_kalman.cpp:361: test_command_ranges_and_state_gates	[PASSED]
+test\test_kalman.cpp:362: test_auto_on_rejects_deployed_recovery_context	[PASSED]
+test\test_kalman.cpp:363: test_automatic_recovery_transition_prevents_auto_reenable	[PASSED]
+test\test_kalman.cpp:364: test_serial_and_serial2_buffers_are_isolated	[PASSED]
+test\test_kalman.cpp:365: test_overlong_line_is_discarded_until_clean_boundary	[PASSED]
+test\test_kalman.cpp:366: test_embedded_nul_discards_entire_line	[PASSED]
+test\test_kalman.cpp:367: test_ack_nack_reason_vocabulary	[PASSED]
+test\test_kalman.cpp:368: test_line_buffer_to_canonical_processor_end_to_end	[PASSED]
+test\test_kalman.cpp:369: test_gy91_supported_identities_and_addresses	[PASSED]
+test\test_kalman.cpp:370: test_gy91_unknown_and_missing_identity_fail_closed	[PASSED]
+test\test_kalman.cpp:371: test_gy91_checked_writes_and_scale_readback	[PASSED]
+test\test_kalman.cpp:372: test_gy91_every_short_imu_read_is_invalid	[PASSED]
+test\test_kalman.cpp:373: test_gy91_signed_decode_and_reference_barometer_sample	[PASSED]
+test\test_kalman.cpp:374: test_gy91_invalid_raw_samples_do_not_become_zero_attitude	[PASSED]
+test\test_kalman.cpp:375: test_gy91_bmp_identity_calibration_and_config_failures	[PASSED]
+test\test_kalman.cpp:376: test_gy91_bmp_waits_for_sleep_and_calibration_copy	[PASSED]
+test\test_kalman.cpp:377: test_gy91_bmp_short_and_disabled_samples_fail_closed	[PASSED]
+test\test_kalman.cpp:378: test_gy91_nonfinite_and_out_of_range_values_fail_closed	[PASSED]
+test\test_kalman.cpp:379: test_gy91_runtime_identity_or_scale_change_latches	[PASSED]
+test\test_kalman.cpp:380: test_sensor_fault_command_gate_preserves_emergency_paths	[PASSED]
+test\test_kalman.cpp:381: test_sensor_fault_reset_never_restores_control	[PASSED]
+test\test_kalman.cpp:382: test_sensor_fault_transport_command_parity	[PASSED]
+test\test_kalman.cpp:383: test_actual_wire_adapter_rejects_nack_short_and_negative_reads	[PASSED]
+test\test_kalman.cpp:384: test_actual_wire_adapter_enforces_sample_io_budget	[PASSED]
+test\test_kalman.cpp:385: test_actual_loop_gates_commands_before_first_and_lost_sample	[PASSED]
+test\test_kalman.cpp:386: test_actual_loop_budget_exhaustion_still_services_estop	[PASSED]
+test\test_kalman.cpp:387: test_actual_loop_fault_skips_kalman_pid_and_recovery_fsm	[PASSED]
+test\test_kalman.cpp:388: test_actual_loop_reset_and_reconnected_sensor_cannot_resume_auto	[PASSED]
+test\test_kalman.cpp:389: test_actual_loop_estop_reset_and_emergency_deploy_survive_sensor_fault	[PASSED]
+test\test_kalman.cpp:390: test_actual_loop_failed_init_never_reads_or_moves_with_control_commands	[PASSED]
+test\test_kalman.cpp:391: test_production_pid_signed_zero_and_step	[PASSED]
+test\test_kalman.cpp:392: test_production_pid_output_and_rate_limits	[PASSED]
+test\test_kalman.cpp:393: test_production_kalman_signed_static_and_step	[PASSED]
+test\test_kalman.cpp:394: test_main_dt_invalid_values_fall_back_to_10ms	[PASSED]
+--------------------- native:* [PASSED] Took 3.59 seconds ---------------------
+
+=================================== SUMMARY ===================================
+Environment    Test    Status    Duration
+-------------  ------  --------  ------------
+native         *       PASSED    00:00:03.589
+================= 47 test cases: 47 succeeded in 00:00:03.589 =================
+Flight core native tests: PASS
+
+=== GNC-only bench native tests ===
+$ D:\�ҵĿ���ϵͳ\Documents\EasyShare\python\Scripts\platformio.EXE test -d flight_computer -e native_gnc_only_bench
+Verbosity level can be increased via `-v, -vv, or -vvv` option
+Collected 1 tests
+
+Processing * in native_gnc_only_bench environment
+--------------------------------------------------------------------------------
+Building...
+Testing...
+test\test_kalman.cpp:11: test_gnc_only_valid_sensor_keeps_tvc_and_no_recovery_output	[PASSED]
+test\test_kalman.cpp:12: test_gnc_only_deploy_command_is_rejected_without_recovery_state_or_output	[PASSED]
+test\test_kalman.cpp:13: test_gnc_only_sensor_fault_neutralizes_tvc_and_rejects_control	[PASSED]
+test\test_kalman.cpp:14: test_gnc_only_estop_reset_rearms_tvc_without_recovery_fsm	[PASSED]
+-------------- native_gnc_only_bench:* [PASSED] Took 4.22 seconds --------------
+
+=================================== SUMMARY ===================================
+Environment            Test    Status    Duration
+---------------------  ------  --------  ------------
+native_gnc_only_bench  *       PASSED    00:00:04.223
+================== 4 test cases: 4 succeeded in 00:00:04.223 ==================
+GNC-only bench native tests: PASS
+
+=== ESP relay native tests ===
+$ D:\�ҵĿ���ϵͳ\Documents\EasyShare\python\Scripts\platformio.EXE test -d esp8266_firmware -e native
+Verbosity level can be increased via `-v, -vv, or -vvv` option
+Collected 1 tests
+
+Processing * in native environment
+--------------------------------------------------------------------------------
+Building...
+Testing...
+test\test_relay_router.cpp:48: test_valid_plaintext_command_is_forwarded	[PASSED]
+test\test_relay_router.cpp:49: test_empty_overlong_and_multiline_are_rejected	[PASSED]
+test\test_relay_router.cpp:50: test_ack_nack_return_to_command_client	[PASSED]
+--------------------- native:* [PASSED] Took 3.57 seconds ---------------------
+
+=================================== SUMMARY ===================================
+Environment    Test    Status    Duration
+-------------  ------  --------  ------------
+native         *       PASSED    00:00:03.573
+================== 3 test cases: 3 succeeded in 00:00:03.573 ==================
+ESP relay native tests: PASS
+
+=== STM32 source build ===
+$ D:\�ҵĿ���ϵͳ\Documents\EasyShare\python\Scripts\platformio.EXE run -d flight_computer -e bluepill_f103c8
+Processing bluepill_f103c8 (platform: ststm32; board: bluepill_f103c8; framework: arduino)
+--------------------------------------------------------------------------------
+Verbose mode can be enabled via `-v, --verbose` option
+CONFIGURATION: https://docs.platformio.org/page/boards/ststm32/bluepill_f103c8.html
+PLATFORM: ST STM32 (19.4.0) > BluePill F103C8
+HARDWARE: STM32F103C8T6 72MHz, 20KB RAM, 64KB Flash
+DEBUG: Current (stlink) External (blackmagic, cmsis-dap, jlink, stlink)
+PACKAGES:
+ - framework-arduinoststm32 @ 4.21100.0 (2.11.0)
+ - framework-cmsis @ 2.50900.0 (5.9.0)
+ - toolchain-gccarmnoneeabi @ 1.120301.0 (12.3.1)
+LDF: Library Dependency Finder -> https://bit.ly/configure-pio-ldf
+LDF Modes: Finder ~ chain, Compatibility ~ soft
+Found 17 compatible libraries
+Scanning dependencies...
+Dependency Graph
+|-- Adafruit BMP280 Library @ 2.6.8
+|-- Servo @ 1.1.2
+|-- Wire @ 1.0.0
+Building in release mode
+Checking size .pio\build\bluepill_f103c8\firmware.elf
+Advanced Memory Usage is available via "PlatformIO Home > Project Inspect"
+RAM:   [=         ]  14.9% (used 3060 bytes from 20480 bytes)
+Flash: [========  ]  84.2% (used 55160 bytes from 65536 bytes)
+========================= [SUCCESS] Took 12.99 seconds =========================
+
+Environment      Status    Duration
+---------------  --------  ------------
+bluepill_f103c8  SUCCESS   00:00:12.987
+========================= 1 succeeded in 00:00:12.987 =========================
+STM32 source build: PASS
+
+=== APM32 experimental compatibility build ===
+$ D:\�ҵĿ���ϵͳ\Documents\EasyShare\python\Scripts\platformio.EXE run -d flight_computer -e apm32f103c8_compat
+Processing apm32f103c8_compat (platform: ststm32; board: bluepill_f103c8; framework: arduino)
+--------------------------------------------------------------------------------
+Verbose mode can be enabled via `-v, --verbose` option
+CONFIGURATION: https://docs.platformio.org/page/boards/ststm32/bluepill_f103c8.html
+PLATFORM: ST STM32 (19.4.0) > BluePill F103C8
+HARDWARE: STM32F103C8T6 72MHz, 20KB RAM, 64KB Flash
+DEBUG: Current (stlink) External (blackmagic, cmsis-dap, jlink, stlink)
+PACKAGES:
+ - framework-arduinoststm32 @ 4.21100.0 (2.11.0)
+ - framework-cmsis @ 2.50900.0 (5.9.0)
+ - toolchain-gccarmnoneeabi @ 1.120301.0 (12.3.1)
+LDF: Library Dependency Finder -> https://bit.ly/configure-pio-ldf
+LDF Modes: Finder ~ chain, Compatibility ~ soft
+Found 17 compatible libraries
+Scanning dependencies...
+Dependency Graph
+|-- Adafruit BMP280 Library @ 2.6.8
+|-- Servo @ 1.1.2
+|-- Wire @ 1.0.0
+Building in release mode
+Checking size .pio\build\apm32f103c8_compat\firmware.elf
+Advanced Memory Usage is available via "PlatformIO Home > Project Inspect"
+RAM:   [=         ]  14.9% (used 3060 bytes from 20480 bytes)
+Flash: [========  ]  84.2% (used 55160 bytes from 65536 bytes)
+========================= [SUCCESS] Took 14.99 seconds =========================
+
+Environment         Status    Duration
+------------------  --------  ------------
+apm32f103c8_compat  SUCCESS   00:00:14.985
+========================= 1 succeeded in 00:00:14.985 =========================
+APM32 experimental compatibility build: PASS
+
+=== GNC-only bench source build ===
+$ D:\�ҵĿ���ϵͳ\Documents\EasyShare\python\Scripts\platformio.EXE run -d flight_computer -e gnc_only_bench
+Processing gnc_only_bench (platform: ststm32; board: bluepill_f103c8; framework: arduino)
+--------------------------------------------------------------------------------
+Verbose mode can be enabled via `-v, --verbose` option
+CONFIGURATION: https://docs.platformio.org/page/boards/ststm32/bluepill_f103c8.html
+PLATFORM: ST STM32 (19.4.0) > BluePill F103C8
+HARDWARE: STM32F103C8T6 72MHz, 20KB RAM, 64KB Flash
+DEBUG: Current (stlink) External (blackmagic, cmsis-dap, jlink, stlink)
+PACKAGES:
+ - framework-arduinoststm32 @ 4.21100.0 (2.11.0)
+ - framework-cmsis @ 2.50900.0 (5.9.0)
+ - toolchain-gccarmnoneeabi @ 1.120301.0 (12.3.1)
+LDF: Library Dependency Finder -> https://bit.ly/configure-pio-ldf
+LDF Modes: Finder ~ chain, Compatibility ~ soft
+Found 17 compatible libraries
+Scanning dependencies...
+Dependency Graph
+|-- Adafruit BMP280 Library @ 2.6.8
+|-- Servo @ 1.1.2
+|-- Wire @ 1.0.0
+Building in release mode
+Checking size .pio\build\gnc_only_bench\firmware.elf
+Advanced Memory Usage is available via "PlatformIO Home > Project Inspect"
+RAM:   [=         ]  14.9% (used 3060 bytes from 20480 bytes)
+Flash: [========  ]  83.3% (used 54592 bytes from 65536 bytes)
+========================= [SUCCESS] Took 14.01 seconds =========================
+
+Environment     Status    Duration
+--------------  --------  ------------
+gnc_only_bench  SUCCESS   00:00:14.011
+========================= 1 succeeded in 00:00:14.011 =========================
+GNC-only bench source build: PASS
+
+=== ESP8266 source build ===
+$ D:\�ҵĿ���ϵͳ\Documents\EasyShare\python\Scripts\platformio.EXE run -d esp8266_firmware -e nodemcuv2
+Processing nodemcuv2 (platform: espressif8266; board: nodemcuv2; framework: arduino)
+--------------------------------------------------------------------------------
+Verbose mode can be enabled via `-v, --verbose` option
+CONFIGURATION: https://docs.platformio.org/page/boards/espressif8266/nodemcuv2.html
+PLATFORM: Espressif 8266 (4.2.1) > NodeMCU 1.0 (ESP-12E Module)
+HARDWARE: ESP8266 80MHz, 80KB RAM, 4MB Flash
+PACKAGES:
+ - framework-arduinoespressif8266 @ 3.30102.0 (3.1.2)
+ - tool-esptool @ 1.413.0 (4.13)
+ - tool-esptoolpy @ 1.30000.201119 (3.0.0)
+ - toolchain-xtensa @ 2.100300.220621 (10.3.0)
+LDF: Library Dependency Finder -> https://bit.ly/configure-pio-ldf
+LDF Modes: Finder ~ chain, Compatibility ~ soft
+Found 37 compatible libraries
+Scanning dependencies...
+Dependency Graph
+|-- ESP8266WiFi @ 1.0
+Building in release mode
+Retrieving maximum program size .pio\build\nodemcuv2\firmware.elf
+Checking size .pio\build\nodemcuv2\firmware.elf
+Advanced Memory Usage is available via "PlatformIO Home > Project Inspect"
+RAM:   [===       ]  34.5% (used 28296 bytes from 81920 bytes)
+Flash: [===       ]  26.2% (used 273147 bytes from 1044464 bytes)
+========================= [SUCCESS] Took 5.25 seconds =========================
+
+Environment    Status    Duration
+-------------  --------  ------------
+nodemcuv2      SUCCESS   00:00:05.248
+========================= 1 succeeded in 00:00:05.248 =========================
+ESP8266 source build: PASS
+
+=== ESP-01S source build ===
+$ D:\�ҵĿ���ϵͳ\Documents\EasyShare\python\Scripts\platformio.EXE run -d esp8266_firmware -e esp01_1m
+Processing esp01_1m (board: esp01_1m; platform: espressif8266; framework: arduino)
+--------------------------------------------------------------------------------
+Verbose mode can be enabled via `-v, --verbose` option
+CONFIGURATION: https://docs.platformio.org/page/boards/espressif8266/esp01_1m.html
+PLATFORM: Espressif 8266 (4.2.1) > Espressif Generic ESP8266 ESP-01 1M
+HARDWARE: ESP8266 80MHz, 80KB RAM, 1MB Flash
+PACKAGES:
+ - framework-arduinoespressif8266 @ 3.30102.0 (3.1.2)
+ - tool-esptool @ 1.413.0 (4.13)
+ - tool-esptoolpy @ 1.30000.201119 (3.0.0)
+ - toolchain-xtensa @ 2.100300.220621 (10.3.0)
+LDF: Library Dependency Finder -> https://bit.ly/configure-pio-ldf
+LDF Modes: Finder ~ chain, Compatibility ~ soft
+Found 37 compatible libraries
+Scanning dependencies...
+Dependency Graph
+|-- ESP8266WiFi @ 1.0
+Building in release mode
+Retrieving maximum program size .pio\build\esp01_1m\firmware.elf
+Checking size .pio\build\esp01_1m\firmware.elf
+Advanced Memory Usage is available via "PlatformIO Home > Project Inspect"
+RAM:   [===       ]  34.5% (used 28296 bytes from 81920 bytes)
+Flash: [====      ]  35.9% (used 273147 bytes from 761840 bytes)
+========================= [SUCCESS] Took 5.48 seconds =========================
+
+Environment    Status    Duration
+-------------  --------  ------------
+esp01_1m       SUCCESS   00:00:05.480
+========================= 1 succeeded in 00:00:05.480 =========================
+ESP-01S source build: PASS
+
+=== R2 physical baseline structure ===
+$ D:\�ҵĿ���ϵͳ\Documents\EasyShare\python\python.exe scripts/r2_physical_baseline_check.py
+R2 total planned measurements: 40
+R2 PHOTO INVENTORY blockers: 1
+R2 INVENTORY OBSERVATION GATE: BLOCKED
+R2 CAD_START blockers: 19
+R2 CAD START GATE: BLOCKED
+R2 MOTION_VERIFICATION blockers: 5
+R2 MOTION VERIFICATION GATE: BLOCKED
+R2 DETAIL_DESIGN blockers: 3
+R2 DETAIL DESIGN GATE: BLOCKED
+R2 ARTICLE_INTEGRATION blockers: 10
+R2 ARTICLE INTEGRATION GATE: BLOCKED
+AEROFORGE TVC CONCEPT INTAKE: BLOCKED
+AEROFORGE TVC DESIGN-REVIEW INTAKE: BLOCKED
+R2 PHYSICAL BASELINE STRUCTURE CHECK: PASS
+R2 physical baseline structure: PASS
+
+=== Recovery detectability audit (advisory; known safety blocker) ===
+$ D:\�ҵĿ���ϵͳ\Documents\EasyShare\python\python.exe scripts/recovery_configuration_audit.py
+Recovery detectability: BLOCKED_UNREACHABLE_THRESHOLD
+  IMU: +/-2 g; az divisor: 16384.0 counts/g
+  strict launch threshold: 2.5 g; max encoded |az|: 2.0 g
+  Recovery qualification: NOT EVALUATED; do not infer readiness.
+Recovery detectability audit (advisory; known safety blocker): PASS
+
+=== R2.1 ownership and dependency structure ===
+$ D:\�ҵĿ���ϵͳ\Documents\EasyShare\python\python.exe scripts/r2_1_check.py
+Hardware verification: NOT_EVALUATED (historical/purchase evidence is not current hardware acceptance)
+R2.1 STRUCTURE CHECK: PASS
+R2.1 ownership and dependency structure: PASS
+
+=== R2 and R2.1 deterministic gate tests ===
+$ D:\�ҵĿ���ϵͳ\Documents\EasyShare\python\python.exe -m pytest scripts/tests -q
+........................................................................ [ 33%]
+........................................................................ [ 67%]
+......................................................................   [100%]
+214 passed in 23.66s
+R2 and R2.1 deterministic gate tests: PASS
+
+=== R2.3 deterministic GNC source/oracle parity ===
+$ D:\�ҵĿ���ϵͳ\Documents\EasyShare\python\python.exe -m pytest scripts/tests/test_gnc_offline_oracle.py -q
+.....                                                                    [100%]
+5 passed in 5.17s
+R2.3 deterministic GNC source/oracle parity: PASS
+
+=== R2.3 deterministic dual-period GNC comparison ===
+$ D:\�ҵĿ���ϵͳ\Documents\EasyShare\python\python.exe -m pytest scripts/tests/test_gnc_dual_period.py -q
+.....                                                                    [100%]
+5 passed in 4.81s
+R2.3 deterministic dual-period GNC comparison: PASS
+
+=== R3 RF offline telemetry framing and replay tests ===
+$ D:\�ҵĿ���ϵͳ\Documents\EasyShare\python\python.exe -m unittest discover -s rf_lab/tests
+.................................................................................................
+----------------------------------------------------------------------
+Ran 97 tests in 19.478s
+
+OK
+R3 RF offline telemetry framing and replay tests: PASS
+
+=== R3.1 deterministic RF reliability software experiment ===
+$ D:\�ҵĿ���ϵͳ\Documents\EasyShare\python\python.exe -m rf_lab.reliability_experiment --check
+{
+  "experiment": "r3_1_read_only_telemetry_reliability_v1",
+  "invariants": [
+    "generator drops and receiver sequence gaps are independently counted",
+    "malformed datagrams do not mutate receiver freshness state",
+    "duplicate and stale datagrams do not mutate receiver freshness state",
+    "session labels remain explicitly unauthenticated",
+    "no flight command dispatch or control authority exists in the harness",
+    "all streams stay within fixed frame and delivery bounds",
+    "observed host runtime and Python allocation stay inside software-only guardrails"
+  ],
+  "result": "PASS",
+  "scenario_names": [
+    "normal_ordered",
+    "independent_synthetic_drops",
+    "contiguous_synthetic_burst",
+    "duplicate_delivery",
+    "delayed_out_of_order",
+    "crc_corruption",
+    "truncation_and_length_anomalies",
+    "uint16_large_gap_half_range_and_wrap",
+    "untrusted_session_churn",
+    "seeded_bounded_fault_mix"
+  ],
+  "software_resource_observation": {
+    "delay_queue_bound_frames": 512,
+    "host_elapsed_seconds": 0.028613700065761805,
+    "host_runtime_guard_seconds": 10.0,
+    "maximum_generated_frames_per_scenario": 512,
+    "maximum_offered_datagrams_per_scenario": 1024,
+    "maximum_pending_delay_queue_observed": 2,
+    "python_tracemalloc_guard_bytes": 8388608,
+    "python_tracemalloc_peak_bytes": 610872,
+    "scope": "This Python process and these bounded synthetic fixtures only; not an RF or embedded measurement."
+  },
+  "summary": {
+    "datagrams_offered_to_receiver": 589,
+    "flight_commands_dispatched": 0,
+    "flight_control_authority_granted": 0,
+    "known_synthetic_drops": 39,
+    "receiver_rejected_by_reason": {
+      "crc_mismatch": 33,
+      "payload_length_out_of_range": 1,
+      "payload_size_mismatch": 1,
+      "truncated_header_or_crc": 33
+    },
+    "receiver_status_counts": {
+      "ACCEPT": 458,
+      "DUPLICATE": 34,
+      "SESSION_CHANGED": 2,
+      "STALE_OR_OUT_OF_ORDER": 27
+    },
+    "scenario_count": 10,
+    "unique_frames_generated": 591,
+    "unobserved_forward_sequence_gap_count": 65660
+  },
+  "warning": "Synthetic generator events and receiver-inferred sequence gaps are separate. Neither is a measured RF loss rate, radio timing, range, throughput, or hardware result."
+}
+R3.1 deterministic RF reliability software experiment: PASS
+
+=== R3.2 synthetic read-only telemetry-quality status demo ===
+$ D:\�ҵĿ���ϵͳ\Documents\EasyShare\python\python.exe -m rf_lab.quality_demo --check
+{
+  "command_dispatches": 0,
+  "frames": [
+    {
+      "label": "before_data",
+      "status": {
+        "actual_rf_loss_latency_range_throughput": "NOT_MEASURED",
+        "control_or_actuator_channel_connected": false,
+        "event_counts": {},
+        "flight_control_authority": false,
+        "freshness": "NO_DECODED_SAMPLE",
+        "last_packet_outcome": "NO_DATA",
+        "last_sample_was_authenticated": false,
+        "packet_acceptance_is_sender_authentication": false,
+        "receiver_sequence_gaps_unobserved": 0,
+        "session_change_seen_untrusted": false,
+        "source_identity": "UNAUTHENTICATED",
+        "synthetic_age_seconds": null
+      }
+    },
+    {
+      "label": "first_decoded_untrusted",
+      "status": {
+        "actual_rf_loss_latency_range_throughput": "NOT_MEASURED",
+        "control_or_actuator_channel_connected": false,
+        "event_counts": {
+          "ACCEPT": 1
+        },
+        "flight_control_authority": false,
+        "freshness": "RECENT_UNAUTHENTICATED",
+        "last_packet_outcome": "ACCEPT",
+        "last_sample_was_authenticated": false,
+        "packet_acceptance_is_sender_authentication": false,
+        "receiver_sequence_gaps_unobserved": 0,
+        "session_change_seen_untrusted": false,
+        "source_identity": "UNAUTHENTICATED",
+        "synthetic_age_seconds": 0
+      }
+    },
+    {
+      "label": "corrupt_does_not_make_old_sample_recent",
+      "status": {
+        "actual_rf_loss_latency_range_throughput": "NOT_MEASURED",
+        "control_or_actuator_channel_connected": false,
+        "event_counts": {
+          "ACCEPT": 1,
+          "REJECT_crc_mismatch": 1
+        },
+        "flight_control_authority": false,
+        "freshness": "STALE_UNAUTHENTICATED",
+        "last_packet_outcome": "REJECT_crc_mismatch",
+        "last_sample_was_authenticated": false,
+        "packet_acceptance_is_sender_authentication": false,
+        "receiver_sequence_gaps_unobserved": 0,
+        "session_change_seen_untrusted": false,
+        "source_identity": "UNAUTHENTICATED",
+        "synthetic_age_seconds": 2.5
+      }
+    },
+    {
+      "label": "duplicate_does_not_make_old_sample_recent",
+      "status": {
+        "actual_rf_loss_latency_range_throughput": "NOT_MEASURED",
+        "control_or_actuator_channel_connected": false,
+        "event_counts": {
+          "ACCEPT": 1,
+          "DUPLICATE": 1,
+          "REJECT_crc_mismatch": 1
+        },
+        "flight_control_authority": false,
+        "freshness": "STALE_UNAUTHENTICATED",
+        "last_packet_outcome": "DUPLICATE",
+        "last_sample_was_authenticated": false,
+        "packet_acceptance_is_sender_authentication": false,
+        "receiver_sequence_gaps_unobserved": 0,
+        "session_change_seen_untrusted": false,
+        "source_identity": "UNAUTHENTICATED",
+        "synthetic_age_seconds": 3
+      }
+    },
+    {
+      "label": "new_label_is_not_authenticated",
+      "status": {
+        "actual_rf_loss_latency_range_throughput": "NOT_MEASURED",
+        "control_or_actuator_channel_connected": false,
+        "event_counts": {
+          "ACCEPT": 1,
+          "DUPLICATE": 1,
+          "REJECT_crc_mismatch": 1,
+          "SESSION_CHANGED": 1
+        },
+        "flight_control_authority": false,
+        "freshness": "RECENT_UNAUTHENTICATED",
+        "last_packet_outcome": "SESSION_CHANGED",
+        "last_sample_was_authenticated": false,
+        "packet_acceptance_is_sender_authentication": false,
+        "receiver_sequence_gaps_unobserved": 0,
+        "session_change_seen_untrusted": true,
+        "source_identity": "UNAUTHENTICATED",
+        "synthetic_age_seconds": 0
+      }
+    }
+  ],
+  "mode": "SYNTHETIC_READ_ONLY",
+  "radio_transmissions": 0,
+  "result": "PASS"
+}
+R3.2 synthetic read-only telemetry-quality status demo: PASS
+
+=== Preserved research offline regressions ===
+$ D:\�ҵĿ���ϵͳ\Documents\EasyShare\python\python.exe -m pytest docs/aerospace-knowledge/examples -q
+......................                                                   [100%]
+22 passed in 0.91s
+Preserved research offline regressions: PASS
+
+Hardware checks: MANUAL / HARDWARE-GATED (not part of this exit code)
+R0 SOFTWARE CHECK: PASS
+R1 COMMAND SAFETY CHECK: PASS
+R2.1 SOFTWARE REGRESSION CHECK: PASS
+R2.3 GNC SOURCE PARITY CHECK: PASS
+R3 RF OFFLINE TELEMETRY CHECK: PASS
+R3.2 TELEMETRY QUALITY CHECK: PASS
