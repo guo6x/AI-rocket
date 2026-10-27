@@ -1,25 +1,56 @@
 schema_version: 2
 project: "Project Ad Astra / AI-rocket"
-baseline_name: "SYSTEM-V1 software and R2.1 real-asset evidence baseline"
+baseline_name: "SYSTEM-V1 software and physical-baseline readiness evidence baseline"
 audit_date: "2026-10-27"
 baseline_origin_audit_date: "2026-10-23"
 compatibility_input_commit: "e9510e61b6de518b272ea6fdb8433bbab4c501c5"
 branch_base_commit: "f59dc2c5791ee88f3d853112930de55d0c31f4d3"
 prior_r2_merge: "66861c7c9f0d468e81a2e09c7a354ed6058dd20f"
 
-current_phase: "SYSTEM-V1 software integration acceptance (R0-R3.2 software gate, JSON-R3 offline contract, and serial-framed Ground Station input); physical qualification and CAD remain evidence-gated"
+current_phase: "Physical-baseline readiness after SYSTEM-V1 software closure; hardware identity, interfaces, recovery qualification, and CAD remain evidence-gated"
+
+latest_main_status:
+  captured_at: "2026-10-27"
+  exact_main_sha: "32d2c20658c1d5f83cb1ec720a9b6bf327dffb0b"
+  origin_main_sha: "32d2c20658c1d5f83cb1ec720a9b6bf327dffb0b"
+  working_tree: "CLEAN"
+  github:
+    open_issues:
+      - {number: 22, status: "OPEN", scope: "CAD-V1 measurement-gated mechanical baseline"}
+      - {number: 23, status: "OPEN", scope: "SYSTEM-V1 software/physical integration gates"}
+    open_pull_requests: 0
+    latest_ci:
+      run_id: 40372916700
+      result: "PASS"
+      tested_sha: "32d2c20658c1d5f83cb1ec720a9b6bf327dffb0b"
+      url: "https://github.com/guo6x/AI-rocket/actions/runs/40372916700"
+  local_full_check:
+    command: "py -3 scripts/check.py"
+    result: "PASS"
+    exit_code: 0
+    source_sha: "32d2c20658c1d5f83cb1ec720a9b6bf327dffb0b"
+    ground_station_tests: "132 passed"
+    flight_native_tests: "47 passed"
+    gnc_only_native_tests: "4 passed"
+    esp_relay_native_tests: "3 passed"
+    script_tests: "211 passed"
+    gnc_oracle_tests: "5 passed"
+    gnc_dual_period_tests: "5 passed"
+    rf_lab_tests: "97 passed"
+    research_tests: "22 passed"
+    source_builds: "bluepill_f103c8, apm32f103c8_compat, gnc_only_bench, nodemcuv2, esp01_1m all PASS"
 
 system_v1_current_software_acceptance:
   audit_date: "2026-10-27"
   status: "PARTIALLY_VERIFIED"
-  main_head_after_fetch: "9f202c5f279676c02cd6d0f1ef3e4f71e573b647"
-  tested_source_head: "00c68cd84c485cfcd86103f5dd2f2c8b65b4c294"
-  tested_source_branch: "main (local revalidation at 00c68cd; latest main is docs-only merge 9f202c5)"
+  main_head_after_fetch: "32d2c20658c1d5f83cb1ec720a9b6bf327dffb0b"
+  tested_source_head: "32d2c20658c1d5f83cb1ec720a9b6bf327dffb0b"
+  tested_source_branch: "main (local revalidation and latest hosted CI at 32d2c20)"
   github:
     exact_main_ci:
-      run_id: 40355328266
+      run_id: 40372916700
       result: "PASS"
-      tested_sha: "9f202c5f279676c02cd6d0f1ef3e4f71e573b647"
+      tested_sha: "32d2c20658c1d5f83cb1ec720a9b6bf327dffb0b"
     latest_merged_renderer_pr: 31
     merged_prs_since_previous_snapshot:
       - {number: 32, merge_sha: "782ee25bf51c08d1532c6920ddf0e49a9580b7c7"}
@@ -281,3 +312,43 @@ safety_scope:
     - "ignition development for energetic propulsion tests"
     - "unsupervised motor or combustion testing"
     - "automatic promotion of purchased assets to VERIFIED_HARDWARE"
+
+physical_baseline_readiness_v1:
+  captured_at: "2026-10-27"
+  goal_status: "GOAL_BLOCKED_BY_PHYSICAL_EVIDENCE"
+  report: "docs/AD_ASTRA_PHYSICAL_BASELINE_READINESS_V1.md"
+  manifest: "engineering/offline-evidence/physical_baseline_readiness_v1/manifest.json"
+  source_git_sha: "32d2c20658c1d5f83cb1ec720a9b6bf327dffb0b"
+  asset_registry:
+    registered_assets: 23
+    ownership_basis: "SRC-PURCHASE-2026-10-22 owner-supplied purchase record"
+    physical_observation_records: 0
+    confirmed_present_components: 0
+    measured_components: 0
+  as_built:
+    article_id: "AA-TVC-BENCH-001"
+    article_status: "BLOCKED_BY_MEASUREMENT"
+    measurement_plan_total: 40
+    measurements_missing: 40
+    evidence_records: 0
+    datum_status: "TBD_MEASURED"
+  cad:
+    status: "NOT_STARTED"
+    cad_start: "BLOCKED_BY_MEASUREMENT"
+    missing_or_unevidenced_cad_start_inputs: 19
+    manufacturing_release: false
+    legacy_ai_geometry: "REJECTED_FOR_CURRENT_DESIGN"
+  recovery:
+    status: "BLOCKED_UNREACHABLE_THRESHOLD"
+    configured_accel_range: "+/-2 g"
+    strict_launch_condition: ">2.5 g"
+    max_encoded_abs_az_g: 2.0
+    qualification: "NOT_EVALUATED"
+    production_changes: false
+  technical_lines:
+    gnc_avionics: "HISTORICALLY_DEMONSTRATED_REBASELINE_REQUIRED"
+    rf: "PARTIAL_ASSET_SET"
+    tvc: "BLOCKED_BY_MISSING_MECHANICAL_INPUTS"
+    recovery: "SOFTWARE_FOUNDATION_ONLY"
+    system_integration: "BLOCKED_BY_UPSTREAM_MATURITY"
+  next_gate: "Unpowered photo/label inventory M-P0-STRUCT-01, followed by evidence-backed EDF/servo/structure/datum measurements"
