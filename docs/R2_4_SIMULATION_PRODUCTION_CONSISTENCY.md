@@ -66,6 +66,8 @@
 
 JSON manifest 绑定固定输入 SHA、逐行结果 SHA、源码 SHA、运行环境和命令；提交时报告生成所用 source SHA 与 artifact commit SHA。所有结论均限于软件证据，真实板卡周期、安装极性和 plant 仍需后续独立工程验证。
 
+本次生成的绑定值为：`source_git_sha=757205cf55c78f690c1a2a4e18265c96c43e2d27`，`input_trace_sha256=3159546dc4042de02cdfe2d3e50f927bcc7080a3d8d84c1976317fbe6985e092`，`result_rows_sha256=6ba189562ae2f70cc94f4f60be32797aae32b1edd25a4603b8472c5e2bb4e9eb`，JSON SHA-256=`35fe293fe36238e8f2fe8b52f8abb47b572f0f96eedb5d7c09f92cd26d28b118`。artifact commit 会在交付记录中另行列出。
+
 ## 6. 停止条件
 
 本轮不修改生产 PID 增益、控制符号、默认模式、E-STOP、回收判据或执行器权限；不进行硬件操作。下一次若要处理极性，只能先提交工程变更建议，给出已确认的传感器安装/舵机连杆坐标证据、验收向量和回归计划。
