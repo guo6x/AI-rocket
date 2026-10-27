@@ -11,23 +11,23 @@ current_phase: "Physical-baseline readiness after SYSTEM-V1 software closure; ha
 
 latest_main_status:
   captured_at: "2026-10-27"
-  exact_main_sha: "7af811392189f25d7219778d1154f9b738ba968f"
-  origin_main_sha: "7af811392189f25d7219778d1154f9b738ba968f"
+  exact_main_sha: "ef09137b5db3b6ea3ebd0a752cd61767410c67b2"
+  origin_main_sha: "ef09137b5db3b6ea3ebd0a752cd61767410c67b2"
   working_tree: "CLEAN_AT_BASELINE_CHECKOUT; current main verified after fetch/prune"
   supersedes_snapshot:
-    exact_main_sha: "34f2f7eb16d013fbbef146be382067d0d7ad31a1"
-    ci_run_id: 40449540391
-    note: "The prior refresh remains historical evidence; this block is the current authority."
+    exact_main_sha: "7af811392189f25d7219778d1154f9b738ba968f"
+    ci_run_id: 40455461657
+    note: "The prior main refresh remains historical evidence; this block is the current authority after PR #45."
   github:
     open_issues:
       - {number: 22, status: "OPEN", scope: "CAD-V1 measurement-gated mechanical baseline"}
       - {number: 23, status: "OPEN", scope: "SYSTEM-V1 software/physical integration gates"}
     open_pull_requests: 0
     latest_ci:
-      run_id: 40455461657
+      run_id: 40477044936
       result: "PASS"
-      tested_sha: "7af811392189f25d7219778d1154f9b738ba968f"
-      url: "https://github.com/guo6x/AI-rocket/actions/runs/40455461657"
+      tested_sha: "ef09137b5db3b6ea3ebd0a752cd61767410c67b2"
+      url: "https://github.com/guo6x/AI-rocket/actions/runs/40477044936"
   local_full_check:
     command: "py -3 scripts/check.py"
     result: "NOT_RERUN_ON_DOCS_ONLY_REFRESH; HOSTED_CI_PASS"
@@ -225,6 +225,27 @@ current_objective: >-
   benches. Ownership, article assignment, physical configuration, and hardware
   verification remain distinct evidence levels.
 
+manufacturer_nominal_baseline:
+  registry: "engineering/parameter-registry.yaml#manufacturer_nominal"
+  validator: "scripts/manufacturer_nominal_check.py"
+  source_index: "engineering/references/purchased-component-nominal-specs-20261027.md"
+  evidence: "engineering/offline-evidence/physical_baseline_readiness_v1/manufacturer_nominal_baseline_20261027_v2.json"
+  evidence_sha256: "e0bf207df01bafc33e4708412760a6ed7c4ef8d30a9f7af27c3afa0575d3aeea"
+  recorded_on: "2026-10-27"
+  source_main_sha: "ef09137b5db3b6ea3ebd0a752cd61767410c67b2"
+  manufacturer_nominal_parameters: 44
+  conflict_groups: 2
+  conflict_group_ids:
+    - "SG92R-GEAR-MATERIAL-AND-WEIGHT"
+    - "ESP32S3-MEMORY-SUFFIX"
+  unresolved_assets: 15
+  evidence_ceiling: "MANUFACTURER_NOMINAL_REFERENCE; offline reference only"
+  physical_measurements: "UNCHANGED; 40 planned measurements remain MISSING"
+  cad_status: "NOT_STARTED / BLOCKED_BY_MEASUREMENT; 19 CAD_START blockers unchanged"
+  prohibited_inference:
+    - "Do not treat nominal values as OBSERVED, MEASURED, CONFIRMED_PRESENT or VERIFIED_HARDWARE."
+    - "No EDF, ESC, battery, BEC, frame or installed geometry is assumed from this layer."
+
 project_development_model:
   principle: "Mature technical lines independently, then integrate only evidence-backed configurations."
   technical_lines:
@@ -314,6 +335,7 @@ authoritative_sources:
     - "esp8266_firmware/test/**"
     - "scripts/simulation_smoke.py"
     - "scripts/r2_1_check.py"
+    - "scripts/manufacturer_nominal_check.py"
     - "scripts/tests/**"
 
 evidence_rules:

@@ -1,0 +1,71 @@
+{
+  "evidence_type": "manufacturer_nominal_parameter_baseline",
+  "recorded_at": "2026-10-27",
+  "source_git_sha": "dc4569d3001253c2d62d71cb8aece493bebce594",
+  "source_main_sha": "ef09137b5db3b6ea3ebd0a752cd61767410c67b2",
+  "input_sha256": {
+    "engineering/parameter-registry.yaml": "891e311114487aa7745b45a89c26154f9975679f22e4be45d6d3eb586fc2b75b",
+    "engineering/assets/project-asset-registry.yaml": "72b51313c6ce7b881fb0fd1d1cbe64927b20f95c6ba8f6ac3fd4cf77505481be",
+    "engineering/references/purchased-component-nominal-specs-20261027.md": "a6c11dff00de9e1644f9b5de19ea42eabca0f6be3d01d83c51722ca8fb96e1d6",
+    "scripts/manufacturer_nominal_check.py": "932269d82491fcf36899cf7cbe4da95e9a1541623061241597493220cf154bc7",
+    "scripts/tests/test_manufacturer_nominal.py": "8b83931aa6f474a9a12eb77919f089531a41bdc30d90e661bd03aa58b42afd55",
+    "scripts/check.py": "05a72e3549f408ef3e1d2055bb1c09d7c6a8f1b73db533dec608bef8957d3bf2"
+  },
+  "commands": [
+    {
+      "command": "py -3 scripts/manufacturer_nominal_check.py --json",
+      "exit_code": 0,
+      "result": "PASS"
+    },
+    {
+      "command": "py -3 -m pytest scripts/tests/test_manufacturer_nominal.py -q",
+      "exit_code": 0,
+      "passed": 8,
+      "failed": 0
+    },
+    {
+      "command": "py -3 scripts/check.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "test_executions": 222,
+      "ground_station_tests": 132,
+      "flight_native_tests": 47,
+      "gnc_only_native_tests": 4,
+      "esp_relay_native_tests": 3,
+      "gnc_oracle_tests": 5,
+      "gnc_dual_period_tests": 5,
+      "rf_lab_tests": 97,
+      "research_tests": 22,
+      "source_builds": {
+        "bluepill_f103c8": "PASS",
+        "apm32f103c8_compat": "PASS",
+        "gnc_only_bench": "PASS",
+        "nodemcuv2": "PASS",
+        "esp01_1m": "PASS"
+      },
+      "execution_note": "The working tree was unchanged between this gate and source commit dc4569d."
+    }
+  ],
+  "result_sha256": "46b98ace229d1234632b377ad0c38037791b70db1ec3d3c294d5a3dcbb54aec2",
+  "summary": {
+    "manufacturer_nominal_parameters": 44,
+    "conflict_groups": [
+      "ESP32S3-MEMORY-SUFFIX",
+      "SG92R-GEAR-MATERIAL-AND-WEIGHT"
+    ],
+    "unresolved_assets": 15,
+    "validator_status": "PASS",
+    "full_check_exit_code": 0
+  },
+  "evidence_ceiling": "MANUFACTURER_NOMINAL_REFERENCE / TESTED_SOFTWARE",
+  "hardware_boundary": {
+    "hardware_connected": false,
+    "powered": false,
+    "firmware_burned": false,
+    "rf_transmitted": false,
+    "actuators_operated": false,
+    "physical_measurements_created": false,
+    "cad_start_status": "BLOCKED_BY_MEASUREMENT",
+    "recovery_status": "BLOCKED_UNREACHABLE_THRESHOLD"
+  }
+}
