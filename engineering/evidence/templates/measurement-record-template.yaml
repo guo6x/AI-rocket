@@ -3,6 +3,7 @@ record_id: "MEAS-YYYYMMDD-001"
 record_type: "measurement"
 article_id: "AA-TVC-BENCH-001"
 component_id: "CMP-REPLACE-ME"
+physical_unit_id: null
 measurement_id: "M-REPLACE-ME"
 date: "YYYY-MM-DD"
 operator: "REPLACE_ME"

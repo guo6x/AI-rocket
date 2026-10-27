@@ -2,13 +2,13 @@
   "evidence_id": "AD_ASTRA_PHYSICAL_BASELINE_READINESS_V1_2026-10-27",
   "status": "GOAL_BLOCKED_BY_PHYSICAL_EVIDENCE",
   "scope": "read-only software, documentation, asset-register and static safety audit; no hardware operation",
-  "source_git_sha": "32d2c20658c1d5f83cb1ec720a9b6bf327dffb0b",
-  "origin_main_sha_at_audit": "32d2c20658c1d5f83cb1ec720a9b6bf327dffb0b",
+  "source_git_sha": "244a5b07122e0ebbf7153baa74b2d9b6c003d3ce",
+  "origin_main_sha_at_audit": "244a5b07122e0ebbf7153baa74b2d9b6c003d3ce",
   "github_ci": {
-    "run_id": 40372916700,
+    "run_id": 40437666955,
     "result": "PASS",
-    "tested_sha": "32d2c20658c1d5f83cb1ec720a9b6bf327dffb0b",
-    "url": "https://github.com/guo6x/AI-rocket/actions/runs/40372916700"
+    "tested_sha": "244a5b07122e0ebbf7153baa74b2d9b6c003d3ce",
+    "url": "https://github.com/guo6x/AI-rocket/actions/runs/40437666955"
   },
   "commands": [
     {
@@ -36,7 +36,9 @@
       "command": "py -3 scripts/check.py",
       "exit_code": 0,
       "result": "PASS",
-      "observed": "Ground Station 132; flight native 47; GNC-only 4; ESP relay 3; scripts 211; R2.3 oracle 5; dual-period 5; RF 97; research 22; five source builds PASS"
+      "observed": "Ground Station 132; flight native 47; GNC-only 4; ESP relay 3; scripts 214; R2.3 oracle 5; dual-period 5; RF 97; research 22; five source builds PASS",
+      "log_path": "engineering/offline-evidence/physical_baseline_readiness_v1/full_check_20261027.log",
+      "stdout_sha256": "9770d501e16e62522852486a69b6a4574f0ceb09f2e40caf7e15a5dbc0a4065f"
     }
   ],
   "source_sha256": {
@@ -44,7 +46,7 @@
     "engineering/as-built/article.yaml": "320bd974bb47415435aa6196bf2e9b47fea680cfccc32c82409e6995c01b5dfc",
     "engineering/as-built/component-inventory.yaml": "f733fb90e2bf3c91d520a79bbf398a95d36660ec062c63227f38019ad3034e71",
     "engineering/as-built/evidence-index.yaml": "95d57198ef8bba362fde17402bf31038b9481a28fec512e1f65c7cc51605561e",
-    "engineering/as-built/measurement-plan.yaml": "71bf17142ff3bb2c6fe99f2b14f5e4b2e926eb88e0394ea58b4f4a6c7335f949",
+    "engineering/as-built/measurement-plan.yaml": "e0eba479abd1ca3c450f2d6f76709bbdca604c94a6709e3950ac1e893cec27c9",
     "engineering/as-built/datum-definition.yaml": "16047c36f24b26412c24c25196b4ecdc846893697cf8e9c71c743548d9160a47",
     "engineering/as-built/interface-register.yaml": "047effc5fc9f5ce120f54c81dc016236e519079d7a9e32a7668510d95cfdf1fe",
     "engineering/as-built/mass-properties.yaml": "03d6d839c8d8e2863524a1dc62d007847115948d42a5068a5f969b4c3a0577e9",
@@ -53,12 +55,16 @@
     "scripts/r2_physical_baseline_check.py": "9da5e0d062260388431500b5c2fccb2c419b56a3dff4d2fdd5a19827510079fc",
     "scripts/cad_baseline_gate.py": "1ea75f276b0b48c0bb0311d2da3aa516cb94fdd100bb65bbefd74660b83df634",
     "scripts/recovery_configuration_audit.py": "12cdf30d5deb3a5c7a15fb0e6ecfb38e5ce82b561799f306dfb28ff77da6cefd",
-    "docs/RECOVERY_LOGIC_SAFETY_CHANGE_PROPOSAL.md": "9efc9b1c5ce7f33b053fea81f6397e2434d21ce416b66d7c62f0bbd02721324a9",
-    "docs/R2_USER_MEASUREMENT_CHECKLIST.md": "c679e263ce30d9e3be5fcc34afb211247fa05eab9e218e14b156b34b028c16a9"
+    "docs/RECOVERY_LOGIC_SAFETY_CHANGE_PROPOSAL.md": "9efc9b1c5ce7f33b053fea81f6397e2434d21ce416b66d7c62f0bbd02721324a",
+    "docs/R2_USER_MEASUREMENT_CHECKLIST.md": "c679e263ce30d9e3be5fcc34afb211247fa05eab9e218e14b156b34b028c16a9",
+    "engineering/evidence/README.md": "c14c4f378b3760aa143ba93b957a901c89dd16351d8873dbc072a30b2edb9179",
+    "engineering/evidence/templates/measurement-record-template.yaml": "9b2d41b260f8e2179748b945225e0c2de1c6da48791d1bd3569fbc3318a5d165",
+    "scripts/r2_evidence.py": "93b04968fea3174c0153325117caf246e9a2f52ceab543c70c89fe117aeb5332",
+    "scripts/tests/test_r2_evidence.py": "83fe9da744baf533a948bdf8448761189cf98c90939a54eca609dff3970ced45"
   },
   "document_sha256_at_generation": {
-    "docs/AD_ASTRA_PHYSICAL_BASELINE_READINESS_V1.md": "26d53edf25374ed7f0f136ed8491e9310de625dd9e4935d1be6bdff1a2363046",
-    "engineering/current-baseline.yaml": "8d7a06b44eb5f24854867c8effe4d407a527493ebfa332ad0ee713f5b4245f79"
+    "docs/AD_ASTRA_PHYSICAL_BASELINE_READINESS_V1.md": "34fd2d945170604ea87df090efeb3591f883f4ee1d358d6d13e06b9da98350c0",
+    "engineering/current-baseline.yaml": "fe63df7dc99eae37a9874e9f70736baf396d3a465b1b6e306f1bb72ec51ff7d2"
   },
   "counts": {
     "registered_assets": 23,
@@ -79,6 +85,17 @@
     "purchase_record_is_hardware_verification": false
   },
   "evidence_ceiling": "TESTED_SOFTWARE_AND_DOCUMENTED_READINESS_ONLY",
-  "known_tooling_risk": "Dual-servo measurement rows are component-scoped; per-unit coverage is not yet enforced. No record exists, so no gate has been released. Add a unit-coverage rule before first servo evidence is indexed.",
+  "measurement_coverage_rule": {
+    "status": "SOFTWARE_ENFORCED",
+    "policy": "each_component_and_unit",
+    "requirements": [
+      "every listed component must have evidence",
+      "every record must identify physical_unit_id",
+      "one physical_unit_id cannot be shared across components",
+      "repeated measurements for one component may reuse its unit ID"
+    ],
+    "tests": "scripts/tests/test_r2_evidence.py (complete, partial, and shared-unit cases)"
+  },
+  "known_tooling_risk": "No physical evidence record exists; the software rule is fail-closed for future multi-component records but cannot establish present hardware identity or measurement completion.",
   "warning": "Purchase records, source builds, static audits and historical reports do not establish present hardware identity, interface fit, calibration, wireless link, actuator behavior, recovery safety or flight readiness."
 }

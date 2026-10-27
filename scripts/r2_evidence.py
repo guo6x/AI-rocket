@@ -41,6 +41,7 @@ def _validate_evidence_files(documents: dict[str, Any], root: Path) -> list[str]
     article_id = documents["article"]["article_id"]
     components = {item["component_id"] for item in documents["inventory"]["components"]}
     measurements = {item["measurement_id"] for item in documents["plan"]["measurements"]}
+    coverage_vocabulary = set(documents["plan"].get("coverage_vocabulary") or {"single_component"})
     allowed = (root / "engineering/evidence/records").resolve()
     for entry in documents["evidence"].get("evidence_records") or []:
         record_id = entry.get("record_id", "<missing>")
@@ -122,6 +123,13 @@ def _validate_evidence_files(documents: dict[str, Any], root: Path) -> list[str]
             if component.get("evidence_class") == "MEASURED" and record.get("record_type") != "measurement":
                 errors.append(f"{component['component_id']}: MEASURED requires measurement records")
     for measurement in documents["plan"]["measurements"]:
+        coverage = measurement.get("coverage", "single_component")
+        if coverage not in coverage_vocabulary:
+            errors.append(f"{measurement['measurement_id']}: unsupported coverage policy {coverage}")
+        if coverage == "each_component_and_unit" and "unit_id" not in (measurement.get("fields") or []):
+            errors.append(f"{measurement['measurement_id']}: each_component_and_unit requires a unit_id field")
+        covered_components: dict[str, set[str]] = {}
+        unit_components: dict[str, set[str]] = {}
         for ref in measurement.get("evidence_refs") or []:
             record = loaded.get(ref, {})
             if record.get("component_id") not in measurement.get("component_ids", []):
@@ -130,6 +138,34 @@ def _validate_evidence_files(documents: dict[str, Any], root: Path) -> list[str]
                 errors.append(f"{measurement['measurement_id']}: evidence {ref} belongs to another measurement")
             if measurement.get("status") == "NOT_APPLICABLE" and record.get("record_type") != "hardware_observation":
                 errors.append(f"{measurement['measurement_id']}: NOT_APPLICABLE requires observation evidence")
+            component_id = record.get("component_id")
+            if coverage == "each_component_and_unit" and component_id in measurement.get("component_ids", []):
+                physical_unit_id = record.get("physical_unit_id")
+                if not filled(physical_unit_id):
+                    errors.append(
+                        f"{measurement['measurement_id']}: evidence {ref} requires physical_unit_id"
+                    )
+                else:
+                    covered_components.setdefault(component_id, set()).add(physical_unit_id)
+                    unit_components.setdefault(physical_unit_id, set()).add(component_id)
+        if coverage == "each_component_and_unit" and measurement.get("status") in {"RECORDED", "NOT_APPLICABLE"}:
+            expected_components = set(measurement.get("component_ids") or [])
+            missing_components = expected_components - set(covered_components)
+            if missing_components:
+                errors.append(
+                    f"{measurement['measurement_id']}: evidence must cover each component: "
+                    f"{sorted(missing_components)}"
+                )
+            shared_units = {
+                unit_id: sorted(component_ids)
+                for unit_id, component_ids in unit_components.items()
+                if len(component_ids) > 1
+            }
+            if shared_units:
+                errors.append(
+                    f"{measurement['measurement_id']}: physical_unit_id cannot be shared across components: "
+                    f"{shared_units}"
+                )
     for name, document in documents.items():
         for node in walk(document):
             if not isinstance(node, dict) or node.get("status") != "MEASURED":

@@ -155,3 +155,78 @@ def test_not_applicable_cannot_use_measurement_record(evidence_case):
                        if item["measurement_id"] == "M-P0-EDF-02")
     measurement.update(status="NOT_APPLICABLE", evidence_refs=[entry["record_id"]])
     assert any("NOT_APPLICABLE" in error for error in validate_evidence_files(documents, root))
+
+
+def _add_servo_measurement(documents, root, record_id, component_id, unit_id):
+    measurement_id = "M-P0-SERVO-02"
+    path = root / f"engineering/evidence/records/{record_id}.yaml"
+    record = {
+        "schema_version": 1,
+        "record_id": record_id,
+        "record_type": "measurement",
+        "article_id": "AA-TVC-BENCH-001",
+        "component_id": component_id,
+        "physical_unit_id": unit_id,
+        "measurement_id": measurement_id,
+        "date": "2026-10-27",
+        "operator": "Synthetic unit-coverage fixture",
+        "method": "Test only",
+        "tool": "Test caliper",
+        "raw_measurement": {"body_length": 23.0},
+        "unit": "mm",
+        "uncertainty": 0.1,
+        "photo_refs": [{"location": f"external:test-only/{record_id}.jpg", "sha256": "c" * 64}],
+        "source_commit": "d" * 40,
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(yaml.safe_dump(record), encoding="utf-8")
+    entry = {
+        "record_id": record_id,
+        "record_type": "measurement",
+        "article_id": "AA-TVC-BENCH-001",
+        "path": path.relative_to(root).as_posix(),
+        "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+    }
+    documents["evidence"]["evidence_records"].append(entry)
+    return entry
+
+
+def test_multi_component_measurement_requires_each_servo_unit(evidence_case):
+    documents, _, _, _, _, root = evidence_case
+    measurement = next(item for item in documents["plan"]["measurements"]
+                       if item["measurement_id"] == "M-P0-SERVO-02")
+    pitch = _add_servo_measurement(
+        documents, root, "MEAS-SERVO-PITCH-001", "CMP-TVC-SERVO-PITCH-001", "SERVO-U1"
+    )
+    roll = _add_servo_measurement(
+        documents, root, "MEAS-SERVO-ROLL-001", "CMP-TVC-SERVO-ROLL-001", "SERVO-U2"
+    )
+    measurement.update(status="RECORDED", evidence_refs=[pitch["record_id"], roll["record_id"]])
+    assert validate_evidence_files(documents, root) == []
+
+
+def test_multi_component_measurement_rejects_partial_servo_coverage(evidence_case):
+    documents, _, _, _, _, root = evidence_case
+    measurement = next(item for item in documents["plan"]["measurements"]
+                       if item["measurement_id"] == "M-P0-SERVO-02")
+    pitch = _add_servo_measurement(
+        documents, root, "MEAS-SERVO-PITCH-ONLY-001", "CMP-TVC-SERVO-PITCH-001", "SERVO-U1"
+    )
+    measurement.update(status="RECORDED", evidence_refs=[pitch["record_id"]])
+    errors = validate_evidence_files(documents, root)
+    assert any("must cover each component" in error for error in errors)
+
+
+def test_multi_component_measurement_rejects_shared_physical_unit(evidence_case):
+    documents, _, _, _, _, root = evidence_case
+    measurement = next(item for item in documents["plan"]["measurements"]
+                       if item["measurement_id"] == "M-P0-SERVO-02")
+    pitch = _add_servo_measurement(
+        documents, root, "MEAS-SERVO-SHARED-PITCH-001", "CMP-TVC-SERVO-PITCH-001", "SERVO-SHARED"
+    )
+    roll = _add_servo_measurement(
+        documents, root, "MEAS-SERVO-SHARED-ROLL-001", "CMP-TVC-SERVO-ROLL-001", "SERVO-SHARED"
+    )
+    measurement.update(status="RECORDED", evidence_refs=[pitch["record_id"], roll["record_id"]])
+    errors = validate_evidence_files(documents, root)
+    assert any("cannot be shared across components" in error for error in errors)
