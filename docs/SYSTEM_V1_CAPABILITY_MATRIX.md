@@ -94,17 +94,17 @@ Completed software evidence remains reusable: the production C++/Python GNC orac
 | Evidence field | 2026-10-27 post-merge handoff |
 | --- | --- |
 | Fixed pre-change inventory | `50006f8fd6830a34f16b5e9d2f4e84269c403007` |
-| Current `main` exact SHA after merge/fetch | `9f202c5f279676c02cd6d0f1ef3e4f71e573b647` (PR #36 docs/evidence merge; base `00c68cd…`) |
-| Latest exact-main hosted CI | `PASS`: [run 40355328266](https://github.com/guo6x/AI-rocket/actions/runs/40355328266), exact `main@9f202c5…`; five source builds |
+| Current `main` exact SHA after merge/fetch | `34f2f7eb16d013fbbef146be382067d0d7ad31a1` (PR #42 docs/baseline merge; prior 9f202c5… snapshot remains historical) |
+| Latest exact-main hosted CI | `PASS`: [run 40449540391](https://github.com/guo6x/AI-rocket/actions/runs/40449540391), exact `main@34f2f7e…`; five source builds |
 | This serial compatibility fix source | `dc5e770cb3b7058884da1914e1280a593c7a153b`; merged by PR #35 (`61b5c9a…`); final docs-only status snapshots are recorded in the acceptance report |
-| Full local software gate at tested source | `PASS`, exit 0; 526 executions / 516 distinct identities / 10 repeat executions; five source builds; current-main evidence in `full_check_main_00c68_20261026/` |
+| Full local software gate at tested source | Historical `PASS`, exit 0; 526 executions / 516 distinct identities / 10 repeat executions at `00c68cd…`; current docs-only main is covered by hosted run `40449540391` |
 | Ground Station actual run | `PARTIALLY_VERIFIED`; 31 runtime assertions, Qt exit 0, no hardware/radio/control sends; current-main evidence in `runtime_main_00c68_20261026/` |
 | Offline/UI/render acceptance | Replay/parser/dashboard/curves/log/fault/recovery `TESTED_SOFTWARE`; prior explicit bundled software-OpenGL two-pose review is retained as bounded evidence; current offscreen run records 2D fallback `PASS`; default native GPU/WGL `BLOCKED / NOT_VERIFIED`; R3 binary adapter remains `NEEDS_INTEGRATION` |
 | Current physical board/wiring/sensor/actuator proof | `UNKNOWN` / `NOT_EVALUATED` |
 | RF driver/link/region gate | `BLOCKED` / `UNKNOWN`; no transmissions authorized |
 | Recovery qualification | `BLOCKED_UNREACHABLE_THRESHOLD` / `NOT_EVALUATED` |
 | Physical TVC stability / free-flight qualification | `UNKNOWN` / not authorized |
-| GitHub lifecycle | PR #32/#33/#34/#35/#36 merged; Issue #23 and Issue #22 remain OPEN; keep #23 open per owner instruction |
+| GitHub lifecycle | PR #32/#33/#34/#35/#36/#42 merged; no open PR; Issue #23 and Issue #22 remain OPEN; keep #23 open per owner instruction |
 
 This matrix update adds no new hardware measurement, hardware procedure, manufacturing release, transmitter authorization or operational control authority. Test totals distinguish actual executions from distinct identities and repeated standalone GNC runs.
 
