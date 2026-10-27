@@ -1,5 +1,22 @@
 # AI-rocket SYSTEM-V1 软件系统验收
 
+## 2026-10-27 当前主线复核（串口兼容性修复已在历史 PR #35 合并）
+
+重新 `fetch --prune` 后，当前本地 `main` 与 `origin/main` 均为
+`90a5829fe441d79799ed59ddfb62b3af549774b7`。串口兼容性生产修复已经由 PR #35
+（merge `61b5c9a4dc7d4712a3d1fba6f6a3f02ef1da1e87`）合入；本轮不重复提交同一
+代码。最新主线软件 CI 为 [run 40444692809](https://github.com/guo6x/AI-rocket/actions/runs/40444692809)，
+测试 SHA 与当前 `main` 一致，结果 `SUCCESS`。
+
+当前 main 上复核命令 `py -3 -m pytest ground_station/tests/test_telemetry_parser.py -q`
+为 **15/15 通过**，完整 `py -3 scripts/check.py` 退出码为 `0`：529 次实际执行、
+519 个不同测试身份、10 次重复执行；Ground Station 132、flight native 47、GNC-only
+4、ESP relay 3、scripts 214、GNC oracle 5、双周期 5、RF 97、research 22 全部通过，
+五个源码构建目标全部 `PASS`。修复前 4bf30b33… 的 11/14 与 3 个失败仍由
+`engineering/offline-evidence/system_v1/serial_compat_pre_fix_20261026.json` 保留，
+修复后 15/15 收据及 SHA-256 不变。Issue #22、#23 仍为 `OPEN`；本次没有硬件、烧录、
+射频、执行器或推进操作。
+
 ## 2026-10-26 串口兼容性定点修复（当前交付更新）
 
 本次更新基于重新 fetch 后的合并前 `origin/main` `4bf30b33abddd9fcd4d8f626b5549ffbb3da4fa3`，并在独立分支 `fix/system-v1-serial-framing-20261026` 的提交 `dc5e770cb3b7058884da1914e1280a593c7a153b` 上完成。PR #32、#33、#34、#35 已合并；合并后的 main 为 `61b5c9a4dc7d4712a3d1fba6f6a3f02ef1da1e87`，其软件 CI 为 [run 40273886220](https://github.com/guo6x/AI-rocket/actions/runs/40273886220)，结果成功。Issue #22、#23 仍保持 OPEN。

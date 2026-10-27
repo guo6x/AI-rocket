@@ -3,7 +3,13 @@
 **状态：`GOAL_BLOCKED_BY_PHYSICAL_EVIDENCE`**
 审计日期：2026-10-27
 仓库：`guo6x/AI-rocket`
-审计基线：`main` `24071089d99c49a07ee96cae780ac23b15bc8a2a`
+审计基线：`main` `90a5829fe441d79799ed59ddfb62b3af549774b7`
+
+> **当前主线刷新（2026-10-27）**：重新 fetch/prune 后，`main` 与 `origin/main`
+> 均为 `90a5829fe441d79799ed59ddfb62b3af549774b7`。最新 SYSTEM-V1 软件 CI 为
+> [run 40444692809](https://github.com/guo6x/AI-rocket/actions/runs/40444692809)，结果
+> `PASS`。下方较早的运行计数和收据仍作为历史证据保留；当前权威状态以
+> `engineering/current-baseline.yaml` 和最新验收报告开头的复核段为准。
 
 ## 结论先行
 
@@ -15,8 +21,8 @@
 
 | 项目 | 实际状态 |
 |---|---|
-| `main` | `24071089d99c49a07ee96cae780ac23b15bc8a2a`，本地与 `origin/main` 一致（PR #40 已合并） |
-| 最新主线 CI | run `40443557635`，`PASS`，测试 SHA 与 `main` 一致：[Actions](https://github.com/guo6x/AI-rocket/actions/runs/40443557635) |
+| `main` | `90a5829fe441d79799ed59ddfb62b3af549774b7`，本地与 `origin/main` 一致（PR #40 及后续状态文档已合并） |
+| 最新主线 CI | run `40444692809`，`PASS`，测试 SHA 与 `main` 一致：[Actions](https://github.com/guo6x/AI-rocket/actions/runs/40444692809) |
 | Issue #22 | `OPEN`，CAD-V1 仍等待实测接口 |
 | Issue #23 | `OPEN`，软件完成不等同于实体集成完成 |
 | 硬件行为 | `NOT_EVALUATED`；本轮未接线、通电、烧录、发射射频或驱动执行器 |
