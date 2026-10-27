@@ -2,13 +2,14 @@
   "evidence_id": "AD_ASTRA_PHYSICAL_BASELINE_READINESS_V1_2026-10-27",
   "status": "GOAL_BLOCKED_BY_PHYSICAL_EVIDENCE",
   "scope": "read-only software, documentation, asset-register and static safety audit; no hardware operation",
-  "source_git_sha": "244a5b07122e0ebbf7153baa74b2d9b6c003d3ce",
-  "origin_main_sha_at_audit": "244a5b07122e0ebbf7153baa74b2d9b6c003d3ce",
+  "source_git_sha": "26e997044250bfd78d1ff979cf381a2f30ef67ff",
+  "base_main_sha_at_generation": "244a5b07122e0ebbf7153baa74b2d9b6c003d3ce",
+  "origin_main_sha_at_audit": "24071089d99c49a07ee96cae780ac23b15bc8a2a",
   "github_ci": {
-    "run_id": 40437666955,
+    "run_id": 40443557635,
     "result": "PASS",
-    "tested_sha": "244a5b07122e0ebbf7153baa74b2d9b6c003d3ce",
-    "url": "https://github.com/guo6x/AI-rocket/actions/runs/40437666955"
+    "tested_sha": "24071089d99c49a07ee96cae780ac23b15bc8a2a",
+    "url": "https://github.com/guo6x/AI-rocket/actions/runs/40443557635"
   },
   "commands": [
     {
@@ -63,8 +64,8 @@
     "scripts/tests/test_r2_evidence.py": "83fe9da744baf533a948bdf8448761189cf98c90939a54eca609dff3970ced45"
   },
   "document_sha256_at_generation": {
-    "docs/AD_ASTRA_PHYSICAL_BASELINE_READINESS_V1.md": "34fd2d945170604ea87df090efeb3591f883f4ee1d358d6d13e06b9da98350c0",
-    "engineering/current-baseline.yaml": "fe63df7dc99eae37a9874e9f70736baf396d3a465b1b6e306f1bb72ec51ff7d2"
+    "docs/AD_ASTRA_PHYSICAL_BASELINE_READINESS_V1.md": "655220a80090641b3b2a9e40c9d711af1005ec6f085c031daea8dfb82026430d",
+    "engineering/current-baseline.yaml": "e37d219db9a4747e5f8045e3c026bf1502dcf24568e3e44614da7c267ac3b2c5"
   },
   "counts": {
     "registered_assets": 23,
