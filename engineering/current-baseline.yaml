@@ -11,50 +11,63 @@ current_phase: "Physical-baseline readiness after SYSTEM-V1 software closure; ha
 
 latest_main_status:
   captured_at: "2026-10-27"
-  exact_main_sha: "90a5829fe441d79799ed59ddfb62b3af549774b7"
-  origin_main_sha: "90a5829fe441d79799ed59ddfb62b3af549774b7"
+  exact_main_sha: "34f2f7eb16d013fbbef146be382067d0d7ad31a1"
+  origin_main_sha: "34f2f7eb16d013fbbef146be382067d0d7ad31a1"
   working_tree: "CLEAN_AT_BASELINE_CHECKOUT; current main verified after fetch/prune"
+  supersedes_snapshot:
+    exact_main_sha: "90a5829fe441d79799ed59ddfb62b3af549774b7"
+    ci_run_id: 40444692809
+    note: "The prior snapshot remains historical evidence; this block is the current authority."
   github:
     open_issues:
       - {number: 22, status: "OPEN", scope: "CAD-V1 measurement-gated mechanical baseline"}
       - {number: 23, status: "OPEN", scope: "SYSTEM-V1 software/physical integration gates"}
     open_pull_requests: 0
     latest_ci:
-      run_id: 40444692809
+      run_id: 40449540391
       result: "PASS"
-      tested_sha: "90a5829fe441d79799ed59ddfb62b3af549774b7"
-      url: "https://github.com/guo6x/AI-rocket/actions/runs/40444692809"
+      tested_sha: "34f2f7eb16d013fbbef146be382067d0d7ad31a1"
+      url: "https://github.com/guo6x/AI-rocket/actions/runs/40449540391"
   local_full_check:
     command: "py -3 scripts/check.py"
-    result: "PASS"
-    exit_code: 0
-    source_sha: "90a5829fe441d79799ed59ddfb62b3af549774b7"
-    test_executions: 529
-    distinct_test_identities: 519
-    repeated_executions: 10
-    ground_station_tests: "132 passed"
-    flight_native_tests: "47 passed"
-    gnc_only_native_tests: "4 passed"
-    esp_relay_native_tests: "3 passed"
-    script_tests: "214 passed"
-    gnc_oracle_tests: "5 passed"
-    gnc_dual_period_tests: "5 passed"
-    rf_lab_tests: "97 passed"
-    research_tests: "22 passed"
-    source_builds: "bluepill_f103c8, apm32f103c8_compat, gnc_only_bench, nodemcuv2, esp01_1m all PASS"
+    result: "NOT_RERUN_ON_DOCS_ONLY_REFRESH; HOSTED_CI_PASS"
+    exit_code: null
+    source_sha: null
+    last_local_full_check:
+      result: "PASS"
+      exit_code: 0
+      source_sha: "90a5829fe441d79799ed59ddfb62b3af549774b7"
+      test_executions: 529
+      distinct_test_identities: 519
+      repeated_executions: 10
+      evidence: "Historical local gate retained; current source is docs-only descendant and is covered by hosted run 40449540391."
+    ground_station_tests: "132 passed (last local gate; hosted current run PASS)"
+    flight_native_tests: "47 passed (last local gate; hosted current run PASS)"
+    gnc_only_native_tests: "4 passed (last local gate; hosted current run PASS)"
+    esp_relay_native_tests: "3 passed (last local gate; hosted current run PASS)"
+    script_tests: "214 passed (last local gate; hosted current run PASS)"
+    gnc_oracle_tests: "5 passed (last local gate; hosted current run PASS)"
+    gnc_dual_period_tests: "5 passed (last local gate; hosted current run PASS)"
+    rf_lab_tests: "97 passed (last local gate; hosted current run PASS)"
+    research_tests: "22 passed (last local gate; hosted current run PASS)"
+    source_builds: "bluepill_f103c8, apm32f103c8_compat, gnc_only_bench, nodemcuv2, esp01_1m all PASS (hosted current run)"
     hardware_operations: "NONE"
 
 system_v1_current_software_acceptance:
   audit_date: "2026-10-27"
   status: "PARTIALLY_VERIFIED"
-  main_head_after_fetch: "32d2c20658c1d5f83cb1ec720a9b6bf327dffb0b"
-  tested_source_head: "32d2c20658c1d5f83cb1ec720a9b6bf327dffb0b"
-  tested_source_branch: "main (local revalidation and latest hosted CI at 32d2c20)"
+  main_head_after_fetch: "34f2f7eb16d013fbbef146be382067d0d7ad31a1"
+  tested_source_head: "34f2f7eb16d013fbbef146be382067d0d7ad31a1"
+  tested_source_branch: "main (latest hosted CI run 40449540391; docs-only descendant of prior software gate)"
+  prior_software_snapshot:
+    main_head: "32d2c20658c1d5f83cb1ec720a9b6bf327dffb0b"
+    ci_run_id: 40372916700
+    note: "Retained as historical provenance for the earlier software closure snapshot."
   github:
     exact_main_ci:
-      run_id: 40372916700
+      run_id: 40449540391
       result: "PASS"
-      tested_sha: "32d2c20658c1d5f83cb1ec720a9b6bf327dffb0b"
+      tested_sha: "34f2f7eb16d013fbbef146be382067d0d7ad31a1"
     latest_merged_renderer_pr: 31
     merged_prs_since_previous_snapshot:
       - {number: 32, merge_sha: "782ee25bf51c08d1532c6920ddf0e49a9580b7c7"}
@@ -112,13 +125,14 @@ system_v1_current_software_acceptance:
     full_check_source_sha: "c08118abce47b63058c4b22c339e2c39b080375e"
     evidence_artifact_commit: "823f7b2"
     merge_sha: "61b5c9a4dc7d4712a3d1fba6f6a3f02ef1da1e87"
-    current_main_revalidation_sha: "90a5829fe441d79799ed59ddfb62b3af549774b7"
-    current_main_ci_run_id: 40444692809
+    current_main_revalidation_sha: "34f2f7eb16d013fbbef146be382067d0d7ad31a1"
+    current_main_ci_run_id: 40449540391
     scope: "SerialReader newline normalization plus defensive TelemetryParser framing; no ESP, R3, flight-control, command, E-STOP, recovery, or threshold changes"
     hardware_operation: "NONE"
     evidence_ceiling: "TESTED_SOFTWARE"
 
   current_main_revalidation:
+    status: "HISTORICAL_LOCAL_REVALIDATION; superseded as current authority by latest_main_status"
     source_sha: "00c68cd84c485cfcd86103f5dd2f2c8b65b4c294"
     full_check:
       command: "py -3 -u scripts/system_v1_check.py --output engineering/offline-evidence/system_v1/full_check_main_00c68_20261026"
@@ -324,6 +338,9 @@ physical_baseline_readiness_v1:
   goal_status: "GOAL_BLOCKED_BY_PHYSICAL_EVIDENCE"
   report: "docs/AD_ASTRA_PHYSICAL_BASELINE_READINESS_V1.md"
   manifest: "engineering/offline-evidence/physical_baseline_readiness_v1/manifest.json"
+  current_provenance_refresh: "engineering/offline-evidence/physical_baseline_readiness_v1/current_main_refresh_20261027.json"
+  current_provenance_source_sha: "34f2f7eb16d013fbbef146be382067d0d7ad31a1"
+  current_provenance_ci_run: 40449540391
   source_git_sha: "26e997044250bfd78d1ff979cf381a2f30ef67ff"
   base_main_sha_at_generation: "244a5b07122e0ebbf7153baa74b2d9b6c003d3ce"
   asset_registry:

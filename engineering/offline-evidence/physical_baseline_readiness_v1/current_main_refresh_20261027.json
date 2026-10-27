@@ -1,0 +1,84 @@
+{
+  "evidence_id": "AD_ASTRA_PHYSICAL_BASELINE_READINESS_V1_CURRENT_MAIN_REFRESH_2026-10-27",
+  "generated_at": "2026-10-27",
+  "scope": "read-only provenance refresh after PR #42; no production behavior or hardware operation",
+  "source_git_sha": "34f2f7eb16d013fbbef146be382067d0d7ad31a1",
+  "origin_main_sha": "34f2f7eb16d013fbbef146be382067d0d7ad31a1",
+  "github": {
+    "open_pull_requests": 0,
+    "issues": {
+      "22": "OPEN",
+      "23": "OPEN"
+    },
+    "latest_ci": {
+      "run_id": 40449540391,
+      "result": "PASS",
+      "tested_sha": "34f2f7eb16d013fbbef146be382067d0d7ad31a1",
+      "url": "https://github.com/guo6x/AI-rocket/actions/runs/40449540391"
+    },
+    "baseline_refresh_pr": {
+      "number": 42,
+      "head_sha": "038dcd498340ab2f51e38c661eaa9e1c15204bc8",
+      "merge_sha": "34f2f7eb16d013fbbef146be382067d0d7ad31a1",
+      "ci_run_id": 40449177760,
+      "result": "PASS"
+    }
+  },
+  "software_evidence": {
+    "last_local_full_check": {
+      "source_sha": "90a5829fe441d79799ed59ddfb62b3af549774b7",
+      "result": "PASS",
+      "test_executions": 529,
+      "distinct_test_identities": 519,
+      "repeated_executions": 10,
+      "five_source_build_targets": "PASS"
+    },
+    "current_hosted_gate": "PASS; docs-only descendant covered by run 40449540391",
+    "serial_parser": {
+      "pre_fix": "11 passed / 3 failed",
+      "post_fix": "15 passed / 0 failed",
+      "pre_fix_evidence_sha256": "70d141b3f593c344bd1f9c0ddd4b47cbb9b40d8d8968f4cda604151d14abea97",
+      "post_fix_evidence_sha256": "28a13bdc49b054e11fd571b8b6d1d66af6afd624b06e858e5b8a44054cf5c2f0",
+      "evidence_ceiling": "TESTED_SOFTWARE"
+    }
+  },
+  "physical_baseline": {
+    "status": "GOAL_BLOCKED_BY_PHYSICAL_EVIDENCE",
+    "registered_assets": 23,
+    "confirmed_present_components": 0,
+    "measured_components": 0,
+    "planned_measurements": 40,
+    "missing_measurements": 40,
+    "cad_start_missing_or_unevidenced": 19,
+    "recovery": "BLOCKED_UNREACHABLE_THRESHOLD",
+    "cad": "NOT_STARTED / BLOCKED_BY_MEASUREMENT",
+    "source_authentication": "NOT_VERIFIED",
+    "sample_age": "NOT_VERIFIED",
+    "real_communication": "NOT_VERIFIED"
+  },
+  "artifact_sha256": {
+    "prior_manifest": "5536c278ac962e624e1301d3ae10c9fc971d04856350a179caa6680a5b68d442",
+    "prior_full_check_log": "9770d501e16e62522852486a69b6a4574f0ceb09f2e40caf7e15a5dbc0a4065f",
+    "current_baseline_yaml_at_generation": "65db41a76e6584207b973848eab5ae66070c2b4ff707c08a422bf30cbba03f2d",
+    "current_readiness_report_at_generation": "7d062c50967c2758deb23620de129fda9d53ce4faef8e212d2741ca9f9199101",
+    "system_v1_report_at_generation": "9bd4d6e3595a078db1c377408ecb756ae00a1872e3c6beb700c3435dd9e1c4eb",
+    "capability_matrix_at_generation": "2aeb86359006d1e1633a91dd1ea454915ec453113c89b6dac55cf694670fb051",
+    "verification_status_ledger_at_generation": "4f9f24903911364a0717ba73e258e333bcee511cece6d58cbf74fcd26bf43a11",
+    "recovery_safety_proposal_at_generation": "4351046b9499c13fe4d6ba7403c9e2e628f4fdb5651c76a5de24faa68784eee9"
+  },
+  "environment": {
+    "os": "Windows",
+    "git": "2.55.0.windows.2",
+    "python": "3.13.1",
+    "gh": "2.100.0",
+    "hardware_operations": false,
+    "rf_transmission": false,
+    "firmware_flash": false,
+    "actuator_operation": false
+  },
+  "boundaries": [
+    "Purchase records remain ownership evidence only.",
+    "The physical baseline manifest and earlier CI receipts are historical artifacts and are not overwritten.",
+    "The parser's direct-call malformed-array fragment edge is not a production serial-line failure because SerialReader drops complete malformed JSON at the readline boundary; no new control authority is implied."
+  ]
+}

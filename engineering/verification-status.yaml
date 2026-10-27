@@ -2,6 +2,11 @@ schema_version: 1
 audit_date: "2026-10-26"
 software_baseline_command: "python scripts/check.py"
 hardware_policy: "Hardware-gated checks are reported separately and do not fail the software-only check."
+provenance_status: "HISTORICAL_VERIFICATION_LEDGER"
+current_authority: "engineering/current-baseline.yaml"
+current_main_sha: "34f2f7eb16d013fbbef146be382067d0d7ad31a1"
+current_main_ci_run: 40449540391
+note: "The per-item evidence below preserves its original audit date and counts; the current main/CI authority is refreshed above."
 verification_items:
   - id: "python_syntax"
     verification_type: "software_test"

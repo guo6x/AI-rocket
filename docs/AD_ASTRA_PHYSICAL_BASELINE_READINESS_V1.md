@@ -3,13 +3,15 @@
 **状态：`GOAL_BLOCKED_BY_PHYSICAL_EVIDENCE`**
 审计日期：2026-10-27
 仓库：`guo6x/AI-rocket`
-审计基线：`main` `90a5829fe441d79799ed59ddfb62b3af549774b7`
+审计基线：`main` `34f2f7eb16d013fbbef146be382067d0d7ad31a1`
 
-> **当前主线刷新（2026-10-27）**：重新 fetch/prune 后，`main` 与 `origin/main`
-> 均为 `90a5829fe441d79799ed59ddfb62b3af549774b7`。最新 SYSTEM-V1 软件 CI 为
-> [run 40444692809](https://github.com/guo6x/AI-rocket/actions/runs/40444692809)，结果
-> `PASS`。下方较早的运行计数和收据仍作为历史证据保留；当前权威状态以
-> `engineering/current-baseline.yaml` 和最新验收报告开头的复核段为准。
+> **当前主线刷新（2026-10-27，PR #42 合并后）**：重新 fetch/prune 后，`main` 与
+> `origin/main` 均为 `34f2f7eb16d013fbbef146be382067d0d7ad31a1`。最新 SYSTEM-V1 软件 CI 为
+> [run 40449540391](https://github.com/guo6x/AI-rocket/actions/runs/40449540391)，测试 SHA 与
+> 当前 `main` 一致，结果 `PASS`；PR #42 自身 run `40449177760` 也为 `PASS`。本次主线
+> 变更仍只涉及状态/证据文档，没有生产控制或硬件行为变化。此前 `90a5829…` / run
+> `40444692809` 的收据仍作为历史证据保留；当前权威状态以
+> `engineering/current-baseline.yaml` 和本节为准。
 
 ## 结论先行
 
@@ -21,13 +23,13 @@
 
 | 项目 | 实际状态 |
 |---|---|
-| `main` | `90a5829fe441d79799ed59ddfb62b3af549774b7`，本地与 `origin/main` 一致（PR #40 及后续状态文档已合并） |
-| 最新主线 CI | run `40444692809`，`PASS`，测试 SHA 与 `main` 一致：[Actions](https://github.com/guo6x/AI-rocket/actions/runs/40444692809) |
+| `main` | `34f2f7eb16d013fbbef146be382067d0d7ad31a1`，本地与 `origin/main` 一致（PR #42 已合并） |
+| 最新主线 CI | run `40449540391`，`PASS`，测试 SHA 与 `main` 一致：[Actions](https://github.com/guo6x/AI-rocket/actions/runs/40449540391) |
 | Issue #22 | `OPEN`，CAD-V1 仍等待实测接口 |
 | Issue #23 | `OPEN`，软件完成不等同于实体集成完成 |
 | 硬件行为 | `NOT_EVALUATED`；本轮未接线、通电、烧录、发射射频或驱动执行器 |
 
-本轮本地执行 `py -3 scripts/check.py`，退出码 `0`。该日志由 PR #40 HEAD `26e997044250bfd78d1ff979cf381a2f30ef67ff`（基于 main `244a5b0`）生成；合并后的 main 又由 run `40443557635` 复核。实际结果为：Ground Station `132`、飞控 native `47`、GNC-only `4`、ESP relay `3`、脚本门 `214`、R2.3 oracle `5`、双周期 `5`、RF Lab `97`、研究回归 `22` 全部通过；`bluepill_f103c8`、`apm32f103c8_compat`、`gnc_only_bench`、`nodemcuv2`、`esp01_1m` 五个源码构建全部 `PASS`。这些是软件证据，不提升硬件证据等级。
+此前 PR #40 HEAD `26e997044250bfd78d1ff979cf381a2f30ef67ff`（基于 main `244a5b0`）生成的 `py -3 scripts/check.py` 日志退出码为 `0`；合并后的 main 又由 run `40443557635` 复核。该历史 gate 的实际结果为：Ground Station `132`、飞控 native `47`、GNC-only `4`、ESP relay `3`、脚本门 `214`、R2.3 oracle `5`、双周期 `5`、RF Lab `97`、研究回归 `22` 全部通过；`bluepill_f103c8`、`apm32f103c8_compat`、`gnc_only_bench`、`nodemcuv2`、`esp01_1m` 五个源码构建全部 `PASS`。本次 provenance 刷新在工作树上再次运行 `py -3 scripts/check.py` 亦退出 `0`；当前可审计的干净主线 gate 以 [run 40449540391](https://github.com/guo6x/AI-rocket/actions/runs/40449540391) 为准。这些是软件证据，不提升硬件证据等级。
 
 本轮新增的测量准入规则也通过定向负例验证：标记为 `each_component_and_unit` 的多组件测量必须覆盖每个列出的组件、记录 `physical_unit_id`，且同一物理 unit 不能跨组件复用；同一组件的重复读数可以复用同一 unit ID。该规则只收紧未来证据记录校验，不制造任何实体记录，也没有释放任何 gate。
 

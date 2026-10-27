@@ -3,10 +3,16 @@
 ## 2026-10-27 当前主线复核（串口兼容性修复已在历史 PR #35 合并）
 
 重新 `fetch --prune` 后，当前本地 `main` 与 `origin/main` 均为
-`90a5829fe441d79799ed59ddfb62b3af549774b7`。串口兼容性生产修复已经由 PR #35
+`34f2f7eb16d013fbbef146be382067d0d7ad31a1`。串口兼容性生产修复已经由 PR #35
 （merge `61b5c9a4dc7d4712a3d1fba6f6a3f02ef1da1e87`）合入；本轮不重复提交同一
-代码。最新主线软件 CI 为 [run 40444692809](https://github.com/guo6x/AI-rocket/actions/runs/40444692809)，
+代码。最新主线软件 CI 为 [run 40449540391](https://github.com/guo6x/AI-rocket/actions/runs/40449540391)，
 测试 SHA 与当前 `main` 一致，结果 `SUCCESS`。
+
+PR #42（`docs/system-v1-serial-compat-baseline-20261027`）随后仅刷新了状态/证据
+文档，head `038dcd498340ab2f51e38c661eaa9e1c15204bc8`，merge `34f2f7e…`；其
+预合并 CI [run 40449177760](https://github.com/guo6x/AI-rocket/actions/runs/40449177760)
+同样成功。此前 `90a5829…` / run `40444692809` 的段落继续作为历史快照，不再作为
+当前主线锚点。
 
 当前 main 上复核命令 `py -3 -m pytest ground_station/tests/test_telemetry_parser.py -q`
 为 **15/15 通过**，完整 `py -3 scripts/check.py` 退出码为 `0`：529 次实际执行、
