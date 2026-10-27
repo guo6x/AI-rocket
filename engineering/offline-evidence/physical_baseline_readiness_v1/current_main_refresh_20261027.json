@@ -2,8 +2,8 @@
   "evidence_id": "AD_ASTRA_PHYSICAL_BASELINE_READINESS_V1_CURRENT_MAIN_REFRESH_2026-10-27",
   "generated_at": "2026-10-27",
   "scope": "read-only provenance refresh after PR #42; no production behavior or hardware operation",
-  "source_git_sha": "34f2f7eb16d013fbbef146be382067d0d7ad31a1",
-  "origin_main_sha": "34f2f7eb16d013fbbef146be382067d0d7ad31a1",
+  "source_git_sha": "7af811392189f25d7219778d1154f9b738ba968f",
+  "origin_main_sha": "7af811392189f25d7219778d1154f9b738ba968f",
   "github": {
     "open_pull_requests": 0,
     "issues": {
@@ -11,16 +11,16 @@
       "23": "OPEN"
     },
     "latest_ci": {
-      "run_id": 40449540391,
+      "run_id": 40455461657,
       "result": "PASS",
-      "tested_sha": "34f2f7eb16d013fbbef146be382067d0d7ad31a1",
-      "url": "https://github.com/guo6x/AI-rocket/actions/runs/40449540391"
+      "tested_sha": "7af811392189f25d7219778d1154f9b738ba968f",
+      "url": "https://github.com/guo6x/AI-rocket/actions/runs/40455461657"
     },
     "baseline_refresh_pr": {
-      "number": 42,
-      "head_sha": "038dcd498340ab2f51e38c661eaa9e1c15204bc8",
-      "merge_sha": "34f2f7eb16d013fbbef146be382067d0d7ad31a1",
-      "ci_run_id": 40449177760,
+      "number": 43,
+      "head_sha": "5e829fa200323053d38b2857556b986a3bcc4bff",
+      "merge_sha": "7af811392189f25d7219778d1154f9b738ba968f",
+      "ci_run_id": 40454975814,
       "result": "PASS"
     }
   },
@@ -33,7 +33,7 @@
       "repeated_executions": 10,
       "five_source_build_targets": "PASS"
     },
-    "current_hosted_gate": "PASS; docs-only descendant covered by run 40449540391",
+    "current_hosted_gate": "PASS; docs-only merge covered by run 40455461657",
     "serial_parser": {
       "pre_fix": "11 passed / 3 failed",
       "post_fix": "15 passed / 0 failed",
@@ -59,12 +59,12 @@
   "artifact_sha256": {
     "prior_manifest": "5536c278ac962e624e1301d3ae10c9fc971d04856350a179caa6680a5b68d442",
     "prior_full_check_log": "9770d501e16e62522852486a69b6a4574f0ceb09f2e40caf7e15a5dbc0a4065f",
-    "current_baseline_yaml_at_generation": "65db41a76e6584207b973848eab5ae66070c2b4ff707c08a422bf30cbba03f2d",
-    "current_readiness_report_at_generation": "7d062c50967c2758deb23620de129fda9d53ce4faef8e212d2741ca9f9199101",
-    "system_v1_report_at_generation": "9bd4d6e3595a078db1c377408ecb756ae00a1872e3c6beb700c3435dd9e1c4eb",
-    "capability_matrix_at_generation": "2aeb86359006d1e1633a91dd1ea454915ec453113c89b6dac55cf694670fb051",
-    "verification_status_ledger_at_generation": "4f9f24903911364a0717ba73e258e333bcee511cece6d58cbf74fcd26bf43a11",
-    "recovery_safety_proposal_at_generation": "4351046b9499c13fe4d6ba7403c9e2e628f4fdb5651c76a5de24faa68784eee9"
+    "current_baseline_yaml_at_generation": "79169f006978f1b80f952dd7f5e041215807703c6e84c8a3a4528bcb21f5e188",
+    "current_readiness_report_at_generation": "d80a8594a53acd48dca1c0a5854135e41ad7beb66909c2eef691d8d6cfa7c337",
+    "system_v1_report_at_generation": "0f040f2246e4866515fe3dca5eda863977b02bb5de44078afdc64c3604890e84",
+    "capability_matrix_at_generation": "8b78df15c9d5cfd2ba8e8a9413d5f1543ececa2893a50f096efb2b9945c330fe",
+    "verification_status_ledger_at_generation": "afd9458a9b5e613696bd246bd888ac6590621a72aa384a225cfaac5eb159ec66",
+    "recovery_safety_proposal_at_generation": "3c5baf97132c62a36373e0cee6c4212d86e5c16016d6d8740f594941bea3af3c"
   },
   "environment": {
     "os": "Windows",
