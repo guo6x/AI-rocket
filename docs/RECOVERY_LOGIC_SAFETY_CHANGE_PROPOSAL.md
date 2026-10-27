@@ -2,7 +2,7 @@
 
 Status: **REVIEW REQUIRED — NO PRODUCTION CHANGE MADE**
 Review baseline (historical static-audit snapshot): `origin/main` `10a47d5e1e95b1b1b261e4c2eb7790f0601f713a`
-Current provenance authority: `main` `34f2f7eb16d013fbbef146be382067d0d7ad31a1`, hosted software CI run `40449540391`
+Current provenance authority: `main` `7af811392189f25d7219778d1154f9b738ba968f`, hosted software CI run `40455461657`
 Audit command: `py -3 scripts/recovery_configuration_audit.py --json`
 Evidence ceiling: `TESTED_SOFTWARE` for the static/offline result; recovery qualification remains `BLOCKED`.
 

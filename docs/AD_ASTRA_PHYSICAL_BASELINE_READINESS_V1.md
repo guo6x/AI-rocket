@@ -3,14 +3,14 @@
 **状态：`GOAL_BLOCKED_BY_PHYSICAL_EVIDENCE`**
 审计日期：2026-10-27
 仓库：`guo6x/AI-rocket`
-审计基线：`main` `34f2f7eb16d013fbbef146be382067d0d7ad31a1`
+审计基线：`main` `7af811392189f25d7219778d1154f9b738ba968f`
 
 > **当前主线刷新（2026-10-27，PR #42 合并后）**：重新 fetch/prune 后，`main` 与
-> `origin/main` 均为 `34f2f7eb16d013fbbef146be382067d0d7ad31a1`。最新 SYSTEM-V1 软件 CI 为
-> [run 40449540391](https://github.com/guo6x/AI-rocket/actions/runs/40449540391)，测试 SHA 与
-> 当前 `main` 一致，结果 `PASS`；PR #42 自身 run `40449177760` 也为 `PASS`。本次主线
-> 变更仍只涉及状态/证据文档，没有生产控制或硬件行为变化。此前 `90a5829…` / run
-> `40444692809` 的收据仍作为历史证据保留；当前权威状态以
+> `origin/main` 均为 `7af811392189f25d7219778d1154f9b738ba968f`。最新 SYSTEM-V1 软件 CI 为
+> [run 40455461657](https://github.com/guo6x/AI-rocket/actions/runs/40455461657)，测试 SHA 与
+> 当前 `main` 一致，结果 `PASS`；PR #43 的前序 run `40454975814` 以及 PR #42 自身 run
+> `40449177760` 也为 `PASS`。本次主线变更仍只涉及状态/证据文档，没有生产控制或硬件行为
+> 变化。此前 `34f2f7e…` / run `40449540391` 及更早收据仍作为历史证据保留；当前权威状态以
 > `engineering/current-baseline.yaml` 和本节为准。
 
 ## 结论先行
@@ -23,8 +23,8 @@
 
 | 项目 | 实际状态 |
 |---|---|
-| `main` | `34f2f7eb16d013fbbef146be382067d0d7ad31a1`，本地与 `origin/main` 一致（PR #42 已合并） |
-| 最新主线 CI | run `40449540391`，`PASS`，测试 SHA 与 `main` 一致：[Actions](https://github.com/guo6x/AI-rocket/actions/runs/40449540391) |
+| `main` | `7af811392189f25d7219778d1154f9b738ba968f`，本地与 `origin/main` 一致（PR #43 已合并） |
+| 最新主线 CI | run `40455461657`，`PASS`，测试 SHA 与 `main` 一致：[Actions](https://github.com/guo6x/AI-rocket/actions/runs/40455461657) |
 | Issue #22 | `OPEN`，CAD-V1 仍等待实测接口 |
 | Issue #23 | `OPEN`，软件完成不等同于实体集成完成 |
 | 硬件行为 | `NOT_EVALUATED`；本轮未接线、通电、烧录、发射射频或驱动执行器 |
