@@ -99,6 +99,83 @@ def test_known_conflict_group_cannot_be_silently_confirmed():
     assert any("known conflict group cannot be silently confirmed" in error for error in errors)
 
 
+def test_known_conflict_binding_cannot_be_cleared_by_removing_all_row_flags():
+    registry, assets = _documents()
+    mutated = deepcopy(registry)
+    conflict_row = next(
+        row for row in mutated["manufacturer_nominal"]["parameters"]
+        if row["conflict_group"] == "SG92R-GEAR-MATERIAL-AND-WEIGHT"
+    )
+    conflict_row["model_status"] = "CONFIRMED_SERIES"
+    conflict_row["conflict"] = False
+    conflict_row["conflict_group"] = None
+    errors = validate_documents(mutated, assets)
+    assert any("known conflict parameter" in error and "must retain" in error for error in errors)
+
+
+def test_conflict_resolution_requires_an_auditable_record():
+    registry, assets = _documents()
+    mutated = deepcopy(registry)
+    layer = mutated["manufacturer_nominal"]
+    for row in layer["parameters"]:
+        if row["conflict_group"] == "SG92R-GEAR-MATERIAL-AND-WEIGHT":
+            row["model_status"] = "CONFIRMED_SERIES"
+            row["conflict"] = False
+            row["conflict_group"] = None
+    binding = next(
+        entry for entry in layer["conflict_bindings"]
+        if entry["conflict_group"] == "SG92R-GEAR-MATERIAL-AND-WEIGHT"
+    )
+    binding["status"] = "RESOLVED"
+    errors = validate_documents(mutated, assets)
+    assert any("requires an auditable resolution record" in error for error in errors)
+
+
+def test_explicit_conflict_resolution_can_be_reviewed_and_accepted():
+    registry, assets = _documents()
+    mutated = deepcopy(registry)
+    layer = mutated["manufacturer_nominal"]
+    parameter_ids = []
+    for row in layer["parameters"]:
+        if row["conflict_group"] == "SG92R-GEAR-MATERIAL-AND-WEIGHT":
+            row["model_status"] = "CONFIRMED_SERIES"
+            row["conflict"] = False
+            row["conflict_group"] = None
+            parameter_ids.append(row["id"])
+    binding = next(
+        entry for entry in layer["conflict_bindings"]
+        if entry["conflict_group"] == "SG92R-GEAR-MATERIAL-AND-WEIGHT"
+    )
+    binding["status"] = "RESOLVED"
+    layer["conflict_resolutions"] = [
+        {
+            "conflict_group": "SG92R-GEAR-MATERIAL-AND-WEIGHT",
+            "parameter_ids": parameter_ids,
+            "status": "RESOLVED",
+            "resolution_id": "RES-SG92R-2026-10-27-01",
+            "review_reference": "engineering/reviews/sg92r-variant-resolution-20261027.md",
+            "source_url": "https://example.invalid/sg92r-resolution",
+            "source_revision": "review revision 1",
+            "resolved_on": "2026-10-27",
+            "decision": "A reviewed received-unit identity record supersedes the nominal conflict.",
+        }
+    ]
+    assert validate_documents(mutated, assets) == []
+
+
+def test_malformed_conflict_resolution_is_rejected_without_raising():
+    registry, assets = _documents()
+    mutated = deepcopy(registry)
+    mutated["manufacturer_nominal"]["conflict_resolutions"] = [
+        {
+            "conflict_group": "SG92R-GEAR-MATERIAL-AND-WEIGHT",
+            "parameter_ids": [{}],
+        }
+    ]
+    errors = validate_documents(mutated, assets)
+    assert any("parameter_ids must match" in error for error in errors)
+
+
 def test_gy91_chip_and_lm2596_chip_scopes_do_not_claim_board_geometry_or_capacity():
     registry, assets = _documents()
     layer = registry["manufacturer_nominal"]
