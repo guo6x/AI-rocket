@@ -57,6 +57,14 @@ def test_missing_source_url_or_revision_is_rejected():
         assert any(f"{field}" in error for error in errors)
 
 
+def test_missing_source_index_file_is_rejected():
+    registry, assets = _documents()
+    mutated = deepcopy(registry)
+    mutated["manufacturer_nominal"]["source_index"] = "engineering/references/does-not-exist.md"
+    errors = validate_documents(mutated, assets)
+    assert any("source_index must reference an existing file" in error for error in errors)
+
+
 def test_manufacturer_nominal_cannot_be_labeled_measured():
     registry, assets = _documents()
     mutated = deepcopy(registry)

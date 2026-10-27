@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import math
 from pathlib import Path
+from pathlib import PurePosixPath
 from typing import Any
 
 import yaml
@@ -147,6 +148,7 @@ def _asset_ids(assets_doc: dict[str, Any], errors: list[str]) -> set[str]:
 def validate_documents(
     registry_doc: dict[str, Any],
     assets_doc: dict[str, Any],
+    root: Path = ROOT,
 ) -> list[str]:
     """Return deterministic validation errors for supplied YAML documents."""
 
@@ -157,8 +159,15 @@ def validate_documents(
         return ["manufacturer_nominal must be a mapping"]
     if layer.get("schema_version") != 1:
         errors.append("manufacturer_nominal.schema_version must be 1")
-    if not _is_nonempty_string(layer.get("source_index")):
+    source_index = layer.get("source_index")
+    if not _is_nonempty_string(source_index):
         errors.append("manufacturer_nominal.source_index must be a nonempty string")
+    else:
+        source_path = PurePosixPath(source_index.replace("\\", "/"))
+        if source_path.is_absolute() or ".." in source_path.parts:
+            errors.append("manufacturer_nominal.source_index must be repository-relative")
+        elif not (root / Path(*source_path.parts)).is_file():
+            errors.append("manufacturer_nominal.source_index must reference an existing file")
 
     parameters = layer.get("parameters")
     if not isinstance(parameters, list) or not parameters:
@@ -315,7 +324,7 @@ def audit_repository(root: Path = ROOT) -> list[str]:
         assets_doc = load_yaml(asset_path)
     except (OSError, yaml.YAMLError) as exc:
         return [f"unable to load manufacturer nominal inputs: {exc}"]
-    return validate_documents(registry_doc, assets_doc)
+    return validate_documents(registry_doc, assets_doc, root=root)
 
 
 def main() -> int:
