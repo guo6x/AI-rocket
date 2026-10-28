@@ -51,6 +51,7 @@
 当前 checker 保留显式 `RESOLVED` 流程，但要求：
 
 - 审查引用和 source index 必须是仓库内、相对路径、存在的非空文件；
+- 审查文件必须包含冲突组、参数 ID、资产 ID 以及来源 URL/版本绑定；保留的 `example.*`/`.invalid` 主机不能作为解析来源；
 - `asset_ids`、完整参数 ID 集合和每条参数的 `source_url/source_revision` 必须与当前 immutable binding 精确一致；
 - 解析记录必须绑定同一 conflict group、状态和本地审查文件。
 

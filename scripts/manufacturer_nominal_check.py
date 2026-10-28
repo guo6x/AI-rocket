@@ -13,6 +13,7 @@ import math
 from pathlib import Path
 from pathlib import PurePosixPath
 from typing import Any
+from urllib.parse import urlsplit
 
 import yaml
 
@@ -141,6 +142,12 @@ KNOWN_CONFLICT_PARAMETER_IDS = {
     ),
 }
 CONFLICT_BINDING_STATES = {"ACTIVE", "RESOLVED"}
+PLACEHOLDER_SOURCE_HOSTS = {
+    "example.com",
+    "example.invalid",
+    "example.net",
+    "example.org",
+}
 RESOLUTION_REQUIRED_FIELDS = {
     "conflict_group",
     "parameter_ids",
@@ -187,6 +194,16 @@ def _repository_file(
         errors.append(f"{field} must reference an existing file")
         return None
     return candidate
+
+
+def _is_placeholder_source_url(value: Any) -> bool:
+    """Reject reserved documentation hosts used only as test placeholders."""
+
+    if not _is_nonempty_string(value):
+        return False
+    parsed = urlsplit(value.strip())
+    host = (parsed.hostname or "").lower().rstrip(".")
+    return host in PLACEHOLDER_SOURCE_HOSTS or host.endswith(".invalid")
 
 
 def load_yaml(path: Path) -> dict[str, Any]:
@@ -483,11 +500,35 @@ def validate_documents(
         if not _is_nonempty_string(resolution.get("resolution_id")):
             errors.append(f"{prefix}.resolution_id must be a nonempty string")
         review_file = _repository_file(root, resolution.get("review_reference"), f"{prefix}.review_reference", errors)
-        if review_file is not None and review_file.stat().st_size == 0:
-            errors.append(f"{prefix}.review_reference must reference a nonempty file")
+        if review_file is not None:
+            if review_file.stat().st_size == 0:
+                errors.append(f"{prefix}.review_reference must reference a nonempty file")
+            else:
+                try:
+                    review_text = review_file.read_text(encoding="utf-8")
+                except (OSError, UnicodeError) as exc:
+                    errors.append(f"{prefix}.review_reference must be readable UTF-8: {exc}")
+                else:
+                    review_tokens = [group, *sorted(expected_asset_ids), *sorted(expected_ids)]
+                    if isinstance(source_refs, list):
+                        review_tokens.extend(
+                            source_ref.get("source_url")
+                            for source_ref in source_refs
+                            if isinstance(source_ref, dict) and _is_nonempty_string(source_ref.get("source_url"))
+                        )
+                        review_tokens.extend(
+                            source_ref.get("source_revision")
+                            for source_ref in source_refs
+                            if isinstance(source_ref, dict) and _is_nonempty_string(source_ref.get("source_revision"))
+                        )
+                    for token in review_tokens:
+                        if token not in review_text:
+                            errors.append(f"{prefix}.review_reference must contain binding token {token}")
         source_url = resolution.get("source_url")
         if not _is_nonempty_string(source_url) or not source_url.startswith("https://"):
             errors.append(f"{prefix}.source_url must be a nonempty https URL")
+        elif _is_placeholder_source_url(source_url):
+            errors.append(f"{prefix}.source_url must not use a reserved placeholder host")
         source_revision = resolution.get("source_revision")
         if not _is_nonempty_string(source_revision) or source_revision.strip().upper() in {"UNKNOWN", "N/A"}:
             errors.append(f"{prefix}.source_revision must be a nonempty string")

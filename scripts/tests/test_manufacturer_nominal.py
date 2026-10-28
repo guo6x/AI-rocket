@@ -151,10 +151,22 @@ def test_explicit_conflict_resolution_can_be_reviewed_and_accepted(tmp_path):
     binding["status"] = "RESOLVED"
     review_path = tmp_path / "engineering" / "reviews" / "sg92r-variant-resolution-20261027.md"
     review_path.parent.mkdir(parents=True)
-    review_path.write_text("Reviewed SG92R source-bound resolution", encoding="utf-8")
     source_index = tmp_path / "engineering" / "references" / "purchased-component-nominal-specs-20261027.md"
     source_index.parent.mkdir(parents=True)
     source_index.write_text("source index", encoding="utf-8")
+    review_path.write_text(
+        "\n".join(
+            [
+                "Reviewed SG92R source-bound resolution",
+                "SG92R-GEAR-MATERIAL-AND-WEIGHT",
+                *(row["id"] for row in parameter_rows),
+                *(row["asset_id"] for row in parameter_rows),
+                *(row["source_url"] for row in parameter_rows),
+                *(row["source_revision"] for row in parameter_rows),
+            ]
+        ),
+        encoding="utf-8",
+    )
     layer["conflict_resolutions"] = [
         {
             "conflict_group": "SG92R-GEAR-MATERIAL-AND-WEIGHT",
@@ -172,7 +184,7 @@ def test_explicit_conflict_resolution_can_be_reviewed_and_accepted(tmp_path):
             "status": "RESOLVED",
             "resolution_id": "RES-SG92R-2026-10-27-01",
             "review_reference": "engineering/reviews/sg92r-variant-resolution-20261027.md",
-            "source_url": "https://example.invalid/sg92r-resolution",
+            "source_url": parameter_rows[0]["source_url"],
             "source_revision": "review revision 1",
             "resolved_on": "2026-10-27",
             "decision": "A reviewed received-unit identity record supersedes the nominal conflict.",
@@ -290,6 +302,7 @@ def test_conflict_resolution_rejects_group_asset_parameter_and_source_mismatch(t
     assert any("asset_ids" in error for error in errors)
     assert any("source_index" in error for error in errors)
     assert any("source_refs" in error for error in errors)
+    assert any("reserved placeholder host" in error for error in errors)
 
 
 def test_malformed_conflict_resolution_is_rejected_without_raising():
