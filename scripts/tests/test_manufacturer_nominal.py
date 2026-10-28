@@ -131,17 +131,92 @@ def test_conflict_resolution_requires_an_auditable_record():
     assert any("requires an auditable resolution record" in error for error in errors)
 
 
-def test_explicit_conflict_resolution_can_be_reviewed_and_accepted():
+def test_explicit_conflict_resolution_can_be_reviewed_and_accepted(tmp_path):
     registry, assets = _documents()
     mutated = deepcopy(registry)
     layer = mutated["manufacturer_nominal"]
     parameter_ids = []
+    parameter_rows = []
     for row in layer["parameters"]:
         if row["conflict_group"] == "SG92R-GEAR-MATERIAL-AND-WEIGHT":
             row["model_status"] = "CONFIRMED_SERIES"
             row["conflict"] = False
             row["conflict_group"] = None
             parameter_ids.append(row["id"])
+            parameter_rows.append(row)
+    binding = next(
+        entry for entry in layer["conflict_bindings"]
+        if entry["conflict_group"] == "SG92R-GEAR-MATERIAL-AND-WEIGHT"
+    )
+    binding["status"] = "RESOLVED"
+    review_path = tmp_path / "engineering" / "reviews" / "sg92r-variant-resolution-20261027.md"
+    review_path.parent.mkdir(parents=True)
+    source_index = tmp_path / "engineering" / "references" / "purchased-component-nominal-specs-20261027.md"
+    source_index.parent.mkdir(parents=True)
+    source_index.write_text("source index", encoding="utf-8")
+    review_path.write_text(
+        "\n".join(
+            [
+                "Reviewed SG92R source-bound resolution",
+                "SG92R-GEAR-MATERIAL-AND-WEIGHT",
+                *(row["id"] for row in parameter_rows),
+                *(row["asset_id"] for row in parameter_rows),
+                *(row["source_url"] for row in parameter_rows),
+                *(row["source_revision"] for row in parameter_rows),
+            ]
+        ),
+        encoding="utf-8",
+    )
+    layer["conflict_resolutions"] = [
+        {
+            "conflict_group": "SG92R-GEAR-MATERIAL-AND-WEIGHT",
+            "parameter_ids": parameter_ids,
+            "asset_ids": sorted({row["asset_id"] for row in parameter_rows}),
+            "source_index": layer["source_index"],
+            "source_refs": [
+                {
+                    "parameter_id": row["id"],
+                    "source_url": row["source_url"],
+                    "source_revision": row["source_revision"],
+                }
+                for row in parameter_rows
+            ],
+            "status": "RESOLVED",
+            "resolution_id": "RES-SG92R-2026-10-27-01",
+            "review_reference": "engineering/reviews/sg92r-variant-resolution-20261027.md",
+            "source_url": parameter_rows[0]["source_url"],
+            "source_revision": "review revision 1",
+            "resolved_on": "2026-10-27",
+            "decision": "A reviewed received-unit identity record supersedes the nominal conflict.",
+        }
+    ]
+    assert validate_documents(mutated, assets, root=tmp_path) == []
+
+
+def test_conflict_resolution_requires_existing_local_review_and_bound_sources(tmp_path):
+    """A formatted citation must not resolve a conflict without local evidence."""
+    registry, assets = _documents()
+    mutated = deepcopy(registry)
+    layer = mutated["manufacturer_nominal"]
+    parameter_rows = [
+        row
+        for row in layer["parameters"]
+        if row["conflict_group"] == "SG92R-GEAR-MATERIAL-AND-WEIGHT"
+    ]
+    parameter_ids = [row["id"] for row in parameter_rows]
+    asset_ids = sorted({row["asset_id"] for row in parameter_rows})
+    source_refs = [
+        {
+            "parameter_id": row["id"],
+            "source_url": row["source_url"],
+            "source_revision": row["source_revision"],
+        }
+        for row in parameter_rows
+    ]
+    for row in parameter_rows:
+        row["model_status"] = "CONFIRMED_SERIES"
+        row["conflict"] = False
+        row["conflict_group"] = None
     binding = next(
         entry for entry in layer["conflict_bindings"]
         if entry["conflict_group"] == "SG92R-GEAR-MATERIAL-AND-WEIGHT"
@@ -151,16 +226,83 @@ def test_explicit_conflict_resolution_can_be_reviewed_and_accepted():
         {
             "conflict_group": "SG92R-GEAR-MATERIAL-AND-WEIGHT",
             "parameter_ids": parameter_ids,
+            "asset_ids": asset_ids,
+            "source_index": layer["source_index"],
+            "source_refs": source_refs,
             "status": "RESOLVED",
             "resolution_id": "RES-SG92R-2026-10-27-01",
-            "review_reference": "engineering/reviews/sg92r-variant-resolution-20261027.md",
+            "review_reference": "engineering/reviews/missing.md",
             "source_url": "https://example.invalid/sg92r-resolution",
             "source_revision": "review revision 1",
             "resolved_on": "2026-10-27",
             "decision": "A reviewed received-unit identity record supersedes the nominal conflict.",
         }
     ]
-    assert validate_documents(mutated, assets) == []
+
+    # The review path is intentionally absent.  A URL-shaped citation alone
+    # must not be enough to clear the immutable conflict binding.
+    source_index = tmp_path / "engineering" / "references" / "purchased-component-nominal-specs-20261027.md"
+    source_index.parent.mkdir(parents=True)
+    source_index.write_text("source index", encoding="utf-8")
+    errors = validate_documents(mutated, assets, root=tmp_path)
+    assert any("review_reference" in error and "existing file" in error for error in errors)
+
+
+def test_conflict_resolution_rejects_group_asset_parameter_and_source_mismatch(tmp_path):
+    registry, assets = _documents()
+    mutated = deepcopy(registry)
+    layer = mutated["manufacturer_nominal"]
+    parameter_rows = [
+        row
+        for row in layer["parameters"]
+        if row["conflict_group"] == "SG92R-GEAR-MATERIAL-AND-WEIGHT"
+    ]
+    parameter_ids = [row["id"] for row in parameter_rows]
+    for row in parameter_rows:
+        row["model_status"] = "CONFIRMED_SERIES"
+        row["conflict"] = False
+        row["conflict_group"] = None
+    binding = next(
+        entry for entry in layer["conflict_bindings"]
+        if entry["conflict_group"] == "SG92R-GEAR-MATERIAL-AND-WEIGHT"
+    )
+    binding["status"] = "RESOLVED"
+    review_path = tmp_path / "engineering" / "reviews" / "sg92r.md"
+    review_path.parent.mkdir(parents=True)
+    review_path.write_text("Reviewed source-bound resolution", encoding="utf-8")
+    source_index = tmp_path / "engineering" / "references" / "purchased-component-nominal-specs-20261027.md"
+    source_index.parent.mkdir(parents=True)
+    source_index.write_text("source index", encoding="utf-8")
+    layer["source_index"] = "engineering/references/purchased-component-nominal-specs-20261027.md"
+    layer["conflict_resolutions"] = [
+        {
+            "conflict_group": "ESP32S3-MEMORY-SUFFIX",  # wrong group
+            "parameter_ids": parameter_ids[:-1],  # incomplete binding
+            "asset_ids": ["AST-SERVO-SG92R-001"],  # wrong asset
+            "source_index": "engineering/references/not-the-index.md",  # unassociated source
+            "source_refs": [
+                {
+                    "parameter_id": parameter_rows[0]["id"],
+                    "source_url": "https://example.invalid/not-the-row-source",
+                    "source_revision": "not-the-row-revision",
+                }
+            ],
+            "status": "RESOLVED",
+            "resolution_id": "RES-SG92R-2026-10-27-02",
+            "review_reference": "engineering/reviews/sg92r.md",
+            "source_url": "https://example.invalid/sg92r-resolution",
+            "source_revision": "review revision 1",
+            "resolved_on": "2026-10-27",
+            "decision": "The received unit was reviewed.",
+        }
+    ]
+    errors = validate_documents(mutated, assets, root=tmp_path)
+    assert any("conflict resolution" in error for error in errors)
+    assert any("parameter_ids" in error for error in errors)
+    assert any("asset_ids" in error for error in errors)
+    assert any("source_index" in error for error in errors)
+    assert any("source_refs" in error for error in errors)
+    assert any("reserved placeholder host" in error for error in errors)
 
 
 def test_malformed_conflict_resolution_is_rejected_without_raising():

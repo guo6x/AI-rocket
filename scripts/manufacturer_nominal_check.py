@@ -13,6 +13,7 @@ import math
 from pathlib import Path
 from pathlib import PurePosixPath
 from typing import Any
+from urllib.parse import urlsplit
 
 import yaml
 
@@ -141,9 +142,18 @@ KNOWN_CONFLICT_PARAMETER_IDS = {
     ),
 }
 CONFLICT_BINDING_STATES = {"ACTIVE", "RESOLVED"}
+PLACEHOLDER_SOURCE_HOSTS = {
+    "example.com",
+    "example.invalid",
+    "example.net",
+    "example.org",
+}
 RESOLUTION_REQUIRED_FIELDS = {
     "conflict_group",
     "parameter_ids",
+    "asset_ids",
+    "source_index",
+    "source_refs",
     "status",
     "resolution_id",
     "review_reference",
@@ -152,6 +162,48 @@ RESOLUTION_REQUIRED_FIELDS = {
     "resolved_on",
     "decision",
 }
+
+
+def _repository_file(
+    root: Path,
+    reference: Any,
+    field: str,
+    errors: list[str],
+) -> Path | None:
+    """Resolve a repository-relative evidence path, fail closed.
+
+    A resolution record is only useful when its review artifact and source
+    index are present in the checkout being audited.  URL-shaped strings (or
+    paths escaping the repository) therefore never satisfy this check.
+    """
+
+    if not _is_nonempty_string(reference):
+        errors.append(f"{field} must be a nonempty repository-relative path")
+        return None
+    path = PurePosixPath(reference.strip().replace("\\", "/"))
+    if (
+        path.is_absolute()
+        or not path.parts
+        or ".." in path.parts
+        or any(":" in part for part in path.parts)
+    ):
+        errors.append(f"{field} must be repository-relative")
+        return None
+    candidate = root.joinpath(*path.parts)
+    if not candidate.is_file():
+        errors.append(f"{field} must reference an existing file")
+        return None
+    return candidate
+
+
+def _is_placeholder_source_url(value: Any) -> bool:
+    """Reject reserved documentation hosts used only as test placeholders."""
+
+    if not _is_nonempty_string(value):
+        return False
+    parsed = urlsplit(value.strip())
+    host = (parsed.hostname or "").lower().rstrip(".")
+    return host in PLACEHOLDER_SOURCE_HOSTS or host.endswith(".invalid")
 
 
 def load_yaml(path: Path) -> dict[str, Any]:
@@ -196,14 +248,7 @@ def validate_documents(
     if layer.get("schema_version") != 1:
         errors.append("manufacturer_nominal.schema_version must be 1")
     source_index = layer.get("source_index")
-    if not _is_nonempty_string(source_index):
-        errors.append("manufacturer_nominal.source_index must be a nonempty string")
-    else:
-        source_path = PurePosixPath(source_index.replace("\\", "/"))
-        if source_path.is_absolute() or ".." in source_path.parts:
-            errors.append("manufacturer_nominal.source_index must be repository-relative")
-        elif not (root / Path(*source_path.parts)).is_file():
-            errors.append("manufacturer_nominal.source_index must reference an existing file")
+    _repository_file(root, source_index, "manufacturer_nominal.source_index", errors)
 
     parameters = layer.get("parameters")
     if not isinstance(parameters, list) or not parameters:
@@ -384,13 +429,106 @@ def validate_documents(
             or set(parameter_ids) != expected_ids
         ):
             errors.append(f"{prefix}.parameter_ids must match the immutable known binding for {group}")
+        elif len(parameter_ids) != len(set(parameter_ids)):
+            errors.append(f"{prefix}.parameter_ids must not contain duplicates")
+
+        # A resolution must identify the affected assets explicitly.  Deriving
+        # this only from a free-form review note would allow a resolution for
+        # one received unit to be applied to another asset with the same
+        # nominal model name.
+        resolution_asset_ids = resolution.get("asset_ids")
+        expected_asset_ids = {
+            rows_by_id[parameter_id].get("asset_id")
+            for parameter_id in expected_ids
+            if parameter_id in rows_by_id
+        }
+        if (
+            not isinstance(resolution_asset_ids, list)
+            or not resolution_asset_ids
+            or not all(_is_nonempty_string(asset_id) for asset_id in resolution_asset_ids)
+            or len(resolution_asset_ids) != len(set(resolution_asset_ids))
+            or set(resolution_asset_ids) != expected_asset_ids
+        ):
+            errors.append(f"{prefix}.asset_ids must match the affected conflict parameters")
+
+        # Bind the record to the same checked-in source index as the nominal
+        # layer.  This is deliberately a local path check; it does not claim
+        # that an external URL has been independently authenticated.
+        resolution_source_index = resolution.get("source_index")
+        if resolution_source_index != source_index:
+            errors.append(f"{prefix}.source_index must match manufacturer_nominal.source_index")
+        _repository_file(root, resolution_source_index, f"{prefix}.source_index", errors)
+
+        # Every parameter in the immutable binding must carry the exact
+        # source URL/revision currently present in the registry.  A source ref
+        # for a different model, or a hand-edited revision string, cannot
+        # silently clear the conflict.
+        source_refs = resolution.get("source_refs")
+        source_ref_ids: list[str] = []
+        if not isinstance(source_refs, list) or not source_refs:
+            errors.append(f"{prefix}.source_refs must be a nonempty list")
+        else:
+            for ref_index, source_ref in enumerate(source_refs):
+                ref_prefix = f"{prefix}.source_refs[{ref_index}]"
+                if not isinstance(source_ref, dict):
+                    errors.append(f"{ref_prefix} must be a mapping")
+                    continue
+                for field in ("parameter_id", "source_url", "source_revision"):
+                    if field not in source_ref:
+                        errors.append(f"{ref_prefix} missing {field}")
+                parameter_id = source_ref.get("parameter_id")
+                if not _is_nonempty_string(parameter_id):
+                    errors.append(f"{ref_prefix}.parameter_id must be a nonempty string")
+                    continue
+                source_ref_ids.append(parameter_id)
+                if parameter_id not in expected_ids:
+                    errors.append(f"{ref_prefix}.parameter_id is not part of conflict group {group}")
+                    continue
+                if parameter_id in source_ref_ids[:-1]:
+                    errors.append(f"{ref_prefix}.parameter_id must not be duplicated")
+                row = rows_by_id.get(parameter_id)
+                if row is None:
+                    errors.append(f"{ref_prefix}.parameter_id references unknown parameter {parameter_id}")
+                    continue
+                if source_ref.get("source_url") != row.get("source_url"):
+                    errors.append(f"{ref_prefix}.source_url must match parameter {parameter_id}")
+                if source_ref.get("source_revision") != row.get("source_revision"):
+                    errors.append(f"{ref_prefix}.source_revision must match parameter {parameter_id}")
+            if set(source_ref_ids) != expected_ids:
+                errors.append(f"{prefix}.source_refs must cover the immutable conflict parameters")
+
         if not _is_nonempty_string(resolution.get("resolution_id")):
             errors.append(f"{prefix}.resolution_id must be a nonempty string")
-        if not _is_nonempty_string(resolution.get("review_reference")):
-            errors.append(f"{prefix}.review_reference must be a nonempty string")
+        review_file = _repository_file(root, resolution.get("review_reference"), f"{prefix}.review_reference", errors)
+        if review_file is not None:
+            if review_file.stat().st_size == 0:
+                errors.append(f"{prefix}.review_reference must reference a nonempty file")
+            else:
+                try:
+                    review_text = review_file.read_text(encoding="utf-8")
+                except (OSError, UnicodeError) as exc:
+                    errors.append(f"{prefix}.review_reference must be readable UTF-8: {exc}")
+                else:
+                    review_tokens = [group, *sorted(expected_asset_ids), *sorted(expected_ids)]
+                    if isinstance(source_refs, list):
+                        review_tokens.extend(
+                            source_ref.get("source_url")
+                            for source_ref in source_refs
+                            if isinstance(source_ref, dict) and _is_nonempty_string(source_ref.get("source_url"))
+                        )
+                        review_tokens.extend(
+                            source_ref.get("source_revision")
+                            for source_ref in source_refs
+                            if isinstance(source_ref, dict) and _is_nonempty_string(source_ref.get("source_revision"))
+                        )
+                    for token in review_tokens:
+                        if token not in review_text:
+                            errors.append(f"{prefix}.review_reference must contain binding token {token}")
         source_url = resolution.get("source_url")
         if not _is_nonempty_string(source_url) or not source_url.startswith("https://"):
             errors.append(f"{prefix}.source_url must be a nonempty https URL")
+        elif _is_placeholder_source_url(source_url):
+            errors.append(f"{prefix}.source_url must not use a reserved placeholder host")
         source_revision = resolution.get("source_revision")
         if not _is_nonempty_string(source_revision) or source_revision.strip().upper() in {"UNKNOWN", "N/A"}:
             errors.append(f"{prefix}.source_revision must be a nonempty string")
