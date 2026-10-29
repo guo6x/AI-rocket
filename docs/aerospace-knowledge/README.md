@@ -110,3 +110,8 @@
 - **实际运行结果**：2026-10-29 本地 32/32 知识库软件回归测试通过（原 22 + 新增 10），不会替代全项目 \`scripts/check.py\`、工程参数/硬件测试或任何飞行资格。
 
 **研究等级说明**：\`REPRODUCED_NUMERICAL_ONLY\`，只证明指定数学条件下的数值一致性；不证明模型物理真实性，R0/R1/R2 工程门禁不变。
+
+
+### 最新权威基线校核（2026-10-29 重新阅读）
+
+当前 \`engineering/current-baseline.yaml\` 已升级为 \`SYSTEM-V1 software and physical-baseline readiness evidence baseline\`（2026-10-27）；\`engineering/known-issues.md\` 中 **\`R0-005\` 传感器有效性已经在 R2.1 实现并完成软件验证**（原生 fake-bus/生产主循环测试，状态上限 \`TESTED_SOFTWARE\`），不能再按 KB2 的旧静态审查把“固件完全未校验读取”当成现行生产缺陷。其**真实传感器身份/实际配置/物理响应**仍是 \`UNKNOWN\`。新增的 KB4 数值验证关注历史 \`dynamics_sim\`，不覆盖/改变 R2.1 生产软件现状。所有工程状态必须以最新 \`engineering/\` 为准。
