@@ -1,0 +1,54 @@
+{
+  "actual_thrust_N": 0.0,
+  "independent_solver_max_state_disagreement": 3.078648447285559e-13,
+  "limitations": [
+    "Prototype dynamics only; physical parameters not measured",
+    "Independent solvers share the same stated nonlinear ODE",
+    "No independent physics validation, actuator, controls, or real hardware",
+    "Step-order check limited to four chosen step sizes and one initial state"
+  ],
+  "reference_results": {
+    "DOP853": {
+      "angle_rad": 0.2498839703288359,
+      "angular_rate_rad_s": 0.7396666901245149
+    },
+    "Radau": {
+      "angle_rad": 0.24988397032883158,
+      "angular_rate_rad_s": 0.7396666901248228
+    }
+  },
+  "research_case": "KB4 nonlinear zero-thrust numerical convergence",
+  "rk4_results": [
+    {
+      "angle_error_to_DOP853_rad": 1.8647789376685653e-05,
+      "angle_rad": 0.24986532253945923,
+      "angular_rate_rad_s": 0.7395990782831564,
+      "dt_s": 0.08
+    },
+    {
+      "angle_error_to_DOP853_rad": 1.2924156442273294e-06,
+      "angle_rad": 0.2498826779131917,
+      "angular_rate_rad_s": 0.7396621054881951,
+      "dt_s": 0.04
+    },
+    {
+      "angle_error_to_DOP853_rad": 8.511324506299545e-08,
+      "angle_rad": 0.24988388521559085,
+      "angular_rate_rad_s": 0.7396663922200964,
+      "dt_s": 0.02
+    },
+    {
+      "angle_error_to_DOP853_rad": 5.46124634404066e-09,
+      "angle_rad": 0.24988396486758957,
+      "angular_rate_rad_s": 0.7396666711476754,
+      "dt_s": 0.01
+    }
+  ],
+  "rk4_step_halving_angle_error_ratios": [
+    14.428631733125014,
+    15.18465948831777,
+    15.584948874513133
+  ],
+  "source_git_blob_sha1": "f804ab126d13781928036ee4a22b99cf0ea59be6",
+  "status": "PASS_NUMERICAL_CONVERGENCE_ONLY"
+}

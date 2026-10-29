@@ -1,0 +1,64 @@
+{
+  "classification": "SOFTWARE_SIMULATION_ONLY",
+  "inputs": [
+    {
+      "path": "inputs/physics_engine.py",
+      "sha256": "3aa387699abec402af3aac3045ccb7210f43c01b5b887f98a50564fdddc7ebe6"
+    },
+    {
+      "path": "inputs/case.json",
+      "sha256": "54f0eb4753176eb6bd40e30f91d972697ed0dba4c48b1f6f7b84386dd7300c22"
+    }
+  ],
+  "intended_use": "Compare the real pinned historical unpowered 1D RK4 model to DOP853 and Radau nonlinear ODE integration",
+  "model": {
+    "assumptions": [
+      "zero thrust",
+      "historical default 1D inertia and damping",
+      "nonlinear sin(theta) retained"
+    ],
+    "coordinate_system": "theta zero is vertical, positive clockwise, angles in rad",
+    "name": "historical-InvertedPendulum1D-zero-thrust",
+    "physical_correlation_status": "NOT_MEASURED_OR_VALIDATED",
+    "units": {
+      "angle": "rad",
+      "force": "N",
+      "length": "m",
+      "mass": "kg",
+      "time": "s"
+    },
+    "version": "pinned Git blob"
+  },
+  "outputs": [
+    {
+      "path": "outputs/convergence.csv",
+      "sha256": "af334aecac4e67bf8789ca9afb667aa30db7e99fc64b43e04daa2788ff4d6323"
+    },
+    {
+      "path": "outputs/summary.json",
+      "sha256": "68506175a22cd734b5625db5894fa1451ef22f247007183e7258a1cb39d79fb3"
+    }
+  ],
+  "run_id": "KB4-NONLINEAR-STEP-CONVERGENCE-001",
+  "runtime": {
+    "command": "python docs/aerospace-knowledge/examples/nonlinear_convergence.py --output-dir NEW_DIRECTORY",
+    "dependencies": {
+      "numpy": "2.3.5",
+      "scipy": "1.17.0"
+    },
+    "python_version": "3.13.5",
+    "random_seed": null
+  },
+  "schema_version": 1,
+  "source": {
+    "commit": "25b0f6c31f01ab9178cf6dd96d7e0ca8eff7cc99",
+    "repository": "guo6x/AI-rocket"
+  },
+  "unsupported_uses": [
+    "physical model calibration",
+    "controller tuning",
+    "powered experiments",
+    "flight readiness",
+    "manufacturing approval"
+  ]
+}

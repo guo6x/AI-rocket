@@ -1,0 +1,22 @@
+{
+  "actual_thrust_N": 0.0,
+  "damping_N_m_s_per_rad": 0.5,
+  "duration_s": 1.2,
+  "gravity_m_s2": 9.81,
+  "initial_angle_deg": 0.5,
+  "length_cg_m": 0.2,
+  "length_thrust_m": 0.5,
+  "mass_kg": 1.0,
+  "max_solver_disagreement_rad": 1e-10,
+  "maximum_finest_error_rad": 1e-07,
+  "minimum_error_improvement_per_halving": 10.0,
+  "nominal_max_thrust_N": 15.0,
+  "reference_atol": 1e-14,
+  "reference_rtol": 1e-12,
+  "step_sizes_s": [
+    0.08,
+    0.04,
+    0.02,
+    0.01
+  ]
+}

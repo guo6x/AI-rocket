@@ -118,3 +118,19 @@ python docs/aerospace-knowledge/examples/simulation_manifest.py research-output/
 ### 合并前复测记录
 
 在模拟真实 GitHub 目录层级下运行 \`python -m unittest discover -s docs/aerospace-knowledge/examples -p 'test_*.py' -v\`，结果为 **22/22 PASS**，其中包括原 \`test_simulation_manifest.py\` 的 14 项与新 \`test_reference_experiment.py\` 的 8 项。曾发现并修复测试模块仓库根目录计算的层级错误（\`parents[1]\` → \`parents[3]\`），随后重新执行的完整实验归档 SHA256 与本轮证据一致。**不是整仓库 CI 验收**。
+
+
+## KB4｜非线性 RK4 步长收敛 + 两套独立数值求解器（2026-10-29）
+
+运行文件：[nonlinear_convergence.py](nonlinear_convergence.py)、[test_nonlinear_convergence.py](test_nonlinear_convergence.py)。本轮**额外需要** Python 3.13.5、SciPy 1.17.0、NumPy 2.3.5；不修改飞控或产品依赖，可在独立虚拟环境中安装：
+
+\`\`\`bash
+python -m pip install -r docs/aerospace-knowledge/examples/requirements-kb4.txt
+python -m unittest discover -s docs/aerospace-knowledge/examples -p "test_*.py" -q
+python docs/aerospace-knowledge/examples/nonlinear_convergence.py --output-dir /tmp/kb4-my-new-run
+python docs/aerospace-knowledge/examples/simulation_manifest.py /tmp/kb4-my-new-run/manifest.json
+\`\`\`
+
+建议创建**全新**输出目录，Windows 下改用本地路径（不要覆盖已有数据）；如果已存在，运行器会拒绝覆盖。其根目录解析 \`Path(__file__).resolve().parents[3]\` 对应 AI-rocket 根目录。测试程序及结果**仅包含离线数学运算**，不调用推进设备、传感器、舵机、飞控目标板或实物。
+
+实际执行：本地 32/32 知识库测试通过；本轮独立实验的新 10 项通过，代码、真实模型源文件和数据的 Git Blob 均与 GitHub 上传结果核对一致。完整数值、误差定义与模型局限见 [KR-2026-005](../records/KR-2026-005-nonlinear-convergence.md)；研究资料中的控制符号差异见 [KR-2026-006](../records/KR-2026-006-polarity-contract.md)。**没有执行整仓库 CI，也没有进行模型的实物测量验证。**
