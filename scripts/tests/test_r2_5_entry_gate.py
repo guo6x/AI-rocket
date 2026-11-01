@@ -112,6 +112,17 @@ def test_evaluation_is_deterministic_and_does_not_mutate(authority):
     assert evaluate(authority) == evaluate(authority)
     assert authority == before
 
+def test_conditional_cad_measurement_is_not_an_unconditional_blocker(authority):
+    authority["measurements"]["measurements"].append({
+        "measurement_id": "M-P0-STRUCT-02",
+        "required_for": ["CAD_START"], "status": "MISSING",
+        "condition": {"type": "ANY_COMPONENT_PRESENT_AND_REUSED"},
+    })
+    result = evaluate(authority)
+    assert result["cad"]["missing_cad_start_count"] == 2
+    assert result["cad"]["conditional_cad_start_not_evaluated_ids"] == ["M-P0-STRUCT-02"]
+
+
 def test_repository_authorities_generate_only_preparation_report():
     report = build_report(ROOT)
     assert report["result"] == "PASS_PREPARATION_ONLY", report["errors"]
