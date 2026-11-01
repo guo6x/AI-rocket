@@ -103,7 +103,15 @@ def evaluate(docs: dict[str, Any], authority_errors: list[str] | None = None) ->
     cad_state, cad_start = cad.get("status"), cad.get("cad_start_status")
     missing_cad = sorted(
         ident for ident, item in measurements.items()
-        if "CAD_START" in item.get("required_for", []) and item.get("status") == "MISSING"
+        if "CAD_START" in item.get("required_for", [])
+        and item.get("status") == "MISSING"
+        and not item.get("condition")
+    )
+    conditional_cad = sorted(
+        ident for ident, item in measurements.items()
+        if "CAD_START" in item.get("required_for", [])
+        and item.get("status") == "MISSING"
+        and item.get("condition")
     )
     if missing_cad and (cad_state != "NOT_STARTED" or cad_start != "BLOCKED_BY_MEASUREMENT"):
         errors.append("CAD authority promoted while CAD_START measurements are still missing")
@@ -139,6 +147,7 @@ def evaluate(docs: dict[str, Any], authority_errors: list[str] | None = None) ->
             "cad_start_status": cad_start,
             "missing_cad_start_measurement_ids": missing_cad,
             "missing_cad_start_count": len(missing_cad),
+            "conditional_cad_start_not_evaluated_ids": conditional_cad,
             "manufacturing_release": False,
         },
         "external_gate": "BLOCKED_BY_EXTERNAL_EVIDENCE",
