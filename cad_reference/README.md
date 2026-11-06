@@ -1,5 +1,16 @@
 # Electronics reference CAD, 2026-11-06
 
+## Inspect and independently check the delivery
+
+Open the [three-page reference review](examples/electronics-reference-review.pdf)
+for real STEP-derived nominal views and all nine reference-size cases. These are
+not manufacturing drawings, and the views are not to scale.
+
+The [read-only package checker](verify_package.py) now independently reimports
+every delivered STEP instead of trusting a stored PASS receipt. It checks the
+reviewed source dimensions, file inventory, digests, labels and reference-only
+state. See [delivery verification and limits](DELIVERY_REVIEW.md).
+
 ## Continuation: sensor chip packages
 
 [MPU-9250 and BMP280 reference CAD](SENSOR_REFERENCE.md) now adds six real

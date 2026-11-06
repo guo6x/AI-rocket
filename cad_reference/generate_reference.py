@@ -18,9 +18,19 @@ ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / 'cad_reference/reference-inputs.json'
 REGISTRY = ROOT / 'engineering/parameter-registry.yaml'
 PARAMETERS = ('MN-RA02-LENGTH', 'MN-RA02-WIDTH', 'MN-RA02-HEIGHT')
+REVIEWED_ROW_HASHES = (
+    'a81a4adb3d0059489158d93320bfe3b8bdca7c2808b7f5007ce2741dd4f03e64',
+    '1f51b52153049f2dcbb1e79b0f3dfc11512019d8297b2e50614e9aa9880c5b3e',
+    'a4a3bcd3eae5e713fb7c2203bcea3e2fa00446d060026c3c7751894fcf0a8c56',
+)
 NOTICE = 'REFERENCE_ONLY_NOT_FOR_FIT_MANUFACTURE_OR_FLIGHT'
 UNKNOWN_FEATURES = ('placement', 'mounting_holes', 'mating_connector', 'wire_envelope',
                     'antenna_clearance', 'length_tolerance', 'width_tolerance')
+README_TEXT = (NOTICE + '\n'
+    'Ra-02 V1.1 source-bound rectangular references, NOT replicas or an assembly.\n'
+    'No mating, antenna/cable clearance, material, mass, tolerances in X/Y or physical identity established.\n'
+    'Height low/nominal/high are 3.1/3.2/3.3 mm, not full worst-case fit bounds.\n'
+    'Do not manufacture or infer hardware safety from these files. Read validation.json.\n')
 
 
 class ReferenceError(ValueError):
@@ -38,7 +48,13 @@ def row_hash(row: dict) -> str:
 
 def validate_inputs(registry: dict, manifest: dict) -> tuple[list[float], float, list[dict]]:
     """Reject changed provenance, units, conflicts, unknowns and invented fit claims."""
-    if manifest.get('schema_version') != 1 or manifest.get('scope') != NOTICE:
+    if set(manifest) != {'schema_version', 'scope', 'enabled_model', 'physical_identity',
+                         'manufacturing_release', 'unknown_features', 'parameter_bindings',
+                         'source', 'blocked_models'}:
+        raise ReferenceError('unreviewed Ra-02 manifest fields')
+    if row_hash(manifest['blocked_models']) != '8d76dbb8d13cd0fdedafb4e7acac7b835bcd3155e3385ed4dd96e5797e1ece27':
+        raise ReferenceError('blocked-model source conflict or unknown state changed; review required')
+    if type(manifest.get('schema_version')) is not int or manifest.get('schema_version') != 1 or manifest.get('scope') != NOTICE:
         raise ReferenceError('wrong schema or reference-only scope')
     if manifest.get('manufacturing_release') is not False:
         raise ReferenceError('manufacturing_release must remain false')
@@ -61,6 +77,8 @@ def validate_inputs(registry: dict, manifest: dict) -> tuple[list[float], float,
         raise ReferenceError('unreviewed dimension bindings')
     rows = []
     for binding, property_name in zip(bindings, ('module_length', 'module_width', 'module_height')):
+        if set(binding) != {'id', 'sha256'}:
+            raise ReferenceError('unreviewed dimension binding fields')
         row = sources.get(binding['id'])
         if not row or row_hash(row) != binding.get('sha256'):
             raise ReferenceError('source changed or missing; review required: ' + binding['id'])
@@ -86,19 +104,37 @@ def validate_inputs(registry: dict, manifest: dict) -> tuple[list[float], float,
         raise ReferenceError('invalid height tolerance')
     if rows[0].get('tolerance') is not None or rows[1].get('tolerance') is not None:
         raise ReferenceError('length/width tolerance requires separate review')
+    if [row['value'] for row in rows] != [17., 16., 3.2] or tolerance != 0.1:
+        raise ReferenceError('dimensions differ from reviewed Ra-02 PDF; independent review required')
+    if tuple(row_hash(row) for row in rows) != REVIEWED_ROW_HASHES:
+        raise ReferenceError('reviewed registry rows changed; rehashing inputs is not source review')
     source = manifest.get('source', {})
     if source.get('review_status') != 'PDF_TEXT_AND_PIXELS_REVIEWED' or source.get('page') != 2:
         raise ReferenceError('reviewed source is required')
     if (source.get('pdf_sha256') != 'b4d1fa7502007b18a06620681eece42985f8eb8bf62279fdaea4f00cd977b59d'
             or source.get('revision') != 'Ra-02 V1.1, 2017-12-19'):
         raise ReferenceError('source PDF digest or revision changed; independent review required')
+    if (set(source) != {'url', 'revision', 'page', 'retrieved_on', 'review_status', 'pdf_sha256'}
+            or source.get('retrieved_on') != '2026-11-06'):
+        raise ReferenceError('unreviewed source fields')
     return [float(row['value']) for row in rows], float(tolerance), rows
 
 
 def check_shape(shape, dimensions: list[float]) -> dict:
     """Check OCC topology, unit-sensitive dimensions and independent analytic volume."""
+    def count_solid_leaves(node):
+        if node.ShapeType() == 'Solid':
+            return 1
+        if node.ShapeType() != 'Compound':
+            raise ReferenceError('expected one solid only, without loose faces, edges or wires')
+        children = list(node)
+        if not children:
+            raise ReferenceError('empty compound in reference geometry')
+        return sum(count_solid_leaves(child) for child in children)
+
+    leaves = count_solid_leaves(shape)
     solids = shape.Solids()
-    if (not shape.isValid() or len(solids) != 1 or not solids[0].Shells()
+    if (leaves != 1 or not shape.isValid() or len(solids) != 1 or not solids[0].Shells()
             or not all(shell.Closed() for shell in solids[0].Shells())):
         raise ReferenceError('expected exactly one valid closed solid')
     bb = shape.BoundingBox()
@@ -114,6 +150,15 @@ def check_shape(shape, dimensions: list[float]) -> dict:
         raise ReferenceError('read-back volume differs from analytic box volume')
     return {'valid_closed_solids': 1, 'bbox_mm': lengths, 'origin_mm': minima,
             'envelope_volume_mm3': volume, 'meaning': 'box volume, not material volume or mass'}
+
+
+def read_step_shape(path: Path):
+    """Never discard additional STEP roots by inspecting only Workplane.val()."""
+    import cadquery as cq
+    roots = cq.importers.importStep(str(path)).vals()
+    if len(roots) != 1:
+        raise ReferenceError('expected exactly one imported STEP root shape')
+    return roots[0]
 
 
 def generate(output: Path, registry_path: Path = REGISTRY, manifest_path: Path = MANIFEST) -> dict:
@@ -149,8 +194,7 @@ def generate(output: Path, registry_path: Path = REGISTRY, manifest_path: Path =
             cq.exporters.export(assembly.toCompound(), str(step))
             # STEP product fields do not reliably retain labels through all importers;
             # the filename, adjacent receipt and README remain required context.
-            imported = cq.importers.importStep(str(step))
-            recovered = check_shape(imported.val(), size)
+            recovered = check_shape(read_step_shape(step), size)
             cq.exporters.export(model, str(svg), opt={'width': 700, 'height': 400,
                                 'showAxes': False, 'projectionDir': (1, -1, 1), 'strokeWidth': 0.1})
             report['exports'].append({'variant': suffix, 'dimensions_mm': size,
@@ -165,11 +209,7 @@ def generate(output: Path, registry_path: Path = REGISTRY, manifest_path: Path =
         raise
     finally:
         report_path.write_text(json.dumps(report, indent=2, ensure_ascii=False) + '\n')
-        (output / 'README.txt').write_text(NOTICE + '\n'
-            'Ra-02 V1.1 source-bound rectangular references, NOT replicas or an assembly.\n'
-            'No mating, antenna/cable clearance, material, mass, tolerances in X/Y or physical identity established.\n'
-            'Height low/nominal/high are 3.1/3.2/3.3 mm, not full worst-case fit bounds.\n'
-            'Do not manufacture or infer hardware safety from these files. Read validation.json.\n')
+        (output / 'README.txt').write_text(README_TEXT)
     return report
 
 

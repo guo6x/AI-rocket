@@ -5,7 +5,7 @@
     "registry_sha256": "773d5e5052febc17b903063739a9cdd719d411070f5cbe40bd240304c3a09c1a",
     "manifest_sha256": "39a010fea34e12d66eb934f864e44197446d025aa34dc9e1d2da0ec8820307dc"
   },
-  "generator_sha256": "ea6936d177e6c3faaffb90fce9341768e0db4b5ad689ab38eee088e00dbcabc1",
+  "generator_sha256": "3ad2a53b0e59e5051a6eb88134569283e2ec93246362be19169bfcb57005c7b2",
   "versions": {
     "python": "3.12.14",
     "cadquery": "2.7.0",
@@ -133,7 +133,7 @@
       "files": [
         {
           "name": "RA02_V11_REFERENCE_ONLY_height_low.step",
-          "sha256": "8ebb596c9dbbd245b8e480e84649734b31cb011eec311ec1c920bdfe026aac76",
+          "sha256": "41d817c42de7525cbc0e592b71fe7aa5a362d0bf0ac9f7fe3dc09cb7306529cd",
           "bytes": 15402
         },
         {
@@ -183,7 +183,7 @@
       "files": [
         {
           "name": "RA02_V11_REFERENCE_ONLY_nominal.step",
-          "sha256": "ec96e8e6d6a94af5f31aa1d0b66ebef36303025dd326ee98a3275762c2cb15c5",
+          "sha256": "99a15ec53f3ad41f3589761a6440534e02144ae8845fcdac4f72f5a67e363da9",
           "bytes": 15402
         },
         {
@@ -233,7 +233,7 @@
       "files": [
         {
           "name": "RA02_V11_REFERENCE_ONLY_height_high.step",
-          "sha256": "afb3ee3f9cb097d1ac93cc0046c4a1e1b04be01bb0297c6a44e2791bcc81ad1d",
+          "sha256": "8bd7d18fe149d4a991516b452012c89b7fceb908f01e1b389ed449f9db93d318",
           "bytes": 15402
         },
         {

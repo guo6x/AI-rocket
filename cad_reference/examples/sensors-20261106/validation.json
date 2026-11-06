@@ -21,8 +21,8 @@
     "registry_sha256": "773d5e5052febc17b903063739a9cdd719d411070f5cbe40bd240304c3a09c1a",
     "manifest_sha256": "cd30ecfe1e83c542c521903bff7e36d3d973bbf02cae53a85b94cefbe01e8734"
   },
-  "generator_sha256": "81b6badb6c70c6cf74197b1da4d8ebddfeed47eabbb2882d482f571d63273500",
-  "geometry_validator_sha256": "ea6936d177e6c3faaffb90fce9341768e0db4b5ad689ab38eee088e00dbcabc1",
+  "generator_sha256": "df270f2fbabe0ab5c0342e92893c58f0b6f9af100c995f63ccec81172b177f6b",
+  "geometry_validator_sha256": "3ad2a53b0e59e5051a6eb88134569283e2ec93246362be19169bfcb57005c7b2",
   "versions": {
     "python": "3.12.14",
     "cadquery": "2.7.0",
@@ -282,7 +282,7 @@
       "files": [
         {
           "name": "MPU9250_PACKAGE_REFERENCE_ONLY_minimum.step",
-          "sha256": "7c2177c38e93cbf8f3b9453bee8f8b03984c03b2423d56147d8178152a03d00f",
+          "sha256": "40b25bf3141da7d18287ac83749c9794bfd39bcc42109f85036eb7e09aec693c",
           "bytes": 15415
         },
         {
@@ -333,7 +333,7 @@
       "files": [
         {
           "name": "MPU9250_PACKAGE_REFERENCE_ONLY_nominal.step",
-          "sha256": "0858ae89f77b5ffe7ece2ce3dee0c57ba74e87e25b0499846d47b6a02cecd29a",
+          "sha256": "41f290b6e3aaa87b252eb6252e5288f868ef901b4fa6fe3b208e47dba8e630de",
           "bytes": 15363
         },
         {
@@ -384,7 +384,7 @@
       "files": [
         {
           "name": "MPU9250_PACKAGE_REFERENCE_ONLY_maximum.step",
-          "sha256": "7357adc76fd14c455942bf3cd0cdc2f00d34acfd077d42b6eb7cec5f95e46cdd",
+          "sha256": "044c1ad162f18597fe3b08a1f255eb5a5cc28465c45eb7ccea4984f1c1d6bb82",
           "bytes": 15415
         },
         {
@@ -435,7 +435,7 @@
       "files": [
         {
           "name": "BMP280_PACKAGE_REFERENCE_ONLY_minimum.step",
-          "sha256": "c5810a9b1cf4894b1a9f42d940e82b4b8449b5354316309e782bc2ba47965f6d",
+          "sha256": "bcf8354441d890c07a45ea8bb7391d0c6a9876ad8f03f1f5785a6dad7fb10b89",
           "bytes": 15402
         },
         {
@@ -486,7 +486,7 @@
       "files": [
         {
           "name": "BMP280_PACKAGE_REFERENCE_ONLY_nominal.step",
-          "sha256": "6843047ddcce650240c8ea9a787205426d383a7806ab8bf250aa4ff968baaa7c",
+          "sha256": "cbd9b09d2faeb9eb5a04db40e0813a492b505fb3a5b0569221de225f0036b7b2",
           "bytes": 15402
         },
         {
@@ -537,7 +537,7 @@
       "files": [
         {
           "name": "BMP280_PACKAGE_REFERENCE_ONLY_maximum.step",
-          "sha256": "3f3c3f13a80de44553df42d2280d0e1566468c4167c761af1bb25c2e4944d62b",
+          "sha256": "47cef3cef9d5cd88d0acbb3001c7a7824f83b7d33b17d3e284fdb95a6bf52361",
           "bytes": 15389
         },
         {

@@ -158,6 +158,11 @@ class SensorReferenceTests(unittest.TestCase):
         self.registry['manufacturer_nominal']['parameters'].append(deepcopy(self.row()))
         self.assertRejected()
 
+    def test_rehashed_extra_row_claim_rejected(self):
+        self.row()['manufacturing_release'] = True
+        self.rebind()
+        self.assertRejected()
+
     def test_invalid_inputs_leave_no_output_directory(self):
         with tempfile.TemporaryDirectory() as temp:
             manifest_path, out = Path(temp) / 'invalid.json', Path(temp) / 'new'

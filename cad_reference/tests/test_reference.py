@@ -7,7 +7,7 @@ from unittest import mock
 
 import yaml
 from cad_reference.generate_reference import (
-    MANIFEST, REGISTRY, ReferenceError, check_shape, generate, row_hash, validate_inputs,
+    MANIFEST, REGISTRY, ReferenceError, check_shape, generate, read_step_shape, row_hash, validate_inputs,
 )
 
 
@@ -31,6 +31,21 @@ class ReferenceInputTests(unittest.TestCase):
     def test_changed_source_is_not_silently_used(self):
         self.row()['value'] = 18
         with self.assertRaisesRegex(ReferenceError, 'source changed'):
+            validate_inputs(self.registry, self.manifest)
+
+    def test_rehashing_changed_dimensions_is_not_source_review(self):
+        for index, field, value in [(0, 'value', 170), (2, 'tolerance', .2)]:
+            with self.subTest(field=field):
+                self.setUp()
+                self.row(index)[field] = value
+                self.rebind(index)
+                with self.assertRaisesRegex(ReferenceError, 'reviewed Ra-02 PDF'):
+                    validate_inputs(self.registry, self.manifest)
+
+    def test_rehashing_extra_row_claims_rejected(self):
+        self.row()['manufacturing_release'] = True
+        self.rebind()
+        with self.assertRaisesRegex(ReferenceError, 'rehashing inputs'):
             validate_inputs(self.registry, self.manifest)
 
     def test_missing_and_duplicate_parameters(self):
@@ -98,6 +113,25 @@ class ReferenceInputTests(unittest.TestCase):
                 with self.assertRaises(ReferenceError):
                     validate_inputs(self.registry, m)
 
+    def test_unreviewed_manifest_and_binding_claims_rejected(self):
+        for location in ('root', 'binding'):
+            with self.subTest(location=location):
+                m = deepcopy(self.manifest)
+                target = m if location == 'root' else m['parameter_bindings'][0]
+                target['installation_approved'] = True
+                with self.assertRaisesRegex(ReferenceError, 'unreviewed'):
+                    validate_inputs(self.registry, m)
+
+    def test_blocked_model_conflict_cannot_be_silently_removed(self):
+        for change in ('delete', 'resolve', 'measure'):
+            with self.subTest(change=change):
+                m = deepcopy(self.manifest)
+                if change == 'delete': m['blocked_models'] = []
+                elif change == 'resolve': m['blocked_models'][0]['status'] = 'APPROVED'
+                else: m['blocked_models'][0]['physical_dimensions_mm'] = [24.7, 14.4, 11.2]
+                with self.assertRaisesRegex(ReferenceError, 'blocked-model'):
+                    validate_inputs(self.registry, m)
+
     def test_unreviewed_pdf_rejected(self):
         self.manifest['source']['review_status'] = 'SEARCH_SNIPPET_ONLY'
         with self.assertRaises(ReferenceError):
@@ -158,8 +192,22 @@ class ActualKernelTests(unittest.TestCase):
 
     def test_surface_is_not_a_solid(self):
         face = self.cq.Workplane('XY').box(17,16,3.2).val().Faces()[0]
-        with self.assertRaisesRegex(ReferenceError, 'one valid closed solid'):
+        with self.assertRaises(ReferenceError):
             check_shape(face, [17,16,3.2])
+
+    def test_loose_geometry_cannot_hide_inside_valid_box(self):
+        box = self.cq.Workplane('XY').box(17, 16, 3.2, centered=False).val()
+        edge = self.cq.Workplane('XY').moveTo(1, 1).lineTo(2, 1).val()
+        compound = self.cq.Compound.makeCompound([box, edge])
+        with self.assertRaisesRegex(ReferenceError, 'loose faces, edges or wires'):
+            check_shape(compound, [17,16,3.2])
+
+    def test_additional_imported_step_roots_cannot_be_discarded(self):
+        box = self.cq.Workplane('XY').box(17, 16, 3.2, centered=False).val()
+        imported = self.cq.Workplane('XY').newObject([box, box.translate((30, 0, 0))])
+        with mock.patch.object(self.cq.importers, 'importStep', return_value=imported):
+            with self.assertRaisesRegex(ReferenceError, 'one imported STEP root'):
+                read_step_shape(Path('not-read.step'))
 
     def test_export_failure_never_writes_pass(self):
         with tempfile.TemporaryDirectory() as temp:

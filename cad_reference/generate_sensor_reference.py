@@ -13,14 +13,20 @@ import sys
 import yaml
 
 try:
-    from .generate_reference import ReferenceError, check_shape, row_hash, sha256
+    from .generate_reference import ReferenceError, check_shape, read_step_shape, row_hash, sha256
 except ImportError:  # direct CLI execution
-    from generate_reference import ReferenceError, check_shape, row_hash, sha256
+    from generate_reference import ReferenceError, check_shape, read_step_shape, row_hash, sha256
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / 'cad_reference/sensor-reference-inputs.json'
 REGISTRY = ROOT / 'engineering/parameter-registry.yaml'
 NOTICE = 'CHIP_PACKAGE_REFERENCE_ONLY_NOT_GY91_BOARD_FIT_MANUFACTURE_OR_FLIGHT'
+README_TEXT = (NOTICE + '\n'
+    'MPU-9250 and BMP280 CHIP PACKAGE reference boxes; NOT the GY-91 board.\n'
+    'Minimum, nominal and maximum are independent dimensional cases, not an assembly.\n'
+    'The datum is an arbitrary box corner, NOT sensor/board axes or mounting coordinates.\n'
+    'No pads, vent hole, solder, connectors, material volume or mass modeled.\n'
+    'Retain validation.json with these files. No fit, manufacture or flight acceptance.\n')
 DATUM = 'ARBITRARY_PACKAGE_BOX_CORNER_NOT_SENSOR_OR_BOARD_AXES'
 BASIS = ('Explicit whole-package dimensions only; all-min/all-max are numeric reference '
          'corners, not an installation clearance or joint manufacturing distribution.')
@@ -31,6 +37,9 @@ UNKNOWN = ('gy91_board_dimensions', 'populated_chip_identity', 'placement_on_boa
 # Changes require a fresh source review; merely rehashing a manifest is insufficient.
 REVIEWED = {
     'MPU9250': {
+        'row_hashes': ('315ddb39edf71edf4876fed6f5954270b369cdd7de2db198bb1c8ba2684dae1e',
+                       'faa9003fa29e483a97b7df910bbcfa65988e35dc872ddf0e6ae193f7d18f5ccd',
+                       'ecdf31c8a26102a6b6700b285874c1d024e6c19404a6a3d5777a5facc5a8fba8'),
         'registry_source_url': 'https://www.invensense.tdk.com/en-us/news-media/press/invensense-sets-new-industry-standard-worlds-smallest-lowest-power-integrated-9-axis',
         'registry_source_revision': 'TDK InvenSense MPU-9250 product announcement; revision not published; retrieved 2026-10-27',
         'registry_model_claim': 'MPU-9250 chip/package on ordered GY-91 variant',
@@ -41,6 +50,9 @@ REVIEWED = {
                           'maximum': [3.1, 3.1, 1.05]},
     },
     'BMP280': {
+        'row_hashes': ('15e2088a774e702176f774c406663064dd0de9bf5661ed21ee95e2764725ec15',
+                       'cfa012896e07f770bf8f5b9cc07f9aa693307cbb663e9b3f26b8a303f4f344a5',
+                       'd762782303973875bf7f13b872999efcb8cdb08f0ca7629734c405f1e20293d5'),
         'registry_source_url': 'https://www.bosch-sensortec.com/products/environmental-sensors/pressure-sensors/bmp280/',
         'registry_source_revision': 'Bosch BMP280 product page; revision not published; retrieved 2026-10-27',
         'registry_model_claim': 'BMP280 chip/package on ordered GY-91 variant',
@@ -132,6 +144,8 @@ def validate_inputs(registry: dict, manifest: dict) -> list[dict]:
             # not a silent reinterpretation of the product-page registry.
             if row.get('tolerance') is not None or row.get('tolerance_unit') is not None:
                 raise ReferenceError('registry tolerance changed; source reconciliation required')
+            if row_hash(row) != reviewed['row_hashes'][index]:
+                raise ReferenceError('reviewed registry row changed; rehashing is not source review')
             source_rows.append(row)
         checked.append(dict(model, parameter_rows=source_rows))
     return checked
@@ -164,7 +178,7 @@ def generate(output: Path, registry_path: Path = REGISTRY, manifest_path: Path =
                 original = check_shape(model.val(), dims)
                 step, svg = output / (name + '.step'), output / (name + '.svg')
                 cq.exporters.export(model, str(step))
-                readback = check_shape(cq.importers.importStep(str(step)).val(), dims)
+                readback = check_shape(read_step_shape(step), dims)
                 cq.exporters.export(model, str(svg), opt={'width': 700, 'height': 400,
                     'showAxes': False, 'projectionDir': (1, -1, 1), 'strokeWidth': 0.1})
                 report['exports'].append({'model_id': item['model_id'], 'variant': variant,
@@ -179,12 +193,7 @@ def generate(output: Path, registry_path: Path = REGISTRY, manifest_path: Path =
         raise
     finally:
         (output / 'validation.json').write_text(json.dumps(report, indent=2, ensure_ascii=False) + '\n')
-        (output / 'README.txt').write_text(NOTICE + '\n'
-            'MPU-9250 and BMP280 CHIP PACKAGE reference boxes; NOT the GY-91 board.\n'
-            'Minimum, nominal and maximum are independent dimensional cases, not an assembly.\n'
-            'The datum is an arbitrary box corner, NOT sensor/board axes or mounting coordinates.\n'
-            'No pads, vent hole, solder, connectors, material volume or mass modeled.\n'
-            'Retain validation.json with these files. No fit, manufacture or flight acceptance.\n')
+        (output / 'README.txt').write_text(README_TEXT)
     return report
 
 
