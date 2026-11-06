@@ -28,6 +28,12 @@ jobs:
         run: python cad_reference/generate_sensor_reference.py --output "${RUNNER_TEMP}/sensor-reference-cad"
       - name: Generate APM32 body and 48 planar recommended lands
         run: python cad_reference/generate_apm32_reference.py --output "${RUNNER_TEMP}/apm32-reference-cad"
+      - name: Generate seller numeric-span surface without invented board thickness
+        run: python cad_reference/generate_board_span_reference.py --output "${RUNNER_TEMP}/board-span-reference-cad"
+      - name: Verify delivered and fresh seller numeric-span surfaces
+        run: |
+          python cad_reference/generate_board_span_reference.py --check cad_reference/examples/board-spans-20261107
+          python cad_reference/generate_board_span_reference.py --check "${RUNNER_TEMP}/board-span-reference-cad"
       - name: Verify delivered and fresh APM32 geometry and pin coordinates
         run: |
           python cad_reference/generate_apm32_reference.py --check cad_reference/examples/apm32-20261106
@@ -53,6 +59,7 @@ jobs:
             ${{ runner.temp }}/reference-cad
             ${{ runner.temp }}/sensor-reference-cad
             ${{ runner.temp }}/apm32-reference-cad
+            ${{ runner.temp }}/board-span-reference-cad
             ${{ runner.temp }}/electronics-reference-review.pdf
           if-no-files-found: error
           retention-days: 14

@@ -1,0 +1,36 @@
+{
+  "status": "PASS_NUMERIC_SPANS_ONLY",
+  "scope": "SELLER_NUMERIC_SPANS_PLANAR_REFERENCE_ONLY_NOT_BOARD_CONTOUR",
+  "manufacturing_release": false,
+  "physical_identity": "UNVERIFIED",
+  "cad_start": "UNCHANGED_BLOCKED",
+  "manifest_sha256": "f09e5f6be39aba354c4f10bac15fb58c1aff56b850432e853295dcaa0e78ee73",
+  "asset_row_sha256": "3778e3137b819f942ab4ecf7bbc04653a994877e8f121bbc4b954a9c08ffdf34",
+  "generator_sha256": "c77f635fd6a42ee993f1dcda7e4df9a2e3469a772acd01dface9d506b18ae32e",
+  "geometry": {
+    "planar_faces": 1,
+    "solids": 0,
+    "spans_mm": [
+      57.0,
+      28.0
+    ],
+    "plane_z_mm": 0.0,
+    "numeric_rectangle_area_mm2": 1596.0,
+    "physical_board_thickness_mm": null,
+    "meaning": "seller numeric-span reference; not physical PCB area or contour"
+  },
+  "files": [
+    {
+      "name": "ESP32S3_SELLER_SPANS_PLANAR_REFERENCE_ONLY.step",
+      "sha256": "d8b2bfb42c14c01fc212a0e2756895431e9f0a01cf12e399e30514eea762dd71"
+    },
+    {
+      "name": "ESP32S3_SELLER_SPANS_PLANAR_REFERENCE_ONLY.svg",
+      "sha256": "95c3559a14dfa27aafb2949c5c0fccdca345842e72849511875c8bfc01c8ace2"
+    },
+    {
+      "name": "README.txt",
+      "sha256": "877bdd1ac08ddbe60a33f88ca1eac06825e4734fda0424afac36f1c5afdb48e8"
+    }
+  ]
+}

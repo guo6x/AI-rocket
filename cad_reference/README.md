@@ -1,5 +1,15 @@
 # Electronics reference CAD, 2026-11-06
 
+## New: board-level source review and seller numeric spans
+
+[Board-level review](BOARD_SPANS_REFERENCE.md) follows the actual purchased
+carrier/header variants. The new ESP32 surface records only the seller's
+**57 x 28 mm printed dimensions**, not a true PCB contour or complete envelope.
+The pictured antenna protrudes beyond the 57 mm label boundary. No height,
+headers, mounting holes or USB geometry is guessed. Ra-02 carrier DXF and other
+sellers' dimensions were located but not substituted for the purchased blue
+carrier. See the [source decisions](../engineering/references/board-source-review-20261107.md).
+
 ## Purchase-variant recovery, 2026-11-07
 
 The [original-image review](../engineering/references/purchase-variant-recovery-20261107.md)
