@@ -4,6 +4,7 @@ on:
     paths:
       - 'cad_reference/**'
       - 'engineering/parameter-registry.yaml'
+      - 'engineering/assets/project-asset-registry.yaml'
       - '.github/workflows/cad-reference.yml'
   workflow_dispatch:
 permissions:
@@ -25,6 +26,12 @@ jobs:
         run: python cad_reference/generate_reference.py --output "${RUNNER_TEMP}/reference-cad"
       - name: Generate independent chip-package references
         run: python cad_reference/generate_sensor_reference.py --output "${RUNNER_TEMP}/sensor-reference-cad"
+      - name: Generate APM32 body and 48 planar recommended lands
+        run: python cad_reference/generate_apm32_reference.py --output "${RUNNER_TEMP}/apm32-reference-cad"
+      - name: Verify delivered and fresh APM32 geometry and pin coordinates
+        run: |
+          python cad_reference/generate_apm32_reference.py --check cad_reference/examples/apm32-20261106
+          python cad_reference/generate_apm32_reference.py --check "${RUNNER_TEMP}/apm32-reference-cad"
       - name: Independently verify delivered STEP examples and fresh exports
         run: |
           python cad_reference/verify_package.py --kind ra02 --package cad_reference/examples/ra02-20261106
@@ -45,6 +52,7 @@ jobs:
           path: |
             ${{ runner.temp }}/reference-cad
             ${{ runner.temp }}/sensor-reference-cad
+            ${{ runner.temp }}/apm32-reference-cad
             ${{ runner.temp }}/electronics-reference-review.pdf
           if-no-files-found: error
           retention-days: 14

@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="780" viewBox="0 0 960 780">
+<rect width="960" height="780" fill="#f6f8fb"/>
+<g font-family="sans-serif" fill="#162337">
+<text x="36" y="42" font-size="24" font-weight="bold">APM32F103C8T6 / LQFP48</text>
+<text x="36" y="70" font-size="17">48-pad manufacturer-recommended land reference</text>
+<text x="36" y="98" font-size="15" fill="#a02b30">REFERENCE ONLY. NOT THE PURCHASED CORE BOARD. NO PCB / FIT RELEASE.</text>
+<rect x="135.60000000000002" y="169.60000000000002" width="404.79999999999995" height="404.79999999999995" fill="none" stroke="#ab651b" stroke-dasharray="7 5"/>
+<rect x="184.0" y="218.0" width="308" height="308" fill="#e4ebf3" stroke="#586b83"/>
+<rect x="210.400" y="532.600" width="13.200" height="52.800" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="217.000" y="605.000" text-anchor="middle" font-size="10">1</text>
+<rect x="232.400" y="532.600" width="13.200" height="52.800" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="239.000" y="605.000" text-anchor="middle" font-size="10">2</text>
+<rect x="254.400" y="532.600" width="13.200" height="52.800" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="261.000" y="605.000" text-anchor="middle" font-size="10">3</text>
+<rect x="276.400" y="532.600" width="13.200" height="52.800" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="283.000" y="605.000" text-anchor="middle" font-size="10">4</text>
+<rect x="298.400" y="532.600" width="13.200" height="52.800" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="305.000" y="605.000" text-anchor="middle" font-size="10">5</text>
+<rect x="320.400" y="532.600" width="13.200" height="52.800" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="327.000" y="605.000" text-anchor="middle" font-size="10">6</text>
+<rect x="342.400" y="532.600" width="13.200" height="52.800" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="349.000" y="605.000" text-anchor="middle" font-size="10">7</text>
+<rect x="364.400" y="532.600" width="13.200" height="52.800" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="371.000" y="605.000" text-anchor="middle" font-size="10">8</text>
+<rect x="386.400" y="532.600" width="13.200" height="52.800" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="393.000" y="605.000" text-anchor="middle" font-size="10">9</text>
+<rect x="408.400" y="532.600" width="13.200" height="52.800" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="415.000" y="605.000" text-anchor="middle" font-size="10">10</text>
+<rect x="430.400" y="532.600" width="13.200" height="52.800" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="437.000" y="605.000" text-anchor="middle" font-size="10">11</text>
+<rect x="452.400" y="532.600" width="13.200" height="52.800" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="459.000" y="605.000" text-anchor="middle" font-size="10">12</text>
+<rect x="498.600" y="486.400" width="52.800" height="13.200" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="563.000" y="497.000" text-anchor="middle" font-size="10">13</text>
+<rect x="498.600" y="464.400" width="52.800" height="13.200" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="563.000" y="475.000" text-anchor="middle" font-size="10">14</text>
+<rect x="498.600" y="442.400" width="52.800" height="13.200" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="563.000" y="453.000" text-anchor="middle" font-size="10">15</text>
+<rect x="498.600" y="420.400" width="52.800" height="13.200" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="563.000" y="431.000" text-anchor="middle" font-size="10">16</text>
+<rect x="498.600" y="398.400" width="52.800" height="13.200" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="563.000" y="409.000" text-anchor="middle" font-size="10">17</text>
+<rect x="498.600" y="376.400" width="52.800" height="13.200" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="563.000" y="387.000" text-anchor="middle" font-size="10">18</text>
+<rect x="498.600" y="354.400" width="52.800" height="13.200" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="563.000" y="365.000" text-anchor="middle" font-size="10">19</text>
+<rect x="498.600" y="332.400" width="52.800" height="13.200" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="563.000" y="343.000" text-anchor="middle" font-size="10">20</text>
+<rect x="498.600" y="310.400" width="52.800" height="13.200" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="563.000" y="321.000" text-anchor="middle" font-size="10">21</text>
+<rect x="498.600" y="288.400" width="52.800" height="13.200" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="563.000" y="299.000" text-anchor="middle" font-size="10">22</text>
+<rect x="498.600" y="266.400" width="52.800" height="13.200" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="563.000" y="277.000" text-anchor="middle" font-size="10">23</text>
+<rect x="498.600" y="244.400" width="52.800" height="13.200" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="563.000" y="255.000" text-anchor="middle" font-size="10">24</text>
+<rect x="452.400" y="158.600" width="13.200" height="52.800" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="459.000" y="153.000" text-anchor="middle" font-size="10">25</text>
+<rect x="430.400" y="158.600" width="13.200" height="52.800" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="437.000" y="153.000" text-anchor="middle" font-size="10">26</text>
+<rect x="408.400" y="158.600" width="13.200" height="52.800" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="415.000" y="153.000" text-anchor="middle" font-size="10">27</text>
+<rect x="386.400" y="158.600" width="13.200" height="52.800" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="393.000" y="153.000" text-anchor="middle" font-size="10">28</text>
+<rect x="364.400" y="158.600" width="13.200" height="52.800" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="371.000" y="153.000" text-anchor="middle" font-size="10">29</text>
+<rect x="342.400" y="158.600" width="13.200" height="52.800" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="349.000" y="153.000" text-anchor="middle" font-size="10">30</text>
+<rect x="320.400" y="158.600" width="13.200" height="52.800" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="327.000" y="153.000" text-anchor="middle" font-size="10">31</text>
+<rect x="298.400" y="158.600" width="13.200" height="52.800" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="305.000" y="153.000" text-anchor="middle" font-size="10">32</text>
+<rect x="276.400" y="158.600" width="13.200" height="52.800" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="283.000" y="153.000" text-anchor="middle" font-size="10">33</text>
+<rect x="254.400" y="158.600" width="13.200" height="52.800" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="261.000" y="153.000" text-anchor="middle" font-size="10">34</text>
+<rect x="232.400" y="158.600" width="13.200" height="52.800" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="239.000" y="153.000" text-anchor="middle" font-size="10">35</text>
+<rect x="210.400" y="158.600" width="13.200" height="52.800" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="217.000" y="153.000" text-anchor="middle" font-size="10">36</text>
+<rect x="124.600" y="244.400" width="52.800" height="13.200" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="113.000" y="255.000" text-anchor="middle" font-size="10">37</text>
+<rect x="124.600" y="266.400" width="52.800" height="13.200" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="113.000" y="277.000" text-anchor="middle" font-size="10">38</text>
+<rect x="124.600" y="288.400" width="52.800" height="13.200" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="113.000" y="299.000" text-anchor="middle" font-size="10">39</text>
+<rect x="124.600" y="310.400" width="52.800" height="13.200" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="113.000" y="321.000" text-anchor="middle" font-size="10">40</text>
+<rect x="124.600" y="332.400" width="52.800" height="13.200" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="113.000" y="343.000" text-anchor="middle" font-size="10">41</text>
+<rect x="124.600" y="354.400" width="52.800" height="13.200" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="113.000" y="365.000" text-anchor="middle" font-size="10">42</text>
+<rect x="124.600" y="376.400" width="52.800" height="13.200" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="113.000" y="387.000" text-anchor="middle" font-size="10">43</text>
+<rect x="124.600" y="398.400" width="52.800" height="13.200" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="113.000" y="409.000" text-anchor="middle" font-size="10">44</text>
+<rect x="124.600" y="420.400" width="52.800" height="13.200" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="113.000" y="431.000" text-anchor="middle" font-size="10">45</text>
+<rect x="124.600" y="442.400" width="52.800" height="13.200" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="113.000" y="453.000" text-anchor="middle" font-size="10">46</text>
+<rect x="124.600" y="464.400" width="52.800" height="13.200" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="113.000" y="475.000" text-anchor="middle" font-size="10">47</text>
+<rect x="124.600" y="486.400" width="52.800" height="13.200" fill="#248a97" stroke="#11505a" stroke-width="0.7"/>
+<text x="113.000" y="497.000" text-anchor="middle" font-size="10">48</text>
+<path d="M 326 372 h 24 M 338 360 v 24" stroke="#586b83"/>
+<text x="338" y="406" text-anchor="middle" font-size="15">Body outline: 7.00 x 7.00</text>
+<text x="338" y="430" text-anchor="middle" font-size="13">Center datum / +X right / +Y up</text>
+<text x="612" y="177" font-size="18" font-weight="bold">Drawing dimensions (mm)</text>
+<text x="612" y="210" font-size="16">48 lands, 12 per side</text>
+<text x="612" y="239" font-size="16">Each land: 0.30 x 1.20</text>
+<text x="612" y="268" font-size="16">Pitch: 0.50 / gap: 0.20</text>
+<text x="612" y="297" font-size="16">Inner / outer span: 7.30 / 9.70</text>
+<text x="612" y="326" font-size="16">Land-row span: 5.80</text>
+<text x="612" y="372" font-size="18" font-weight="bold">Separate 3D STEP references</text>
+<text x="612" y="405" font-size="16">Body: 7 x 7 x 1.4 at Z=0.1</text>
+<text x="612" y="434" font-size="16">Body top: Z=1.5 (derived)</text>
+<text x="612" y="463" font-size="16">Max dimensions: 9.2 x 9.2 x 1.6</text>
+<text x="612" y="492" font-size="14" fill="#ab651b">Dashed outline = max-dimension box</text>
+<text x="612" y="535" font-size="14">Lands are planar surfaces at Z=0.</text>
+<text x="612" y="558" font-size="14">No invented copper / solder thickness.</text>
+<text x="36" y="652" font-size="15">Reference axes and pin numbers follow Figure 19, not the unverified purchased board.</text>
+<text x="36" y="680" font-size="15">Source: Geehy APM32F103x4x6x8 datasheet V1.5, printed pp45-47 / PDF46-48.</text>
+<text x="36" y="708" font-size="15">Exact order-code mapping: printed p54 / PDF55. Dimensions in mm; review image not to scale.</text>
+<text x="36" y="742" font-size="14" fill="#a02b30">Physical identity unverified. Mounting, USB, headers, board shape and installation clearance unknown.</text>
+</g></svg>

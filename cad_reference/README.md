@@ -1,5 +1,15 @@
 # Electronics reference CAD, 2026-11-06
 
+## New: APM32 chip body and 48-land reference
+
+[APM32F103C8T6 / LQFP48](APM32_REFERENCE.md) adds a source-reviewed nominal
+body STEP, separate maximum-dimension STEP and **48 planar recommended lands**
+with pin labels, coordinate JSON and an SVG review. The official order-code
+table explicitly identifies this chip package. It does not establish the
+purchased core board's shape, headers, connector or physical identity.
+The earlier three-page PDF below covers Ra-02 and the two sensor packages only;
+open the new APM32 SVG for this addition.
+
 ## Inspect and independently check the delivery
 
 Open the [three-page reference review](examples/electronics-reference-review.pdf)
