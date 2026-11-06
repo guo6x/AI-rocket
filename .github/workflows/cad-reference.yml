@@ -23,11 +23,15 @@ jobs:
         run: python -m unittest discover -s cad_reference/tests -v
       - name: Generate separate current-run references
         run: python cad_reference/generate_reference.py --output "${RUNNER_TEMP}/reference-cad"
+      - name: Generate independent chip-package references
+        run: python cad_reference/generate_sensor_reference.py --output "${RUNNER_TEMP}/sensor-reference-cad"
       - name: Ensure TVC CAD status stays blocked
         run: python scripts/cad_baseline_gate.py --check
       - uses: actions/upload-artifact@v4
         with:
           name: reference-only-cad-${{ github.sha }}
-          path: ${{ runner.temp }}/reference-cad
+          path: |
+            ${{ runner.temp }}/reference-cad
+            ${{ runner.temp }}/sensor-reference-cad
           if-no-files-found: error
           retention-days: 14

@@ -1,5 +1,13 @@
 # Electronics reference CAD, 2026-11-06
 
+## Continuation: sensor chip packages
+
+[MPU-9250 and BMP280 reference CAD](SENSOR_REFERENCE.md) now adds six real
+STEP files: independent minimum, nominal and maximum chip-package boxes from
+newly inspected manufacturer drawings. These are **not the purchased GY-91
+board**, not a placement layout and not a physical-identity claim. The original
+Ra-02 package below remains unchanged. All TVC/CAD_START blockers remain.
+
 **REFERENCE ONLY. Not a current physical assembly, fit drawing, printable design,
 manufacturing release, or flight article.** Current TVC CAD remains
 `NOT_STARTED`, with 19 unmet CAD_START entries. No old rejected geometry is used.
