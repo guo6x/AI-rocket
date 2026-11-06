@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import argparse
 from io import BytesIO
+import json
 import math
 from pathlib import Path
 import sys
@@ -52,10 +53,9 @@ def draw_view(canvas, shape, rectangle, projection, label):
     canvas.drawCentredString(x + width / 2, y - 18, label)
 
 
-def create_review(output: Path, ra02_dir: Path, sensor_dir: Path) -> Path:
+def render_review(ra02_dir: Path, sensor_dir: Path) -> bytes:
+    """Render deterministic bytes without writing into or changing either package."""
     before = [verifier.verify(ra02_dir, 'ra02'), verifier.verify(sensor_dir, 'sensors')]
-    if output.exists():
-        raise FileExistsError('existing PDF is not overwritten')
     import reportlab
     from reportlab.pdfbase import pdfmetrics
     from reportlab.pdfbase.ttfonts import TTFont
@@ -118,7 +118,7 @@ def create_review(output: Path, ra02_dir: Path, sensor_dir: Path) -> Path:
             draw_view(canvas, shape, (335, height - 215 - i*70, 185, 45), proj, label)
         canvas.setFillColor(colors.HexColor('#53616D'))
         canvas.setFont('ReviewSans', 9)
-        canvas.drawString(38, height - 373, 'Views are independently fitted to the page, not to scale. No assembly placement is implied.')
+        canvas.drawString(38, height - 386, 'Views are independently fitted to the page, not to scale. No assembly placement is implied.')
 
         top = height - 405
         columns = [48, 205, 315, 425]
@@ -163,20 +163,58 @@ def create_review(output: Path, ra02_dir: Path, sensor_dir: Path) -> Path:
     after = [verifier.verify(ra02_dir, 'ra02'), verifier.verify(sensor_dir, 'sensors')]
     if before != after:
         raise ra02.ReferenceError('references changed while drawing review PDF')
-    output.parent.mkdir(parents=True, exist_ok=True)
-    with output.open('xb') as file:
-        file.write(stream.getvalue())
-    return output
+    return stream.getvalue()
+
+
+def create_review(output: Path, ra02_dir: Path, sensor_dir: Path) -> Path:
+    # A PDF inside an exact-inventory package would invalidate that package
+    # immediately after its final verification. Resolve aliases before any write.
+    destination = output.resolve()
+    if any(destination.is_relative_to(package.resolve()) for package in (ra02_dir, sensor_dir)):
+        raise ra02.ReferenceError('PDF output must be outside both reference packages')
+    if destination.exists():
+        raise FileExistsError('existing PDF is not overwritten')
+    data = render_review(ra02_dir, sensor_dir)
+    # Use this same canonical path for writes: a lexical path containing an
+    # absent directory followed by '..' could otherwise create that directory
+    # inside an input package even when its final destination is outside.
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    with destination.open('xb') as file:
+        file.write(data)
+    return destination
+
+
+def verify_review(pdf: Path, ra02_dir: Path, sensor_dir: Path) -> dict:
+    """Check delivered PDF bytes, not only a separate regenerated preview.
+
+    This is exact reproduction with the pinned renderer, not PDF authentication
+    or a claim about arbitrary viewers. The existing PDF is never overwritten.
+    """
+    before = verifier.read_file(pdf)
+    expected = render_review(ra02_dir, sensor_dir)
+    if before != expected:
+        raise ra02.ReferenceError('delivered PDF differs from the verified reference render')
+    if verifier.read_file(pdf) != before:
+        raise ra02.ReferenceError('delivered PDF changed during verification')
+    return {'status': 'PASS_REFERENCE_REVIEW_REPRODUCTION_ONLY',
+            'pdf_sha256': ra02.sha256(before), 'bytes': len(before),
+            'manufacturing_release': False, 'physical_identity': 'UNVERIFIED',
+            'limitation': 'Exact bytes against this trusted source and pinned renderer only; not authentication, fit or hardware acceptance.'}
 
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--ra02', type=Path, required=True)
     p.add_argument('--sensors', type=Path, required=True)
-    p.add_argument('--output', type=Path, required=True)
+    mode = p.add_mutually_exclusive_group(required=True)
+    mode.add_argument('--output', type=Path, help='new PDF outside both input packages')
+    mode.add_argument('--check', type=Path, help='read-only exact reproduction check of an existing PDF')
     args = p.parse_args()
     try:
-        print(create_review(args.output, args.ra02, args.sensors))
+        if args.check is not None:
+            print(json.dumps(verify_review(args.check, args.ra02, args.sensors), indent=2))
+        else:
+            print(create_review(args.output, args.ra02, args.sensors))
     except Exception as exc:
         print('FAIL: ' + str(exc), file=sys.stderr)
         return 1

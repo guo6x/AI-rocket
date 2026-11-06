@@ -33,6 +33,10 @@ jobs:
           python cad_reference/verify_package.py --kind sensors --package "${RUNNER_TEMP}/sensor-reference-cad"
       - name: Draw verified reference review PDF
         run: python cad_reference/make_review_pdf.py --ra02 "${RUNNER_TEMP}/reference-cad" --sensors "${RUNNER_TEMP}/sensor-reference-cad" --output "${RUNNER_TEMP}/electronics-reference-review.pdf"
+      - name: Check delivered and fresh PDFs against their actual STEP packages
+        run: |
+          python cad_reference/make_review_pdf.py --ra02 cad_reference/examples/ra02-20261106 --sensors cad_reference/examples/sensors-20261106 --check cad_reference/examples/electronics-reference-review.pdf
+          python cad_reference/make_review_pdf.py --ra02 "${RUNNER_TEMP}/reference-cad" --sensors "${RUNNER_TEMP}/sensor-reference-cad" --check "${RUNNER_TEMP}/electronics-reference-review.pdf"
       - name: Ensure TVC CAD status stays blocked
         run: python scripts/cad_baseline_gate.py --check
       - uses: actions/upload-artifact@v4

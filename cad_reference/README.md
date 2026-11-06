@@ -10,6 +10,9 @@ The [read-only package checker](verify_package.py) now independently reimports
 every delivered STEP instead of trusting a stored PASS receipt. It checks the
 reviewed source dimensions, file inventory, digests, labels and reference-only
 state. See [delivery verification and limits](DELIVERY_REVIEW.md).
+The PDF tool also supports `--check` for read-only reproduction of the actual
+delivered PDF. PDF outputs inside either verified package are rejected so that
+creating a review cannot invalidate the reference files it just checked.
 
 ## Continuation: sensor chip packages
 

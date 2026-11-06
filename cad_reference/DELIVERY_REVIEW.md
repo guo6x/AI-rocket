@@ -65,12 +65,39 @@ python cad_reference/make_review_pdf.py \
   --output /tmp/electronics-reference-review-new.pdf
 ```
 
-The output file must not already exist. Both input packages are verified before
-and after drawing. A mismatched or failed package produces no new PDF. The PDF
+The output file must not already exist and must be outside both input package
+directories, including through symlink aliases. Earlier versions allowed a PDF
+to be placed inside a package, then reported successful creation even though
+the extra file invalidated that package's exact inventory. That case is now
+rejected before any file or directory is written.
+
+Both input packages are verified before and after drawing. A mismatched or
+failed package produces no new PDF. The PDF
 is a human-readable navigation aid and carries source links and receipt digest
 prefixes; it is not a detailed drawing, certified part, proof of hardware identity,
 or manufacturing output. The deterministic PDF layout is checked by automated
 tests and rendered-page inspection.
+
+## Check the delivered PDF itself
+
+Generating a valid new PDF does not establish that the committed or downloaded
+PDF is current. Use the read-only reproduction mode to check the actual file:
+
+```sh
+python cad_reference/make_review_pdf.py \
+  --ra02 cad_reference/examples/ra02-20261106 \
+  --sensors cad_reference/examples/sensors-20261106 \
+  --check cad_reference/examples/electronics-reference-review.pdf
+```
+
+This reimports and verifies the packages, renders the expected PDF in memory,
+and compares all bytes. It never rewrites the supplied PDF. A changed or stale
+file, missing file, symlink or file changed during rendering fails with a nonzero
+exit status. Success is `PASS_REFERENCE_REVIEW_REPRODUCTION_ONLY`, not a release
+or authenticity claim. Use the matching reviewed source and pinned ReportLab
+version; a renderer/environment difference must be investigated rather than
+automatically updating the reference. CI checks both the committed PDF and a
+freshly generated PDF against their respective STEP packages.
 
 ## Trust limits
 
