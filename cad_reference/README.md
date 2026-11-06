@@ -1,5 +1,17 @@
 # Electronics reference CAD, 2026-11-06
 
+## Purchase-variant recovery, 2026-11-07
+
+The [original-image review](../engineering/references/purchase-variant-recovery-20261107.md)
+recovered the 24 previously supplied purchase screenshots. The selected Ra-02
+product is **with a carrier board**, so the 17 x 16 mm bare-module references
+below do not represent the purchased assembly's complete outline. The APM32
+selection says downward-soldered headers; GY-91 says purple board with refurbished
+chips. These are product-option statements, not measurements or functional
+verdicts. The current official Espressif table now includes DevKitC-1-N16R8;
+the seller's Type-C board has not been matched to its Micro-USB board drawing.
+No geometry, fit status or authority gate is upgraded by these recovered facts.
+
 ## New: APM32 chip body and 48-land reference
 
 [APM32F103C8T6 / LQFP48](APM32_REFERENCE.md) adds a source-reviewed nominal
@@ -92,12 +104,17 @@ No supplier was contacted and no purchase was made.
 The existing 23-category purchase registry remains the ownership source. It
 records APM32, ESP32-S3, ESP-01S, GY-91, SG92R x2, LM2596 and Ra-02 x2, among
 other tools/accessories. It does not establish board dimensions or installation.
-The existing SG92R metal-gear/POM and ESP32-S3 N16R8/N16R8V conflicts are unchanged.
+The old SG92R metal-gear/POM question came from a stronger-than-visible
+transcription: the original says metal servo, which does not establish gear
+material. Exact seller model/material remains unresolved. The historical ESP32-S3 N16R8/N16R8V
+source snapshot is retained, but the newer review above updates that question:
+current official naming exists, while exact board/USB applicability remains open.
 No current EDF, ESC, main battery or frame purchase is recorded. Such parts need
 selection before interface design; the task is not to ask for measurements of
-unbought parts. Historic purchase/photos were previously supplied, but no raw
-image files are linked in `engineering/evidence/records/`; this review did not
-remeasure from photos or treat their absence in Git as the user's omission.
+unbought parts. Historic purchase screenshots are now recovered privately as
+described above. They are deliberately not placed in `engineering/evidence/records/`
+because they contain personal order fields. No dimensions were inferred from
+image scale.
 
 ## Reproduce
 

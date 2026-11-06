@@ -47,7 +47,7 @@ assets:
 
   - asset_id: "AST-SENSOR-GY91-001"
     category: "imu_barometer_module"
-    item: "GY-91 module, MPU9250 + BMP280 order specification"
+    item: "GY-91 module, MPU9250 + BMP280 title; purple board / refurbished-chip selected variant"
     quantity: 1
     ownership: "OWNED"
     ownership_evidence: "SRC-PURCHASE-2026-10-22"
@@ -55,9 +55,11 @@ assets:
     candidate_lines: [GNC, AVIONICS]
     assignment: "CANDIDATE"
 
+    notes: "Selected variant transcribed from original purchase image in references/purchase-variant-recovery-20261107.md. This records seller wording, not a present chip-identity or reliability finding."
+
   - asset_id: "AST-SERVO-SG92R-001"
     category: "servo_actuator"
-    item: "SG92R 9g metal-gear servo"
+    item: "SG92R 9g seller-described metal servo; gear material unconfirmed"
     quantity: 2
     unit_ids: ["AST-SERVO-SG92R-U1", "AST-SERVO-SG92R-U2"]
     ownership: "OWNED"
@@ -65,7 +67,7 @@ assets:
     verification: "PURCHASE_CONFIRMED"
     candidate_lines: [GNC, TVC]
     assignment: "CANDIDATE"
-    notes: "Two units are suitable for two-axis bench work; exact dimensions/range remain measurement or datasheet inputs, not assumed from historical CAD."
+    notes: "Two owned units are candidates for two-axis bench work. Original purchase wording is metal servo, not proof of metal gears. Exact dimensions/range and product applicability remain source or measurement inputs; see references/purchase-variant-recovery-20261107.md."
 
   - asset_id: "AST-POWER-LM2596-001"
     category: "dc_dc_converter"
@@ -80,13 +82,14 @@ assets:
 
   - asset_id: "AST-RF-RA02-001"
     category: "lora_transceiver"
-    item: "SX1278 LoRa RA-02 module"
+    item: "SX1278 LoRa RA-02 module with carrier board"
     quantity: 2
     ownership: "OWNED"
     ownership_evidence: "SRC-PURCHASE-2026-10-22"
     verification: "PURCHASE_CONFIRMED"
     candidate_lines: [RF, TELEMETRY]
     assignment: "CANDIDATE"
+    notes: "Selected option includes a carrier board. Bare-module 17 x 16 mm reference CAD is not the complete purchased assembly. See references/purchase-variant-recovery-20261107.md."
 
   - asset_id: "AST-RF-SMA-IPEX1-001"
     category: "rf_adapter"
@@ -180,13 +183,14 @@ assets:
 
   - asset_id: "AST-PROTOTYPE-DUPONT-MM-001"
     category: "jumper_wire"
-    item: "20 cm male-to-male Dupont wires"
+    item: "20 cm male-to-female Dupont wires"
     quantity: 20
     ownership: "OWNED"
     ownership_evidence: "SRC-PURCHASE-2026-10-22"
     verification: "PURCHASE_CONFIRMED"
     candidate_lines: [GNC, AVIONICS, RF]
     assignment: "BENCH_TOOL"
+    notes: "Original image 1000013511.jpg selects 20CM male-to-female, 20 wires. MM in this stable asset ID is a historical label, not connector authority. Corrected 2026-11-07; references are preserved."
 
   - asset_id: "AST-PROTOTYPE-DUPONT-FF-001"
     category: "jumper_wire"
