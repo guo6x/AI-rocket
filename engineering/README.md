@@ -52,6 +52,15 @@ from the GY-91 PCB, and separates the LM2596 IC rating from an assembled buck
 board. Seller-only items remain `UNKNOWN`; nominal values can support offline
 concept references but cannot clear the 19 CAD_START measurement blockers.
 
+## Separate reference CAD research, 2026-11-06
+
+[Source-bound electronics reference CAD](../cad_reference/README.md) provides real
+Ra-02 nominal STEP boxes and round-trip checks, not a current assembly. That review
+found an **ESP-01S dimension-source inconsistency**, including a 24.6/24.7 mm
+length disagreement within the current manufacturer PDF. Existing ESP-01S rows
+must not be used to approve enclosure fit. Physical authority and all 19 TVC
+CAD_START blockers remain unchanged.
+
 ## Current answer in one paragraph
 
 The repository preserves historical reports of controller flash/boot, GY-91

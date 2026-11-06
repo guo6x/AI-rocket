@@ -1,0 +1,248 @@
+{
+  "status": "PASS_GEOMETRY_ROUNDTRIP_ONLY",
+  "scope": "REFERENCE_ONLY_NOT_FOR_FIT_MANUFACTURE_OR_FLIGHT",
+  "inputs": {
+    "registry_sha256": "773d5e5052febc17b903063739a9cdd719d411070f5cbe40bd240304c3a09c1a",
+    "manifest_sha256": "39a010fea34e12d66eb934f864e44197446d025aa34dc9e1d2da0ec8820307dc"
+  },
+  "generator_sha256": "ea6936d177e6c3faaffb90fce9341768e0db4b5ad689ab38eee088e00dbcabc1",
+  "versions": {
+    "python": "3.12.14",
+    "cadquery": "2.7.0",
+    "ocp": "7.8.1.1"
+  },
+  "physical_identity": "UNVERIFIED",
+  "manufacturing_release": false,
+  "cad_start": "UNCHANGED_BLOCKED",
+  "unknown_features": {
+    "placement": null,
+    "mounting_holes": null,
+    "mating_connector": null,
+    "wire_envelope": null,
+    "antenna_clearance": null,
+    "length_tolerance": null,
+    "width_tolerance": null
+  },
+  "source": {
+    "url": "https://aithinker-static.oss-cn-shenzhen.aliyuncs.com/docs/Public%20Document%20Center/LoRa/lora/Specification/Ra-02_V1.1%20Specification-20171219.pdf",
+    "revision": "Ra-02 V1.1, 2017-12-19",
+    "page": 2,
+    "retrieved_on": "2026-11-06",
+    "review_status": "PDF_TEXT_AND_PIXELS_REVIEWED",
+    "pdf_sha256": "b4d1fa7502007b18a06620681eece42985f8eb8bf62279fdaea4f00cd977b59d"
+  },
+  "parameter_rows": [
+    {
+      "id": "MN-RA02-LENGTH",
+      "asset_id": "AST-RF-RA02-001",
+      "model_claim": "Ai-Thinker Ra-02 V1.1 SX1278 module",
+      "manufacturer": "Ai-Thinker",
+      "property": "module_length",
+      "value": 17.0,
+      "unit": "mm",
+      "applicability": "Ra-02 V1.1 nominal module envelope; not proof of purchased module revision, antenna match or RF performance.",
+      "source_url": "https://aithinker-static.oss-cn-shenzhen.aliyuncs.com/docs/Public%20Document%20Center/LoRa/lora/Specification/Ra-02_V1.1%20Specification-20171219.pdf",
+      "source_revision": "Ra-02 V1.1 Specification, 2017-12-19",
+      "evidence_level": "MANUFACTURER_NOMINAL_REFERENCE",
+      "model_status": "UNRESOLVED_VARIANT",
+      "conflict": false,
+      "conflict_group": null,
+      "conflict_note": "Purchased module label and connector revision remain unverified.",
+      "design_use": "OFFLINE_CONCEPT_REFERENCE",
+      "design_scope": "module_reference_envelope_only"
+    },
+    {
+      "id": "MN-RA02-WIDTH",
+      "asset_id": "AST-RF-RA02-001",
+      "model_claim": "Ai-Thinker Ra-02 V1.1 SX1278 module",
+      "manufacturer": "Ai-Thinker",
+      "property": "module_width",
+      "value": 16.0,
+      "unit": "mm",
+      "applicability": "Ra-02 V1.1 nominal module envelope; not proof of purchased module revision, antenna match or RF performance.",
+      "source_url": "https://aithinker-static.oss-cn-shenzhen.aliyuncs.com/docs/Public%20Document%20Center/LoRa/lora/Specification/Ra-02_V1.1%20Specification-20171219.pdf",
+      "source_revision": "Ra-02 V1.1 Specification, 2017-12-19",
+      "evidence_level": "MANUFACTURER_NOMINAL_REFERENCE",
+      "model_status": "UNRESOLVED_VARIANT",
+      "conflict": false,
+      "conflict_group": null,
+      "conflict_note": "Purchased module label and connector revision remain unverified.",
+      "design_use": "OFFLINE_CONCEPT_REFERENCE",
+      "design_scope": "module_reference_envelope_only"
+    },
+    {
+      "id": "MN-RA02-HEIGHT",
+      "asset_id": "AST-RF-RA02-001",
+      "model_claim": "Ai-Thinker Ra-02 V1.1 SX1278 module",
+      "manufacturer": "Ai-Thinker",
+      "property": "module_height",
+      "value": 3.2,
+      "unit": "mm",
+      "tolerance": 0.1,
+      "tolerance_unit": "mm",
+      "applicability": "Ra-02 V1.1 nominal module envelope; not proof of purchased module revision, antenna match or RF performance.",
+      "source_url": "https://aithinker-static.oss-cn-shenzhen.aliyuncs.com/docs/Public%20Document%20Center/LoRa/lora/Specification/Ra-02_V1.1%20Specification-20171219.pdf",
+      "source_revision": "Ra-02 V1.1 Specification, 2017-12-19",
+      "evidence_level": "MANUFACTURER_NOMINAL_REFERENCE",
+      "model_status": "UNRESOLVED_VARIANT",
+      "conflict": false,
+      "conflict_group": null,
+      "conflict_note": "Purchased module label and connector revision remain unverified.",
+      "design_use": "OFFLINE_CONCEPT_REFERENCE",
+      "design_scope": "module_reference_envelope_only"
+    }
+  ],
+  "exports": [
+    {
+      "variant": "height_low",
+      "dimensions_mm": [
+        17.0,
+        16.0,
+        3.1
+      ],
+      "in_memory": {
+        "valid_closed_solids": 1,
+        "bbox_mm": [
+          17.0,
+          16.0,
+          3.1
+        ],
+        "origin_mm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "envelope_volume_mm3": 843.1999999999998,
+        "meaning": "box volume, not material volume or mass"
+      },
+      "step_readback": {
+        "valid_closed_solids": 1,
+        "bbox_mm": [
+          17.0,
+          16.0,
+          3.1
+        ],
+        "origin_mm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "envelope_volume_mm3": 843.1999999999998,
+        "meaning": "box volume, not material volume or mass"
+      },
+      "files": [
+        {
+          "name": "RA02_V11_REFERENCE_ONLY_height_low.step",
+          "sha256": "8ebb596c9dbbd245b8e480e84649734b31cb011eec311ec1c920bdfe026aac76",
+          "bytes": 15402
+        },
+        {
+          "name": "RA02_V11_REFERENCE_ONLY_height_low.svg",
+          "sha256": "b3bf43e209a9f5b54885472d454cdd217ebdbec97eab2ca0ad2937663c2adb07",
+          "bytes": 1544
+        }
+      ]
+    },
+    {
+      "variant": "nominal",
+      "dimensions_mm": [
+        17.0,
+        16.0,
+        3.2
+      ],
+      "in_memory": {
+        "valid_closed_solids": 1,
+        "bbox_mm": [
+          17.0,
+          16.0,
+          3.2
+        ],
+        "origin_mm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "envelope_volume_mm3": 870.4,
+        "meaning": "box volume, not material volume or mass"
+      },
+      "step_readback": {
+        "valid_closed_solids": 1,
+        "bbox_mm": [
+          17.0,
+          16.0,
+          3.2
+        ],
+        "origin_mm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "envelope_volume_mm3": 870.4,
+        "meaning": "box volume, not material volume or mass"
+      },
+      "files": [
+        {
+          "name": "RA02_V11_REFERENCE_ONLY_nominal.step",
+          "sha256": "ec96e8e6d6a94af5f31aa1d0b66ebef36303025dd326ee98a3275762c2cb15c5",
+          "bytes": 15402
+        },
+        {
+          "name": "RA02_V11_REFERENCE_ONLY_nominal.svg",
+          "sha256": "6715df4f876ffc451ddc6830d872304199145f6f5d264f5831d173e8b9c1f20b",
+          "bytes": 1541
+        }
+      ]
+    },
+    {
+      "variant": "height_high",
+      "dimensions_mm": [
+        17.0,
+        16.0,
+        3.3000000000000003
+      ],
+      "in_memory": {
+        "valid_closed_solids": 1,
+        "bbox_mm": [
+          17.0,
+          16.0,
+          3.3000000000000003
+        ],
+        "origin_mm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "envelope_volume_mm3": 897.6000000000001,
+        "meaning": "box volume, not material volume or mass"
+      },
+      "step_readback": {
+        "valid_closed_solids": 1,
+        "bbox_mm": [
+          17.0,
+          16.0,
+          3.3
+        ],
+        "origin_mm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "envelope_volume_mm3": 897.5999999999999,
+        "meaning": "box volume, not material volume or mass"
+      },
+      "files": [
+        {
+          "name": "RA02_V11_REFERENCE_ONLY_height_high.step",
+          "sha256": "afb3ee3f9cb097d1ac93cc0046c4a1e1b04be01bb0297c6a44e2791bcc81ad1d",
+          "bytes": 15402
+        },
+        {
+          "name": "RA02_V11_REFERENCE_ONLY_height_high.svg",
+          "sha256": "4e91340538981018e594da31cb0bf6827c6de5c5d853a6797e9667f7327ec221",
+          "bytes": 1541
+        }
+      ]
+    }
+  ],
+  "warning": "Independent reference boxes only. Thickness variants are not complete worst-case fit envelopes."
+}

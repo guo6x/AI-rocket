@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "scope": "REFERENCE_ONLY_NOT_FOR_FIT_MANUFACTURE_OR_FLIGHT",
+  "enabled_model": "ra02_v11_nominal_reference_box",
+  "physical_identity": "UNVERIFIED",
+  "manufacturing_release": false,
+  "unknown_features": {
+    "placement": null,
+    "mounting_holes": null,
+    "mating_connector": null,
+    "wire_envelope": null,
+    "antenna_clearance": null,
+    "length_tolerance": null,
+    "width_tolerance": null
+  },
+  "parameter_bindings": [
+    {
+      "id": "MN-RA02-LENGTH",
+      "sha256": "a81a4adb3d0059489158d93320bfe3b8bdca7c2808b7f5007ce2741dd4f03e64"
+    },
+    {
+      "id": "MN-RA02-WIDTH",
+      "sha256": "1f51b52153049f2dcbb1e79b0f3dfc11512019d8297b2e50614e9aa9880c5b3e"
+    },
+    {
+      "id": "MN-RA02-HEIGHT",
+      "sha256": "a4a3bcd3eae5e713fb7c2203bcea3e2fa00446d060026c3c7751894fcf0a8c56"
+    }
+  ],
+  "source": {
+    "url": "https://aithinker-static.oss-cn-shenzhen.aliyuncs.com/docs/Public%20Document%20Center/LoRa/lora/Specification/Ra-02_V1.1%20Specification-20171219.pdf",
+    "revision": "Ra-02 V1.1, 2017-12-19",
+    "page": 2,
+    "retrieved_on": "2026-11-06",
+    "review_status": "PDF_TEXT_AND_PIXELS_REVIEWED",
+    "pdf_sha256": "b4d1fa7502007b18a06620681eece42985f8eb8bf62279fdaea4f00cd977b59d"
+  },
+  "blocked_models": [
+    {
+      "asset_id": "AST-WIFI-ESP01S-001",
+      "status": "SOURCE_DIMENSION_CONFLICT",
+      "reason": "Existing series table 24.7 x 14.4 x 11.0 mm conflicts with model-specific V1.1 table 24.6 x 14.4 x 11.2 mm; page 11 drawing itself still labels length 24.7 mm. No automatic choice or fit CAD.",
+      "source_url": "https://aithinker-static.oss-cn-shenzhen.aliyuncs.com/docs/Public%20Document%20Center/WiFi/esp8266/Specification/ESP-01S%20Specification-20250802.pdf",
+      "source_pdf_sha256": "83ba3c69b403b3b4ba48ea1367bcfef8262e4bd55d1373f0d206ddd8fa84fb80",
+      "pages": [
+        3,
+        7,
+        11
+      ],
+      "physical_dimensions_mm": null
+    }
+  ]
+}
