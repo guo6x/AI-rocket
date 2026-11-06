@@ -83,6 +83,22 @@ py -3 -u scripts/system_v1_check.py --output $check
 `test_inventory.json` 和 `check_result.json`。collection-only 清单不是执行次数；两个
 GNC 文件在总 gate 中是重复执行组，报告时必须和不同测试身份分开。
 
+收据把实际 gate 结果和证据完整性分开：
+
+- `gate_status` / `gate_exit_code` 保留真实 `scripts/check.py` 的结果。
+- 整体 `status=PASS` 要求 gate 成功、所有测试清单收集成功，以及起止 Git HEAD
+  可读、相同且工作树干净。RF 清单的导入错误和零测试也按收集失败处理。
+- gate 成功但上述条件缺失时，整体 `status=INCOMPLETE`，包装器退出 `2`；具体原因
+  保存在 `evidence_errors`。这不是 gate 执行失败，也不能据此声称完整验收通过。
+- gate 本身失败时，整体 `status=FAIL`，包装器保留其原始非零退出码。启动失败记为
+  `127`。旧消费者若只识别 PASS/FAIL，需适配 INCOMPLETE，或明确读取 gate 字段。
+- 仅本次新的输出目录会从 Git 状态检查中排除，相邻文件和其他未提交修改不会被
+  隐藏。不要为了得到 PASS 删除或覆盖已有工作；先审阅并提交预期源码，再运行收据。
+
+起止 Git 快照只是来源一致性的有限检查，无法证明运行中从未发生“修改后还原”，
+也不认证被 Git 忽略的配置、仓库外文件或所有工具链输入。`evidence_status=COMPLETE`
+只表示上述收据检查完整，不代表全部输入已被密码学认证，更不提升硬件证据等级。
+
 ## 5. 证据边界和故障排查
 
 - `source_mode=SIMULATION / OFFLINE REPLAY` 是输入边界声明，不是传感器身份认证。
