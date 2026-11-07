@@ -77,6 +77,15 @@ The required pitch/roll range remains `TBD_SYSTEM_REQUIREMENT`; historical ±15�
 
 ## Phase D — article integration
 
+For the now-identified purchased APM32 downward-header, ESP32-S3 Type-C,
+Ra-02-with-carrier and GY-91 purple-board variants, use the more specific
+[board measurement guide](../cad_reference/BOARD_MEASUREMENT_WORKBOOK.md) and
+[five-unit worksheet PDF](../cad_reference/examples/board-measurement-workbook.pdf).
+Purchase evidence is already recovered. This supplement collects dimensions;
+it does not repeat ownership verification or map candidate ESP32/Ra-02 assets
+onto the existing ESP-01S article component. Review that mapping separately
+before recording article integration evidence. All existing gates stay intact.
+
 - [ ] `M-P0-ELEC-01` STM32 identity, board envelope, heights, and mounting features.
 - [ ] `M-P0-ELEC-02` ESP identity/form factor, envelope, heights, and mounting features.
 - [ ] `M-P0-ELEC-03` Sensor-board identity, envelope, mounting features, and axis markings.

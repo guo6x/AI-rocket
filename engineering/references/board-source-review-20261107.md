@@ -68,6 +68,21 @@ GY-91所选仍是紫板翻新芯片。作为对照，[Art of Circuits自家GY-91
 
 几何复核和本地验证见[交付说明][REF]。远端CI结果须对应后续实际提交另行确认。
 
+## 后续同店检索与可执行交接
+
+在 `31825e5` 基础上按完整店名、已选型号、底板/焊接选项和机械图/CAD
+关键词继续查找，仍未取得可绑定所购 PCB 修订号的供应方图纸。
+APM32同店当前索引依然是混合系列；GY-91没有找到该店公开技术下载入口。
+第三方 [open-espilot GY-91 适配项目](https://github.com/tomas-kuchta-fpv/open-espilot)
+关联其他供应来源，不能由相似外形自动绑定本次购买。Ra-02原订单页面已显示商品下架，
+这说明原记录当时的页面状态，不据此推定卖家现在停止供货。
+
+本轮新增的是[最小测量工作表](../../cad_reference/BOARD_MEASUREMENT_WORKBOOK.md)，
+不是另一个占位盒或装配模型。它给出五块实物各自的基准、轮廓/上下高、孔/排针、
+插头/检修数据项，并把 APM32 与一块 Ra-02列为最先可推进的采集单元。
+同款同版图纸可以先支持名义建模；无图时再用实物读数，二者均保留适用范围。
+不要求当前采购 EDF、ESC、电池或框架，不重复索要购买证明，未联系任何卖家。
+
 [AI]: https://docs.ai-thinker.com/LoRa-Kit/index.html
 [PDF]: https://aithinker-static.oss-cn-shenzhen.aliyuncs.com/docs/Public%20Document%20Center/LoRa/lora/Specification/LoRa-Kit_V1.0.0%E8%A7%84%E6%A0%BC%E4%B9%A6-20240511.pdf
 [ZIP]: https://aithinker-static.oss-cn-shenzhen.aliyuncs.com/docs/Public%20Document%20Center/LoRa/lora/Support/Ra-01%E8%BD%AC%E6%8E%A5%E6%9D%BF_V2.0%E5%B0%BA%E5%AF%B8%E5%9B%BE.zip

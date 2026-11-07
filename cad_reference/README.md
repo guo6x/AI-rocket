@@ -1,5 +1,22 @@
 # Electronics reference CAD, 2026-11-06
 
+## Next real-board input: five-unit measurement workbook
+
+The [Chinese board measurement guide](BOARD_MEASUREMENT_WORKBOOK.md) and
+[six-page fillable PDF](examples/board-measurement-workbook.pdf) turn the unresolved
+board geometry into a concrete collection task: APM32, ESP32-S3, two separate
+Ra-02 carriers and GY-91. Start with APM32 and one Ra-02. No new purchases or
+repeat purchase proof are needed. A matching supplier board drawing/CAD is also
+an acceptable starting point for a nominal model; current searches did not bind
+one to these purchased PCB revisions.
+
+The sheets distinguish PCB thickness, above/below-board heights, all rigid
+protrusions, hole/header coordinates and mated connector/service space. All
+80 form fields are blank. They do not add measured values, assumed board
+geometry or a new assembly. The 13 existing STEP references remain unchanged.
+Regenerate with `python cad_reference/make_board_measurement_workbook.py --output
+/tmp/board-measurement-workbook-new.pdf` (ReportLab dependency already listed).
+
 ## New: board-level source review and seller numeric spans
 
 [Board-level review](BOARD_SPANS_REFERENCE.md) follows the actual purchased
