@@ -1,0 +1,666 @@
+{
+  "status": "PASS_GEOMETRY_ROUNDTRIP_ONLY",
+  "scope": "APM32_CHIP_AND_RECOMMENDED_LAND_REFERENCE_ONLY_NOT_CORE_BOARD",
+  "physical_identity": "UNVERIFIED",
+  "manufacturing_release": false,
+  "cad_start": "UNCHANGED_BLOCKED",
+  "inputs": {
+    "manifest_sha256": "27b32bdfe6a029de02fe62aef7046a4c47b166c2f97c2d77ca8257da23493053",
+    "assets_sha256": "2f49c84f71d4c0afdfc4687f5600c6e9523dc4e78ece300e862d2fed0163e854"
+  },
+  "generator_sha256": "ddcffc8cd0ac138d238ce8ca45eca970f5fee9d8c83dd3bbca5945da22e80824",
+  "versions": {
+    "python": "3.12.14",
+    "cadquery": "2.7.0",
+    "ocp": "7.8.1.1"
+  },
+  "exports": {
+    "body": {
+      "valid_closed_solids": 1,
+      "bbox_mm": [
+        7.0,
+        7.0,
+        1.4
+      ],
+      "origin_mm": [
+        -3.5,
+        -3.5,
+        0.1
+      ],
+      "envelope_volume_mm3": 68.6,
+      "meaning": "independent numeric reference box, not material volume or fit clearance"
+    },
+    "envelope": {
+      "valid_closed_solids": 1,
+      "bbox_mm": [
+        9.2,
+        9.2,
+        1.6
+      ],
+      "origin_mm": [
+        -4.6,
+        -4.6,
+        0.0
+      ],
+      "envelope_volume_mm3": 135.42399999999998,
+      "meaning": "independent numeric reference box, not material volume or fit clearance"
+    },
+    "lands": {
+      "valid_planar_faces": 48,
+      "solids": 0,
+      "plane_z_mm": 0.0,
+      "total_area_mm2": 17.28,
+      "lands": [
+        {
+          "pin": 1,
+          "center_mm": [
+            -2.75,
+            -4.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            0.3,
+            1.2
+          ]
+        },
+        {
+          "pin": 2,
+          "center_mm": [
+            -2.25,
+            -4.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            0.3,
+            1.2
+          ]
+        },
+        {
+          "pin": 3,
+          "center_mm": [
+            -1.75,
+            -4.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            0.3,
+            1.2
+          ]
+        },
+        {
+          "pin": 4,
+          "center_mm": [
+            -1.25,
+            -4.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            0.3,
+            1.2
+          ]
+        },
+        {
+          "pin": 5,
+          "center_mm": [
+            -0.75,
+            -4.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            0.3,
+            1.2
+          ]
+        },
+        {
+          "pin": 6,
+          "center_mm": [
+            -0.25,
+            -4.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            0.3,
+            1.2
+          ]
+        },
+        {
+          "pin": 7,
+          "center_mm": [
+            0.25,
+            -4.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            0.3,
+            1.2
+          ]
+        },
+        {
+          "pin": 8,
+          "center_mm": [
+            0.75,
+            -4.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            0.3,
+            1.2
+          ]
+        },
+        {
+          "pin": 9,
+          "center_mm": [
+            1.25,
+            -4.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            0.3,
+            1.2
+          ]
+        },
+        {
+          "pin": 10,
+          "center_mm": [
+            1.75,
+            -4.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            0.3,
+            1.2
+          ]
+        },
+        {
+          "pin": 11,
+          "center_mm": [
+            2.25,
+            -4.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            0.3,
+            1.2
+          ]
+        },
+        {
+          "pin": 12,
+          "center_mm": [
+            2.75,
+            -4.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            0.3,
+            1.2
+          ]
+        },
+        {
+          "pin": 13,
+          "center_mm": [
+            4.25,
+            -2.75,
+            0.0
+          ],
+          "size_xy_mm": [
+            1.2,
+            0.3
+          ]
+        },
+        {
+          "pin": 14,
+          "center_mm": [
+            4.25,
+            -2.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            1.2,
+            0.3
+          ]
+        },
+        {
+          "pin": 15,
+          "center_mm": [
+            4.25,
+            -1.75,
+            0.0
+          ],
+          "size_xy_mm": [
+            1.2,
+            0.3
+          ]
+        },
+        {
+          "pin": 16,
+          "center_mm": [
+            4.25,
+            -1.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            1.2,
+            0.3
+          ]
+        },
+        {
+          "pin": 17,
+          "center_mm": [
+            4.25,
+            -0.75,
+            0.0
+          ],
+          "size_xy_mm": [
+            1.2,
+            0.3
+          ]
+        },
+        {
+          "pin": 18,
+          "center_mm": [
+            4.25,
+            -0.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            1.2,
+            0.3
+          ]
+        },
+        {
+          "pin": 19,
+          "center_mm": [
+            4.25,
+            0.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            1.2,
+            0.3
+          ]
+        },
+        {
+          "pin": 20,
+          "center_mm": [
+            4.25,
+            0.75,
+            0.0
+          ],
+          "size_xy_mm": [
+            1.2,
+            0.3
+          ]
+        },
+        {
+          "pin": 21,
+          "center_mm": [
+            4.25,
+            1.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            1.2,
+            0.3
+          ]
+        },
+        {
+          "pin": 22,
+          "center_mm": [
+            4.25,
+            1.75,
+            0.0
+          ],
+          "size_xy_mm": [
+            1.2,
+            0.3
+          ]
+        },
+        {
+          "pin": 23,
+          "center_mm": [
+            4.25,
+            2.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            1.2,
+            0.3
+          ]
+        },
+        {
+          "pin": 24,
+          "center_mm": [
+            4.25,
+            2.75,
+            0.0
+          ],
+          "size_xy_mm": [
+            1.2,
+            0.3
+          ]
+        },
+        {
+          "pin": 25,
+          "center_mm": [
+            2.75,
+            4.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            0.3,
+            1.2
+          ]
+        },
+        {
+          "pin": 26,
+          "center_mm": [
+            2.25,
+            4.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            0.3,
+            1.2
+          ]
+        },
+        {
+          "pin": 27,
+          "center_mm": [
+            1.75,
+            4.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            0.3,
+            1.2
+          ]
+        },
+        {
+          "pin": 28,
+          "center_mm": [
+            1.25,
+            4.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            0.3,
+            1.2
+          ]
+        },
+        {
+          "pin": 29,
+          "center_mm": [
+            0.75,
+            4.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            0.3,
+            1.2
+          ]
+        },
+        {
+          "pin": 30,
+          "center_mm": [
+            0.25,
+            4.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            0.3,
+            1.2
+          ]
+        },
+        {
+          "pin": 31,
+          "center_mm": [
+            -0.25,
+            4.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            0.3,
+            1.2
+          ]
+        },
+        {
+          "pin": 32,
+          "center_mm": [
+            -0.75,
+            4.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            0.3,
+            1.2
+          ]
+        },
+        {
+          "pin": 33,
+          "center_mm": [
+            -1.25,
+            4.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            0.3,
+            1.2
+          ]
+        },
+        {
+          "pin": 34,
+          "center_mm": [
+            -1.75,
+            4.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            0.3,
+            1.2
+          ]
+        },
+        {
+          "pin": 35,
+          "center_mm": [
+            -2.25,
+            4.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            0.3,
+            1.2
+          ]
+        },
+        {
+          "pin": 36,
+          "center_mm": [
+            -2.75,
+            4.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            0.3,
+            1.2
+          ]
+        },
+        {
+          "pin": 37,
+          "center_mm": [
+            -4.25,
+            2.75,
+            0.0
+          ],
+          "size_xy_mm": [
+            1.2,
+            0.3
+          ]
+        },
+        {
+          "pin": 38,
+          "center_mm": [
+            -4.25,
+            2.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            1.2,
+            0.3
+          ]
+        },
+        {
+          "pin": 39,
+          "center_mm": [
+            -4.25,
+            1.75,
+            0.0
+          ],
+          "size_xy_mm": [
+            1.2,
+            0.3
+          ]
+        },
+        {
+          "pin": 40,
+          "center_mm": [
+            -4.25,
+            1.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            1.2,
+            0.3
+          ]
+        },
+        {
+          "pin": 41,
+          "center_mm": [
+            -4.25,
+            0.75,
+            0.0
+          ],
+          "size_xy_mm": [
+            1.2,
+            0.3
+          ]
+        },
+        {
+          "pin": 42,
+          "center_mm": [
+            -4.25,
+            0.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            1.2,
+            0.3
+          ]
+        },
+        {
+          "pin": 43,
+          "center_mm": [
+            -4.25,
+            -0.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            1.2,
+            0.3
+          ]
+        },
+        {
+          "pin": 44,
+          "center_mm": [
+            -4.25,
+            -0.75,
+            0.0
+          ],
+          "size_xy_mm": [
+            1.2,
+            0.3
+          ]
+        },
+        {
+          "pin": 45,
+          "center_mm": [
+            -4.25,
+            -1.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            1.2,
+            0.3
+          ]
+        },
+        {
+          "pin": 46,
+          "center_mm": [
+            -4.25,
+            -1.75,
+            0.0
+          ],
+          "size_xy_mm": [
+            1.2,
+            0.3
+          ]
+        },
+        {
+          "pin": 47,
+          "center_mm": [
+            -4.25,
+            -2.25,
+            0.0
+          ],
+          "size_xy_mm": [
+            1.2,
+            0.3
+          ]
+        },
+        {
+          "pin": 48,
+          "center_mm": [
+            -4.25,
+            -2.75,
+            0.0
+          ],
+          "size_xy_mm": [
+            1.2,
+            0.3
+          ]
+        }
+      ],
+      "meaning": "recommended 2D land surfaces, no physical copper or solder thickness"
+    }
+  },
+  "files": [
+    {
+      "name": "APM32F103C8T6_BODY_NOMINAL_REFERENCE_ONLY.step",
+      "sha256": "ace656a05d0b38585a7b01b40b1e6d9d859f883c782c72fd1d59a92060573f1a",
+      "bytes": 15479
+    },
+    {
+      "name": "APM32F103C8T6_MAX_DIMENSIONS_REFERENCE_ONLY.step",
+      "sha256": "eaa9f16d6b237dcf72f31289bc7f78217d40accdd755bd97bec80638c1181e3b",
+      "bytes": 15470
+    },
+    {
+      "name": "APM32F103C8T6_RECOMMENDED_LANDS_REFERENCE_ONLY.step",
+      "sha256": "2b8337ded4cfbcdde783e208dca256b072c7bb7dab53d4ce5453f27cabdfd546",
+      "bytes": 232966
+    },
+    {
+      "name": "land-coordinates-reference-only.json",
+      "sha256": "9e9aadde926a2927e296aa343a1657c024cd6708ed6bcaf05088a258f2212d29",
+      "bytes": 8561
+    },
+    {
+      "name": "APM32F103C8T6_REFERENCE_ONLY.svg",
+      "sha256": "92c15501142507d6febca6590ff6da08cf7090aae56c00c08f96839ad6b72470",
+      "bytes": 11624
+    },
+    {
+      "name": "README.txt",
+      "sha256": "187c48a7d54460f3c59961a1b4742a8ab14ab239d5499969f9861c512f8973f3",
+      "bytes": 700
+    }
+  ]
+}

@@ -46,11 +46,29 @@ Project ownership is tracked separately in the asset registry. A purchase record
 For current project status, use this directory first. For implementation behavior, production code is authoritative over reports. A passing source build proves only that the source compiles. A software test proves only its tested contract. Historical Markdown, filenames such as `final` or `v11`, mesh quality, and generated reports do not prove hardware validation or manufacturability.
 
 The manufacturer nominal layer records only parameters with an identified
-manufacturer source. It keeps the SG92R metal-gear/POM and ESP32-S3 N16R8 /
-N16R8V variant conflicts explicit, separates MPU9250/BMP280 chip references
+manufacturer source. Its older conflict records are retained as source history;
+the 2026-11-07 review clarifies that seller model/material and exact ESP32-S3
+board applicability remain unresolved. It separates MPU9250/BMP280 chip references
 from the GY-91 PCB, and separates the LM2596 IC rating from an assembled buck
 board. Seller-only items remain `UNKNOWN`; nominal values can support offline
 concept references but cannot clear the 19 CAD_START measurement blockers.
+
+## Separate reference CAD research, 2026-11-06
+
+The [2026-11-07 purchase-image recovery](references/purchase-variant-recovery-20261107.md)
+adds the actual selected options: Ra-02 **with carrier board**, APM32 downward
+headers and purple GY-91 with seller-described refurbished chips. It also corrects
+the Dupont wire variant to male-to-female and updates the obsolete assertion
+that current official DevKitC-1 ordering information lacks N16R8. Exact board
+geometry and physical authority remain unresolved. The 24 original screenshots
+are retained privately, not uploaded with their personal order fields.
+
+[Source-bound electronics reference CAD](../cad_reference/README.md) provides real
+Ra-02 nominal STEP boxes and round-trip checks, not a current assembly. That review
+found an **ESP-01S dimension-source inconsistency**, including a 24.6/24.7 mm
+length disagreement within the current manufacturer PDF. Existing ESP-01S rows
+must not be used to approve enclosure fit. Physical authority and all 19 TVC
+CAD_START blockers remain unchanged.
 
 ## Current answer in one paragraph
 

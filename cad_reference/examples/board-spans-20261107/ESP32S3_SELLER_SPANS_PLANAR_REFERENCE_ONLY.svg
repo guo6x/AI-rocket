@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="640" viewBox="0 0 1100 640">
+<rect width="1100" height="640" fill="#f4f7fb"/>
+<g font-family="Arial, sans-serif" fill="#20334d">
+<text x="36" y="48" font-size="25" font-weight="bold">ESP32-S3 seller dimensions: planar reference</text>
+<text x="36" y="82" font-size="17" fill="#a02b30">REFERENCE ONLY. Not a PCB contour, mounting layout or 3D assembly.</text>
+<rect x="70" y="170" width="456" height="224" fill="#dbeef0" stroke="#167381" stroke-width="3"/>
+<path d="M 70 140 H 526 M 70 130 V 150 M 526 130 V 150" stroke="#20334d" fill="none"/>
+<text x="298" y="124" text-anchor="middle" font-size="21">57 mm seller label</text>
+<path d="M 550 170 V 394 M 540 170 H 560 M 540 394 H 560" stroke="#20334d" fill="none"/>
+<text x="570" y="290" font-size="18">28 mm</text>
+<text x="298" y="265" text-anchor="middle" font-size="19">Numeric span rectangle</text>
+<text x="298" y="298" text-anchor="middle" font-size="16">No inferred holes, pins or ports</text>
+<text x="298" y="330" text-anchor="middle" font-size="16">Z=0 is only a reference plane</text>
+<text x="670" y="177" font-size="20" font-weight="bold">Still unknown</text>
+<text x="670" y="213" font-size="17">PCB-only outline / revision</text>
+<text x="670" y="246" font-size="17">Thickness / complete assembled height</text>
+<text x="670" y="279" font-size="17">Headers / USB positions / overhang</text>
+<text x="670" y="312" font-size="17">Holes / tolerances / antenna keepout</text>
+<text x="670" y="345" font-size="17">Cable bend space / installation fit</text>
+<text x="36" y="448" font-size="17">Source: original purchase image 1000013496.jpg, seller product thumbnail.</text>
+<text x="36" y="480" font-size="17">Selected option: ESP32-S3 N16R8, 44-pin. Type-C is a product-image label.</text>
+<text x="36" y="512" font-size="17">Dimensions were read from printed labels, not estimated from pixel scale.</text>
+<text x="36" y="544" font-size="17">Rectangle corners are abstract. Antenna extends beyond the marked 57 mm boundary; full envelope is unknown.</text>
+<text x="36" y="580" font-size="17" fill="#a02b30">Physical identity unverified. Do not extrude to an assumed height or release an enclosure.</text>
+<text x="36" y="612" font-size="14">Source image remains private. Review illustration not to scale. No manufacturing release.</text>
+</g></svg>

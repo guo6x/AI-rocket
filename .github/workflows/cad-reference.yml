@@ -1,0 +1,65 @@
+name: Electronics reference CAD (no fit or release)
+on:
+  pull_request:
+    paths:
+      - 'cad_reference/**'
+      - 'engineering/parameter-registry.yaml'
+      - 'engineering/assets/project-asset-registry.yaml'
+      - '.github/workflows/cad-reference.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  reference-roundtrip:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install CAD kernel and reference-only dependencies
+        run: python -m pip install -r cad_reference/requirements.txt
+      - name: Negative tests and actual STEP round trips
+        run: python -m unittest discover -s cad_reference/tests -v
+      - name: Generate separate current-run references
+        run: python cad_reference/generate_reference.py --output "${RUNNER_TEMP}/reference-cad"
+      - name: Generate independent chip-package references
+        run: python cad_reference/generate_sensor_reference.py --output "${RUNNER_TEMP}/sensor-reference-cad"
+      - name: Generate APM32 body and 48 planar recommended lands
+        run: python cad_reference/generate_apm32_reference.py --output "${RUNNER_TEMP}/apm32-reference-cad"
+      - name: Generate seller numeric-span surface without invented board thickness
+        run: python cad_reference/generate_board_span_reference.py --output "${RUNNER_TEMP}/board-span-reference-cad"
+      - name: Verify delivered and fresh seller numeric-span surfaces
+        run: |
+          python cad_reference/generate_board_span_reference.py --check cad_reference/examples/board-spans-20261107
+          python cad_reference/generate_board_span_reference.py --check "${RUNNER_TEMP}/board-span-reference-cad"
+      - name: Verify delivered and fresh APM32 geometry and pin coordinates
+        run: |
+          python cad_reference/generate_apm32_reference.py --check cad_reference/examples/apm32-20261106
+          python cad_reference/generate_apm32_reference.py --check "${RUNNER_TEMP}/apm32-reference-cad"
+      - name: Independently verify delivered STEP examples and fresh exports
+        run: |
+          python cad_reference/verify_package.py --kind ra02 --package cad_reference/examples/ra02-20261106
+          python cad_reference/verify_package.py --kind sensors --package cad_reference/examples/sensors-20261106
+          python cad_reference/verify_package.py --kind ra02 --package "${RUNNER_TEMP}/reference-cad"
+          python cad_reference/verify_package.py --kind sensors --package "${RUNNER_TEMP}/sensor-reference-cad"
+      - name: Draw verified reference review PDF
+        run: python cad_reference/make_review_pdf.py --ra02 "${RUNNER_TEMP}/reference-cad" --sensors "${RUNNER_TEMP}/sensor-reference-cad" --output "${RUNNER_TEMP}/electronics-reference-review.pdf"
+      - name: Check delivered and fresh PDFs against their actual STEP packages
+        run: |
+          python cad_reference/make_review_pdf.py --ra02 cad_reference/examples/ra02-20261106 --sensors cad_reference/examples/sensors-20261106 --check cad_reference/examples/electronics-reference-review.pdf
+          python cad_reference/make_review_pdf.py --ra02 "${RUNNER_TEMP}/reference-cad" --sensors "${RUNNER_TEMP}/sensor-reference-cad" --check "${RUNNER_TEMP}/electronics-reference-review.pdf"
+      - name: Ensure TVC CAD status stays blocked
+        run: python scripts/cad_baseline_gate.py --check
+      - uses: actions/upload-artifact@v4
+        with:
+          name: reference-only-cad-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/reference-cad
+            ${{ runner.temp }}/sensor-reference-cad
+            ${{ runner.temp }}/apm32-reference-cad
+            ${{ runner.temp }}/board-span-reference-cad
+            ${{ runner.temp }}/electronics-reference-review.pdf
+          if-no-files-found: error
+          retention-days: 14
