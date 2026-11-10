@@ -1,5 +1,5 @@
 import os
-import time
+import csv
 from datetime import datetime
 
 class DataLogger:
@@ -15,9 +15,9 @@ class DataLogger:
         self.stop_logging()
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
         self.current_log_file = os.path.join(self.log_dir, f"telemetry_{timestamp}.csv")
-        self.file_handle = open(self.current_log_file, "x", encoding="utf-8")
-        # Optional: Write CSV header if we decide on a fixed format
-        # self.file_handle.write("timestamp,source_type,data...\n")
+        self.file_handle = open(self.current_log_file, "x", encoding="utf-8", newline="")
+        # Preserve the three-field, headerless session format. newline=""
+        # prevents platform newline translation from changing CSV records.
 
     def log(self, data):
         """
@@ -32,15 +32,13 @@ class DataLogger:
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
 
             if isinstance(data, dict):
-                # If data is a dictionary, log it as a comma-separated line
-                # We prioritize some common fields but allow any data
-                # We can also just log the JSON representation for maximum info
+                # CSV quoting keeps the complete JSON payload in one field.
                 import json
                 json_data = json.dumps(data)
-                self.file_handle.write(f"{timestamp},DICT,{json_data}\n")
+                csv.writer(self.file_handle, lineterminator="\r\n").writerow((timestamp, "DICT", json_data))
             else:
                 # Fallback for strings or other types
-                self.file_handle.write(f"{timestamp},RAW,{data}\n")
+                csv.writer(self.file_handle, lineterminator="\r\n").writerow((timestamp, "RAW", str(data)))
 
             self.file_handle.flush()
         except Exception as e:
@@ -51,3 +49,4 @@ class DataLogger:
         if self.file_handle and not self.file_handle.closed:
             self.file_handle.close()
         self.file_handle = None
+
