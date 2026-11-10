@@ -1,5 +1,14 @@
 # Electronics reference CAD, 2026-11-06
 
+## New: per-unit measurement-to-envelope CAD input
+
+The [measurement envelope tool](BOARD_MEASUREMENT_ENVELOPE.md) converts one reviewed
+private real-board record into two independently reimported reference boxes. It
+retains below-board heights, rigid protrusions and supplied uncertainty bounds.
+All five shipped JSON templates are blank and refuse generation. No actual board
+dimensions, new physical-board STEP or assembly acceptance are claimed. Existing
+13 STEP references and all 19 CAD_START blockers remain unchanged.
+
 ## Next real-board input: five-unit measurement workbook
 
 The [Chinese board measurement guide](BOARD_MEASUREMENT_WORKBOOK.md) and
