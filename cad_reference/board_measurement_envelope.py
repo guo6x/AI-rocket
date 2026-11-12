@@ -121,7 +121,8 @@ def evidence_files(record: dict, base: Path) -> list[dict]:
         seen.add(ident)
         if row['unit_id'] != record['unit_id']:
             raise ReferenceError('evidence unit mismatch; U1/U2 cannot substitute for each other')
-        if not isinstance(relative, str) or not relative or '\\' in relative:
+        if (not isinstance(relative, str) or not relative or '\\' in relative
+                or ':' in relative or '\x00' in relative):
             raise ReferenceError('evidence path must be a local relative POSIX path')
         path = PurePosixPath(relative)
         if path.is_absolute() or '..' in path.parts or not path.parts:
@@ -340,3 +341,4 @@ def main() -> int:
 
 if __name__ == '__main__':
     raise SystemExit(main())
+

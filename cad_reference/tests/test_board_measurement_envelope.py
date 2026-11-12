@@ -169,6 +169,16 @@ class BoardMeasurementTests(unittest.TestCase):
         self.record['evidence'][0]['path'] = 'alias'
         self.refused()
 
+    def test_windows_drive_and_stream_paths_rejected_before_filesystem_access(self):
+        # POSIX syntax alone is insufficient: a drive component can reset a
+        # Windows join, and colon names may address NTFS alternate streams.
+        for path in ('D:/outside.txt', 'D:outside.txt', 'sub/D:/outside.txt',
+                     'synthetic-evidence.txt:stream'):
+            with self.subTest(path=path):
+                self.record['evidence'][0]['path'] = path
+                with patch.object(Path, 'is_file', side_effect=AssertionError('unsafe path reached filesystem')):
+                    self.refused()
+
     def test_envelope_must_include_pcb_and_correct_nonnegative_heights(self):
         original = deepcopy(self.record)
         for key, value in [('X_min',1), ('Y_min',1), ('X_max',9), ('Y_max',19), ('H_minus',-5)]:
@@ -303,3 +313,4 @@ class BoardMeasurementTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
