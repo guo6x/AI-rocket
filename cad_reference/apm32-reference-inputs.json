@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "scope": "APM32_CHIP_AND_RECOMMENDED_LAND_REFERENCE_ONLY_NOT_CORE_BOARD",
+  "manufacturing_release": false,
+  "physical_identity": "UNVERIFIED",
+  "cad_start": "UNCHANGED_BLOCKED",
+  "asset_binding": {
+    "asset_id": "AST-MCU-APM32-001",
+    "sha256": "73efb4fe024bc4527e2ee934ce9eab360f30aeb17b99926cd2778c074e49a656"
+  },
+  "model": "APM32F103C8T6",
+  "package": "LQFP48",
+  "evidence_level": "MANUFACTURER_NOMINAL_REFERENCE",
+  "source": {
+    "url": "https://global.geehy.com/uploads/tool/APM32F103x4x6x8%20datasheet%20V1.5.pdf",
+    "product_page": "https://global.geehy.com/product/fifth/APM32F103",
+    "revision": "APM32F103x4x6x8 datasheet V1.5",
+    "pdf_sha256": "b3d0b480d8840eecca7119fde3a122a662e44fd68fd20453d2eddb686408ea56",
+    "retrieved_on": "2026-11-06",
+    "review_status": "PDF_TEXT_AND_PIXELS_REVIEWED",
+    "mechanical_pdf_pages": [
+      46,
+      47
+    ],
+    "land_pattern_pdf_page": 48,
+    "ordering_pdf_page": 55,
+    "printed_pages": {
+      "mechanical": [
+        45,
+        46
+      ],
+      "land_pattern": 47,
+      "ordering": 54
+    }
+  },
+  "units": "mm",
+  "datum": {
+    "origin": "package XY center at seating plane Z=0",
+    "axes": "XY aligned with Figure 19 land pattern; not purchased board axes",
+    "pin_numbering": "Figure 19 top-view layout: pin 1 bottom-left, 12 bottom-right, 24 right-top, 36 top-left, 48 left-bottom"
+  },
+  "dimensions": {
+    "body_xy_nominal": [
+      7.0,
+      7.0
+    ],
+    "body_xy_tolerance": 0.1,
+    "body_thickness_nominal": 1.4,
+    "body_thickness_tolerance": 0.05,
+    "stand_off_nominal": 0.1,
+    "stand_off_tolerance": 0.05,
+    "lead_span_nominal": [
+      9.0,
+      9.0
+    ],
+    "lead_span_tolerance": 0.2,
+    "overall_height_maximum": 1.6,
+    "lands": {
+      "count": 48,
+      "per_side": 12,
+      "pitch": 0.5,
+      "width": 0.3,
+      "radial_length": 1.2,
+      "opposing_inner_span": 7.3,
+      "opposing_outer_span": 9.7,
+      "row_span": 5.8
+    }
+  },
+  "simplifications": [
+    "Body is an unchamfered rectangular reference; no lead-bend replica, pin-1 mark or mold detail.",
+    "Maximum-dimension envelope is a separate box, not material volume or installation clearance.",
+    "Land pattern is 48 planar reference surfaces at Z=0; no copper, mask, paste or solder thickness."
+  ],
+  "unknown_features": {
+    "core_board_dimensions": null,
+    "core_board_pcb_thickness": null,
+    "header_positions": null,
+    "usb_connector_envelope": null,
+    "mounting_holes": null,
+    "chip_orientation_on_board": null,
+    "actual_chip_identity": null,
+    "solder_mask": null,
+    "paste": null,
+    "copper_thickness": null,
+    "material_volume": null,
+    "mass": null,
+    "installation_clearance": null
+  }
+}

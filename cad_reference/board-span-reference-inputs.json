@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "scope": "SELLER_NUMERIC_SPANS_PLANAR_REFERENCE_ONLY_NOT_BOARD_CONTOUR",
+  "physical_identity": "UNVERIFIED",
+  "manufacturing_release": false,
+  "cad_start": "UNCHANGED_BLOCKED",
+  "units": "mm",
+  "asset_binding": {
+    "asset_id": "AST-MCU-ESP32S3-001",
+    "sha256": "3778e3137b819f942ab4ecf7bbc04653a994877e8f121bbc4b954a9c08ffdf34"
+  },
+  "source": {
+    "type": "PRIVATE_PURCHASE_IMAGE_PRODUCT_THUMBNAIL",
+    "filename": "1000013496.jpg",
+    "sha256": "76d3b8630d8d8854d9941708daafd7a42db24e8864f743539937f7fd81b8765b",
+    "reviewed_on": "2026-11-07",
+    "review_status": "ORIGINAL_PIXELS_REVIEWED",
+    "transcription": {
+      "selected_option": "ESP32-S3开发板N16R8 44脚",
+      "image_label": "57mm / 28mm / Type-C口"
+    },
+    "dimension_subject": "Seller printed dimension labels only. The pictured antenna extends beyond the marked 57 mm boundary; this rectangle does not represent the full product envelope. Exact datum/edge definitions remain unresolved.",
+    "public_review": "engineering/references/purchase-variant-recovery-20261107.md",
+    "privacy": "Original order image stays private. Filename and digest identify the reviewed source but cannot reproduce it without authorized access."
+  },
+  "dimensions": {
+    "long_span_mm": 57.0,
+    "short_span_mm": 28.0
+  },
+  "reference_frame": {
+    "origin": "Abstract rectangle center",
+    "x": "Long span",
+    "y": "Short span",
+    "z": "Mathematical reference plane only; not a physical seating plane"
+  },
+  "unknown_features": {
+    "pcb_revision": null,
+    "true_pcb_outline": null,
+    "length_tolerance": null,
+    "width_tolerance": null,
+    "pcb_thickness": null,
+    "assembled_height": null,
+    "header_positions": null,
+    "header_height": null,
+    "usb_connector_positions": null,
+    "usb_connector_overhang": null,
+    "mounting_holes": null,
+    "antenna_keepout": null,
+    "cable_bend_envelope": null,
+    "installation_clearance": null,
+    "mass": null,
+    "placement": null
+  }
+}

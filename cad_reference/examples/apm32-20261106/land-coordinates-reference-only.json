@@ -1,0 +1,610 @@
+{
+  "scope": "APM32_CHIP_AND_RECOMMENDED_LAND_REFERENCE_ONLY_NOT_CORE_BOARD",
+  "units": "mm",
+  "datum": {
+    "origin": "package XY center at seating plane Z=0",
+    "axes": "XY aligned with Figure 19 land pattern; not purchased board axes",
+    "pin_numbering": "Figure 19 top-view layout: pin 1 bottom-left, 12 bottom-right, 24 right-top, 36 top-left, 48 left-bottom"
+  },
+  "manufacturing_release": false,
+  "source": {
+    "url": "https://global.geehy.com/uploads/tool/APM32F103x4x6x8%20datasheet%20V1.5.pdf",
+    "product_page": "https://global.geehy.com/product/fifth/APM32F103",
+    "revision": "APM32F103x4x6x8 datasheet V1.5",
+    "pdf_sha256": "b3d0b480d8840eecca7119fde3a122a662e44fd68fd20453d2eddb686408ea56",
+    "retrieved_on": "2026-11-06",
+    "review_status": "PDF_TEXT_AND_PIXELS_REVIEWED",
+    "mechanical_pdf_pages": [
+      46,
+      47
+    ],
+    "land_pattern_pdf_page": 48,
+    "ordering_pdf_page": 55,
+    "printed_pages": {
+      "mechanical": [
+        45,
+        46
+      ],
+      "land_pattern": 47,
+      "ordering": 54
+    }
+  },
+  "lands": [
+    {
+      "pin": 1,
+      "center_mm": [
+        -2.75,
+        -4.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        0.3,
+        1.2
+      ]
+    },
+    {
+      "pin": 2,
+      "center_mm": [
+        -2.25,
+        -4.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        0.3,
+        1.2
+      ]
+    },
+    {
+      "pin": 3,
+      "center_mm": [
+        -1.75,
+        -4.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        0.3,
+        1.2
+      ]
+    },
+    {
+      "pin": 4,
+      "center_mm": [
+        -1.25,
+        -4.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        0.3,
+        1.2
+      ]
+    },
+    {
+      "pin": 5,
+      "center_mm": [
+        -0.75,
+        -4.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        0.3,
+        1.2
+      ]
+    },
+    {
+      "pin": 6,
+      "center_mm": [
+        -0.25,
+        -4.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        0.3,
+        1.2
+      ]
+    },
+    {
+      "pin": 7,
+      "center_mm": [
+        0.25,
+        -4.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        0.3,
+        1.2
+      ]
+    },
+    {
+      "pin": 8,
+      "center_mm": [
+        0.75,
+        -4.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        0.3,
+        1.2
+      ]
+    },
+    {
+      "pin": 9,
+      "center_mm": [
+        1.25,
+        -4.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        0.3,
+        1.2
+      ]
+    },
+    {
+      "pin": 10,
+      "center_mm": [
+        1.75,
+        -4.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        0.3,
+        1.2
+      ]
+    },
+    {
+      "pin": 11,
+      "center_mm": [
+        2.25,
+        -4.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        0.3,
+        1.2
+      ]
+    },
+    {
+      "pin": 12,
+      "center_mm": [
+        2.75,
+        -4.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        0.3,
+        1.2
+      ]
+    },
+    {
+      "pin": 13,
+      "center_mm": [
+        4.25,
+        -2.75,
+        0.0
+      ],
+      "size_xy_mm": [
+        1.2,
+        0.3
+      ]
+    },
+    {
+      "pin": 14,
+      "center_mm": [
+        4.25,
+        -2.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        1.2,
+        0.3
+      ]
+    },
+    {
+      "pin": 15,
+      "center_mm": [
+        4.25,
+        -1.75,
+        0.0
+      ],
+      "size_xy_mm": [
+        1.2,
+        0.3
+      ]
+    },
+    {
+      "pin": 16,
+      "center_mm": [
+        4.25,
+        -1.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        1.2,
+        0.3
+      ]
+    },
+    {
+      "pin": 17,
+      "center_mm": [
+        4.25,
+        -0.75,
+        0.0
+      ],
+      "size_xy_mm": [
+        1.2,
+        0.3
+      ]
+    },
+    {
+      "pin": 18,
+      "center_mm": [
+        4.25,
+        -0.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        1.2,
+        0.3
+      ]
+    },
+    {
+      "pin": 19,
+      "center_mm": [
+        4.25,
+        0.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        1.2,
+        0.3
+      ]
+    },
+    {
+      "pin": 20,
+      "center_mm": [
+        4.25,
+        0.75,
+        0.0
+      ],
+      "size_xy_mm": [
+        1.2,
+        0.3
+      ]
+    },
+    {
+      "pin": 21,
+      "center_mm": [
+        4.25,
+        1.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        1.2,
+        0.3
+      ]
+    },
+    {
+      "pin": 22,
+      "center_mm": [
+        4.25,
+        1.75,
+        0.0
+      ],
+      "size_xy_mm": [
+        1.2,
+        0.3
+      ]
+    },
+    {
+      "pin": 23,
+      "center_mm": [
+        4.25,
+        2.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        1.2,
+        0.3
+      ]
+    },
+    {
+      "pin": 24,
+      "center_mm": [
+        4.25,
+        2.75,
+        0.0
+      ],
+      "size_xy_mm": [
+        1.2,
+        0.3
+      ]
+    },
+    {
+      "pin": 25,
+      "center_mm": [
+        2.75,
+        4.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        0.3,
+        1.2
+      ]
+    },
+    {
+      "pin": 26,
+      "center_mm": [
+        2.25,
+        4.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        0.3,
+        1.2
+      ]
+    },
+    {
+      "pin": 27,
+      "center_mm": [
+        1.75,
+        4.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        0.3,
+        1.2
+      ]
+    },
+    {
+      "pin": 28,
+      "center_mm": [
+        1.25,
+        4.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        0.3,
+        1.2
+      ]
+    },
+    {
+      "pin": 29,
+      "center_mm": [
+        0.75,
+        4.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        0.3,
+        1.2
+      ]
+    },
+    {
+      "pin": 30,
+      "center_mm": [
+        0.25,
+        4.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        0.3,
+        1.2
+      ]
+    },
+    {
+      "pin": 31,
+      "center_mm": [
+        -0.25,
+        4.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        0.3,
+        1.2
+      ]
+    },
+    {
+      "pin": 32,
+      "center_mm": [
+        -0.75,
+        4.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        0.3,
+        1.2
+      ]
+    },
+    {
+      "pin": 33,
+      "center_mm": [
+        -1.25,
+        4.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        0.3,
+        1.2
+      ]
+    },
+    {
+      "pin": 34,
+      "center_mm": [
+        -1.75,
+        4.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        0.3,
+        1.2
+      ]
+    },
+    {
+      "pin": 35,
+      "center_mm": [
+        -2.25,
+        4.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        0.3,
+        1.2
+      ]
+    },
+    {
+      "pin": 36,
+      "center_mm": [
+        -2.75,
+        4.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        0.3,
+        1.2
+      ]
+    },
+    {
+      "pin": 37,
+      "center_mm": [
+        -4.25,
+        2.75,
+        0.0
+      ],
+      "size_xy_mm": [
+        1.2,
+        0.3
+      ]
+    },
+    {
+      "pin": 38,
+      "center_mm": [
+        -4.25,
+        2.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        1.2,
+        0.3
+      ]
+    },
+    {
+      "pin": 39,
+      "center_mm": [
+        -4.25,
+        1.75,
+        0.0
+      ],
+      "size_xy_mm": [
+        1.2,
+        0.3
+      ]
+    },
+    {
+      "pin": 40,
+      "center_mm": [
+        -4.25,
+        1.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        1.2,
+        0.3
+      ]
+    },
+    {
+      "pin": 41,
+      "center_mm": [
+        -4.25,
+        0.75,
+        0.0
+      ],
+      "size_xy_mm": [
+        1.2,
+        0.3
+      ]
+    },
+    {
+      "pin": 42,
+      "center_mm": [
+        -4.25,
+        0.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        1.2,
+        0.3
+      ]
+    },
+    {
+      "pin": 43,
+      "center_mm": [
+        -4.25,
+        -0.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        1.2,
+        0.3
+      ]
+    },
+    {
+      "pin": 44,
+      "center_mm": [
+        -4.25,
+        -0.75,
+        0.0
+      ],
+      "size_xy_mm": [
+        1.2,
+        0.3
+      ]
+    },
+    {
+      "pin": 45,
+      "center_mm": [
+        -4.25,
+        -1.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        1.2,
+        0.3
+      ]
+    },
+    {
+      "pin": 46,
+      "center_mm": [
+        -4.25,
+        -1.75,
+        0.0
+      ],
+      "size_xy_mm": [
+        1.2,
+        0.3
+      ]
+    },
+    {
+      "pin": 47,
+      "center_mm": [
+        -4.25,
+        -2.25,
+        0.0
+      ],
+      "size_xy_mm": [
+        1.2,
+        0.3
+      ]
+    },
+    {
+      "pin": 48,
+      "center_mm": [
+        -4.25,
+        -2.75,
+        0.0
+      ],
+      "size_xy_mm": [
+        1.2,
+        0.3
+      ]
+    }
+  ]
+}

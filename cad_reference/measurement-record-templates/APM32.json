@@ -1,0 +1,89 @@
+{
+  "asset_id": "AST-MCU-APM32-001",
+  "coverage": null,
+  "datum": "TOP_X_RIGHT_Y_UP_Z_ZERO_PCB_UNDERSIDE_L_ALONG_Y_W_ALONG_X",
+  "evidence": [],
+  "fit_accepted": false,
+  "identity": {
+    "evidence_ids": [],
+    "orientation_and_extreme_features": null,
+    "pcb_markings_or_revision": null,
+    "recorded_assembly_state": null
+  },
+  "manufacturing_release": false,
+  "measurements": {
+    "H_minus": {
+      "evidence_ids": [],
+      "readings_mm": null,
+      "uncertainty_mm": null
+    },
+    "H_plus": {
+      "evidence_ids": [],
+      "readings_mm": null,
+      "uncertainty_mm": null
+    },
+    "PCB_L": {
+      "evidence_ids": [],
+      "readings_mm": null,
+      "uncertainty_mm": null
+    },
+    "PCB_T": {
+      "evidence_ids": [],
+      "readings_mm": null,
+      "uncertainty_mm": null
+    },
+    "PCB_W": {
+      "evidence_ids": [],
+      "readings_mm": null,
+      "uncertainty_mm": null
+    },
+    "X_max": {
+      "evidence_ids": [],
+      "readings_mm": null,
+      "uncertainty_mm": null
+    },
+    "X_min": {
+      "evidence_ids": [],
+      "readings_mm": null,
+      "uncertainty_mm": null
+    },
+    "Y_max": {
+      "evidence_ids": [],
+      "readings_mm": null,
+      "uncertainty_mm": null
+    },
+    "Y_min": {
+      "evidence_ids": [],
+      "readings_mm": null,
+      "uncertainty_mm": null
+    }
+  },
+  "method": {
+    "date": null,
+    "instrument": null,
+    "resolution_mm": null,
+    "uncertainty_basis": null,
+    "unpowered": null
+  },
+  "review": {
+    "reviewed_for_this_unit": null,
+    "reviewer_ref": null,
+    "transcription_checked": null
+  },
+  "schema_version": 1,
+  "scope": "BOARD_MEASUREMENT_ENVELOPE_REFERENCE_ONLY",
+  "unit_id": "APM32",
+  "units": "mm",
+  "unknown_features": {
+    "actual_pcb_contour": null,
+    "antenna_rf_clearance": null,
+    "design_margin": null,
+    "flexible_cables": null,
+    "header_coordinates": null,
+    "mated_connectors": null,
+    "mounting_holes": null,
+    "placement": null,
+    "service_space": null,
+    "thermal_clearance": null
+  }
+}
