@@ -2,6 +2,28 @@
 
 先看[中文交付导航](DELIVERY_MAP.md)：13 份参考文件分别能做什么、如何核验、下一步真正缺什么。
 
+## Ra-02 source-version warning, reviewed 2026-11-13
+
+The existing Ra-02 STEP cases remain pinned to the **2017 English source**
+linked below, including its 3.2 +/- 0.1 mm height band. They are not a claim
+about the current manufacturer's complete tolerance envelope or the purchased unit.
+
+The [current manufacturer index](https://docs.ai-thinker.com/Ra-02/index.html)
+now links a [Chinese V1.1 PDF dated 2026-06-29](https://aithinker-static.oss-cn-shenzhen.aliyuncs.com/docs/Public%20Document%20Center/LoRa/lora/Specification/Ra-02_V1.1%E8%A7%84%E6%A0%BC%E4%B9%A6-20260629.pdf).
+The downloaded PDF's page 6 lists 17 x 16 x 3.2 (+/- 0.2) mm without separately
+defining every axis in that table. Its actual page-9 drawing explicitly labels
+17 +/- 0.2 and 16 +/- 0.2 mm; the pictured underside is marked Ra-02_V1.4.
+Both pages were rendered and visually inspected. PDF SHA-256:
+`770895e55b47598b6dccc5ebb190d4b9a98721135f0762803b7abae1dfb42d80`.
+
+A document revision named V1.1 is not a PCB revision identity. **The newer
+document has not been bound to the user's purchased modules or their blue
+carrier boards.** Do not silently combine its dimensions with the old source,
+treat 3.3 mm as a current worst-case height, or infer carrier/header/cable
+dimensions from either bare-module document. This notice changes no geometry,
+manifest, parameter registry, as-built record, acceptance state or firmware.
+The existing files remain historical-source numeric references, not fit approval.
+
 ## New: per-unit measurement-to-envelope CAD input
 
 The [measurement envelope tool](BOARD_MEASUREMENT_ENVELOPE.md) converts one reviewed
