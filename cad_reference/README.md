@@ -1,5 +1,7 @@
 # Electronics reference CAD, 2026-11-06
 
+先看[中文交付导航](DELIVERY_MAP.md)：13 份参考文件分别能做什么、如何核验、下一步真正缺什么。
+
 ## New: per-unit measurement-to-envelope CAD input
 
 The [measurement envelope tool](BOARD_MEASUREMENT_ENVELOPE.md) converts one reviewed
