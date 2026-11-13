@@ -105,6 +105,29 @@ class BoardMeasurementTests(unittest.TestCase):
                 self.record['measurements']['PCB_T']['readings_mm'] = [value] * 3
                 self.refused()
 
+    def test_oversized_integers_refused_without_output_or_traceback(self):
+        original = deepcopy(self.record)
+        for value in (10**400, -(10**400)):
+            for location in ('reading', 'uncertainty', 'resolution'):
+                with self.subTest(location=location, sign=value > 0):
+                    self.record = deepcopy(original)
+                    if location == 'reading':
+                        self.record['measurements']['PCB_T']['readings_mm'] = [value] * 3
+                    elif location == 'uncertainty':
+                        self.record['measurements']['PCB_T']['uncertainty_mm'] = value
+                    else:
+                        self.record['method']['resolution_mm'] = value
+                    self.save()
+                    self.refused()
+                    result = subprocess.run(
+                        [sys.executable, '-m', 'cad_reference.board_measurement_envelope',
+                         'generate', '--input', str(self.input), '--output', str(self.output)],
+                        capture_output=True, text=True)
+                    self.assertEqual(result.returncode, 1)
+                    self.assertIn('REFUSED:', result.stderr)
+                    self.assertNotIn('Traceback', result.stderr)
+                    self.assertFalse(self.output.exists())
+
     def test_uncertainty_cannot_be_blank_zero_or_negative(self):
         for value in (None, 0, -1, True, '0.1', float('inf')):
             self.record['measurements']['PCB_L']['uncertainty_mm'] = value
@@ -313,4 +336,5 @@ class BoardMeasurementTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
 

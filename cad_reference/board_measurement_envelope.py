@@ -67,9 +67,15 @@ def text_value(value, label):
 
 
 def number(value, label):
-    if type(value) not in (int, float) or not math.isfinite(value):
+    if type(value) not in (int, float):
         raise ReferenceError(f'{label}: finite numeric mm required (not blank/string/bool)')
-    return float(value)
+    try:
+        converted = float(value)
+    except OverflowError:
+        raise ReferenceError(f'{label}: numeric mm exceeds finite float range') from None
+    if not math.isfinite(converted):
+        raise ReferenceError(f'{label}: finite numeric mm required (not blank/string/bool)')
+    return converted
 
 
 def no_duplicates(pairs):
@@ -341,4 +347,5 @@ def main() -> int:
 
 if __name__ == '__main__':
     raise SystemExit(main())
+
 
